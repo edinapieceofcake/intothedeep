@@ -46,7 +46,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         //   par0.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.inPerTick = inPerTick;
-        
+
         FlightRecorder.write("THREE_DEAD_WHEEL_PARAMS", PARAMS);
     }
 
