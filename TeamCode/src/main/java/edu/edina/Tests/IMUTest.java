@@ -10,25 +10,20 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+import edu.edina.Libraries.Robot.RobotHardware;
+
 @Disabled
 public class IMUTest extends LinearOpMode {
-    private IMU imu;
-    private YawPitchRollAngles angles;
+    private double yaw;
 
     @Override
     public void runOpMode() {
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu.initialize(parameters);
+        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            angles = imu.getRobotYawPitchRollAngles();
-            double yaw = angles.getYaw(AngleUnit.DEGREES);
-
+            yaw = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             telemetry.addData("heading", yaw);
             telemetry.update();
         }
