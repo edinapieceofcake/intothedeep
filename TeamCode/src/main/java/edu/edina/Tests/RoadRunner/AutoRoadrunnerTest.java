@@ -1,7 +1,6 @@
-package edu.edina.OpModes.TeleOp;
+package edu.edina.Tests.RoadRunner;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(preselectTeleOp = "TeleOpA")
