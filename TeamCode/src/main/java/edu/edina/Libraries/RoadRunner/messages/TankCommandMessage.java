@@ -1,4 +1,4 @@
-package roadrunner.messages;
+package edu.edina.Libraries.RoadRunner.messages;
 
 public final class TankCommandMessage {
     public long timestamp;
