@@ -1,46 +1,96 @@
 package edu.edina.Libraries.PurePursuit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PurePursuit {
-    public static void main(String[] args) {
-        runPurePursuitTest();
+    Vector2d[] path;
+    Intersection pursuitPoint;
+
+    public PurePursuit(Vector2d[] path) {
+        this.path = path;
+        pursuitPoint = new Intersection(0, path[0].x, path[0].y);
     }
 
-    private static void runPurePursuitTest() {
-        Vector2d[] path = new Vector2d[] {
-                new Vector2d(0, 0),
-                new Vector2d(0, 3),
-                new Vector2d(5, 5),
-                new Vector2d(8, 5)
-        };
+    public Vector2d getPursuitPoint() {
+        return new Vector2d(pursuitPoint.x, pursuitPoint.y);
+    }
 
-        System.out.println("path");
-        for (Vector2d pathPoint : path) {
-            System.out.format("%f, %f\n", pathPoint.x, pathPoint.y);
+    private void setEndpoint() {
+        Vector2d lastPoint = path[path.length - 1];
+        pursuitPoint = new Intersection(path.length, lastPoint.x, lastPoint.y);
+    }
+
+    public void nextPursuitPoint(Vector2d location, double radius) {
+        double cx = location.x;
+        double cy = location.y;
+
+        double fx = path[path.length - 1].x;
+        double fy = path[path.length - 1].y;
+
+        if ((cx - fx) * (cx - fx) + (cy - fy) * (cy - fy) < radius * radius) {
+            setEndpoint();
+            return;
         }
 
-        PursuitPath pp = new PursuitPath(path);
+        Intersection prevInt = pursuitPoint;
+        boolean didUpdate = false;
 
-        System.out.println("checking pursuit");
-        checkPursuitPoint(pp, 0, 0, 0.0, 2.0);
-        checkPursuitPoint(pp, 0, 1, 0.0, 3.0);
-        checkPursuitPoint(pp, 0, 1.4, 0.6915694053324097, 3.2766277621329642);
-        checkPursuitPoint(pp, 0.5, 1.3, 0.7197320314734673, 3.287892812589387);
-        checkPursuitPoint(pp, 0.5, 1.2, 0.49999999999999983, 3.2);
-        checkPursuitPoint(pp, 7, 4, 8, 5);
-        checkPursuitPoint(pp, 100, 100, 8, 5);
+        for (int i = 0; i < (path.length - 1); i++) {
+            Vector2d v0 = path[i];
+            Vector2d v1 = path[i + 1];
+
+            List<Intersection> isects = intersections(v0.x, v0.y, v1.x, v1.y, cx, cy, radius);
+            for (Intersection segmentInt : isects) {
+                didUpdate = true;
+                pursuitPoint = new Intersection(segmentInt.t + i, segmentInt.x, segmentInt.y);
+                if (pursuitPoint.t > prevInt.t)
+                    return;
+            }
+        }
+
+        if (!didUpdate) {
+            setEndpoint();
+        }
     }
 
-    private static void checkPursuitPoint(PursuitPath p, double locX, double locY, double expectPx, double expectPy) {
-        Vector2d loc = new Vector2d(locX, locY);
-        double radius = 2;
+    private static List<Intersection> intersections(double x0, double y0, double x1, double y1, double cx, double cy,
+            double r) {
+        ArrayList<Intersection> ilist = new ArrayList<>();
 
-        System.out.format("loc: %f, %f | radius: %f | expect: %f, %f", locX, locY, radius, expectPx, expectPy);
-        p.nextPursuitPoint(loc, radius);
+        double ux = x1 - x0;
+        double vx = x0 - cx;
+        double uy = y1 - y0;
+        double vy = y0 - cy;
 
-        Vector2d next = p.getPursuitPoint();
+        double a = ux * ux + uy * uy;
+        double b = 2 * (ux * vx + uy * vy);
+        double c = vx * vx + vy * vy - r * r;
+        for (double t : quadraticRoot(a, b, c)) {
+            if (0 < t && t <= 1) {
+                double ix = x0 * (1 - t) + x1 * t;
+                double iy = y0 * (1 - t) + y1 * t;
+                ilist.add(new Intersection(t, ix, iy));
+            }
+        }
+        return ilist;
+    }
 
-        System.out.format(" | pursuit point: %f, %f\n", next.x, next.y);
-        if (Math.abs(next.x - expectPx) > 1e-6 || Math.abs(next.y - expectPy) > 1e-6)
-            throw new RuntimeException("mismatch");
+    private static double[] quadraticRoot(double a, double b, double c) {
+        double d = Math.pow(b, 2) - (4 * a * c);
+
+        double x1 = (-b + Math.sqrt(d)) / (2.0 * a);
+        double x2 = (-b - Math.sqrt(d)) / (2.0 * a);
+
+        if (d < 0) {
+            return new double[0];
+        } else if (d > 0) {
+            double[] roots = new double[] { x1, x2 };
+            Arrays.sort(roots);
+            return roots;
+        } else {
+            return new double[] { x1 };
+        }
     }
 }
