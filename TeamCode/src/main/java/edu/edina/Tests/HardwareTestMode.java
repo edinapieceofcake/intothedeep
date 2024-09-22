@@ -28,8 +28,8 @@ public class HardwareTestMode extends LinearOpMode {
     public void runOpMode() {
         odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
@@ -53,15 +53,27 @@ public class HardwareTestMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.dpad_up && !previousDPadUp) {
-                testIndex = testIndex + 1;
+            if (gamepad1.dpad_up) {
+                if (!previousDPadUp) {
+                    if (testIndex < tests.length - 1)
+                        testIndex++;
+                    previousDPadUp = true;
+                    continue;
+                }
+            } else {
+                previousDPadUp = false;
             }
-            if (gamepad1.dpad_down && !previousDPadDown) {
-                if (testIndex > 0)
-                    testIndex = testIndex - 1;
-            }
-            if (testIndex > tests.length - 1) {
-                testIndex = tests.length - 1;
+
+            if (gamepad1.dpad_down) {
+                if (!previousDPadDown) {
+                    if (testIndex > 0)
+                        testIndex--;
+
+                    previousDPadDown = gamepad1.dpad_down;
+                    continue;
+                }
+            } else {
+                previousDPadDown = false;
             }
 
             if (gamepad1.b) {
@@ -71,9 +83,6 @@ public class HardwareTestMode extends LinearOpMode {
                 telemetry.addData("test", tests[testIndex].getName());
                 telemetry.update();
             }
-
-            previousDPadUp = gamepad1.dpad_up;
-            previousDPadDown = gamepad1.dpad_down;
         }
     }
 
@@ -129,27 +138,31 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
+            int basePosPar0 = 0;
+            int basePosPar1 = 0;
+            int basePosPerp = 0;
+
             while (testIsActive()) {
                 double max;
 
-                double axial   = -gamepad1.left_stick_y;
-                double lateral =  gamepad1.left_stick_x;
-                double yaw     =  gamepad1.right_stick_x;
+                double axial = -gamepad1.left_stick_y;
+                double lateral = gamepad1.left_stick_x;
+                double yaw = gamepad1.right_stick_x;
 
-                double leftFrontPower  = axial + lateral + yaw;
+                double leftFrontPower = axial + lateral + yaw;
                 double rightFrontPower = axial - lateral - yaw;
-                double leftBackPower   = axial - lateral + yaw;
-                double rightBackPower  = axial + lateral - yaw;
+                double leftBackPower = axial - lateral + yaw;
+                double rightBackPower = axial + lateral - yaw;
 
                 max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
                 max = Math.max(max, Math.abs(leftBackPower));
                 max = Math.max(max, Math.abs(rightBackPower));
 
                 if (max > 1.0) {
-                    leftFrontPower  /= max;
+                    leftFrontPower /= max;
                     rightFrontPower /= max;
-                    leftBackPower   /= max;
-                    rightBackPower  /= max;
+                    leftBackPower /= max;
+                    rightBackPower /= max;
                 }
 
                 leftFrontDrive.setPower(leftFrontPower * 0.3);
@@ -157,11 +170,18 @@ public class HardwareTestMode extends LinearOpMode {
                 leftBackDrive.setPower(leftBackPower * 0.3);
                 rightBackDrive.setPower(rightBackPower * 0.3);
 
-                telemetry.addData("Left", odometry.par0.getPositionAndVelocity().position);
-                telemetry.addData("Right", odometry.par1.getPositionAndVelocity().position);
-                telemetry.addData("Back", odometry.perp.getPositionAndVelocity().position);
+                telemetry.addData("Left", odometry.par0.getPositionAndVelocity().position - basePosPar0);
+                telemetry.addData("Right", odometry.par1.getPositionAndVelocity().position - basePosPar1);
+                telemetry.addData("Back", odometry.perp.getPositionAndVelocity().position - basePosPerp);
+
                 telemetry.addLine();
                 telemetry.addLine("Press Y to reset values");
+                if (gamepad1.y) {
+                    basePosPar0 = odometry.par0.getPositionAndVelocity().position;
+                    basePosPar1 = odometry.par1.getPositionAndVelocity().position;
+                    basePosPerp = odometry.perp.getPositionAndVelocity().position;
+                }
+
                 telemetry.update();
             }
         }

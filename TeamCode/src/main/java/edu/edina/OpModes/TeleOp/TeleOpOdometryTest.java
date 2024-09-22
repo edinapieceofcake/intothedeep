@@ -36,12 +36,16 @@ import com.acmerobotics.roadrunner.Twist2d;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
 
@@ -82,6 +86,8 @@ public class TeleOpOdometryTest extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
+    private IMU imu;
+    private YawPitchRollAngles angles;
     private boolean update;
 
     @Override
@@ -92,6 +98,12 @@ public class TeleOpOdometryTest extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu.initialize(parameters);
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -173,13 +185,14 @@ public class TeleOpOdometryTest extends LinearOpMode {
             Twist2dDual<Time> t = odometry.update();
             pose = pose.plus(t.value());
 
+            angles = imu.getRobotYawPitchRollAngles();
+            double yawIMU = angles.getYaw(AngleUnit.DEGREES);
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("x, y, h", "%.4f, %.4f, %.4f",
-                    pose.position.x, pose.position.y, pose.heading.toDouble());
-            telemetry.addData("par0", odometry.par0.getPositionAndVelocity().position);
-            telemetry.addData("par1", odometry.par1.getPositionAndVelocity().position);
-            telemetry.addData("perp", odometry.perp.getPositionAndVelocity().position);
+            telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
+                    pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()));
+            telemetry.addData("imu heading", yawIMU);
             telemetry.update();
         }
     }
