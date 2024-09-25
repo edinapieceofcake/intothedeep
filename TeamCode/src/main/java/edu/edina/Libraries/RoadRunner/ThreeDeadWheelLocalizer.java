@@ -20,9 +20,9 @@ import edu.edina.Libraries.RoadRunner.messages.ThreeDeadWheelInputsMessage;
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
-        public double par0YTicks = -2183.4932935757734; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = 2177.3572472006344; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = -1938.3419733785552; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks =  -2165.084859477194; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 2199.695501478485; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks =  -1933.0333198804783; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
