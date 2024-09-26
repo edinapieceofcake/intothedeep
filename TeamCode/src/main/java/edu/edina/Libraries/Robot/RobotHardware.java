@@ -26,10 +26,10 @@ public class RobotHardware {
 
         odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 
-        leftFrontDrive = hardwareMap.get(DcMotorEx.class, "front_left_drive");
-        leftBackDrive = hardwareMap.get(DcMotorEx.class, "back_left_drive");
-        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "front_right_drive");
-        rightBackDrive = hardwareMap.get(DcMotorEx.class, "back_right_drive");
+        leftFrontDrive = hardwareMap.get(DcMotorEx.class, "left_front_drive");
+        leftBackDrive = hardwareMap.get(DcMotorEx.class, "left_back_drive");
+        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "right_front_drive");
+        rightBackDrive = hardwareMap.get(DcMotorEx.class, "right_back_drive");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);

@@ -1,5 +1,7 @@
 package edu.edina.Libraries.PurePursuit;
 
+import com.acmerobotics.roadrunner.Vector2d;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,11 +17,6 @@ public class PurePursuit {
 
     public Vector2d getPursuitPoint() {
         return new Vector2d(pursuitPoint.x, pursuitPoint.y);
-    }
-
-    private void setEndpoint() {
-        Vector2d lastPoint = path[path.length - 1];
-        pursuitPoint = new Intersection(path.length, lastPoint.x, lastPoint.y);
     }
 
     public void nextPursuitPoint(Vector2d location, double radius) {
@@ -53,6 +50,11 @@ public class PurePursuit {
         if (!didUpdate) {
             setEndpoint();
         }
+    }
+
+    private void setEndpoint() {
+        Vector2d lastPoint = path[path.length - 1];
+        pursuitPoint = new Intersection(path.length, lastPoint.x, lastPoint.y);
     }
 
     private static List<Intersection> intersections(double x0, double y0, double x1, double y1, double cx, double cy,

@@ -88,6 +88,11 @@ public class HardwareTestMode extends LinearOpMode {
         if (gamepad1.a) {
             telemetry.clearAll();
             telemetry.setDisplayFormat(Telemetry.DisplayFormat.CLASSIC);
+            leftFrontDrive.setPower(0.0);
+            rightFrontDrive.setPower(0.0);
+            leftBackDrive.setPower(0.0);
+            rightBackDrive.setPower(0.0);
+
             return false;
         } else {
             return opModeIsActive();

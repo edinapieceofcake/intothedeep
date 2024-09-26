@@ -1,6 +1,7 @@
 package edu.edina.Tests.PurePursuit;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
@@ -23,6 +25,10 @@ public class TeleOpPurePursuit extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        PurePursuit pp = new PurePursuit(new Vector2d[]{
+                new Vector2d(0, 0), new Vector2d(30, 0), new Vector2d(30, 20)
+        });
 
         waitForStart();
 
@@ -51,15 +57,18 @@ public class TeleOpPurePursuit extends LinearOpMode {
                 rightBackPower  /= max;
             }
 
-            hw.leftFrontDrive.setPower(leftFrontPower);
-            hw.rightFrontDrive.setPower(rightFrontPower);
-            hw.leftBackDrive.setPower(leftBackPower);
-            hw.rightBackDrive.setPower(rightBackPower);
+            hw.leftFrontDrive.setPower(leftFrontPower * 0.3);
+            hw.rightFrontDrive.setPower(rightFrontPower * 0.3);
+            hw.leftBackDrive.setPower(leftBackPower * 0.3);
+            hw.rightBackDrive.setPower(rightBackPower * 0.3);
 
             Twist2dDual<Time> t = hw.odometry.update();
             pose = pose.plus(t.value());
 
             double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+            pp.nextPursuitPoint(pose.position, 10);
+            telemetry.addData("pursuit point","%f, %f", pp.getPursuitPoint().x, pp.getPursuitPoint().y);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
