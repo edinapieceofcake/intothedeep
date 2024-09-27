@@ -3,6 +3,8 @@ package edu.edina.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import java.util.Random;
+
 import edu.edina.Libraries.Robot.NeoPixelDriverDevice;
 
 @Autonomous
@@ -15,14 +17,16 @@ public class NeoPixelTest extends LinearOpMode {
 
         byte[] pixArray = new byte[90];
 
-        for (int i = 1; i < pixArray.length; i += 3) {
-            pixArray[i] = (byte) 0xff;
-        }
-
-        neoPixel.showColors(pixArray);
+        Random r = new Random();
 
         while (opModeIsActive()) {
+            for (int i = 0; i < pixArray.length; i += 1) {
+                pixArray[i] = (byte) r.nextInt();
+            }
 
+            neoPixel.showColors(pixArray);
+
+            sleep(100);
         }
     }
 }
