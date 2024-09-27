@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.I2cWaitControl;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 
-import edu.edina.OpModes.Autonomous.OldNeoPixelTest;
+import java.util.Arrays;
 
 @I2cDeviceType
 @DeviceProperties(name = "NeoPixel Driver", xmlTag = "neoPixelDriver")
@@ -29,21 +29,17 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     @Override
     protected boolean doInitialize() {
         byte[] setPinCmd = new byte[]{
-                NEOPIXEL_MODULE_BASE,
-                NeoPixelSubModule.PIN.getVal(),
                 PIN
         };
 
-        write(setPinCmd);
+        write(NeoPixelSubModule.PIN, setPinCmd);
 
         byte[] setNumBytesCmd = new byte[]{
-                NEOPIXEL_MODULE_BASE,
-                NeoPixelSubModule.BUFLEN.getVal(),
                 (byte) (NUM_BYTES >> 8),
                 (byte) (NUM_BYTES)
         };
 
-        write(setNumBytesCmd);
+        write(NeoPixelSubModule.BUFLEN, setNumBytesCmd);
 
         return true;
     }
@@ -58,27 +54,37 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         return "NeoPixel Driver";
     }
 
-    private void write(byte[] cmd) {
-        deviceClient.write(cmd);
-        deviceClient.waitForWriteCompletions(I2cWaitControl.WRITTEN);
+    //pixel order (green, red, blue)
+    public void showColors(byte[] pixArray) {
+        int max = Math.min(pixArray.length, NUM_BYTES);
+
+        for (int start = 0; start < max; start += 24) {
+            int stop = Math.min(start + 24, max);
+            byte[] batch = new byte[stop - start + 2];
+            batch[0] = (byte) (start >> 8);
+            batch[1] = (byte) start;
+
+            for (int i = 0; i + 2 < batch.length ; i++) {
+                batch[i + 2] = pixArray[start + i];
+            }
+
+            write(NeoPixelSubModule.BUF, batch);
+        }
+
+        byte[] showCmd = new byte[0];
+
+        write(NeoPixelSubModule.SHOW, showCmd);
     }
 
-    public void showColors() {
-        // write maximum 30 bytes at a time
-        byte[] setBufCmd = new byte[NUM_BYTES + 4];
-        setBufCmd[0] = NEOPIXEL_MODULE_BASE;
-        setBufCmd[1] = NeoPixelSubModule.BUF.getVal();
-        setBufCmd[2] = 0;
-        setBufCmd[3] = 25*3;
-        for (int i = 0; i < NUM_BYTES; i++)
-            setBufCmd[i + 4] = (byte) 0x10;
-        deviceClient.write(setBufCmd);
+    private void write(NeoPixelSubModule sub, byte[] cmd) {
+        byte[] fullCmd = new byte[cmd.length + 2];
+        fullCmd[0] = NEOPIXEL_MODULE_BASE;
+        fullCmd[1] = sub.getVal();
+        for (int i = 0; i < cmd.length; i++) {
+            fullCmd[i + 2] = cmd[i];
+        }
 
-        byte[] showCmd = new byte[]{
-                NEOPIXEL_MODULE_BASE,
-                NeoPixelSubModule.SHOW.getVal()
-        };
-        deviceClient.write(showCmd);
+        deviceClient.write(fullCmd);
         deviceClient.waitForWriteCompletions(I2cWaitControl.WRITTEN);
     }
 }

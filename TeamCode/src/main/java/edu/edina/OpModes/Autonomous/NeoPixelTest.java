@@ -13,7 +13,13 @@ public class NeoPixelTest extends LinearOpMode {
 
         waitForStart();
 
-        neoPixel.showColors();
+        byte[] pixArray = new byte[90];
+
+        for (int i = 1; i < pixArray.length; i += 3) {
+            pixArray[i] = (byte) 0xff;
+        }
+
+        neoPixel.showColors(pixArray);
 
         while (opModeIsActive()) {
 
