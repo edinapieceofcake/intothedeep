@@ -5,10 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 
@@ -19,22 +21,45 @@ public class HardwareTestMode extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
+    private DcMotor liftMotor = null;
+    private Servo servo1 = null;
 
     // make field
 
     @Override
     public void runOpMode() {
-        odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+        try {
+            odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+        } catch (Exception e) {
+            //ignore
+        }
 
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        try {
+            leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+            leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
+            rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+            rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        } catch (Exception e) {
+            //ignore
+        }
+
+        try {
+            liftMotor = hardwareMap.get(DcMotor.class, "lift_motor");
+            liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } catch (Exception e) {
+            //ignore
+        }
+
+        try {
+            servo1 = hardwareMap.get(Servo.class, "servo");
+        } catch (Exception e) {
+            //ignore
+        }
 
         boolean previousDPadUp = false;
         boolean previousDPadDown = false;
@@ -44,6 +69,8 @@ public class HardwareTestMode extends LinearOpMode {
                 new ImuTest(),
                 new DeadwheelTest(),
                 new DriveMotorsTest(),
+                new ServoTest(),
+                new LiftMotorTest()
         };
 
         int testIndex = 0;
@@ -88,11 +115,6 @@ public class HardwareTestMode extends LinearOpMode {
         if (gamepad1.a) {
             telemetry.clearAll();
             telemetry.setDisplayFormat(Telemetry.DisplayFormat.CLASSIC);
-            leftFrontDrive.setPower(0.0);
-            rightFrontDrive.setPower(0.0);
-            leftBackDrive.setPower(0.0);
-            rightBackDrive.setPower(0.0);
-
             return false;
         } else {
             return opModeIsActive();
@@ -108,14 +130,6 @@ public class HardwareTestMode extends LinearOpMode {
     private class ImuTest implements ITestMode {
         private IMU imu;
 
-        private ImuTest() {
-            imu = hardwareMap.get(IMU.class, "imu");
-            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-            imu.initialize(parameters);
-        }
-
         @Override
         public String getName() {
             return "IMU";
@@ -123,6 +137,12 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
+            imu = hardwareMap.get(IMU.class, "imu");
+            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+            imu.initialize(parameters);
+
             while (testIsActive()) {
                 YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
                 double yaw = angles.getYaw(AngleUnit.DEGREES);
@@ -224,6 +244,54 @@ public class HardwareTestMode extends LinearOpMode {
 
                 telemetry.update();
             }
+        }
+    }
+
+    private class ServoTest implements ITestMode {
+        @Override
+        public String getName() {
+            return "Servo Test";
+        }
+
+        @Override
+        public void runTest() {
+            double pos = 0.0;
+
+            telemetry.clearAll();
+
+            while (testIsActive()) {
+                if (gamepad1.dpad_up) {
+                    pos = Math.min(pos + 0.1, 1);
+                }
+                if (gamepad1.dpad_down) {
+                    pos = Math.max(pos - 0.1, 0);
+                }
+
+                telemetry.addData("pos", pos);
+                telemetry.update();
+
+                servo1.setPosition(pos);
+            }
+        }
+    }
+
+    private class LiftMotorTest implements ITestMode {
+        @Override
+        public String getName() {
+            return "Lift Test";
+        }
+
+        public void runTest() {
+            while (testIsActive()) {
+                while (gamepad1.dpad_up) {
+                    liftMotor.setPower(0.2);
+                }
+                while (gamepad1.dpad_down) {
+                    liftMotor.setPower(-0.2);
+                }
+            }
+
+            liftMotor.setPower(0);
         }
     }
 }
