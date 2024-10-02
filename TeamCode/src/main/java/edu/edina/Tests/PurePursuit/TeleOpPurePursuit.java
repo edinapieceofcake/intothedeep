@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
+import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
@@ -23,12 +24,17 @@ public class TeleOpPurePursuit extends LinearOpMode {
 
         Pose2d pose = new Pose2d(0, 0, 0);
 
+        double purePursuitX;
+        double purePursuitY;
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         PurePursuit pp = new PurePursuit(new Vector2d[]{
                 new Vector2d(0, 0), new Vector2d(30, 0), new Vector2d(30, 20)
         });
+
+        FieldToRobot robotRel = new FieldToRobot();
 
         waitForStart();
 
@@ -37,24 +43,24 @@ public class TeleOpPurePursuit extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            double axial   = -gamepad1.left_stick_y;
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial = -gamepad1.left_stick_y;
+            double lateral = gamepad1.left_stick_x;
+            double yaw = gamepad1.right_stick_x;
 
-            double leftFrontPower  = axial + lateral + yaw;
+            double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
             }
 
             hw.leftFrontDrive.setPower(leftFrontPower * 0.3);
@@ -68,7 +74,15 @@ public class TeleOpPurePursuit extends LinearOpMode {
             double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             pp.nextPursuitPoint(pose.position, 10);
-            telemetry.addData("pursuit point","%f, %f", pp.getPursuitPoint().x, pp.getPursuitPoint().y);
+
+            purePursuitX = pp.getPursuitPoint().x;
+            purePursuitY = pp.getPursuitPoint().y;
+
+            telemetry.addData("pursuit point", "%f, %f", purePursuitX, purePursuitY);
+
+            Vector2d rv = robotRel.toRobotRel(pose, pp.getPursuitPoint());
+
+            telemetry.addData("robot relative vector", "%.2f, %.2f", rv.x, rv.y);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
