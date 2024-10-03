@@ -52,6 +52,8 @@ public class OdometryMultiTest extends LinearOpMode {
 
         Pose2d pos3DW = new Pose2d(0, 0, 0);
 
+        waitForStart();
+
         while (opModeIsActive()) {
             SparkFunOTOS.Pose2D posOTOS = myOtos.getPosition();
 
@@ -88,7 +90,7 @@ public class OdometryMultiTest extends LinearOpMode {
             yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             telemetry.addData("imu heading", "", yawIMU);
-            telemetry.addData("3DW x, y, heading", "%d, %d, %.2f", pos3DW.position.x, pos3DW.position.y, Math.toDegrees(pos3DW.heading.toDouble()));
+            telemetry.addData("3DW x, y, heading", "%.2f, %.2f, %.2f", pos3DW.position.x, pos3DW.position.y, Math.toDegrees(pos3DW.heading.toDouble()));
             telemetry.addData("OTOS x, y, heading", "%.2f, %.2f, %.2f", posOTOS.x, posOTOS.y, posOTOS.h);
             telemetry.update();
         }
