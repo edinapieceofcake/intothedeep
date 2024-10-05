@@ -12,6 +12,10 @@ public class Matrix2d {
         this.d = d;
     }
 
+    public static  Matrix2d withColumns(Vector2d col0, Vector2d col1){
+        return  new Matrix2d(col0.x, col1.x, col0.y, col1.y);
+    }
+
     public Vector2d transform(Vector2d v) {
         return new Vector2d(
                 a * v.x + b * v.y,
