@@ -47,11 +47,11 @@ See https://developer.android.com/guide/topics/ui/settings.html
     android:title="@string/prefcat_configure_robot">
 
     <EditTextPreference
-        android:title="@string/prefedit_device_name_rc"
-        android:summary="@string/prefedit_device_name_summary_rc"
-        android:key="@string/pref_device_name"
         android:defaultValue=""
-        />
+        android:key="@string/pref_device_name"
+        android:rotation="-360"
+        android:summary="@string/prefedit_device_name_summary_rc"
+        android:title="@string/prefedit_device_name_rc" />
 
     <org.firstinspires.ftc.robotcore.internal.ui.ColorListPreference
         android:title="@string/prefedit_app_theme_rc"

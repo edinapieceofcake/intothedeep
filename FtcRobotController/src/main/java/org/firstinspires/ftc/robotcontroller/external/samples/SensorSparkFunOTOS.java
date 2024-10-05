@@ -71,7 +71,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         }
     }
 
-    private void configureOtos() {
+    public void configureOtos() {
         telemetry.addLine("Configuring OTOS...");
         telemetry.update();
 

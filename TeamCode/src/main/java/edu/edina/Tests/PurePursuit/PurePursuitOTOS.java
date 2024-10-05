@@ -4,23 +4,56 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorSparkFunOTOS;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
 @TeleOp
-public class TeleOpPurePursuit extends LinearOpMode {
+public class PurePursuitOTOS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
+    SparkFunOTOS myOtos;
 
     @Override
     public void runOpMode() {
         RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+        myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sensor_otos");
+
+        myOtos.setLinearUnit(DistanceUnit.INCH);
+        myOtos.setAngularUnit(AngleUnit.DEGREES);
+
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
+        myOtos.setOffset(offset);
+
+        myOtos.setLinearScalar(0.87);
+        myOtos.setAngularScalar(1.0);
+
+        myOtos.calibrateImu();
+
+        myOtos.resetTracking();
+
+        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
+        myOtos.setPosition(currentPosition);
+
+        SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
+        SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
+        myOtos.getVersionInfo(hwVersion, fwVersion);
+
+        telemetry.addLine("OTOS configured! Press start to get position data!");
+        telemetry.addLine();
+        telemetry.addLine(String.format("OTOS Hardware Version: v%d.%d", hwVersion.major, hwVersion.minor));
+        telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
+        telemetry.update();
 
         Pose2d pose = new Pose2d(0, 0, 0);
 
@@ -41,12 +74,11 @@ public class TeleOpPurePursuit extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            Twist2dDual<Time> t = hw.odometry.update();
-            pose = pose.plus(t.value());
+            pose = new Pose2d(-myOtos.getPosition().x, -myOtos.getPosition().y, myOtos.getPosition().h);
 
             double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-            pp.nextPursuitPoint(pose.position, 4);
+            pp.nextPursuitPoint(pose.position, 5);
 
             purePursuitX = pp.getPursuitPoint().x;
             purePursuitY = pp.getPursuitPoint().y;
@@ -59,13 +91,13 @@ public class TeleOpPurePursuit extends LinearOpMode {
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
-                    pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()));
+                    pose.position.x, pose.position.y, pose.heading.toDouble());
             telemetry.addData("imu heading", yawIMU);
 
             // put rv into a MotorCommand, and print the powers it would use
             double axial = rv.x;
             double lateral = rv.y;
-            double yaw = Math.toDegrees(pose.heading.toDouble());
+            double yaw = pose.heading.toDouble();
 
             MotorCommand mc = new MotorCommand(axial, lateral, yaw);
 

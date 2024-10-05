@@ -3,6 +3,7 @@ package edu.edina.Tests;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,7 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import edu.edina.Libraries.Robot.Matrix2d;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
 @TeleOp
 public class OdometryMultiTest extends LinearOpMode {
@@ -21,14 +24,18 @@ public class OdometryMultiTest extends LinearOpMode {
     public void runOpMode() {
         yawIMU = 0.0;
 
-        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+        Matrix2d calOutputActual = new Matrix2d(120, 0, 0, 120);
+        Matrix2d calOutputOptical = new Matrix2d(92.96, -0.65, 0.6, 88.91);
+        Matrix2d otosCalMatrix = calOutputActual.mult(calOutputOptical.invert());
+
+        myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sensor_otos");
         myOtos.setLinearUnit(DistanceUnit.INCH);
         myOtos.setAngularUnit(AngleUnit.DEGREES);
 
         SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
         myOtos.setOffset(offset);
 
-        myOtos.setLinearScalar(1.0);
+        myOtos.setLinearScalar(0.867210119035);
         myOtos.setAngularScalar(1.0);
 
         myOtos.calibrateImu();
@@ -56,6 +63,8 @@ public class OdometryMultiTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             SparkFunOTOS.Pose2D posOTOS = myOtos.getPosition();
+            Vector2d otosVector = new Vector2d(posOTOS.x, posOTOS.y);
+            otosVector = otosCalMatrix.transform(otosVector);
 
             double max;
 
@@ -79,10 +88,10 @@ public class OdometryMultiTest extends LinearOpMode {
                 rightBackPower /= max;
             }
 
-            hw.leftFrontDrive.setPower(leftFrontPower);
-            hw.rightFrontDrive.setPower(rightFrontPower);
-            hw.leftBackDrive.setPower(leftBackPower);
-            hw.rightBackDrive.setPower(rightBackPower);
+            hw.leftFrontDrive.setPower(leftFrontPower * 0.3);
+            hw.rightFrontDrive.setPower(rightFrontPower * 0.3);
+            hw.leftBackDrive.setPower(leftBackPower * 0.3);
+            hw.rightBackDrive.setPower(rightBackPower * 0.3);
 
             Twist2dDual<Time> t = hw.odometry.update();
             pos3DW = pos3DW.plus(t.value());
@@ -91,7 +100,10 @@ public class OdometryMultiTest extends LinearOpMode {
 
             telemetry.addData("imu heading", "", yawIMU);
             telemetry.addData("3DW x, y, heading", "%.2f, %.2f, %.2f", pos3DW.position.x, pos3DW.position.y, Math.toDegrees(pos3DW.heading.toDouble()));
-            telemetry.addData("OTOS x, y, heading", "%.2f, %.2f, %.2f", posOTOS.x, posOTOS.y, posOTOS.h);
+            telemetry.addData("OTOS x, y, heading", "%.2f, %.2f, %.2f", -posOTOS.x, -posOTOS.y, posOTOS.h);
+            telemetry.addLine();
+            telemetry.addLine();
+            telemetry.addData("calibrated otos reading", "%.2f, %.2f", otosVector.x, otosVector.y);
             telemetry.update();
         }
     }
