@@ -32,7 +32,7 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
         //only using fields, remove later
         MecanumDrive drive = new MecanumDrive(hardwareMap, pose);
 
-            MotorFeedforward feedforward = new MotorFeedforward(drive.PARAMS.kS,
+        MotorFeedforward feedforward = new MotorFeedforward(drive.PARAMS.kS,
                 drive.PARAMS.kV / drive.PARAMS.inPerTick, drive.PARAMS.kA / drive.PARAMS.inPerTick);
 
         double purePursuitX;
@@ -41,9 +41,12 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        PurePursuit pp = new PurePursuit(new Vector2d[]{
-                new Vector2d(0, 0), new Vector2d(10, 0)
-        });
+        PurePursuit pp = new PurePursuit(
+                new Vector2d[]{
+                        new Vector2d(0, 0),
+                        new Vector2d(10, 0)
+                },
+                false);
 
         FieldToRobot robotRel = new FieldToRobot();
 

@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import edu.edina.Libraries.Robot.Matrix2d;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SparkFunOTOS;
 import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
 @TeleOp
@@ -74,7 +74,13 @@ public class OdometryMultiTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            SparkFunOTOS.Pose2D posOTOS = myOtos.getPosition();
+            SparkFunOTOS.Pose2D posOTOS=new SparkFunOTOS.Pose2D();
+            SparkFunOTOS.Pose2D velOTOS=new SparkFunOTOS.Pose2D();
+            SparkFunOTOS.Pose2D accOTOS=new SparkFunOTOS.Pose2D();
+            myOtos.getPosVelAcc(posOTOS, velOTOS, accOTOS);
+
+            //estPoseOtos + estPoseOtos;
+
             Vector2d otosVector = new Vector2d(posOTOS.x, posOTOS.y);
             otosVector = otosCalMatrix.transform(otosVector);
 

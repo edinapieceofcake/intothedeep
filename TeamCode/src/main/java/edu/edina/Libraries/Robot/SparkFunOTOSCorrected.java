@@ -1,14 +1,13 @@
 package edu.edina.Libraries.Robot;
 
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 
 @I2cDeviceType
 @DeviceProperties(
-    name = "SparkFun OTOS Corrected",
-    xmlTag = "SparkFunOTOS2",
+    name = "SparkFun OTOS Corrected 2",
+    xmlTag = "SparkFunOTOSCorr2",
     description = "SparkFun Qwiic Optical Tracking Odometry Sensor Corrected"
 )
 public class SparkFunOTOSCorrected extends SparkFunOTOS {

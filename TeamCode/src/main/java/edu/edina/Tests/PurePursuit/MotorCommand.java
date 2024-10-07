@@ -4,10 +4,10 @@ import kotlin.NotImplementedError;
 
 public class MotorCommand {
     public MotorCommand(double axial, double lateral, double yaw) {
-        leftFrontPower = axial + lateral + yaw;
-        rightFrontPower = axial - lateral - yaw;
-        leftBackPower = axial - lateral + yaw;
-        rightBackPower = axial + lateral - yaw;
+        leftFrontPower = axial - lateral + yaw;
+        rightFrontPower = axial + lateral - yaw;
+        leftBackPower = axial + lateral + yaw;
+        rightBackPower = axial - lateral - yaw;
 
         double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
