@@ -161,9 +161,9 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
-            int basePosPar0 = 0;
-            int basePosPar1 = 0;
-            int basePosPerp = 0;
+            double basePosPar0 = 0;
+            double basePosPar1 = 0;
+            double basePosPerp = 0;
 
             while (testIsActive()) {
                 double max;
