@@ -9,12 +9,17 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
+        // Only for meepmeep
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
+        // Copy into opmode
+        Pose2d beginPose = new Pose2d(0, 0, 0);
+        myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
+
+                // COPY HERE
                 .lineToX(30)
                 .turn(Math.toRadians(90))
                 .lineToY(30)
@@ -23,11 +28,12 @@ public class MeepMeepTesting {
                 .turn(Math.toRadians(90))
                 .lineToY(0)
                 .turn(Math.toRadians(90))
+                // STOP COPYING
+
                 .build());
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
-                .setDarkMode(true)
-                .setBackgroundAlpha(0.95f)
+        // Only for meepmeep
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .addEntity(myBot)
                 .start();
     }
