@@ -4,19 +4,17 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorSparkFunOTOS;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SparkFunOTOS;
 import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
 @TeleOp
@@ -63,9 +61,13 @@ public class PurePursuitOTOS extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        PurePursuit pp = new PurePursuit(new Vector2d[]{
-                new Vector2d(0, 0), new Vector2d(10, 0), new Vector2d(10, -10)
-        });
+        PurePursuit pp = new PurePursuit(
+                new Vector2d[]{
+                        new Vector2d(0, 0),
+                        new Vector2d(10, 0),
+                        new Vector2d(10, -10)
+                },
+                false);
 
         FieldToRobot robotRel = new FieldToRobot();
 

@@ -22,17 +22,34 @@ public class TeleOpPurePursuit extends LinearOpMode {
     public void runOpMode() {
         RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
 
+        Vector2d rv = new Vector2d(0, 0);
+
         Pose2d pose = new Pose2d(0, 0, 0);
 
-        double purePursuitX;
-        double purePursuitY;
+        double purePursuitX = 0;
+        double purePursuitY = 0;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        PurePursuit pp = new PurePursuit(new Vector2d[]{
-                new Vector2d(0, 0), new Vector2d(10, 0), new Vector2d(10, -10)
-        });
+        PurePursuit pp = new PurePursuit(
+                new Vector2d[]{
+                        new Vector2d(0, 0),
+                        new Vector2d(10, 0),
+                        new Vector2d(10, -10),
+                        new Vector2d(0, -10),
+                        new Vector2d(0, 0)
+                },
+                true);
+
+        PurePursuit pp2 = new PurePursuit(
+                new Vector2d[]{
+                        new Vector2d(0, -5),
+                        new Vector2d(5, 0),
+                        new Vector2d(10, -5),
+                        new Vector2d(5, -10)
+                },
+                true);
 
         FieldToRobot robotRel = new FieldToRobot();
 
@@ -46,14 +63,19 @@ public class TeleOpPurePursuit extends LinearOpMode {
 
             double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-            pp.nextPursuitPoint(pose.position, 4);
-
-            purePursuitX = pp.getPursuitPoint().x;
-            purePursuitY = pp.getPursuitPoint().y;
+            if (gamepad1.a) {
+                pp.nextPursuitPoint(pose.position, 3);
+                purePursuitX = pp.getPursuitPoint().x;
+                purePursuitY = pp.getPursuitPoint().y;
+                rv = robotRel.toRobotRel(pose, pp.getPursuitPoint());
+            } else if (gamepad1.x) {
+                pp2.nextPursuitPoint(pose.position, 3);
+                purePursuitX = pp2.getPursuitPoint().x;
+                purePursuitY = pp2.getPursuitPoint().y;
+                rv = robotRel.toRobotRel(pose, pp2.getPursuitPoint());
+            }
 
             telemetry.addData("pursuit point", "%f, %f", purePursuitX, purePursuitY);
-
-            Vector2d rv = robotRel.toRobotRel(pose, pp.getPursuitPoint());
 
             telemetry.addData("robot relative vector", "%.2f, %.2f, %.1f", rv.x, rv.y, Math.toDegrees(Math.atan2(rv.y, rv.x)));
 
@@ -68,11 +90,7 @@ public class TeleOpPurePursuit extends LinearOpMode {
             double yaw = Math.toDegrees(pose.heading.toDouble());
 
             MotorCommand mc = new MotorCommand(axial, lateral, yaw);
-
-            if (!gamepad1.b) {
-                mc.scale(0.3);
-            }
-
+            
             telemetry.addData("\n\nmotor cmd", mc.toString());
 
             hw.leftFrontDrive.setPower(mc.getLeftFrontPower());

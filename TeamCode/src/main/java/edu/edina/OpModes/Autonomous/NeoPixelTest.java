@@ -15,7 +15,7 @@ public class NeoPixelTest extends LinearOpMode {
 
         waitForStart();
 
-        byte[] pixArray = new byte[90];
+        byte[] pixArray = new byte[60];
 
         Random r = new Random();
 

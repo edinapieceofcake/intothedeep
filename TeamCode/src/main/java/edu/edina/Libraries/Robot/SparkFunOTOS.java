@@ -27,8 +27,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 @I2cDeviceType
 @DeviceProperties(
-        name = "SparkFun OTOS",
-        xmlTag = "SparkFunOTOS",
+        name = "SparkFun OTOS 2",
+        xmlTag = "SparkFunOTOS2",
         description = "SparkFun Qwiic Optical Tracking Odometry Sensor"
 )
 public class SparkFunOTOS extends I2cDeviceSynchDevice<I2cDeviceSynch> {

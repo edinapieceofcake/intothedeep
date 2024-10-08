@@ -2,16 +2,16 @@ package edu.edina.Libraries.PurePursuit;
 
 import com.acmerobotics.roadrunner.Vector2d;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class PurePursuit {
     Vector2d[] path;
     Intersection pursuitPoint;
+    private boolean closed;
 
-    public PurePursuit(Vector2d[] path) {
+    public PurePursuit(Vector2d[] path, boolean closed) {
         this.path = path;
+        this.closed = closed;
         pursuitPoint = new Intersection(0, path[0].x, path[0].y);
     }
 
@@ -26,12 +26,27 @@ public class PurePursuit {
         double fx = path[path.length - 1].x;
         double fy = path[path.length - 1].y;
 
-        if ((cx - fx) * (cx - fx) + (cy - fy) * (cy - fy) < radius * radius) {
-            setEndpoint();
-            return;
+        if (!closed) {
+            if ((cx - fx) * (cx - fx) + (cy - fy) * (cy - fy) < radius * radius) {
+                setEndpoint();
+                return;
+            }
         }
 
-        Intersection prevInt = pursuitPoint;
+        boolean didUpdate = nextPursuit(location, radius, pursuitPoint.t, pursuitPoint.t + 1);
+
+        if (!didUpdate) {
+            boolean didUpdate2 = nextPursuit(location, radius, pursuitPoint.t, path.length);
+            if (!didUpdate2) {
+                nextPursuit(location, radius, 0, path.length);
+            }
+        }
+    }
+
+    private boolean nextPursuit(Vector2d location, double radius, double minT, double maxT) {
+        double cx = location.x;
+        double cy = location.y;
+
         boolean didUpdate = false;
 
         for (int i = 0; i < (path.length - 1); i++) {
@@ -40,16 +55,15 @@ public class PurePursuit {
 
             List<Intersection> isects = intersections(v0.x, v0.y, v1.x, v1.y, cx, cy, radius);
             for (Intersection segmentInt : isects) {
-                didUpdate = true;
-                pursuitPoint = new Intersection(segmentInt.t + i, segmentInt.x, segmentInt.y);
-                if (pursuitPoint.t > prevInt.t)
-                    return;
+                Intersection p = new Intersection(segmentInt.t + i, segmentInt.x, segmentInt.y);
+                if (p.t >= minT && p.t <= maxT) {
+                    didUpdate = true;
+                    pursuitPoint = p;
+                }
             }
         }
 
-        if (!didUpdate) {
-            setEndpoint();
-        }
+        return didUpdate;
     }
 
     private void setEndpoint() {
@@ -58,7 +72,7 @@ public class PurePursuit {
     }
 
     private static List<Intersection> intersections(double x0, double y0, double x1, double y1, double cx, double cy,
-            double r) {
+                                                    double r) {
         ArrayList<Intersection> ilist = new ArrayList<>();
 
         double ux = x1 - x0;
@@ -88,11 +102,11 @@ public class PurePursuit {
         if (d < 0) {
             return new double[0];
         } else if (d > 0) {
-            double[] roots = new double[] { x1, x2 };
+            double[] roots = new double[]{x1, x2};
             Arrays.sort(roots);
             return roots;
         } else {
-            return new double[] { x1 };
+            return new double[]{x1};
         }
     }
 }
