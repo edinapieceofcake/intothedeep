@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
@@ -16,18 +17,23 @@ public class MeepMeepTesting {
                 .build();
 
         // Copy into opmode
-        Pose2d beginPose = new Pose2d(0, 0, 0);
+
+        // COPY THIS LINE
+        Pose2d beginPose = new Pose2d(-50, -60, Math.PI);
+        // COPY THIS LINE
+
         myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
                 // COPY HERE
-                .lineToX(30)
-                .turn(Math.toRadians(90))
-                .lineToY(30)
-                .turn(Math.toRadians(90))
-                .lineToX(0)
-                .turn(Math.toRadians(90))
-                .lineToY(0)
-                .turn(Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-48,-35), (double)1/2*Math.PI)
+                .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
+                .strafeToLinearHeading(new Vector2d(-58,-35), (double)1/2*Math.PI)
+                .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
+                .strafeToLinearHeading(new Vector2d(-57,-25), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
+                /*.setReversed(false)
+                .splineTo(new Vector2d(-50,-35), Math.PI/2)
+                .splineTo(new Vector2d(-60,-25), Math.PI)*/
                 // STOP COPYING
 
                 .build());
