@@ -19,21 +19,18 @@ public class MeepMeepTesting {
         // Copy into opmode
 
         // COPY THIS LINE
-        Pose2d beginPose = new Pose2d(-50, -60, Math.PI);
+        Pose2d beginPose = new Pose2d(-50, -60, 0);
         // COPY THIS LINE
 
         myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
                 // COPY HERE
-                .strafeToLinearHeading(new Vector2d(-48,-35), (double)1/2*Math.PI)
+                .strafeToLinearHeading(new Vector2d(-48,-38), (double)1/2*Math.PI)
                 .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
-                .strafeToLinearHeading(new Vector2d(-58,-35), (double)1/2*Math.PI)
+                .strafeToLinearHeading(new Vector2d(-58,-38), (double)1/2*Math.PI)
                 .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
                 .strafeToLinearHeading(new Vector2d(-57,-25), Math.PI)
                 .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
-                /*.setReversed(false)
-                .splineTo(new Vector2d(-50,-35), Math.PI/2)
-                .splineTo(new Vector2d(-60,-25), Math.PI)*/
                 // STOP COPYING
 
                 .build());
