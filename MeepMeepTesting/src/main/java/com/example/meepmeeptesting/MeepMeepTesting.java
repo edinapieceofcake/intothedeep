@@ -31,6 +31,18 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
                 .strafeToLinearHeading(new Vector2d(-57,-25), Math.PI)
                 .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
+                .setReversed(false)
+                .splineTo(new Vector2d(-22,0), 0)
+                .setReversed(true)
+                .splineTo(new Vector2d(-60,-50), (double)3/2*Math.PI)
+                .setReversed(false)
+                .splineTo(new Vector2d(-22,0), 0)
+                .setReversed(true)
+                .splineTo(new Vector2d(-60,-50), (double)3/2*Math.PI)
+                .setReversed(false)
+                .splineTo(new Vector2d(-22,0), 0)
+                .setReversed(true)
+                .splineTo(new Vector2d(-60,-50), (double)3/2*Math.PI)
                 // STOP COPYING
 
                 .build());
