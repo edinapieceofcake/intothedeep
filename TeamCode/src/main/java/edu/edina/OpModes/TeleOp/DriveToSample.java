@@ -163,33 +163,39 @@ public class DriveToSample extends LinearOpMode {
                 telemetry.addData("Target Y Degrees No Crosshair", yellowColorResult.getTargetYDegreesNoCrosshair());
                 telemetry.addData("Target Y Pixels", yellowColorResult.getTargetYPixels());
 
+
             } else {
                 telemetry.addData("\n>","Drive using joysticks to find valid target\n");
             }
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-            if (gamepad1.left_bumper && yellowColorResult != null) {
+            //if (gamepad1.left_bumper && yellowColorResult != null) {
+            if (yellowColorResult != null) {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
 //                double  rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-//                double  headingError    = desiredTag.ftcPose.bearing;
+                double  headingError    = yellowColorResult.getTargetXDegrees();
 //                double  yawError        = desiredTag.ftcPose.yaw;
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
 //                drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-//                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
 //                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             } else {
 
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-                drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-                strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-                turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-                telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+//                drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
+//                strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
+//                turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+//                telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
-            telemetry.update();
+
+            if (gamepad1.a) {
+                telemetry.update();
+            }
+
 
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
