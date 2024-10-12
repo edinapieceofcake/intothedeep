@@ -149,7 +149,7 @@ public class DriveToSample extends LinearOpMode {
             // Tell the driver what we see, and what to do.
             if (yellowColorResult != null) {
                 telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
-                telemetry.addData("Camera Pose Target Space", yellowColorResult.getCameraPoseTargetSpace());
+                telemetry.addData("Camera Pose Target Space", yellowColorResult.getCameraPoseTargetSpace().toString());
                 telemetry.addData("Robot Pose Field Space", yellowColorResult.getRobotPoseFieldSpace());
                 telemetry.addData("Robot Pose Target Space", yellowColorResult.getRobotPoseTargetSpace());
                 telemetry.addData("Target Area", yellowColorResult.getTargetArea());
@@ -267,7 +267,6 @@ public class DriveToSample extends LinearOpMode {
         // Access color results
         for (LLResultTypes.ColorResult cr : colorResults) {
             telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-            telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetPoseCameraSpace(), cr.getCameraPoseTargetSpace());
         }
         return colorResults.get(0);
     }
