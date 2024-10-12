@@ -16,40 +16,93 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        // Copy into opmode
+        boolean sampleSide = true;
 
-        // COPY THIS LINE
-        Pose2d beginPose = new Pose2d(-50, -60, 0);
-        // COPY THIS LINE
+        if (sampleSide) {
+            // *****SAMPLES*****
 
-        myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
+            // COPY THIS LINE
+            Pose2d beginPose = new Pose2d(-50, -60, 0);
+            // COPY THIS LINE
 
-                // COPY HERE
-                .strafeToLinearHeading(new Vector2d(-48,-38), (double)1/2*Math.PI)
-                .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
-                .strafeToLinearHeading(new Vector2d(-58,-38), (double)1/2*Math.PI)
-                .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
-                .strafeToLinearHeading(new Vector2d(-57,-25), Math.PI)
-                .strafeToLinearHeading(new Vector2d(-60,-50), (double)1/2*Math.PI)
-                .setReversed(false)
-                .splineTo(new Vector2d(-22,0), 0)
-                .setReversed(true)
-                .splineTo(new Vector2d(-60,-50), (double)3/2*Math.PI)
-                .setReversed(false)
-                .splineTo(new Vector2d(-22,0), 0)
-                .setReversed(true)
-                .splineTo(new Vector2d(-60,-50), (double)3/2*Math.PI)
-                .setReversed(false)
-                .splineTo(new Vector2d(-22,0), 0)
-                .setReversed(true)
-                .splineTo(new Vector2d(-60,-50), (double)3/2*Math.PI)
-                // STOP COPYING
+            myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
-                .build());
+                    // COPY HERE
+                    .strafeToLinearHeading(new Vector2d(-48, -38), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-60, -50), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-58, -38), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-60, -50), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-57, -25), Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-60, -50), 1.0 / 2 * Math.PI)
+                    .setReversed(false)
+                    .splineTo(new Vector2d(-22, 0), 0)
+                    .setReversed(true)
+                    .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
+                    .setReversed(false)
+                    .splineTo(new Vector2d(-22, 0), 0)
+                    .setReversed(true)
+                    .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
+                    .setReversed(false)
+                    .splineTo(new Vector2d(-22, 0), 0)
+                    .setReversed(true)
+                    .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
+                    // STOP COPYING
+
+                    .build());
+
+
+        }
+        else {
+            // *****SPECIMENS*****
+
+            // START COPYING
+            Pose2d beginPose = new Pose2d(0, -60, 3.0/2*Math.PI);
+            // STOP COPYING
+
+            myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
+
+                    // COPY HERE
+                    .strafeTo(new Vector2d(0,-35))
+                    .strafeTo(new Vector2d(47,-60))
+                    .strafeTo(new Vector2d(0,-35))
+                    .strafeTo(new Vector2d(47,-60))
+                    .strafeTo(new Vector2d(0,-35))
+                    .setReversed(false)
+                    .splineTo(new Vector2d(38,-25), 0)
+                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeTo(new Vector2d(0,-35))
+                    .setReversed(false)
+                    .splineTo(new Vector2d(48,-25), 0)
+                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeTo(new Vector2d(0,-35))
+                    .setReversed(false)
+                    .splineTo(new Vector2d(58,-25), 0)
+                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeTo(new Vector2d(0,-35))
+                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeTo(new Vector2d(0,-35))
+                    // STOP COPYING
+
+
+                    // USE SPLINES INSTEAD IF USEFUL
+                    /*
+                    .setReversed(false)
+                    .splineTo(new Vector2d(50,-60), (double)3/2*Math.PI)
+                    .setReversed(true)
+                    .splineTo(new Vector2d(0,-35), (double)1/2*Math.PI)
+                    .setReversed(false)
+                    .splineTo(new Vector2d(50,-60), (double)3/2*Math.PI)
+                    .setReversed(true)
+                    .splineTo(new Vector2d(0,-35), (double)1/2*Math.PI)
+                   */
+
+                    .build());
+        }
 
         // Only for meepmeep
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .addEntity(myBot)
                 .start();
+
     }
 }
