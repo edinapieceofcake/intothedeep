@@ -1,11 +1,13 @@
 package edu.edina.Tests.RoadRunner;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(preselectTeleOp = "TeleOpA")
 //@Disabled
 
+@Disabled
 public class AutoRoadrunnerTest extends LinearOpMode {
     @Override
     public void runOpMode() {

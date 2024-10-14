@@ -1,5 +1,6 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,6 +17,7 @@ public class RobotHardware {
     public final IMU imu;
     public final Telemetry telemetry;
     public ThreeDeadWheelLocalizer odometry;
+    public final MecanumDrive drive;
 
     public RobotHardware(HardwareMap hardwareMap) {
         this(hardwareMap, null);
@@ -23,6 +25,8 @@ public class RobotHardware {
 
     public RobotHardware(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
+
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 

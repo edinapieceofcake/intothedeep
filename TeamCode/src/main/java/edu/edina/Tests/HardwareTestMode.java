@@ -261,10 +261,10 @@ public class HardwareTestMode extends LinearOpMode {
 
             while (testIsActive()) {
                 if (gamepad1.dpad_up) {
-                    pos = Math.min(pos + 0.1, 1);
+                    pos = Math.min(pos + 0.05, 1);
                 }
                 if (gamepad1.dpad_down) {
-                    pos = Math.max(pos - 0.1, 0);
+                    pos = Math.max(pos - 0.05, 0);
                 }
 
                 telemetry.addData("pos", pos);
