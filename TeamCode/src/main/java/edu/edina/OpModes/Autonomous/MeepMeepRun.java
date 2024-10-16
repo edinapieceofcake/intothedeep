@@ -5,16 +5,48 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 
 @Autonomous
 public class MeepMeepRun extends LinearOpMode  {
+    private Gamepad currentGamepad = new Gamepad();
+    private Gamepad previousGamepad = new Gamepad();
+    private Boolean redAlliance;
+    private Boolean basketSide;
     @Override
     public void runOpMode() throws InterruptedException {
-        boolean sampleSide = true;
+        // While the op mode is active...
+        while (!isStopRequested()) {
 
-        if (sampleSide) {
+            // Update the gamepads.
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            // If the user has not selected a side...
+            if (basketSide == null) {
+                telemetry.addData("Side", "X = basket, B = chamber");
+                telemetry.update();
+                if (currentGamepad.x && !previousGamepad.x) {
+                    basketSide = false;
+                }
+                if (currentGamepad.b && !previousGamepad.b) {
+                    basketSide = true;
+                }
+            }
+
+            // Otherwise (if the user finished making side selection)...
+            else {
+
+                // Stop prompting the user for inputs.
+                break;
+
+            }
+
+        }
+
+        if (basketSide) {
             // *****SAMPLES*****
 
             // PASTE THIS LINE
