@@ -94,6 +94,7 @@ public class DriveToSample extends LinearOpMode {
     private DcMotor rightBackDrive = null;  //  Used to control the right back drive wheel
 
 
+
     private Limelight3A limelight;
 
     @Override
@@ -142,39 +143,43 @@ public class DriveToSample extends LinearOpMode {
                     status.getPipelineIndex(), status.getPipelineType());
 
             //LLResultTypes.ColorResult blueColorResult = getColorResult(BLUE_PIPELINE);
-            LLResultTypes.ColorResult yellowColorResult = getColorResult(YELLOW_PIPELINE);
+            LLResult yellowResult = getResult(YELLOW_PIPELINE);
             //LLResultTypes.ColorResult redColorResult = getColorResult(RED_PIPELINE);
 
 
             // Tell the driver what we see, and what to do.
-            if (yellowColorResult != null) {
-                telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
-                telemetry.addData("Camera Pose Target Space", yellowColorResult.getCameraPoseTargetSpace().toString());
-                telemetry.addData("Robot Pose Field Space", yellowColorResult.getRobotPoseFieldSpace());
-                telemetry.addData("Robot Pose Target Space", yellowColorResult.getRobotPoseTargetSpace());
-                telemetry.addData("Target Area", yellowColorResult.getTargetArea());
-                telemetry.addData("Target Corners", yellowColorResult.getTargetCorners());
-                telemetry.addData("Target Pose Camera Space", yellowColorResult.getTargetPoseCameraSpace());
-                telemetry.addData("Target Pose Robot Space", yellowColorResult.getTargetPoseRobotSpace());
-                telemetry.addData("Target X Degrees", yellowColorResult.getTargetXDegrees());
-                telemetry.addData("Target X Degrees No Crosshair", yellowColorResult.getTargetXDegreesNoCrosshair());
-                telemetry.addData("Target X Pixels", yellowColorResult.getTargetXPixels());
-                telemetry.addData("Target Y Degrees", yellowColorResult.getTargetYDegrees());
-                telemetry.addData("Target Y Degrees No Crosshair", yellowColorResult.getTargetYDegreesNoCrosshair());
-                telemetry.addData("Target Y Pixels", yellowColorResult.getTargetYPixels());
+//            if (yellowResult != null) {
+//                telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+//                telemetry.addData("Camera Pose Target Space", yellowResult.getCameraPoseTargetSpace().toString());
+//                telemetry.addData("Robot Pose Field Space", yellowResult.getRobotPoseFieldSpace());
+//                telemetry.addData("Robot Pose Target Space", yellowResult.getRobotPoseTargetSpace());
+//                telemetry.addData("Target Area", yellowResult.getTa());
+//                telemetry.addData("Target Corners", yellowResult.getTargetCorners());
+//                telemetry.addData("Target Pose Camera Space", yellowResult.getTargetPoseCameraSpace());
+//                telemetry.addData("Target Pose Robot Space", yellowResult.getTargetPoseRobotSpace());
+//                telemetry.addData("Target X Degrees", yellowResult.getTargetXDegrees());
+//                telemetry.addData("Target X Degrees No Crosshair", yellowResult.getTargetXDegreesNoCrosshair());
+//                telemetry.addData("Target X Pixels", yellowResult.getTargetXPixels());
+//                telemetry.addData("Target Y Degrees", yellowResult.getTargetYDegrees());
+//                telemetry.addData("Target Y Degrees No Crosshair", yellowResult.getTargetYDegreesNoCrosshair());
+//                telemetry.addData("Target Y Pixels", yellowResult.getTargetYPixels());
 
 
-            } else {
-                telemetry.addData("\n>","Drive using joysticks to find valid target\n");
-            }
+//            }
+//        else {
+//                telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+//            }
+
+            LLResult result = limelight.getLatestResult();
+
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
             //if (gamepad1.left_bumper && yellowColorResult != null) {
-            if (yellowColorResult != null) {
+            if (result.isValid() != false) {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-//                double  rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                double  headingError    = yellowColorResult.getTargetXDegrees();
+//                double  rangeError      = (result.getTy - DESIRED_DISTANCE);
+                double  headingError    = result.getTx();
 //                double  yawError        = desiredTag.ftcPose.yaw;
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
@@ -196,7 +201,7 @@ public class DriveToSample extends LinearOpMode {
                 telemetry.update();
             }
 
-
+//微软 i你cope rated
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
             sleep(10);
@@ -240,7 +245,7 @@ public class DriveToSample extends LinearOpMode {
         rightBackDrive.setPower(rightBackPower);
     }
 
-    public LLResultTypes.ColorResult getColorResult(int pipeline) {
+    public LLResult getResult(int pipeline) {
         limelight.pipelineSwitch(pipeline);
         LLResult result = limelight.getLatestResult();
         if (result == null) {
@@ -251,29 +256,13 @@ public class DriveToSample extends LinearOpMode {
             telemetry.addData("Limelight", "Result invalid");
             return null;
         }
-        List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-        if (colorResults.isEmpty()) {
-            telemetry.addData("Limelight", "No samples");
-            return null;
-        }
         // Access general information
         Pose3D botpose = result.getBotpose();
-        double captureLatency = result.getCaptureLatency();
-        double targetingLatency = result.getTargetingLatency();
-        double parseLatency = result.getParseLatency();
-        telemetry.addData("LL Latency", captureLatency + targetingLatency);
-        telemetry.addData("Parse Latency", parseLatency);
-        telemetry.addData("tx", result.getTx());
-        telemetry.addData("txnc", result.getTxNC());
-        telemetry.addData("ty", result.getTy());
-        telemetry.addData("tync", result.getTyNC());
-        telemetry.addData("Botpose", botpose.toString());
-        telemetry.addData("Samples", colorResults.size());
-
-        // Access color results
-        for (LLResultTypes.ColorResult cr : colorResults) {
-            telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-        }
-        return colorResults.get(0);
+        telemetry.addData("target x", result.getTx());
+        telemetry.addData("target y", result.getTy());
+        telemetry.addData("target area", result.getTa());
+        telemetry.addData("botpose", botpose.toString());
+//就 激发教师对付热舞 阿斯蒂芬加我厄瑞沃厄瑞哦武器和攻击对方
+        return result;
     }
 }
