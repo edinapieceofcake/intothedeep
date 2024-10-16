@@ -33,7 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package edu.edina.OpModes.TeleOp;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,8 +41,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-
-import java.util.List;
 
 /*
  * This OpMode illustrates how to use the Limelight3A Vision Sensor.
@@ -70,7 +67,7 @@ import java.util.List;
 @TeleOp(name = "Sensor: Limelight3A1", group = "Sensor")
 public class DriveToSample extends LinearOpMode {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_TARGET_Y = 0; //  in degrees
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -178,15 +175,14 @@ public class DriveToSample extends LinearOpMode {
             if (result.isValid() != false) {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-//                double  rangeError      = (result.getTy - DESIRED_DISTANCE);
+                double  rangeError      = result.getTy() - DESIRED_TARGET_Y;
                 double  headingError    = result.getTx();
 //                double  yawError        = desiredTag.ftcPose.yaw;
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
-//                drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
                 turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
 //                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             } else {
 
