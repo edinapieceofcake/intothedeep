@@ -29,10 +29,10 @@ public class MeepMeepRun extends LinearOpMode  {
                 telemetry.addData("Side", "X = basket, B = chamber");
                 telemetry.update();
                 if (currentGamepad.x && !previousGamepad.x) {
-                    basketSide = false;
+                    basketSide = true;
                 }
                 if (currentGamepad.b && !previousGamepad.b) {
-                    basketSide = true;
+                    basketSide = false;
                 }
             }
 
@@ -40,6 +40,8 @@ public class MeepMeepRun extends LinearOpMode  {
             else {
 
                 // Stop prompting the user for inputs.
+                telemetry.addData("", "");
+                telemetry.update();
                 break;
 
             }
