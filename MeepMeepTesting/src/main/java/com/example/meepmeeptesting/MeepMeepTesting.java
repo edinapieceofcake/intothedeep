@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = true;
+        boolean sampleSide = false;
 
         if (sampleSide) {
             // *****SAMPLES*****
@@ -28,22 +28,34 @@ public class MeepMeepTesting {
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
                     // COPY HERE
+                    .waitSeconds(1)
                     .strafeToLinearHeading(new Vector2d(-48, -38), 1.0 / 2 * Math.PI)
+                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(-60, -50), 1.0 / 2 * Math.PI)
+                    .waitSeconds(1)
                     .strafeToLinearHeading(new Vector2d(-58, -38), 1.0 / 2 * Math.PI)
+                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(-60, -50), 1.0 / 2 * Math.PI)
+                    .waitSeconds(1)
                     .strafeToLinearHeading(new Vector2d(-57, -25), Math.PI)
+                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(-60, -50), 1.0 / 2 * Math.PI)
+                    .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(-22, 0), 0)
+                    .waitSeconds(1)
                     .setReversed(true)
                     .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
+                    .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(-22, 0), 0)
+                    .waitSeconds(1)
                     .setReversed(true)
                     .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
+                    .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(-22, 0), 0)
+                    .waitSeconds(1)
                     .setReversed(true)
                     .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
                     // STOP COPYING
@@ -63,24 +75,40 @@ public class MeepMeepTesting {
 
                     // COPY HERE
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     .strafeTo(new Vector2d(47,-60))
+                    .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     .strafeTo(new Vector2d(47,-60))
+                    .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(38,-25), 0)
+                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(48,-25), 0)
+                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(58,-25), 0)
+                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
+                    .waitSeconds(1)
                     // STOP COPYING
 
 
