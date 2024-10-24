@@ -14,6 +14,7 @@ import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 
 public class RobotHardware {
     public final DcMotorEx leftFrontDrive, rightFrontDrive, rightBackDrive, leftBackDrive;
+    public final DcMotorEx liftMotor;
     public final IMU imu;
     public final Telemetry telemetry;
     public ThreeDeadWheelLocalizer odometry;
@@ -44,6 +45,8 @@ public class RobotHardware {
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        liftMotor = hardwareMap.get(DcMotorEx.class, "lift_Motor");
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(

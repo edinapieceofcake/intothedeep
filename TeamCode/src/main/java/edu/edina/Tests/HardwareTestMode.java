@@ -3,6 +3,7 @@ package edu.edina.Tests;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -23,6 +24,7 @@ public class HardwareTestMode extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor liftMotor = null;
     private Servo servo1 = null;
+    private CRServo servo2 = null;
 
     // make field
 
@@ -49,7 +51,7 @@ public class HardwareTestMode extends LinearOpMode {
         }
 
         try {
-            liftMotor = hardwareMap.get(DcMotor.class, "lift_motor");
+            liftMotor = hardwareMap.get(DcMotor.class, "motor0");
             liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (Exception e) {
             //ignore
@@ -57,6 +59,12 @@ public class HardwareTestMode extends LinearOpMode {
 
         try {
             servo1 = hardwareMap.get(Servo.class, "servo");
+        } catch (Exception e) {
+            //ignore
+        }
+
+        try {
+            servo2 = hardwareMap.get(CRServo.class, "servo");
         } catch (Exception e) {
             //ignore
         }
@@ -70,7 +78,8 @@ public class HardwareTestMode extends LinearOpMode {
                 new DeadwheelTest(),
                 new DriveMotorsTest(),
                 new ServoTest(),
-                new LiftMotorTest()
+                new MotorTest(),
+                new CRServoTest()
         };
 
         int testIndex = 0;
@@ -255,16 +264,16 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
-            double pos = 0.0;
+            double pos = 0;
 
             telemetry.clearAll();
 
             while (testIsActive()) {
-                if (gamepad1.dpad_up) {
-                    pos = Math.min(pos + 0.05, 1);
+                if (gamepad1.left_bumper) {
+                    pos = 0;
                 }
-                if (gamepad1.dpad_down) {
-                    pos = Math.max(pos - 0.05, 0);
+                if (gamepad1.right_bumper) {
+                    pos = 1;
                 }
 
                 telemetry.addData("pos", pos);
@@ -275,23 +284,75 @@ public class HardwareTestMode extends LinearOpMode {
         }
     }
 
-    private class LiftMotorTest implements ITestMode {
+    private class MotorTest implements ITestMode {
         @Override
         public String getName() {
-            return "Lift Test";
+            return "Motor Test";
         }
 
+        @Override
         public void runTest() {
             while (testIsActive()) {
-                while (gamepad1.dpad_up) {
-                    liftMotor.setPower(0.2);
-                }
-                while (gamepad1.dpad_down) {
-                    liftMotor.setPower(-0.2);
+                if (gamepad1.dpad_up) {
+                    liftMotor.setPower(1);
+                } else if (gamepad1.dpad_down) {
+                    liftMotor.setPower(-1);
+                } else {
+                    liftMotor.setPower(0.0);
                 }
             }
+        }
+    }
 
-            liftMotor.setPower(0);
+    private class CRServoTest implements ITestMode {
+        @Override
+        public String getName() {
+            return "Continuous Servo Test";
+        }
+
+        @Override
+        public void runTest() {
+            double pow = 0.0;
+
+            waitForStart();
+
+            while (opModeIsActive()) {
+                if (gamepad1.dpad_up) {
+                    pow += 0.01;
+                }
+                if (gamepad1.dpad_down) {
+                    pow -= 0.01;
+                }
+                if (gamepad1.a) {
+                    pow *= -1.0;
+                }
+
+                servo2.setPower(pow);
+            }
+        }
+    }
+
+    private class LiftMotorTest implements ITestMode{
+        @Override
+        public String getName() {
+            return "Lift Motor Test";
+        }
+
+        @Override
+        public void runTest() {
+
+        }
+    }
+
+    private class ArmMotorTest implements ITestMode {
+        @Override
+        public String getName() {
+            return "ArmMotorTest";
+        }
+
+        @Override
+        public void runTest() {
+
         }
     }
 }
