@@ -22,7 +22,7 @@ public class MeepMeepTesting {
             // *****SAMPLES*****
 
             // COPY THIS LINE
-            Pose2d beginPose = new Pose2d(-50, -60, 0);
+            Pose2d beginPose = new Pose2d(-38, -62, 0);
             // COPY THIS LINE
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
@@ -68,7 +68,7 @@ public class MeepMeepTesting {
             // *****SPECIMENS*****
 
             // START COPYING
-            Pose2d beginPose = new Pose2d(0, -60, 3.0/2*Math.PI);
+            Pose2d beginPose = new Pose2d(0, -61.5, 3.0/2*Math.PI);
             // STOP COPYING
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
