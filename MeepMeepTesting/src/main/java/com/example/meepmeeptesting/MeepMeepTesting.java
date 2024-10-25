@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = false;
+        boolean sampleSide = true;
 
         if (sampleSide) {
             // *****SAMPLES*****
@@ -76,36 +76,36 @@ public class MeepMeepTesting {
                     // COPY HERE
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
-                    .strafeTo(new Vector2d(47,-60))
+                    .strafeTo(new Vector2d(47,-50))
                     .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
-                    .strafeTo(new Vector2d(47,-60))
+                    .strafeTo(new Vector2d(47,-50))
                     .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(38,-25), 0)
                     .waitSeconds(0.5)
-                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(48,-25), 0)
                     .waitSeconds(0.5)
-                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
                     .setReversed(false)
                     .splineTo(new Vector2d(58,-25), 0)
                     .waitSeconds(0.5)
-                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
-                    .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)

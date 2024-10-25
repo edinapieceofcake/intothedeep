@@ -52,7 +52,7 @@ public class MeepMeepRun extends LinearOpMode  {
             // *****SAMPLES*****
 
             // PASTE THIS LINE
-            Pose2d beginPose = new Pose2d(-50, -60, 0);
+            Pose2d beginPose = new Pose2d(-38, -62, 0);
             // STOP PASTING
 
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
@@ -103,7 +103,7 @@ public class MeepMeepRun extends LinearOpMode  {
             // *****SPECIMENS*****
 
             // PASTE THIS LINE
-            Pose2d beginPose = new Pose2d(0, -60, 3.0/2*Math.PI);
+            Pose2d beginPose = new Pose2d(0, -61.5, 3.0/2*Math.PI);
             // STOP PASTING
 
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
@@ -117,36 +117,36 @@ public class MeepMeepRun extends LinearOpMode  {
                             // PASTE HERE
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
-                            .strafeTo(new Vector2d(47,-60))
+                            .strafeTo(new Vector2d(47,-50))
                             .waitSeconds(0.5)
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
-                            .strafeTo(new Vector2d(47,-60))
+                            .strafeTo(new Vector2d(47,-50))
                             .waitSeconds(0.5)
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
                             .setReversed(false)
                             .splineTo(new Vector2d(38,-25), 0)
                             .waitSeconds(0.5)
-                            .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                            .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                             .waitSeconds(0.5)
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
                             .setReversed(false)
                             .splineTo(new Vector2d(48,-25), 0)
                             .waitSeconds(0.5)
-                            .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                            .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                             .waitSeconds(0.5)
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
                             .setReversed(false)
                             .splineTo(new Vector2d(58,-25), 0)
                             .waitSeconds(0.5)
-                            .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                            .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                             .waitSeconds(0.5)
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
-                            .strafeToLinearHeading(new Vector2d(47,-60), 3.0/2*Math.PI)
+                            .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
                             .waitSeconds(0.5)
                             .strafeTo(new Vector2d(0,-35))
                             .waitSeconds(1)
