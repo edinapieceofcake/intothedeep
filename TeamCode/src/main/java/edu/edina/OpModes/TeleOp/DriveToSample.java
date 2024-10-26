@@ -67,10 +67,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 @TeleOp(name = "Sensor: Limelight3A1", group = "Sensor")
 public class DriveToSample extends LinearOpMode {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_TARGET_Y = 0; //  in degrees
+    final double DESIRED_TARGET_Y = -20; //  in degrees
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
-    //  applied to the drive motors to correct the error.
+    //  applied to the drive motors to correct the error. 阿斯蒂芬jfj
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
     final double SPEED_GAIN = 0.02;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double STRAFE_GAIN = 0.015;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
@@ -132,12 +132,12 @@ public class DriveToSample extends LinearOpMode {
 
 
             LLStatus status = limelight.getStatus();
-            telemetry.addData("Name", "%s",
-                    status.getName());
-            telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-                    status.getTemp(), status.getCpu(), (int) status.getFps());
-            telemetry.addData("Pipeline", "Index: %d, Type: %s",
-                    status.getPipelineIndex(), status.getPipelineType());
+            //telemetry.addData("Name", "%s",
+//                    status.getName());
+           // telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+//                    status.getTemp(), status.getCpu(), (int) status.getFps());
+//            telemetry.addData("Pipeline", "Index: %d, Type: %s",
+//                    status.getPipelineIndex(), status.getPipelineType());
 
             //LLResultTypes.ColorResult blueColorResult = getColorResult(BLUE_PIPELINE);
             LLResult yellowResult = getResult(YELLOW_PIPELINE);
@@ -172,7 +172,7 @@ public class DriveToSample extends LinearOpMode {
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
             //if (gamepad1.left_bumper && yellowColorResult != null) {
-            if (result.isValid() != false) {
+            if (result.isValid()) {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
                 double  rangeError      = DESIRED_TARGET_Y - result.getTy();
@@ -182,7 +182,13 @@ public class DriveToSample extends LinearOpMode {
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
                 drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
                 turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+                drive *= -1;
 //                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+//                Pose3D botpose = result.getBotpose();
+                telemetry.addData("target x", result.getTx());
+                telemetry.addData("target y", result.getTy());
+                //telemetry.addData("target area", result.getTa());
+                // telemetry.addData("botpose", botpose.toString());
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             } else {
 
@@ -193,13 +199,13 @@ public class DriveToSample extends LinearOpMode {
 //                telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
 
-            if (gamepad1.a) {
+//            if (gamepad1.a) {
                 telemetry.update();
-            }
+//            }
 
 //微软 i你cope rated
             // Apply desired axes motions to the drivetrain.
-            moveRobot(drive, strafe, turn);
+            //moveRobot(drive, strafe, turn);
             sleep(10);
 
         }
@@ -245,19 +251,15 @@ public class DriveToSample extends LinearOpMode {
         limelight.pipelineSwitch(pipeline);
         LLResult result = limelight.getLatestResult();
         if (result == null) {
-            telemetry.addData("Limelight", "No data available");
+            //telemetry.addData("Limelight", "No data available");
             return null;
         }
         if (!result.isValid()) {
-            telemetry.addData("Limelight", "Result invalid");
+            //telemetry.addData("Limelight", "Result invalid");
             return null;
         }
         // Access general information
-        Pose3D botpose = result.getBotpose();
-        telemetry.addData("target x", result.getTx());
-        telemetry.addData("target y", result.getTy());
-        telemetry.addData("target area", result.getTa());
-        telemetry.addData("botpose", botpose.toString());
+
 //就 激发教师对付热舞 阿斯蒂芬加我厄瑞沃厄瑞哦武器和攻击对方
         return result;
     }
