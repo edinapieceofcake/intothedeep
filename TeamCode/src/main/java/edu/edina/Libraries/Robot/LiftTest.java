@@ -23,13 +23,13 @@ public class LiftTest extends LinearOpMode {
         while (opModeIsActive()) {
             if (gamepad1.dpad_up) {
                 leftLift.setPower(1);
-                rightLift.setPower(1);
+                //rightLift.setPower(1);
             } else if (gamepad1.dpad_down) {
                 leftLift.setPower(-1);
-                rightLift.setPower(-1);
+                //rightLift.setPower(-1);
             } else {
                 leftLift.setPower(0.0);
-                rightLift.setPower(0.0);
+                //rightLift.setPower(0.0);
             }
 
             telemetry.addData("leftLift", leftLift.getCurrentPosition());

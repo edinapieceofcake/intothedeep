@@ -1,0 +1,52 @@
+package edu.edina.Libraries.Robot;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+public class LinearDrive {
+    private HardwareMap hw;
+    private VoltageSensor vs;
+    private DcMotorEx[] dcMotors;
+
+    //recalibrate
+    private double ppi = 1564 / 38.125;
+    private double inchesPerPos = 1.0 / ppi;
+
+    public LinearDrive(HardwareMap hw) {
+        this.hw = hw;
+
+        dcMotors = new DcMotorEx[]{
+                hw.get(DcMotorEx.class, "left_front_drive"),
+                hw.get(DcMotorEx.class, "right_front_drive"),
+                hw.get(DcMotorEx.class, "left_back_drive"),
+                hw.get(DcMotorEx.class, "right_back_drive"),
+        };
+
+        for (int i = 0; i < 4; i++) {
+            dcMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            dcMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        vs = hw.voltageSensor.iterator().next();
+    }
+
+    public double getPpi() {
+        return ppi;
+    }
+
+    public void setPower(double power) {
+        for (int i = 0; i < 4; i++) {
+            dcMotors[i].setPower(power);
+        }
+    }
+
+    public double getPosition(boolean raw) {
+        if (raw) {
+            return dcMotors[0].getCurrentPosition();
+        } else {
+            return dcMotors[0].getCurrentPosition() * inchesPerPos;
+        }
+    }
+}
