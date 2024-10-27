@@ -1,15 +1,24 @@
 package edu.edina.Libraries.Robot;
 
 import android.annotation.SuppressLint;
+import android.gesture.OrientedBoundingBox;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LinearFuncFitter {
     private final int numSamples;
     private final ArrayList<Double> xs, ys;
     private int n;
+
+    public LinearFuncFitter(List<Double> xs, List<Double> ys) {
+        numSamples = Math.min(xs.size(), ys.size());
+        this.xs = new ArrayList<>(xs);
+        this.ys = new ArrayList<>(ys);
+        n = numSamples;
+    }
 
     public LinearFuncFitter(int numSamples) {
         this.numSamples = numSamples;

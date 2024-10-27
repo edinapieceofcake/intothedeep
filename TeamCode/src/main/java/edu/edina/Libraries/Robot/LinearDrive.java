@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -9,6 +10,7 @@ public class LinearDrive {
     private HardwareMap hw;
     private VoltageSensor vs;
     private DcMotorEx[] dcMotors;
+    private double nominalVolt;
 
     //recalibrate
     private double ppi = 1564 / 38.125;
@@ -27,9 +29,12 @@ public class LinearDrive {
         for (int i = 0; i < 4; i++) {
             dcMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             dcMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            dcMotors[i].setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         vs = hw.voltageSensor.iterator().next();
+
+        nominalVolt = 10.0;
     }
 
     public double getPpi() {
@@ -37,8 +42,10 @@ public class LinearDrive {
     }
 
     public void setPower(double power) {
+        double adjPower = power * nominalVolt / vs.getVoltage();
+
         for (int i = 0; i < 4; i++) {
-            dcMotors[i].setPower(power);
+            dcMotors[i].setPower(adjPower);
         }
     }
 

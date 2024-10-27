@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     private static final int ADDRESS = 0x60;
     private static final byte NEOPIXEL_MODULE_BASE = 0xe, PIN = 0xf;
-    public static final short NUM_PIXELS = 120, NUM_BYTES = 3 * NUM_PIXELS;
+    public static final short NUM_PIXELS = 60, NUM_BYTES = 3 * NUM_PIXELS;
 
     public NeoPixelDriverDevice(I2cDeviceSynch deviceClient, boolean deviceClientIsOwned) {
         super(deviceClient, deviceClientIsOwned);
