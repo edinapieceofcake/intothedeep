@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class ArmExtension implements ILinearMechanism {
     private static final double inchesPerVolt = 6.375 / 4.4;
+    private static final double Ks = 0.0552;
+    private static final double Kv = 0.0127;
 
     private final CRServo servo;
     private final AnalogInput encoder;
@@ -45,5 +47,15 @@ public class ArmExtension implements ILinearMechanism {
             return pos;
         else
             return inchesPerVolt * pos;
+    }
+
+    @Override
+    public double getKs() {
+        return Ks;
+    }
+
+    @Override
+    public double getKv() {
+        return Kv;
     }
 }

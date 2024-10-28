@@ -50,7 +50,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
             if (gamepad1.dpad_up) {
                 linearMech.setPower(0.3);
-            }else if(gamepad1.dpad_down){
+            } else if (gamepad1.dpad_down) {
                 linearMech.setPower(-0.3);
             } else {
                 linearMech.setPower(0.0);
@@ -67,49 +67,66 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         double power = powerStep;
 
         double prevRead = 0.0;
-        double finalSpeed = 0.0;
+        double maxSpeed = 0.0;
 
         List<Double> powerList = new ArrayList<Double>();
         List<Double> speedList = new ArrayList<Double>();
 
         while (opModeIsActive()) {
             while (opModeIsActive()) {
+                telemetry.addLine("press up to start test");
+                telemetry.addData("power", power);
+                telemetry.update();
+
+                if (gamepad1.dpad_up)
+                    break;
+            }
+
+            while (opModeIsActive()) {
                 linearMech.setPower(power);
 
-                if (gamepad1.start) {
+                if (!gamepad1.dpad_up) {
                     break;
                 }
 
                 speedometer.sample(linearMech.getPosition(false) - prevRead);
 
-                telemetry.addData("speed", speedometer.getSpeed());
+                double s = speedometer.getSpeed();
+                if (s > maxSpeed)
+                    maxSpeed = s;
+
+                telemetry.addData("speed", s);
                 telemetry.addData("power", power);
                 telemetry.update();
             }
 
             linearMech.setPower(0.0);
 
-            finalSpeed = speedometer.getSpeed();
+            telemetry.addData("max speed is ", maxSpeed);
 
-            telemetry.addData("final speed is ", finalSpeed);
-
-            if (Math.abs(finalSpeed) > speedThres) {
+            if (Math.abs(maxSpeed) > speedThres) {
                 powerList.add(power);
-                speedList.add(finalSpeed);
+                speedList.add(maxSpeed);
             }
+
             if (powerList.size() > 1) {
                 LinearFuncFitter ff = new LinearFuncFitter(speedList, powerList);
                 LinearFunc fit = ff.fit();
                 telemetry.addData("Ks", fit.alpha);
                 telemetry.addData("Kv", fit.beta);
                 telemetry.addData("R", fit.R2);
-                telemetry.update();
             }
 
+            telemetry.addLine("press down to back up");
             telemetry.addLine("press b to restart with more power");
             telemetry.update();
 
             while (opModeIsActive()) {
+                if (gamepad1.dpad_down)
+                    linearMech.setPower(-power);
+                else
+                    linearMech.setPower(0);
+
                 if (gamepad1.b)
                     break;
             }
@@ -125,7 +142,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     }
 
-    private  void testKa(double ka){
+    private void testKa(double ka) {
 
     }
 }

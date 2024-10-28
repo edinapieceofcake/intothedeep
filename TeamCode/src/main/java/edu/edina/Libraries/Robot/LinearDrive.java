@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import kotlin.NotImplementedError;
+
 public class LinearDrive implements ILinearMechanism {
     private HardwareMap hw;
     private VoltageSensor vs;
@@ -57,5 +59,15 @@ public class LinearDrive implements ILinearMechanism {
         } else {
             return dcMotors[0].getCurrentPosition() * inchesPerPos;
         }
+    }
+
+    @Override
+    public double getKs() {
+        throw new NotImplementedError();
+    }
+
+    @Override
+    public double getKv() {
+        throw new NotImplementedError();
     }
 }
