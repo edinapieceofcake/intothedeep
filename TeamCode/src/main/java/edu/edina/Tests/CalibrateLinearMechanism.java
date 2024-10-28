@@ -6,9 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.Robot.LinearDrive;
+import edu.edina.Libraries.Robot.ArmExtension;
+import edu.edina.Libraries.Robot.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
+import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 
 @TeleOp
@@ -16,40 +18,46 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     double powerStep = 0.02;
     double speedThres = 1;
 
-    LinearDrive axialDrive;
+    ILinearMechanism linearMech;
 
     @Override
     public void runOpMode() {
-        axialDrive = new LinearDrive(hardwareMap);
+        linearMech = new ArmExtension(new RobotHardware(hardwareMap));
 
         waitForStart();
 
-        telemetry.addLine("Press a to calibrate ppi");
-        telemetry.addLine("Press b to calibrate Kv");
+        telemetry.addLine("Press a to calibrate encoder");
+        telemetry.addLine("Press b to calibrate Kv and Ks");
+        telemetry.addLine("Press x to calibrate Ka");
         telemetry.update();
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                calibratePpi();
+                calibrateEncoder();
             }
             if (gamepad1.b) {
                 calibrateLinearKs();
             }
+            if (gamepad1.x) {
+                calibrateKa();
+            }
         }
     }
 
-    private void calibratePpi() {
+    private void calibrateEncoder() {
         while (opModeIsActive()) {
             telemetry.addLine("press up to drive forward");
 
             if (gamepad1.dpad_up) {
-                axialDrive.setPower(0.3);
+                linearMech.setPower(0.3);
+            }else if(gamepad1.dpad_down){
+                linearMech.setPower(-0.3);
             } else {
-                axialDrive.setPower(0.0);
+                linearMech.setPower(0.0);
             }
 
-            telemetry.addData("encoder (raw)", axialDrive.getPosition(true));
-            telemetry.addData("encoder (inch)", axialDrive.getPosition(false));
+            telemetry.addData("encoder (raw)", linearMech.getPosition(true));
+            telemetry.addData("encoder (inch)", linearMech.getPosition(false));
             telemetry.update();
         }
     }
@@ -66,20 +74,20 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
         while (opModeIsActive()) {
             while (opModeIsActive()) {
-                axialDrive.setPower(power);
+                linearMech.setPower(power);
 
                 if (gamepad1.start) {
                     break;
                 }
 
-                speedometer.sample(axialDrive.getPosition(false) - prevRead);
+                speedometer.sample(linearMech.getPosition(false) - prevRead);
 
                 telemetry.addData("speed", speedometer.getSpeed());
                 telemetry.addData("power", power);
                 telemetry.update();
             }
 
-            axialDrive.setPower(0.0);
+            linearMech.setPower(0.0);
 
             finalSpeed = speedometer.getSpeed();
 
@@ -106,9 +114,18 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                     break;
             }
 
-            prevRead = axialDrive.getPosition(false);
+            prevRead = linearMech.getPosition(false);
 
             power += powerStep;
         }
+    }
+
+    private void calibrateKa() {
+//        double min
+
+    }
+
+    private  void testKa(double ka){
+
     }
 }

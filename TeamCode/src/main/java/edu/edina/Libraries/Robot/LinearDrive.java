@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-public class LinearDrive {
+public class LinearDrive implements ILinearMechanism {
     private HardwareMap hw;
     private VoltageSensor vs;
     private DcMotorEx[] dcMotors;
@@ -41,6 +41,7 @@ public class LinearDrive {
         return ppi;
     }
 
+    @Override
     public void setPower(double power) {
         double adjPower = power * nominalVolt / vs.getVoltage();
 
@@ -49,6 +50,7 @@ public class LinearDrive {
         }
     }
 
+    @Override
     public double getPosition(boolean raw) {
         if (raw) {
             return dcMotors[0].getCurrentPosition();

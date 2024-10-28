@@ -88,8 +88,8 @@ public class RobotHardware {
         liftMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -100,6 +100,8 @@ public class RobotHardware {
         imu.initialize(parameters);
 
         armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
 
@@ -130,5 +132,9 @@ public class RobotHardware {
 
     public int getRightLift() {
         return liftMotorR.getCurrentPosition();
+    }
+
+    public int getArmMotor() {
+        return armMotor.getCurrentPosition();
     }
 }
