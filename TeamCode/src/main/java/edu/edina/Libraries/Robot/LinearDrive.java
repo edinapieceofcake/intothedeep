@@ -62,12 +62,7 @@ public class LinearDrive implements ILinearMechanism {
     }
 
     @Override
-    public double getKs() {
-        throw new NotImplementedError();
-    }
-
-    @Override
-    public double getKv() {
-        throw new NotImplementedError();
+    public LinearMechanismSettings getSettings() {
+        return null;
     }
 }
