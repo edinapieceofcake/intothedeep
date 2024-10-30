@@ -9,6 +9,7 @@ public class ArmExtension implements ILinearMechanism {
     private static final LinearMechanismSettings settings = new LinearMechanismSettings(
             0.0552,
             0.0127,
+            0,
             0.5
     );
 
