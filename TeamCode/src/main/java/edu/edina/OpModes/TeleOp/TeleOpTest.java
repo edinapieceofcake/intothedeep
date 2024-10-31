@@ -42,14 +42,14 @@ public class TeleOpTest extends LinearOpMode {
 
             if (gamepad1.left_trigger > 0.1) {
                 hw.claw.setPosition(pos + 0.001);
-            } else if (gamepad1.right_trigger > 0.1) {
+            } else if (gamepad1.left_trigger < 0.1) {
                 hw.claw.setPosition(pos - 0.001);
             }
 
             if (gamepad1.a) {
-                hw.armMotor.setPower(1.0);
+                hw.armMotor.setPower(0.4);
             } else if (gamepad1.b) {
-                hw.armMotor.setPower(-1.0);
+                hw.armMotor.setPower(-0.4);
             } else {
                 hw.armMotor.setPower(0.0);
             }

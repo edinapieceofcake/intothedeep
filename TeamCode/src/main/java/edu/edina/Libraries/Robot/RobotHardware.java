@@ -101,7 +101,7 @@ public class RobotHardware {
 
         armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
 

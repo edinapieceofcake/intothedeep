@@ -24,6 +24,7 @@ public class HardwareTestMode extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor liftMotor = null;
     private Servo servo1 = null;
+    private Servo servo3 = null;
     private CRServo servo2 = null;
 
     // make field
@@ -58,7 +59,8 @@ public class HardwareTestMode extends LinearOpMode {
         }
 
         try {
-            servo1 = hardwareMap.get(Servo.class, "servo");
+            servo1 = hardwareMap.get(Servo.class, "wrist_left");
+            servo3 = hardwareMap.get(Servo.class, "wrist_right");
         } catch (Exception e) {
             //ignore
         }
@@ -280,6 +282,7 @@ public class HardwareTestMode extends LinearOpMode {
                 telemetry.update();
 
                 servo1.setPosition(pos);
+                servo3.setPosition(pos);
             }
         }
     }
