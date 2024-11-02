@@ -13,7 +13,7 @@ public class CompoundArm {
     public static double CLAW_OPEN_POSITION = 0.56;
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0;
-    public static double WRIST_UP_POSITION = 1;
+    public static double WRIST_UP_POSITION = 0.3;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
@@ -97,8 +97,10 @@ public class CompoundArm {
         // Turtle mode multipliers.
 
         // Call set power.
+
         robotHardware.claw.setPosition(clawPosition);
 
+        robotHardware.wristLeft.setPosition(wristLeftPos);
     }
 
     public void toggleClaw() {
@@ -109,6 +111,5 @@ public class CompoundArm {
     public void toggleWrist() {
         wristLeftPos = wristUp ? WRIST_DOWN_POSITION : WRIST_UP_POSITION;
         wristUp = !wristUp;
-        robotHardware.wristLeft.setPosition(wristLeftPos);
     }
 }
