@@ -85,9 +85,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 compoundArm.toggleClaw();
             }
 
-            if (currentGamepad.x && !previousGamepad.x) {
-                compoundArm.toggleWrist();
-            }
+//            if (currentGamepad.x && !previousGamepad.x) {
+//                compoundArm.toggleWrist();
+//            }
 
             driveTrain.update();
 

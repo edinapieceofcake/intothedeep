@@ -208,7 +208,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         return dist;
     }
 
-    public double testAccel(double accel) {
-        
-    }
+//    public double testAccel(double accel) {
+//
+//    }
 }
