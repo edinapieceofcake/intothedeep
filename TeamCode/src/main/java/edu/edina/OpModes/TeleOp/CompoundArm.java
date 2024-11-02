@@ -1,16 +1,24 @@
 package edu.edina.OpModes.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.R;
-
 import edu.edina.Libraries.Robot.RobotHardware;
 
+@Config
 public class CompoundArm {
+    public static double CLAW_OPEN_POSITION = 0.56;
+    public static double CLAW_CLOSED_POSITION = 0.77;
+    public static double WRIST_DOWN_POSITION = 0;
+    public static double WRIST_UP_POSITION = 1;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
+    private FtcDashboard ftcDashboard;
+    private boolean clawOpen;
+    private boolean wristUp;
 
     double armMotorPower;
     double leftLiftPower;
@@ -26,6 +34,9 @@ public class CompoundArm {
     public CompoundArm(LinearOpMode opMode) throws InterruptedException {
         // Remember the op mode.
         this.opMode = opMode;
+
+        // Initialize the FTC dashboard.
+        ftcDashboard = FtcDashboard.getInstance();
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -69,12 +80,29 @@ public class CompoundArm {
             throw new InterruptedException("The left wrist servo encoder is missing.");
         }
 
+        /*armMotorPower;
+        leftLiftPower;
+        rightLiftPower;
+        clawPosition;
+        slidePower;
+        slideEncoder;
+        wristLeftPower;
+        wristRightPower;
+        wristLeftPos;
+        wristRightPos;*/
+
         // Check gamepad.
             // Set power variables.
 
         // Turtle mode multipliers.
 
         // Call set power.
+        robotHardware.claw.setPosition(clawPosition);
 
+    }
+
+    public void toggleClaw() {
+        clawPosition = clawOpen ? CLAW_CLOSED_POSITION : CLAW_OPEN_POSITION;
+        clawOpen = clawOpen ? false : true;
     }
 }

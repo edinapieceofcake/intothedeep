@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp
 public class TeleOpForScrimmage extends LinearOpMode {
     private DriveTrain driveTrain;
+    private CompoundArm compoundArm;
     private ElapsedTime runtime = new ElapsedTime();
 
     private Gamepad currentGamepad = new Gamepad();
@@ -21,9 +22,11 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Get the robot drive train.
         driveTrain = new DriveTrain(this);
 
+        // Get the robot compound arm
+        compoundArm = new CompoundArm(this);
+
         // While the op mode is active...
         while (!isStopRequested()) {
-
             // Update the gamepads.
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
@@ -74,9 +77,21 @@ public class TeleOpForScrimmage extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
+            // Update the gamepads.
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            if (currentGamepad.a && !previousGamepad.a) {
+                compoundArm.toggleClaw();
+            }
+
+            if (currentGamepad.x && !previousGamepad.x) {
+                compoundArm.toggleWrist();
+            }
+
             driveTrain.update();
 
-
+            compoundArm.update();
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
