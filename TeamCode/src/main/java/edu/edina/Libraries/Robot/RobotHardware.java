@@ -109,8 +109,8 @@ public class RobotHardware {
         wristRight = hardwareMap.get(Servo.class, "wrist_right");
         claw = hardwareMap.get(Servo.class, "claw_servo");
 
-        wristLeft.setDirection(Servo.Direction.FORWARD);
-        wristRight.setDirection(Servo.Direction.REVERSE);
+//        wristLeft.setDirection(Servo.Direction.FORWARD);
+//        wristRight.setDirection(Servo.Direction.FORWARD);
 
         slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
         wristEncoderL = hardwareMap.get(AnalogInput.class, "wrist_left_encoder");

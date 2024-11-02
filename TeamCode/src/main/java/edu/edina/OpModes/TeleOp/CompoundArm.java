@@ -103,12 +103,12 @@ public class CompoundArm {
 
     public void toggleClaw() {
         clawPosition = clawOpen ? CLAW_CLOSED_POSITION : CLAW_OPEN_POSITION;
-        clawOpen = clawOpen ? false : true;
+        clawOpen = !clawOpen;
     }
 
-//    public void toggleWrist() {
-//        wristLeftPos = wristUp ? WRIST_DOWN_POSITION : WRIST_UP_POSITION;
-//        wristRightPos = wristUp ? WRIST_DOWN_POSITION : WRIST_UP_POSITION;
-//        wristUp = wristUp ? false : true;
-//    }
+    public void toggleWrist() {
+        wristLeftPos = wristUp ? WRIST_DOWN_POSITION : WRIST_UP_POSITION;
+        wristUp = !wristUp;
+        robotHardware.wristLeft.setPosition(wristLeftPos);
+    }
 }
