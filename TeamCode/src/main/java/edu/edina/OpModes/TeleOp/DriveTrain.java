@@ -4,15 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.robot.Robot;
+
+import edu.edina.Libraries.Robot.RobotHardware;
 
 
 public class DriveTrain {
-
-    private DcMotor leftFrontDrive;
-    private DcMotor leftBackDrive;
-    private DcMotor rightFrontDrive;
-    private DcMotor rightBackDrive;
     private LinearOpMode opMode;
+    private RobotHardware robotHardware;
 
     double leftFrontPower;
     double leftBackPower;
@@ -28,11 +27,8 @@ public class DriveTrain {
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        // Get hardware.
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        //get hardware
+        robotHardware = new RobotHardware(hardwareMap);
     }
 
     public void update() throws InterruptedException {
@@ -79,26 +75,24 @@ public class DriveTrain {
         rightFrontPower *= multiplier;
         */
 
-
         // Verify inputs exist.
-        if (leftFrontDrive == null) {
+        if (robotHardware.leftFrontDrive == null) {
             throw new InterruptedException("The left front drive motor is missing.");
         }
-        if (rightFrontDrive == null) {
+        if (robotHardware.rightFrontDrive == null) {
             throw new InterruptedException("The right front drive motor is missing.");
         }
-        if (leftBackDrive == null) {
+        if (robotHardware.leftBackDrive == null) {
             throw new InterruptedException("The left back drive motor is missing.");
         }
-        if (rightBackDrive == null) {
+        if (robotHardware.rightBackDrive == null) {
             throw new InterruptedException("The right back drive motor is missing.");
         }
 
         // Move the robot.
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
+        robotHardware.leftFrontDrive.setPower(leftFrontPower);
+        robotHardware.rightFrontDrive.setPower(rightFrontPower);
+        robotHardware.leftBackDrive.setPower(leftBackPower);
+        robotHardware.rightBackDrive.setPower(rightBackPower);
     }
-
 }

@@ -76,6 +76,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
         while (opModeIsActive()) {
             driveTrain.update();
 
+
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }

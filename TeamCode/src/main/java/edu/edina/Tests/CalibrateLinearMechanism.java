@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.edina.Libraries.Robot.ArmExtension;
+import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.Robot.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
@@ -25,7 +26,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        linearMech = new ArmExtension(new RobotHardware(hardwareMap));
+        linearMech = new ArmLift(new RobotHardware(hardwareMap), hardwareMap);
 
         waitForStart();
 
@@ -49,7 +50,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     private void calibrateEncoder() {
         while (opModeIsActive()) {
-            telemetry.addLine("press up to drive forward");
+            telemetry.addLine("press up to move forward");
 
             if (gamepad1.dpad_up) {
                 linearMech.setPower(0.3);
@@ -112,9 +113,10 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 speedList.add(maxSpeed);
             }
 
-            if (powerList.size() > 1) {
-                LinearFuncFitter ff = new LinearFuncFitter(speedList, powerList);
-                LinearFunc fit = ff.fit();
+            LinearFuncFitter ff = new LinearFuncFitter(speedList, powerList);
+            LinearFunc fit = ff.fit();
+
+            if (fit != null) {
                 telemetry.addData("Ks", fit.alpha);
                 telemetry.addData("Kv", fit.beta);
                 telemetry.addData("R", fit.R2);
@@ -173,6 +175,8 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
         ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive()) {
+            if (!gamepad1.dpad_up) break;
+
             double t = timer.seconds();
             double derivedVelocityGuess = a * t;
             double power = ks + kv * derivedVelocityGuess + ka * a;
@@ -202,5 +206,9 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         }
 
         return dist;
+    }
+
+    public double testAccel(double accel) {
+        
     }
 }

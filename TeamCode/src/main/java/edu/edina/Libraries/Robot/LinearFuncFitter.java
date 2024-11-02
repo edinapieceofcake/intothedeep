@@ -42,6 +42,10 @@ public class LinearFuncFitter {
     }
 
     public LinearFunc fit() {
+        if (n == 0) {
+            return null;
+        }
+
         // find average
         double xSum = 0.0;
         double ySum = 0.0;
