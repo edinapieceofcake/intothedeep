@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -105,7 +106,6 @@ public class RobotHardware {
 
         armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
         armMotor.setDirection(DcMotor.Direction.REVERSE);
-
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
 
         wristLeft = hardwareMap.get(Servo.class, "wrist_left");

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import edu.edina.Libraries.Robot.RobotHardware;
 
@@ -20,6 +21,10 @@ public class CompoundArm {
     public static int ARM_BASKET_POSITION = 200; // Position 3
     public static int ARM_CHAMBER_POSITION = 300; // Position 4
     public static double ARM_MOTOR_SPEED = 0.1;
+    public static double P = 10.0;
+    public static double I = 3.0;
+    public static double D = 0.0;
+    public static double F = 0.0;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
@@ -53,7 +58,7 @@ public class CompoundArm {
 
         robotHardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robotHardware.armMotor.setTargetPosition(0);
+        robotHardware.armMotor.setTargetPosition(0);
         robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robotHardware.armMotor.setPower(ARM_MOTOR_SPEED);
     }
@@ -110,6 +115,9 @@ public class CompoundArm {
         // Turtle mode multipliers.
 
         // Call set power.
+
+        PIDFCoefficients armMotorPIDFCoefficients = new PIDFCoefficients(P, I, D, F);
+        robotHardware.armMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, armMotorPIDFCoefficients);
     }
 
     public void toggleClaw() {
@@ -138,5 +146,14 @@ public class CompoundArm {
             armMotorPosition = ARM_CHAMBER_POSITION;
         }
         robotHardware.armMotor.setTargetPosition(armMotorPosition);
+    }
+
+    public PIDFCoefficients getPID() {
+        PIDFCoefficients armMotorPID = robotHardware.armMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        return armMotorPID;
+    }
+
+    public double getArmEncoder() {
+        return robotHardware.armMotor.getCurrentPosition();
     }
 }

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.GamePadClick;
@@ -64,6 +65,12 @@ public class TeleOpForScrimmage extends LinearOpMode {
             driveTrain.update();
 
             compoundArm.update();
+
+            PIDFCoefficients armMotorPID = compoundArm.getPID();
+
+            telemetry.addData("PID: ", armMotorPID);
+
+            telemetry.addData("Arm Motor Encoder: ", compoundArm.getArmEncoder());
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
