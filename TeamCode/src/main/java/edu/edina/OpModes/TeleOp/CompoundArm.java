@@ -20,17 +20,16 @@ public class CompoundArm {
     public static double WRIST_DOWN_POSITION = 0;
     public static double WRIST_UP_POSITION = 0.3;
     public static int ARM_DOWN_POSITION = 0;
-    public static int ARM_WALL_POSITION = 200;
-    public static int ARM_BASKET_POSITION = 400;
-    public static int ARM_CHAMBER_POSITION = 600;
+    public static int ARM_WALL_POSITION = 1000;
+    public static int ARM_BASKET_POSITION = 2000;
+    public static int ARM_CHAMBER_POSITION = 3000;
     public static double TICKS_PER_DEGREE = 23.3; // Determined experimentally
     private static final double INITIAL_DEGREES_BELOW_HORIZONTAL = 26; // Determined experimentally
     public static double P = 0.0005;
     public static double I = 0;
     public static double D = 0;
     public static double F = 0.1;
-    public static int TARGET_ARM_POSITION = 0;
-
+    public int targetArmPosition = 0;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
@@ -107,8 +106,8 @@ public class CompoundArm {
         int actualArmPosition = armMotor.getCurrentPosition();
         double actualArmDegrees = getDegrees(actualArmPosition);
         double actualArmRadians = Math.toRadians(actualArmDegrees);
-        double pid = controller.calculate(actualArmPosition, TARGET_ARM_POSITION);
-        double targetArmDegrees = getDegrees(TARGET_ARM_POSITION);
+        double pid = controller.calculate(actualArmPosition, targetArmPosition);
+        double targetArmDegrees = getDegrees(targetArmPosition);
         double feedForward = Math.cos(actualArmRadians) * F;
 
         double power = pid + feedForward;
@@ -121,7 +120,7 @@ public class CompoundArm {
         telemetry.addData("Power", power);
         telemetry.addData("Actual Arm Position", actualArmPosition);
         telemetry.addData("Actual Arm Degrees", actualArmDegrees);
-        telemetry.addData("Target Arm Position", TARGET_ARM_POSITION);
+        telemetry.addData("Target Arm Position", targetArmPosition);
         telemetry.addData("Target Arm Degrees", targetArmDegrees);
 
     }
@@ -139,7 +138,7 @@ public class CompoundArm {
     }
 
     public void setArmPosition(int position) {
-        robotHardware.armMotor.setTargetPosition(position);
+        targetArmPosition = position;
     }
 
     private double getDegrees(double ticks) {
