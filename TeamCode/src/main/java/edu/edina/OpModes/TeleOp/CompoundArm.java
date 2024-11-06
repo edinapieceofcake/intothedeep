@@ -3,6 +3,7 @@ package edu.edina.OpModes.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -14,6 +15,11 @@ public class CompoundArm {
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0;
     public static double WRIST_UP_POSITION = 0.3;
+    public static int ARM_DOWN_POSITION = 0; // Position 1
+    public static int ARM_WALL_POSITION = 100; // Position 2
+    public static int ARM_BASKET_POSITION = 200; // Position 3
+    public static int ARM_CHAMBER_POSITION = 300; // Position 4
+    public static double ARM_MOTOR_SPEED = 0.1;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
@@ -30,6 +36,7 @@ public class CompoundArm {
     double wristRightPower;
     double wristLeftPos;
     double wristRightPos;
+    int armMotorPosition;
 
     public CompoundArm(LinearOpMode opMode) throws InterruptedException {
         // Remember the op mode.
@@ -43,6 +50,12 @@ public class CompoundArm {
 
         // Get hardware.
         robotHardware = new RobotHardware(hardwareMap);
+
+        robotHardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //robotHardware.armMotor.setTargetPosition(0);
+        robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robotHardware.armMotor.setPower(ARM_MOTOR_SPEED);
     }
 
     public void update() throws InterruptedException {
@@ -97,19 +110,33 @@ public class CompoundArm {
         // Turtle mode multipliers.
 
         // Call set power.
-
-        robotHardware.claw.setPosition(clawPosition);
-
-        robotHardware.wristLeft.setPosition(wristLeftPos);
     }
 
     public void toggleClaw() {
         clawPosition = clawOpen ? CLAW_CLOSED_POSITION : CLAW_OPEN_POSITION;
         clawOpen = !clawOpen;
+        robotHardware.claw.setPosition(clawPosition);
     }
 
     public void toggleWrist() {
         wristLeftPos = wristUp ? WRIST_DOWN_POSITION : WRIST_UP_POSITION;
         wristUp = !wristUp;
+        robotHardware.wristLeft.setPosition(wristLeftPos);
+    }
+
+    public void setArmPosition(int position) {
+        if (position == 1) {
+            armMotorPosition = ARM_DOWN_POSITION;
+        }
+        if (position == 2) {
+            armMotorPosition = ARM_WALL_POSITION;
+        }
+        if (position == 3) {
+            armMotorPosition = ARM_BASKET_POSITION;
+        }
+        if (position == 4) {
+            armMotorPosition = ARM_CHAMBER_POSITION;
+        }
+        robotHardware.armMotor.setTargetPosition(armMotorPosition);
     }
 }

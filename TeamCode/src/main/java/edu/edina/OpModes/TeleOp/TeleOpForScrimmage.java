@@ -27,51 +27,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Get the robot compound arm
         compoundArm = new CompoundArm(this);
 
-        // While the op mode is active...
-        while (!isStopRequested()) {
-            // Update the gamepads.
-            previousGamepad.copy(currentGamepad);
-            currentGamepad.copy(gamepad1);
-
-            // If the user has not selected an alliance...
-            if (redAlliance == null) {
-                telemetry.addData("Alliance", "X = blue, B = red");
-                telemetry.update();
-                if (currentGamepad.x && !previousGamepad.x) {
-                    redAlliance = false;
-                }
-                if (currentGamepad.b && !previousGamepad.b) {
-                    redAlliance = true;
-                }
-            }
-
-            // Otherwise (if the user finished making menu selections)...
-            else {
-
-                // If the user has not selected a side...
-                if (basketSide == null) {
-                    telemetry.addData("Side", "X = basket, B = chamber");
-                    telemetry.update();
-                    if (currentGamepad.x && !previousGamepad.x) {
-                        basketSide = false;
-                    }
-                    if (currentGamepad.b && !previousGamepad.b) {
-                        basketSide = true;
-                    }
-                }
-
-                // Otherwise (if the user finished making menu selections)...
-                else {
-
-                    // Stop prompting the user for inputs.
-                    break;
-
-                }
-
-            }
-
-        }
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -87,7 +42,23 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if (click1.x) {
-//                compoundArm.toggleWrist();
+                compoundArm.toggleWrist();
+            }
+
+            if (click1.dpad_down) {
+                compoundArm.setArmPosition(1);
+            }
+
+            if (click1.dpad_left) {
+                compoundArm.setArmPosition(2);
+            }
+
+            if (click1.dpad_up) {
+                compoundArm.setArmPosition(3);
+            }
+
+            if (click1.dpad_right) {
+                compoundArm.setArmPosition(4);
             }
 
             driveTrain.update();

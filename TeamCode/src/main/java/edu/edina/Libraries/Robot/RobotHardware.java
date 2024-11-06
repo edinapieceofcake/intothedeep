@@ -104,8 +104,7 @@ public class RobotHardware {
         imu.initialize(parameters);
 
         armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
 
