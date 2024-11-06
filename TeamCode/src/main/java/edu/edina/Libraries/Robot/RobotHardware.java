@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -56,6 +57,7 @@ public class RobotHardware {
     public final Telemetry telemetry;
     public ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
+    public final VoltageSensor voltageSensor;
 
     public RobotHardware(HardwareMap hardwareMap) {
         this(hardwareMap, null);
@@ -63,6 +65,8 @@ public class RobotHardware {
 
     public RobotHardware(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
+
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 

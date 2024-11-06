@@ -12,112 +12,53 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
+import edu.edina.Libraries.Robot.ArmLift;
+import edu.edina.Libraries.Robot.GamePadClick;
+import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
 public class HardwareTestMode extends LinearOpMode {
-    private ThreeDeadWheelLocalizer odometry;
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor liftMotor = null;
-    private Servo servo1 = null;
-    private Servo servo3 = null;
-    private CRServo servo2 = null;
-    double leftFrontPower;
-    double leftBackPower;
-    double rightFrontPower;
-    double rightBackPower;
+    // construct the tests
+    ITestMode[] tests = new ITestMode[]{
+            new ImuTest(),
+            new DeadwheelTest(),
+            new DriveMotorsTest(),
+            new ServoTest(),
+            new MotorTest(),
+            new CRServoTest(),
+            new DriveMotorTest()
+    };
+
+    private RobotHardware hw;
+    private GamePadClick click1;
 
     // make field
 
     @Override
     public void runOpMode() {
-        try {
-            odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
-        } catch (Exception e) {
-            //ignore
-        }
+        click1 = new GamePadClick(gamepad1);
+        hw = new RobotHardware(hardwareMap);
 
-        try {
-            leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-            leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-            rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-            rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-
-            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-            rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        } catch (Exception e) {
-            //ignore
-        }
-
-        try {
-            liftMotor = hardwareMap.get(DcMotor.class, "motor0");
-            liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } catch (Exception e) {
-            //ignore
-        }
-
-        try {
-            servo1 = hardwareMap.get(Servo.class, "wrist_left");
-            servo3 = hardwareMap.get(Servo.class, "wrist_right");
-        } catch (Exception e) {
-            //ignore
-        }
-
-        try {
-            servo2 = hardwareMap.get(CRServo.class, "servo");
-        } catch (Exception e) {
-            //ignore
-        }
-
-        boolean previousDPadUp = false;
-        boolean previousDPadDown = false;
-
-        // construct the tests
-        ITestMode[] tests = new ITestMode[]{
-                new ImuTest(),
-                new DeadwheelTest(),
-                new DriveMotorsTest(),
-                new ServoTest(),
-                new MotorTest(),
-                new CRServoTest(),
-                new DriveMotorTest()
-        };
 
         int testIndex = 0;
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            if (gamepad1.dpad_up) {
-                if (!previousDPadUp) {
-                    if (testIndex < tests.length - 1)
-                        testIndex++;
-                    previousDPadUp = true;
-                    continue;
-                }
-            } else {
-                previousDPadUp = false;
+        while (testIsActive()) {
+            if (click1.dpad_up) {
+                if (testIndex < tests.length - 1)
+                    testIndex++;
             }
 
-            if (gamepad1.dpad_down) {
-                if (!previousDPadDown) {
-                    if (testIndex > 0)
-                        testIndex--;
-
-                    previousDPadDown = gamepad1.dpad_down;
-                    continue;
-                }
-            } else {
-                previousDPadDown = false;
+            if (click1.dpad_down) {
+                if (testIndex > 0)
+                    testIndex--;
             }
 
-            if (gamepad1.b) {
+            if (click1.b) {
                 ITestMode t = tests[testIndex];
                 t.runTest();
             } else {
@@ -128,13 +69,8 @@ public class HardwareTestMode extends LinearOpMode {
     }
 
     private boolean testIsActive() {
-        if (gamepad1.a) {
-            telemetry.clearAll();
-            telemetry.setDisplayFormat(Telemetry.DisplayFormat.CLASSIC);
-            return false;
-        } else {
-            return opModeIsActive();
-        }
+        click1.read();
+        return opModeIsActive();
     }
 
     private interface ITestMode {
@@ -177,6 +113,8 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
+            ThreeDeadWheelLocalizer odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+
             int basePosPar0 = 0;
             int basePosPar1 = 0;
             int basePosPerp = 0;
@@ -204,10 +142,10 @@ public class HardwareTestMode extends LinearOpMode {
                     rightBackPower /= max;
                 }
 
-                leftFrontDrive.setPower(leftFrontPower * 0.3);
-                rightFrontDrive.setPower(rightFrontPower * 0.3);
-                leftBackDrive.setPower(leftBackPower * 0.3);
-                rightBackDrive.setPower(rightBackPower * 0.3);
+                hw.leftFrontDrive.setPower(leftFrontPower * 0.3);
+                hw.rightFrontDrive.setPower(rightFrontPower * 0.3);
+                hw.leftBackDrive.setPower(leftBackPower * 0.3);
+                hw.rightBackDrive.setPower(rightBackPower * 0.3);
 
                 telemetry.addData("Left", odometry.par0.getPositionAndVelocity().position - basePosPar0);
                 telemetry.addData("Right", odometry.par1.getPositionAndVelocity().position - basePosPar1);
@@ -244,19 +182,19 @@ public class HardwareTestMode extends LinearOpMode {
                 telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;&rarr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Right</font>");
                 telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;&darr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
 
-                if (gamepad1.dpad_left)
-                    leftFrontDrive.setPower(0.7);
-                if (gamepad1.dpad_up)
-                    rightFrontDrive.setPower(0.7);
-                if (gamepad1.dpad_down)
-                    leftBackDrive.setPower(0.7);
-                if (gamepad1.dpad_right)
-                    rightBackDrive.setPower(0.7);
+                hw.leftFrontDrive.setPower(0);
+                hw.rightFrontDrive.setPower(0);
+                hw.leftBackDrive.setPower(0);
+                hw.rightBackDrive.setPower(0);
 
-                leftFrontDrive.setPower(0);
-                rightFrontDrive.setPower(0);
-                leftBackDrive.setPower(0);
-                rightBackDrive.setPower(0);
+                if (gamepad1.dpad_left)
+                    hw.leftFrontDrive.setPower(0.7);
+                if (gamepad1.dpad_up)
+                    hw.rightFrontDrive.setPower(0.7);
+                if (gamepad1.dpad_down)
+                    hw.leftBackDrive.setPower(0.7);
+                if (gamepad1.dpad_right)
+                    hw.rightBackDrive.setPower(0.7);
 
                 telemetry.update();
             }
@@ -271,11 +209,14 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
+            Servo wrist = hw.wristLeft;
+            Servo claw = hw.claw;
+
             double pos = 0;
 
             telemetry.clearAll();
 
-            while (testIsActive()) {
+            while (opModeIsActive()) {
                 if (gamepad1.left_bumper) {
                     pos = 0;
                 }
@@ -286,8 +227,8 @@ public class HardwareTestMode extends LinearOpMode {
                 telemetry.addData("pos", pos);
                 telemetry.update();
 
-                servo1.setPosition(pos);
-                servo3.setPosition(pos);
+                wrist.setPosition(pos);
+                claw.setPosition(pos);
             }
         }
     }
@@ -300,13 +241,15 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
-            while (testIsActive()) {
+            ArmLift lift = new ArmLift(hw);
+
+            while (opModeIsActive()) {
                 if (gamepad1.dpad_up) {
-                    liftMotor.setPower(1);
+                    lift.setPower(0.3);
                 } else if (gamepad1.dpad_down) {
-                    liftMotor.setPower(-1);
+                    lift.setPower(-0.3);
                 } else {
-                    liftMotor.setPower(0.0);
+                    lift.setPower(0.0);
                 }
             }
         }
@@ -320,27 +263,29 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
+            CRServo slide = hw.slideServo;
+
             double pow = 0.0;
 
             waitForStart();
 
-            while (opModeIsActive()) {
+            while (testIsActive()) {
                 if (gamepad1.dpad_up) {
                     pow += 0.01;
                 }
                 if (gamepad1.dpad_down) {
                     pow -= 0.01;
                 }
-                if (gamepad1.a) {
+                if (click1.a) {
                     pow *= -1.0;
                 }
 
-                servo2.setPower(pow);
+                slide.setPower(pow);
             }
         }
     }
 
-    private class LiftMotorTest implements ITestMode{
+    private class LiftMotorTest implements ITestMode {
         @Override
         public String getName() {
             return "Lift Motor Test";
@@ -366,7 +311,9 @@ public class HardwareTestMode extends LinearOpMode {
 
     private class DriveMotorTest implements ITestMode {
         @Override
-        public String getName() {return "DriveMotorTest";}
+        public String getName() {
+            return "DriveMotorTest";
+        }
 
         @Override
         public void runTest() {
@@ -379,16 +326,16 @@ public class HardwareTestMode extends LinearOpMode {
             //   2) Then make sure they run in the correct direction by modifying the
             //      the setDirection() calls above.
             // Once the correct motors move in the correct direction re-comment this code.
-            leftBackPower = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-            leftFrontPower = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-            rightBackPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-            rightFrontPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
+            double leftBackPower = gamepad1.x ? 1.0 : 0.0;  // X gamepad
+            double leftFrontPower = gamepad1.a ? 1.0 : 0.0;  // A gamepad
+            double rightBackPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
+            double rightFrontPower = gamepad1.b ? 1.0 : 0.0;  // B gamepad
 
             // Move the robot.
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(rightBackPower);
+            hw.leftFrontDrive.setPower(leftFrontPower);
+            hw.rightFrontDrive.setPower(rightFrontPower);
+            hw.leftBackDrive.setPower(leftBackPower);
+            hw.rightBackDrive.setPower(rightBackPower);
         }
     }
 }

@@ -1,6 +1,7 @@
 package edu.edina.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import edu.edina.Libraries.Robot.ArmExtension;
 import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.FuncInverter;
+import edu.edina.Libraries.Robot.GamePadClick;
 import edu.edina.Libraries.Robot.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
@@ -22,28 +24,35 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     double powerStep = 0.02;
     double speedThres = 1;
 
+    private GamePadClick click1;
     ILinearMechanism linearMech;
 
     @Override
     public void runOpMode() {
-        linearMech = new ArmLift(new RobotHardware(hardwareMap), hardwareMap);
+        linearMech = new ArmLift(new RobotHardware(hardwareMap));
+        click1 = new GamePadClick(gamepad1);
 
         waitForStart();
 
         telemetry.addLine("Press a to calibrate encoder");
         telemetry.addLine("Press b to calibrate Kv and Ks");
         telemetry.addLine("Press x to calibrate Ka");
+        telemetry.addLine("Press y to calibrate acceleration");
         telemetry.update();
 
         while (opModeIsActive()) {
-            if (gamepad1.a) {
+            click1.read();
+
+            if (click1.a) {
                 calibrateEncoder();
             }
-            if (gamepad1.b) {
+            if (click1.b) {
                 calibrateLinearKs();
             }
-            if (gamepad1.x) {
+            if (click1.x) {
                 calibrateKa();
+            }
+            if (click1.y) {
             }
         }
     }
@@ -150,6 +159,15 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
         fi.eval(0, testKa(0, targetDist));
         fi.eval(0.5, testKa(0.5, targetDist));
+
+        while (!fi.hasResult()) {
+            double ka = fi.getGuess();
+            double testDist = testKa(ka, targetDist);
+            fi.eval(ka, testDist);
+        }
+
+        telemetry.addData("final result", "ka = %.4f", fi.getResult());
+        telemetry.update();
     }
 
     private double testKa(double ka, double targetDist) {
@@ -160,7 +178,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         // the correct value for ka so that this math becomes good.
 
         while (opModeIsActive()) {
-            telemetry.addLine("press up to start test");
+            telemetry.addLine("press and hold up to test");
             telemetry.update();
             if (gamepad1.dpad_up)
                 break;
@@ -208,7 +226,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         return dist;
     }
 
-//    public double testAccel(double accel) {
-//
-//    }
+    public double testAccel(double accel) {
+        return 0.0;
+    }
 }

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import edu.edina.Libraries.Robot.GamePadClick;
+
 @Config
 @TeleOp
 public class TeleOpForScrimmage extends LinearOpMode {
@@ -76,17 +78,16 @@ public class TeleOpForScrimmage extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        GamePadClick click1=new GamePadClick(gamepad1);
         while (opModeIsActive()) {
-            // Update the gamepads.
-            previousGamepad.copy(currentGamepad);
-            currentGamepad.copy(gamepad1);
+            click1.read();
 
-            if (currentGamepad.a && !previousGamepad.a) {
+            if (click1.a) {
                 compoundArm.toggleClaw();
             }
 
-            if (currentGamepad.x && !previousGamepad.x) {
-                compoundArm.toggleWrist();
+            if (click1.x) {
+//                compoundArm.toggleWrist();
             }
 
             driveTrain.update();
