@@ -48,6 +48,16 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 compoundArm.toggleWrist();
             }
 
+            if (currentGamepad.left_bumper) {
+                compoundArm.retractSlide();
+            }
+            else if(currentGamepad.right_bumper) {
+                compoundArm.extendSlide();
+            }
+            else {
+                compoundArm.stopSlide();
+            }
+
             if (currentGamepad.dpad_down) {
                 compoundArm.setArmPosition(ARM_DOWN_POSITION);
             }
