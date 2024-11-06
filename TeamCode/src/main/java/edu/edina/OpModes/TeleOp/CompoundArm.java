@@ -4,9 +4,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.arcrobotics.ftclib.controller.PIDController;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import edu.edina.Libraries.Robot.RobotHardware;
 
@@ -16,34 +19,29 @@ public class CompoundArm {
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0;
     public static double WRIST_UP_POSITION = 0.3;
-    public static int ARM_DOWN_POSITION = 0; // Position 1
-    public static int ARM_WALL_POSITION = 100; // Position 2
-    public static int ARM_BASKET_POSITION = 200; // Position 3
-    public static int ARM_CHAMBER_POSITION = 300; // Position 4
-    public static double ARM_MOTOR_SPEED = 0.1;
-    public static double P = 10.0;
-    public static double I = 3.0;
-    public static double D = 0.0;
-    public static double F = 0.0;
+    public static int ARM_DOWN_POSITION = 0;
+    public static int ARM_WALL_POSITION = 200;
+    public static int ARM_BASKET_POSITION = 400;
+    public static int ARM_CHAMBER_POSITION = 600;
+    public static double TICKS_PER_DEGREE = 23.3; // Determined experimentally
+    private static final double INITIAL_DEGREES_BELOW_HORIZONTAL = 26; // Determined experimentally
+    public static double P = 0.0005;
+    public static double I = 0;
+    public static double D = 0;
+    public static double F = 0.1;
+    public static int TARGET_ARM_POSITION = 0;
+
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
     private boolean clawOpen;
     private boolean wristUp;
-
-    double armMotorPower;
-    double leftLiftPower;
-    double rightLiftPower;
+    private PIDController controller;
     double clawPosition;
-    double slidePower;
-    double slideEncoder;
-    double wristLeftPower;
-    double wristRightPower;
     double wristLeftPos;
-    double wristRightPos;
-    int armMotorPosition;
 
-    public CompoundArm(LinearOpMode opMode) throws InterruptedException {
+    public CompoundArm(LinearOpMode opMode) {
+
         // Remember the op mode.
         this.opMode = opMode;
 
@@ -56,14 +54,16 @@ public class CompoundArm {
         // Get hardware.
         robotHardware = new RobotHardware(hardwareMap);
 
+        robotHardware.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robotHardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robotHardware.armMotor.setTargetPosition(0);
-        robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robotHardware.armMotor.setPower(ARM_MOTOR_SPEED);
+        robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        controller = new PIDController(P, I, D);
+
     }
 
-    public void update() throws InterruptedException {
+    public void update(Telemetry telemetry) throws InterruptedException {
+
         Gamepad currentGamepad = opMode.gamepad1;
 
         // Verify input exists.
@@ -98,26 +98,32 @@ public class CompoundArm {
             throw new InterruptedException("The left wrist servo encoder is missing.");
         }
 
-        /*armMotorPower;
-        leftLiftPower;
-        rightLiftPower;
-        clawPosition;
-        slidePower;
-        slideEncoder;
-        wristLeftPower;
-        wristRightPower;
-        wristLeftPos;
-        wristRightPos;*/
+        DcMotorEx armMotor = robotHardware.armMotor;
 
-        // Check gamepad.
-            // Set power variables.
+        // PIDF Loops & Arm Control | FTC | 16379 KookyBotz
+        // https://www.youtube.com/watch?v=E6H6Nqe6qJo
 
-        // Turtle mode multipliers.
+        controller.setPID(P, I, D);
+        int actualArmPosition = armMotor.getCurrentPosition();
+        double actualArmDegrees = getDegrees(actualArmPosition);
+        double actualArmRadians = Math.toRadians(actualArmDegrees);
+        double pid = controller.calculate(actualArmPosition, TARGET_ARM_POSITION);
+        double targetArmDegrees = getDegrees(TARGET_ARM_POSITION);
+        double feedForward = Math.cos(actualArmRadians) * F;
 
-        // Call set power.
+        double power = pid + feedForward;
 
-        PIDFCoefficients armMotorPIDFCoefficients = new PIDFCoefficients(P, I, D, F);
-        robotHardware.armMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, armMotorPIDFCoefficients);
+        armMotor.setPower(power);
+
+        telemetry.addData("Status", "Running");
+        telemetry.addData("PID", pid);
+        telemetry.addData("Feed Forward", feedForward);
+        telemetry.addData("Power", power);
+        telemetry.addData("Actual Arm Position", actualArmPosition);
+        telemetry.addData("Actual Arm Degrees", actualArmDegrees);
+        telemetry.addData("Target Arm Position", TARGET_ARM_POSITION);
+        telemetry.addData("Target Arm Degrees", targetArmDegrees);
+
     }
 
     public void toggleClaw() {
@@ -133,27 +139,12 @@ public class CompoundArm {
     }
 
     public void setArmPosition(int position) {
-        if (position == 1) {
-            armMotorPosition = ARM_DOWN_POSITION;
-        }
-        if (position == 2) {
-            armMotorPosition = ARM_WALL_POSITION;
-        }
-        if (position == 3) {
-            armMotorPosition = ARM_BASKET_POSITION;
-        }
-        if (position == 4) {
-            armMotorPosition = ARM_CHAMBER_POSITION;
-        }
-        robotHardware.armMotor.setTargetPosition(armMotorPosition);
+        robotHardware.armMotor.setTargetPosition(position);
     }
 
-    public PIDFCoefficients getPID() {
-        PIDFCoefficients armMotorPID = robotHardware.armMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        return armMotorPID;
+    private double getDegrees(double ticks) {
+        double degrees = ticks / TICKS_PER_DEGREE - INITIAL_DEGREES_BELOW_HORIZONTAL;
+        return degrees;
     }
 
-    public double getArmEncoder() {
-        return robotHardware.armMotor.getCurrentPosition();
-    }
 }
