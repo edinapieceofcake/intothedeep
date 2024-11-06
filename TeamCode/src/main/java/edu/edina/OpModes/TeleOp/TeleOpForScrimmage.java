@@ -9,11 +9,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import edu.edina.Libraries.Robot.GamePadClick;
 
 @Config
 @TeleOp
@@ -22,12 +18,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
     private CompoundArm compoundArm;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Gamepad currentGamepad = new Gamepad();
-    private Gamepad previousGamepad = new Gamepad();
-    private Boolean redAlliance;
-    private Boolean basketSide;
-
     public void runOpMode() throws InterruptedException {
+
         // Get the robot drive train.
         driveTrain = new DriveTrain(this);
 
@@ -40,31 +32,35 @@ public class TeleOpForScrimmage extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        GamePadClick click1=new GamePadClick(gamepad1);
-        while (opModeIsActive()) {
-            click1.read();
+        Gamepad currentGamepad = new Gamepad();
+        Gamepad previousGamepad = new Gamepad();
 
-            if (click1.a) {
+        while (opModeIsActive()) {
+
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            if (currentGamepad.a && !previousGamepad.a) {
                 compoundArm.toggleClaw();
             }
 
-            if (click1.x) {
+            if (currentGamepad.x && !previousGamepad.x) {
                 compoundArm.toggleWrist();
             }
 
-            if (click1.dpad_down) {
+            if (currentGamepad.dpad_down) {
                 compoundArm.setArmPosition(ARM_DOWN_POSITION);
             }
 
-            if (click1.dpad_left) {
+            if (currentGamepad.dpad_left) {
                 compoundArm.setArmPosition(ARM_WALL_POSITION);
             }
 
-            if (click1.dpad_up) {
+            if (currentGamepad.dpad_up) {
                 compoundArm.setArmPosition(ARM_BASKET_POSITION);
             }
 
-            if (click1.dpad_right) {
+            if (currentGamepad.dpad_right) {
                 compoundArm.setArmPosition(ARM_CHAMBER_POSITION);
             }
 
@@ -72,14 +68,11 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
             compoundArm.update(telemetry);
 
-            //PIDFCoefficients armMotorPID = compoundArm.getPID();
+            telemetry.addData("Main", "====================");
+            telemetry.addData("Run Time", runtime.toString());
 
-            //telemetry.addData("PID: ", armMotorPID);
-
-            //telemetry.addData("Arm Motor Encoder: ", compoundArm.getArmEncoder());
-
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
+
         }
     }
 }

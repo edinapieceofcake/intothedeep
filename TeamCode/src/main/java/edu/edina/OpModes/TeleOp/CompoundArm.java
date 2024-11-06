@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -36,8 +37,6 @@ public class CompoundArm {
     private boolean clawOpen;
     private boolean wristUp;
     private PIDController controller;
-    double clawPosition;
-    double wristLeftPos;
 
     public CompoundArm(LinearOpMode opMode) {
 
@@ -114,27 +113,50 @@ public class CompoundArm {
 
         armMotor.setPower(power);
 
-        telemetry.addData("Status", "Running");
-        telemetry.addData("PID", pid);
-        telemetry.addData("Feed Forward", feedForward);
-        telemetry.addData("Power", power);
-        telemetry.addData("Actual Arm Position", actualArmPosition);
-        telemetry.addData("Actual Arm Degrees", actualArmDegrees);
-        telemetry.addData("Target Arm Position", targetArmPosition);
-        telemetry.addData("Target Arm Degrees", targetArmDegrees);
+        telemetry.addData("Arm", "====================");
+        telemetry.addData("- PID", pid);
+        telemetry.addData("- Feed Forward", feedForward);
+        telemetry.addData("- Power", power);
+        telemetry.addData("- Actual Position", actualArmPosition);
+        telemetry.addData("- Actual Degrees", actualArmDegrees);
+        telemetry.addData("- Target Position", targetArmPosition);
+        telemetry.addData("- Target Degrees", targetArmDegrees);
 
-    }
+        Servo claw = robotHardware.claw;
 
-    public void toggleClaw() {
-        clawPosition = clawOpen ? CLAW_CLOSED_POSITION : CLAW_OPEN_POSITION;
-        clawOpen = !clawOpen;
-        robotHardware.claw.setPosition(clawPosition);
+        double clawPosition = claw.getPosition();
+
+        telemetry.addData("Claw", "====================");
+        telemetry.addData("- Open", clawOpen);
+        telemetry.addData("- Position", clawPosition);
+
+        Servo wrist = robotHardware.wristLeft;
+
+        double wristPosition = wrist.getPosition();
+
+        telemetry.addData("Wrist", "====================");
+        telemetry.addData("- Up", wristUp);
+        telemetry.addData("- Position", wristPosition);
+
     }
 
     public void toggleWrist() {
-        wristLeftPos = wristUp ? WRIST_DOWN_POSITION : WRIST_UP_POSITION;
-        wristUp = !wristUp;
-        robotHardware.wristLeft.setPosition(wristLeftPos);
+        if(wristUp) {
+            lowerWrist();
+        }
+        else {
+            raiseWrist();
+        }
+    }
+
+    private void lowerWrist() {
+        robotHardware.wristLeft.setPosition(WRIST_DOWN_POSITION);
+        wristUp = false;
+    }
+
+    private void raiseWrist() {
+        robotHardware.wristLeft.setPosition(WRIST_UP_POSITION);
+        wristUp = true;
     }
 
     public void setArmPosition(int position) {
@@ -144,6 +166,25 @@ public class CompoundArm {
     private double getDegrees(double ticks) {
         double degrees = ticks / TICKS_PER_DEGREE - INITIAL_DEGREES_BELOW_HORIZONTAL;
         return degrees;
+    }
+
+    public void toggleClaw() {
+        if(clawOpen) {
+            closeClaw();
+        }
+        else {
+            openClaw();
+        }
+    }
+
+    private void closeClaw() {
+        robotHardware.claw.setPosition(CLAW_CLOSED_POSITION);
+        clawOpen = false;
+    }
+
+    private void openClaw() {
+        robotHardware.claw.setPosition(CLAW_OPEN_POSITION);
+        clawOpen = true;
     }
 
 }
