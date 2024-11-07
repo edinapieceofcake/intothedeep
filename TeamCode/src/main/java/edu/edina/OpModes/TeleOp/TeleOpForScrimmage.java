@@ -48,7 +48,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 compoundArm.toggleWrist();
             }
 
-            /*if (currentGamepad.left_bumper) {
+            if (currentGamepad.left_bumper) {
                 compoundArm.retractSlide();
             }
             else if(currentGamepad.right_bumper) {
@@ -56,7 +56,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
             else {
                 compoundArm.stopSlide();
-            }*/
+            }
 
             if (currentGamepad.dpad_down) {
                 compoundArm.setArmPosition(ARM_DOWN_POSITION);
@@ -74,9 +74,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 compoundArm.setArmPosition(ARM_CHAMBER_POSITION);
             }
 
-            if (gamepad1.right_bumper) {
+            if (gamepad1.right_trigger > 0.5) {
                 compoundArm.setLiftPower(0.3);
-            } else if (gamepad1.left_bumper) {
+            } else if (gamepad1.left_trigger > 0.5) {
                 compoundArm.setLiftPower(-0.3);
             } else {
                 compoundArm.setLiftPower(0.0);
