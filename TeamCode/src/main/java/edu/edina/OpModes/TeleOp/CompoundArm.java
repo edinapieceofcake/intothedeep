@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -24,7 +23,7 @@ public class CompoundArm {
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0;
     public static double WRIST_UP_POSITION = 0.4;
-    public static int ARM_DOWN_POSITION = 0;
+    public static int ARM_DOWN_POSITION = -400;
     public static int ARM_WALL_POSITION = 400;
     public static int ARM_BASKET_POSITION = 2000;
     public static int ARM_CHAMBER_POSITION = 3000;
@@ -135,6 +134,15 @@ public class CompoundArm {
         // Determine whether the arm is down.
         boolean armDown = armTouch.isPressed();
 
+        // If the arm is down...
+        if(armDown) {
+
+            // Reset the arm position to zero.
+            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        }
+
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");
         telemetry.addData("- Down", armDown);
@@ -169,13 +177,30 @@ public class CompoundArm {
         // Determine whether the lift is down.
         boolean liftDown = liftTouch.isPressed();
 
+        // Get the lift motors.
+        DcMotorEx liftMotorLeft = robotHardware.liftMotorLeft;
+        DcMotorEx liftMotorRight = robotHardware.liftMotorRight;
+
+        // If the lift is down...
+        if(liftDown) {
+
+            // Reset the lift position to zero.
+            liftMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
+
         // Get the lift's position.
-        double liftPosition = lift.getPosition(false);
+        double leftLiftPosition = liftMotorLeft.getCurrentPosition();
+        double rightLiftPosition = liftMotorRight.getCurrentPosition();
 
         // Display claw telemetry.
         telemetry.addData("Lift", "====================");
         telemetry.addData("- Down", liftDown);
-        telemetry.addData("- Position", liftPosition);
+        telemetry.addData("- Left Position", leftLiftPosition);
+        telemetry.addData("- Right Position", rightLiftPosition);
 
         // Update the slide.
         //////////////////////////////////////////////////////////////////////
