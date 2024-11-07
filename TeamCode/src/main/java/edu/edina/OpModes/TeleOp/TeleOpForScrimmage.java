@@ -13,22 +13,28 @@ import edu.edina.Libraries.Robot.RobotHardware;
 public class TeleOpForScrimmage extends LinearOpMode {
 
     /*
-    Controls
 
-    - left stick = move robot
-    - right stick = rotate robot
-    - a = toggle claw
-    - x = toggle wrist
-    - y = toggle turtle mode
-    - left bumper = retract slide
-    - right bumper = extend slide
-    - dpad down = previous arm position
-    - dpad up = next arm position
-    - dpad left = decrement arm position
-    - dpad right = increment arm position
-    - right trigger = raise lift
-    - left trigger = lower lift
-     */
+    Robot Controls
+
+    left stick = move robot
+    right stick = rotate robot
+
+    a = toggle claw
+    x = toggle wrist
+    y = toggle turtle mode
+
+    dpad up = next arm position
+    dpad down = previous arm position
+    dpad right = increment arm position
+    dpad left = decrement arm position
+
+    right trigger = raise lift
+    left trigger = lower lift
+
+    left bumper = retract slide
+    right bumper = extend slide
+
+    */
 
     private static final double TRIGGER_THRESHOLD = 0.5;
 
