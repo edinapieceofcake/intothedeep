@@ -26,6 +26,12 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Get the robot compound arm
         compoundArm = new CompoundArm(this);
 
+        // Lower the wrist.
+        compoundArm.lowerWrist();
+
+        // Open the claw.
+        compoundArm.openClaw();
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

@@ -214,7 +214,7 @@ public class CompoundArm {
     /**
      * Lowers the wrist.
      */
-    private void lowerWrist() {
+    public void lowerWrist() {
         Servo wrist = robotHardware.wristLeft;
         wrist.setPosition(WRIST_DOWN_POSITION);
         wristUp = false;
@@ -223,7 +223,7 @@ public class CompoundArm {
     /**
      * Raises the wrist.
      */
-    private void raiseWrist() {
+    public void raiseWrist() {
         Servo wrist = robotHardware.wristLeft;
         wrist.setPosition(WRIST_UP_POSITION);
         wristUp = true;
@@ -266,7 +266,7 @@ public class CompoundArm {
     /**
      * Closes the claw.
      */
-    private void closeClaw() {
+    public void closeClaw() {
         Servo claw = robotHardware.claw;
         claw.setPosition(CLAW_CLOSED_POSITION);
         clawOpen = false;
@@ -275,7 +275,7 @@ public class CompoundArm {
     /**
      * Opens the claw.
      */
-    private void openClaw() {
+    public void openClaw() {
         Servo claw = robotHardware.claw;
         claw.setPosition(CLAW_OPEN_POSITION);
         clawOpen = true;
