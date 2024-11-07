@@ -7,7 +7,10 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
 public class SlideCalMode extends LinearOpMode {
-    RobotHardware hw = new RobotHardware(hardwareMap);
+    RobotHardware hw = new RobotHardware(this);
+
+    public SlideCalMode() throws InterruptedException {
+    }
 
     @Override
     public void runOpMode() {

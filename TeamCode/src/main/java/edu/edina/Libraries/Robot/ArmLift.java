@@ -1,7 +1,5 @@
 package edu.edina.Libraries.Robot;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -26,8 +24,8 @@ public class ArmLift implements ILinearMechanism {
 
     public ArmLift(RobotHardware hw) {
         this.hardwareMap = hardwareMap;
-        left = hw.liftMotorL;
-        right = hw.liftMotorR;
+        left = hw.liftMotorLeft;
+        right = hw.liftMotorRight;
         vs = hw.voltageSensor;
 
         nominalVolt = 11.0;

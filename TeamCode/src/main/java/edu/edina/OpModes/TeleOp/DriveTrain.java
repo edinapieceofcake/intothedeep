@@ -20,15 +20,10 @@ public class DriveTrain {
 
     double max;
 
-    public DriveTrain(LinearOpMode opMode) throws InterruptedException {
+    public DriveTrain(LinearOpMode opMode, RobotHardware robotHardware) throws InterruptedException {
         // Remember the op mode.
         this.opMode = opMode;
-
-        // Get the hardware map.
-        HardwareMap hardwareMap = opMode.hardwareMap;
-
-        //get hardware
-        robotHardware = new RobotHardware(hardwareMap);
+        this.robotHardware = robotHardware;
     }
 
     public void update() throws InterruptedException {

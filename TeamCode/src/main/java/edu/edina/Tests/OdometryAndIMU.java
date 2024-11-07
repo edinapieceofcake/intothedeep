@@ -19,11 +19,11 @@ public class OdometryAndIMU extends LinearOpMode {
     private double yawIMU;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+        RobotHardware hw = new RobotHardware(this);
 
         yawIMU = 0.0;
 

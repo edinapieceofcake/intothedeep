@@ -17,8 +17,8 @@ public class TeleOpLaunchMenuTest extends LinearOpMode {
     private Boolean basketSide;
 
     @Override
-    public void runOpMode() {
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
 
         // While the op mode is active...
         while (!isStopRequested()) {

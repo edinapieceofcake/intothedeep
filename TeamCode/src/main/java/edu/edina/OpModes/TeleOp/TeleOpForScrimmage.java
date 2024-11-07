@@ -11,31 +11,38 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import edu.edina.Libraries.Robot.RobotHardware;
+
 @Config
 @TeleOp
 public class TeleOpForScrimmage extends LinearOpMode {
-    private DriveTrain driveTrain;
-    private CompoundArm compoundArm;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     public void runOpMode() throws InterruptedException {
 
-        // Get the robot drive train.
-        driveTrain = new DriveTrain(this);
+        // Get hardware.
+        RobotHardware robotHardware = new RobotHardware(this);
 
-        // Get the robot compound arm
-        compoundArm = new CompoundArm(this);
+        // Wait for the user to lower the lift.
+        robotHardware.waitForLiftDown();
 
-        // Lower the wrist.
-        compoundArm.lowerWrist();
+        // Initialize the robot.
+        robotHardware.initializeRobot();
 
-        // Open the claw.
-        compoundArm.openClaw();
+        // If stop is requested...
+        if(isStopRequested()) {
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+            // Exit the method.
+            return;
+
+        }
+
+        // Prompt the user to press start.
+        robotHardware.log("Waiting for start...");
 
         waitForStart();
+
         runtime.reset();
 
         Gamepad currentGamepad = new Gamepad();
@@ -47,50 +54,50 @@ public class TeleOpForScrimmage extends LinearOpMode {
             currentGamepad.copy(gamepad1);
 
             if (currentGamepad.a && !previousGamepad.a) {
-                compoundArm.toggleClaw();
+                robotHardware.compoundArm.toggleClaw();
             }
 
             if (currentGamepad.x && !previousGamepad.x) {
-                compoundArm.toggleWrist();
+                robotHardware.compoundArm.toggleWrist();
             }
 
             if (currentGamepad.left_bumper) {
-                compoundArm.retractSlide();
+                robotHardware.compoundArm.retractSlide();
             }
             else if(currentGamepad.right_bumper) {
-                compoundArm.extendSlide();
+                robotHardware.compoundArm.extendSlide();
             }
             else {
-                compoundArm.stopSlide();
+                robotHardware.compoundArm.stopSlide();
             }
 
             if (currentGamepad.dpad_down) {
-                compoundArm.setArmPosition(ARM_DOWN_POSITION);
+                robotHardware.compoundArm.setArmPosition(ARM_DOWN_POSITION);
             }
 
             if (currentGamepad.dpad_left) {
-                compoundArm.setArmPosition(ARM_WALL_POSITION);
+                robotHardware.compoundArm.setArmPosition(ARM_WALL_POSITION);
             }
 
             if (currentGamepad.dpad_up) {
-                compoundArm.setArmPosition(ARM_BASKET_POSITION);
+                robotHardware.compoundArm.setArmPosition(ARM_BASKET_POSITION);
             }
 
             if (currentGamepad.dpad_right) {
-                compoundArm.setArmPosition(ARM_CHAMBER_POSITION);
+                robotHardware.compoundArm.setArmPosition(ARM_CHAMBER_POSITION);
             }
 
             if (gamepad1.right_trigger > 0.5) {
-                compoundArm.setLiftPower(0.3);
+                robotHardware.compoundArm.setLiftPower(0.3);
             } else if (gamepad1.left_trigger > 0.5) {
-                compoundArm.setLiftPower(-0.3);
+                robotHardware.compoundArm.setLiftPower(-0.3);
             } else {
-                compoundArm.setLiftPower(0.0);
+                robotHardware.compoundArm.setLiftPower(0.0);
             }
 
-            driveTrain.update();
+            robotHardware.driveTrain.update();
 
-            compoundArm.update(telemetry);
+            robotHardware.compoundArm.update(telemetry);
 
             telemetry.addData("Main", "====================");
             telemetry.addData("Run Time", runtime.toString());
@@ -99,4 +106,5 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
         }
     }
+
 }

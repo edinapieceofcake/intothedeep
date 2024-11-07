@@ -38,9 +38,9 @@ public class HardwareTestMode extends LinearOpMode {
     // make field
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         click1 = new GamePadClick(gamepad1);
-        hw = new RobotHardware(hardwareMap);
+        hw = new RobotHardware(this);
 
 
         int testIndex = 0;

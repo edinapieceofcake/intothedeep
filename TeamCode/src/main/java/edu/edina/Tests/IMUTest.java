@@ -17,8 +17,8 @@ public class IMUTest extends LinearOpMode {
     private double yaw;
 
     @Override
-    public void runOpMode() {
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
 
         waitForStart();
 

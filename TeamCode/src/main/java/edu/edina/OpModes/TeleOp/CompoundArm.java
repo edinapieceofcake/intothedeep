@@ -17,9 +17,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.RobotHardware;
 
-/**
- * This represents a compound arm.
- */
 @Config
 public class CompoundArm {
 
@@ -49,23 +46,17 @@ public class CompoundArm {
     private PIDController controller;
     private ArmLift lift;
 
-    /**
-     * Initializes this.
-     * @param opMode An op mode
-     */
-    public CompoundArm(LinearOpMode opMode) {
+    // Initializes this.
+    public CompoundArm(LinearOpMode opMode, RobotHardware robotHardware) throws InterruptedException {
 
         // Remember the op mode.
         this.opMode = opMode;
 
+        // Remember the robot hardware.
+        this.robotHardware = robotHardware;
+
         // Initialize the FTC dashboard.
         ftcDashboard = FtcDashboard.getInstance();
-
-        // Get the hardware map.
-        HardwareMap hardwareMap = opMode.hardwareMap;
-
-        // Get hardware.
-        robotHardware = new RobotHardware(hardwareMap);
 
         // Configure the arm motor.
         DcMotorEx armMotor = robotHardware.armMotor;
@@ -79,21 +70,17 @@ public class CompoundArm {
         lift = new ArmLift(robotHardware);
     }
 
-    /**
-     * Updates this.
-     * @param telemetry A telemetry interface
-     * @throws InterruptedException If updating this fails
-     */
+    // Updates this.
     public void update(Telemetry telemetry) throws InterruptedException {
 
         // Verify input exists.
         if (robotHardware.armMotor == null) {
             throw new InterruptedException("The arm motor is missing.");
         }
-        if (robotHardware.liftMotorL == null) {
+        if (robotHardware.liftMotorLeft == null) {
             throw new InterruptedException("The left lift motor is missing.");
         }
-        if (robotHardware.liftMotorR == null) {
+        if (robotHardware.liftMotorRight == null) {
             throw new InterruptedException("The right lift motor is missing.");
         }
         if (robotHardware.claw == null) {
@@ -220,9 +207,7 @@ public class CompoundArm {
 
     }
 
-    /**
-     * Toggles the wrist.
-     */
+    // Toggles the wrist.
     public void toggleWrist() {
         if(wristUp) {
             lowerWrist();
@@ -232,49 +217,37 @@ public class CompoundArm {
         }
     }
 
-    /**
-     * Lowers the wrist.
-     */
+    // Lowers the wrist.
     public void lowerWrist() {
         Servo wrist = robotHardware.wristLeft;
         wrist.setPosition(WRIST_DOWN_POSITION);
         wristUp = false;
     }
 
-    /**
-     * Raises the wrist.
-     */
+    // Raises the wrist.
     public void raiseWrist() {
         Servo wrist = robotHardware.wristLeft;
         wrist.setPosition(WRIST_UP_POSITION);
         wristUp = true;
     }
 
-    /**
-     * Sets the arm position.
-     * @param position A position
-     */
+    // Sets the arm position.
     public void setArmPosition(int position) {
         targetArmPosition = position;
     }
 
+    // Set the lift's power.
     public void setLiftPower(double power) {
         lift.setPower(power);
     }
 
-    /**
-     * Converts the arm motor's ticks to degrees.
-     * @param ticks A tick count
-     * @return A degrees value
-     */
+    // Converts the arm motor's ticks to degrees.
     private double getDegrees(double ticks) {
         double degrees = ticks / TICKS_PER_DEGREE - INITIAL_DEGREES_BELOW_HORIZONTAL;
         return degrees;
     }
 
-    /**
-     * Toggles the claw.
-     */
+    // Toggles the claw.
     public void toggleClaw() {
         if(clawOpen) {
             closeClaw();
@@ -284,43 +257,33 @@ public class CompoundArm {
         }
     }
 
-    /**
-     * Closes the claw.
-     */
+    // Closes the claw.
     public void closeClaw() {
         Servo claw = robotHardware.claw;
         claw.setPosition(CLAW_CLOSED_POSITION);
         clawOpen = false;
     }
 
-    /**
-     * Opens the claw.
-     */
+    // Opens the claw.
     public void openClaw() {
         Servo claw = robotHardware.claw;
         claw.setPosition(CLAW_OPEN_POSITION);
         clawOpen = true;
     }
 
-    /**
-     * Retracts the slide
-     */
+    // Retracts the slide
     public void retractSlide() {
         CRServo slideServo = robotHardware.slideServo;
         slideServo.setPower(RETRACT_SLIDE_POWER);
     }
 
-    /**
-     * Extends the slide.
-     */
+    // Extends the slide.
     public void extendSlide() {
         CRServo slideServo = robotHardware.slideServo;
         slideServo.setPower(EXTEND_SLIDE_POWER);
     }
 
-    /**
-     * Stops the slide.
-     */
+    // Stops the slide.
     public void stopSlide() {
         CRServo slideServo = robotHardware.slideServo;
         slideServo.setPower(0);
