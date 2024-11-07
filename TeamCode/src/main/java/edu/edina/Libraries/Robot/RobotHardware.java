@@ -1,5 +1,7 @@
 package edu.edina.Libraries.Robot;
 
+import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_DOWN_POSITION;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -257,6 +259,9 @@ public class RobotHardware {
         // Open the claw.
         compoundArm.openClaw();
 
+        // Lower the arm.
+        compoundArm.setArmPosition(ARM_DOWN_POSITION);
+
     }
 
     // Resets the arm motor.
@@ -268,7 +273,6 @@ public class RobotHardware {
         }
 
         // Reset the arm motor.
-        armMotor.setPower(0);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
