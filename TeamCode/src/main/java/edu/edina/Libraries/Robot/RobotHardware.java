@@ -177,6 +177,25 @@ public class RobotHardware {
 
     }
 
+    // Waits for the user to lower the arm.
+    public void waitForArmDown() throws InterruptedException {
+
+        // While the arm is up...
+        while (!opMode.isStopRequested() && !armTouch.isPressed()) {
+
+            // Instruct the user to lower the arm.
+            log("Please lower the arm...");
+
+        }
+
+        // Reset the arm.
+        resetArm();
+
+        // Notify the user that the arm is down.
+        log("Arm is down");
+
+    }
+
     // Logs a message.
     public void log(String message) {
 
@@ -237,6 +256,22 @@ public class RobotHardware {
 
         // Open the claw.
         compoundArm.openClaw();
+
+    }
+
+    // Resets the arm motor.
+    private void resetArm() throws InterruptedException {
+
+        // Verify inputs exist.
+        if(armMotor == null) {
+            throw new InterruptedException("The arm motor is missing.");
+        }
+
+        // Reset the arm motor.
+        armMotor.setPower(0);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 

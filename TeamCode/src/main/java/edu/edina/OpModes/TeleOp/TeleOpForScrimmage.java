@@ -27,6 +27,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Wait for the user to lower the lift.
         robotHardware.waitForLiftDown();
 
+        // Wait for the user to lower the arm.
+        robotHardware.waitForArmDown();
+
         // Initialize the robot.
         robotHardware.initializeRobot();
 
