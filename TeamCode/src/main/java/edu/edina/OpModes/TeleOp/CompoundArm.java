@@ -34,8 +34,10 @@ public class CompoundArm {
     public static double I = 0;
     public static double D = 0;
     public static double F = 0.1;
-    public static double RETRACT_SLIDE_POWER = 0.2;
-    public static double EXTEND_SLIDE_POWER = -0.4;
+    public static double RETRACT_SLIDE_POWER = 1;
+    public static double EXTEND_SLIDE_POWER = -1;
+    public static double RAISE_LIFT_POWER = 1;
+    public static double LOWER_LIFT_POWER = -1;
 
     private int targetArmPosition = 0;
     private LinearOpMode opMode;
@@ -240,11 +242,6 @@ public class CompoundArm {
         targetArmPosition = position;
     }
 
-    // Set the lift's power.
-    public void setLiftPower(double power) {
-        lift.setPower(power);
-    }
-
     // Converts the arm motor's ticks to degrees.
     private double getDegrees(double ticks) {
         double degrees = ticks / TICKS_PER_DEGREE - INITIAL_DEGREES_BELOW_HORIZONTAL;
@@ -291,6 +288,21 @@ public class CompoundArm {
     public void stopSlide() {
         CRServo slideServo = robotHardware.slideServo;
         slideServo.setPower(0);
+    }
+
+    // Raises the lift.
+    public void raiseLift() {
+        lift.setPower(RAISE_LIFT_POWER);
+    }
+
+    // Lowers the lift.
+    public void lowerLift() {
+        lift.setPower(LOWER_LIFT_POWER);
+    }
+
+    // Stops the lift.
+    public void stopLift() {
+        lift.setPower(0);
     }
 
 }

@@ -91,11 +91,11 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger > 0.5) {
-                robotHardware.compoundArm.setLiftPower(0.3);
+                robotHardware.compoundArm.raiseLift();
             } else if (gamepad1.left_trigger > 0.5) {
-                robotHardware.compoundArm.setLiftPower(-0.3);
+                robotHardware.compoundArm.lowerLift();
             } else {
-                robotHardware.compoundArm.setLiftPower(0.0);
+                robotHardware.compoundArm.stopLift();
             }
 
             robotHardware.driveTrain.update();
