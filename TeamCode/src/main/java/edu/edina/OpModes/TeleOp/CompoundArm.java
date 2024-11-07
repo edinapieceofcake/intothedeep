@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 /**
@@ -45,6 +46,7 @@ public class CompoundArm {
     private boolean clawOpen;
     private boolean wristUp;
     private PIDController controller;
+    private ArmLift lift;
 
     /**
      * Initializes this.
@@ -73,6 +75,7 @@ public class CompoundArm {
         // Initialize the arm controller.
         controller = new PIDController(P, I, D);
 
+        lift = new ArmLift(robotHardware);
     }
 
     /**
@@ -232,6 +235,10 @@ public class CompoundArm {
      */
     public void setArmPosition(int position) {
         targetArmPosition = position;
+    }
+
+    public void setLiftPower(double power) {
+        lift.setPower(power);
     }
 
     /**
