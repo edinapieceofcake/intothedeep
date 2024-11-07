@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -31,7 +31,9 @@ public class RobotHardware {
                 0 - Axon Micro+ ServoE - wrist_left
                 1 - GoBilda 5 turn - claw_servo
                 2 - Axon Micro+ ServoF - wrist_right
-            I2C`
+            Digital Devices
+                5 - REV Touch Sensor - arm_touch
+            I2C
                 3 - Neopixel Driver - neopixel_driver
             Analog
                 0 - Axon Micro+ ServoE - wrist_left_encoder
@@ -59,6 +61,7 @@ public class RobotHardware {
     public ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
+    public final TouchSensor armTouch;
 
     public RobotHardware(HardwareMap hardwareMap) {
         this(hardwareMap, null);
@@ -111,6 +114,8 @@ public class RobotHardware {
         wristLeft = hardwareMap.get(Servo.class, "wrist_left");
         wristRight = hardwareMap.get(Servo.class, "wrist_right");
         claw = hardwareMap.get(Servo.class, "claw_servo");
+
+        armTouch = hardwareMap.get(TouchSensor.class, "arm_touch");
 
         slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
         wristEncoderL = hardwareMap.get(AnalogInput.class, "wrist_left_encoder");

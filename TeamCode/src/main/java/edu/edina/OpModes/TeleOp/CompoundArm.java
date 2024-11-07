@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -139,8 +140,15 @@ public class CompoundArm {
         // Set the arm's power.
         armMotor.setPower(power);
 
+        // Get the arm touch sensor.
+        TouchSensor armTouch = robotHardware.armTouch;
+
+        // Determine whether the arm is down.
+        boolean armDown = armTouch.isPressed();
+
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");
+        telemetry.addData("- Down", armDown);
         telemetry.addData("- PID", pid);
         telemetry.addData("- Feed Forward", feedForward);
         telemetry.addData("- Power", power);
