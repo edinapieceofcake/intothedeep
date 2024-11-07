@@ -33,10 +33,12 @@ public class ArmLift implements ILinearMechanism {
 
     @Override
     public void setPower(double power) {
-        double adjPower = power * nominalVolt / vs.getVoltage();
+        //double adjPower = power * nominalVolt / vs.getVoltage();
+        //left.setPower(adjPower);
+        //right.setPower(adjPower);
 
-        left.setPower(adjPower);
-        right.setPower(adjPower);
+        left.setPower(power);
+        right.setPower(power);
     }
 
     @Override
