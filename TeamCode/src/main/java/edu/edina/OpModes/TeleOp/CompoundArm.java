@@ -70,7 +70,7 @@ public class CompoundArm {
     }
 
     // Updates this.
-    public void update(Telemetry telemetry) throws InterruptedException {
+    public void update() throws InterruptedException {
 
         // Verify input exists.
         if (robotHardware.armMotor == null) {
@@ -140,6 +140,9 @@ public class CompoundArm {
             armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         }
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
 
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");

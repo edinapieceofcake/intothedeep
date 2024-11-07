@@ -12,6 +12,26 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @TeleOp
 public class TeleOpForScrimmage extends LinearOpMode {
 
+    /*
+    Controls
+
+    - left stick = move robot
+    - right stick = rotate robot
+    - a = toggle claw
+    - x = toggle wrist
+    - y = toggle turtle mode
+    - left bumper = retract slide
+    - right bumper = extend slide
+    - dpad down = previous arm position
+    - dpad up = next arm position
+    - dpad left = decrement arm position
+    - dpad right = increment arm position
+    - right trigger = raise lift
+    - left trigger = lower lift
+     */
+
+    private static final double TRIGGER_THRESHOLD = 0.5;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     public void runOpMode() throws InterruptedException {
@@ -46,56 +66,64 @@ public class TeleOpForScrimmage extends LinearOpMode {
         Gamepad currentGamepad = new Gamepad();
         Gamepad previousGamepad = new Gamepad();
 
+        CompoundArm compoundArm = robotHardware.compoundArm;
+
+        DriveTrain driveTrain = robotHardware.driveTrain;
+
         while (opModeIsActive()) {
 
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
             if (currentGamepad.a && !previousGamepad.a) {
-                robotHardware.compoundArm.toggleClaw();
+                compoundArm.toggleClaw();
             }
 
             if (currentGamepad.x && !previousGamepad.x) {
-                robotHardware.compoundArm.toggleWrist();
+                compoundArm.toggleWrist();
             }
 
             if (currentGamepad.left_bumper) {
-                robotHardware.compoundArm.retractSlide();
+                compoundArm.retractSlide();
             }
             else if(currentGamepad.right_bumper) {
-                robotHardware.compoundArm.extendSlide();
+                compoundArm.extendSlide();
             }
             else {
-                robotHardware.compoundArm.stopSlide();
+                compoundArm.stopSlide();
             }
 
             if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-                robotHardware.compoundArm.previousArmPosition();
+                compoundArm.previousArmPosition();
             }
 
             if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-                robotHardware.compoundArm.nextArmPosition();
+                compoundArm.nextArmPosition();
             }
 
             if (currentGamepad.dpad_left) {
-                robotHardware.compoundArm.decrementArmPosition();
+                compoundArm.decrementArmPosition();
             }
 
             if (currentGamepad.dpad_right) {
-                robotHardware.compoundArm.incrementArmPosition();
+                compoundArm.incrementArmPosition();
             }
 
-            if (gamepad1.right_trigger > 0.5) {
-                robotHardware.compoundArm.raiseLift();
-            } else if (gamepad1.left_trigger > 0.5) {
-                robotHardware.compoundArm.lowerLift();
+            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+                compoundArm.raiseLift();
+            } else if (currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
+                compoundArm.lowerLift();
             } else {
-                robotHardware.compoundArm.stopLift();
+                compoundArm.stopLift();
             }
 
-            robotHardware.driveTrain.update();
+            if(currentGamepad.y && !previousGamepad.y) {
+                driveTrain.toggleTurtleMode();
+            }
 
-            robotHardware.compoundArm.update(telemetry);
+            driveTrain.update();
+
+            compoundArm.update();
 
             telemetry.addData("Main", "====================");
             telemetry.addData("Run Time", runtime.toString());
