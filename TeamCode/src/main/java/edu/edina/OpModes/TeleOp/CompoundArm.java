@@ -167,9 +167,13 @@ public class CompoundArm {
         // Determine whether the lift is down.
         boolean liftDown = liftTouch.isPressed();
 
+        // Get the lift's position.
+        double liftPosition = lift.getPosition(false);
+
         // Display claw telemetry.
         telemetry.addData("Lift", "====================");
         telemetry.addData("- Down", liftDown);
+        telemetry.addData("- Position", liftPosition);
 
         // Update the slide.
         //////////////////////////////////////////////////////////////////////
