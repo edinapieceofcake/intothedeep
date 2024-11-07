@@ -25,9 +25,9 @@ public class CompoundArm {
     public static double CLAW_OPEN_POSITION = 0.56;
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0;
-    public static double WRIST_UP_POSITION = 0.3;
+    public static double WRIST_UP_POSITION = 0.4;
     public static int ARM_DOWN_POSITION = 0;
-    public static int ARM_WALL_POSITION = 1000;
+    public static int ARM_WALL_POSITION = 400;
     public static int ARM_BASKET_POSITION = 2000;
     public static int ARM_CHAMBER_POSITION = 3000;
     public static double TICKS_PER_DEGREE = 23.3; // Determined experimentally
