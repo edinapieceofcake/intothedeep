@@ -23,10 +23,7 @@ public class CompoundArm {
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0;
     public static double WRIST_UP_POSITION = 0.4;
-    public static int ARM_DOWN_POSITION = -400;
-    public static int ARM_WALL_POSITION = 400;
-    public static int ARM_BASKET_POSITION = 2000;
-    public static int ARM_CHAMBER_POSITION = 3000;
+    public static int[] ARM_POSITIONS = new int[] {-400, 400, 3000, 4900};
     public static double TICKS_PER_DEGREE = 23.3; // Determined experimentally
     private static final double INITIAL_DEGREES_BELOW_HORIZONTAL = 26; // Determined experimentally
     public static double P = 0.0005;
@@ -37,6 +34,7 @@ public class CompoundArm {
     public static double EXTEND_SLIDE_POWER = -1;
     public static double RAISE_LIFT_POWER = 1;
     public static double LOWER_LIFT_POWER = -1;
+    public static int ARM_POSITION_INCREMENT = 25;
 
     private int targetArmPosition = 0;
     private LinearOpMode opMode;
@@ -328,6 +326,76 @@ public class CompoundArm {
     // Stops the lift.
     public void stopLift() {
         lift.setPower(0);
+    }
+
+    // Goes to the previous arm position.
+    public void previousArmPosition() {
+
+        // Count the arm positions.
+        int count = ARM_POSITIONS.length;
+
+        // For each arm position...
+        for(int index = count - 1; index >= 0; index--) {
+
+            // Get the current arm position.
+            int currentArmPosition = ARM_POSITIONS[index];
+
+            // If the current arm position is less than the target...
+            if(currentArmPosition < targetArmPosition) {
+
+                // Use the current arm position as the target.
+                targetArmPosition = currentArmPosition;
+
+                // Exit the method.
+                return;
+
+            }
+
+        }
+
+    }
+
+    // Goes to the next arm position.
+    public void nextArmPosition() {
+
+        // Count the arm positions.
+        int count = ARM_POSITIONS.length;
+
+        // For each arm position...
+        for(int index = 0; index < count; index++) {
+
+            // Get the current arm position.
+            int currentArmPosition = ARM_POSITIONS[index];
+
+            // If the current arm position is greater than the target...
+            if(currentArmPosition > targetArmPosition) {
+
+                // Use the current arm position as the target.
+                targetArmPosition = currentArmPosition;
+
+                // Exit the method.
+                return;
+
+            }
+
+        }
+
+    }
+
+    // Decrements the arm position.
+    public void decrementArmPosition() {
+
+        // Decrement the arm position.
+        targetArmPosition -= ARM_POSITION_INCREMENT;
+
+    }
+
+    // Increments the arm position.
+    public void incrementArmPosition() {
+
+        // Increment the arm position.
+        targetArmPosition += ARM_POSITION_INCREMENT;
+
     }
 
 }

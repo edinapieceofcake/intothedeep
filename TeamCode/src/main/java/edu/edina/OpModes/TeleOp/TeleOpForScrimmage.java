@@ -1,10 +1,5 @@
 package edu.edina.OpModes.TeleOp;
 
-import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_BASKET_POSITION;
-import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_CHAMBER_POSITION;
-import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_DOWN_POSITION;
-import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_WALL_POSITION;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -74,20 +69,20 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 robotHardware.compoundArm.stopSlide();
             }
 
-            if (currentGamepad.dpad_down) {
-                robotHardware.compoundArm.setArmPosition(ARM_DOWN_POSITION);
+            if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+                robotHardware.compoundArm.previousArmPosition();
+            }
+
+            if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+                robotHardware.compoundArm.nextArmPosition();
             }
 
             if (currentGamepad.dpad_left) {
-                robotHardware.compoundArm.setArmPosition(ARM_WALL_POSITION);
-            }
-
-            if (currentGamepad.dpad_up) {
-                robotHardware.compoundArm.setArmPosition(ARM_BASKET_POSITION);
+                robotHardware.compoundArm.decrementArmPosition();
             }
 
             if (currentGamepad.dpad_right) {
-                robotHardware.compoundArm.setArmPosition(ARM_CHAMBER_POSITION);
+                robotHardware.compoundArm.incrementArmPosition();
             }
 
             if (gamepad1.right_trigger > 0.5) {

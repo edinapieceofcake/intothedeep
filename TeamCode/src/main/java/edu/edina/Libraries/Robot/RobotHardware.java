@@ -1,6 +1,6 @@
 package edu.edina.Libraries.Robot;
 
-import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_DOWN_POSITION;
+import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_POSITIONS;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -259,8 +259,11 @@ public class RobotHardware {
         // Open the claw.
         compoundArm.openClaw();
 
+        // Get the first arm position.
+        int firstArmPosition = ARM_POSITIONS[0];
+
         // Lower the arm.
-        compoundArm.setArmPosition(ARM_DOWN_POSITION);
+        compoundArm.setArmPosition(firstArmPosition);
 
     }
 
