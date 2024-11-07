@@ -33,6 +33,7 @@ public class RobotHardware {
                 2 - Axon Micro+ ServoF - wrist_right
             Digital Devices
                 5 - REV Touch Sensor - arm_touch
+                7 - REV Touch Sensor - lift_touch
             I2C
                 3 - Neopixel Driver - neopixel_driver
             Analog
@@ -62,6 +63,7 @@ public class RobotHardware {
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
     public final TouchSensor armTouch;
+    public final TouchSensor liftTouch;
 
     public RobotHardware(HardwareMap hardwareMap) {
         this(hardwareMap, null);
@@ -116,6 +118,7 @@ public class RobotHardware {
         claw = hardwareMap.get(Servo.class, "claw_servo");
 
         armTouch = hardwareMap.get(TouchSensor.class, "arm_touch");
+        liftTouch = hardwareMap.get(TouchSensor.class, "lift_touch");
 
         slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
         wristEncoderL = hardwareMap.get(AnalogInput.class, "wrist_left_encoder");

@@ -171,6 +171,19 @@ public class CompoundArm {
         telemetry.addData("- Open", clawOpen);
         telemetry.addData("- Position", clawPosition);
 
+        // Update the lift.
+        //////////////////////////////////////////////////////////////////////
+
+        // Get the lift touch sensor.
+        TouchSensor liftTouch = robotHardware.liftTouch;
+
+        // Determine whether the lift is down.
+        boolean liftDown = liftTouch.isPressed();
+
+        // Display claw telemetry.
+        telemetry.addData("Lift", "====================");
+        telemetry.addData("- Down", liftDown);
+
         // Update the slide.
         //////////////////////////////////////////////////////////////////////
 
