@@ -31,7 +31,7 @@ public class CompoundArm {
     private static final double INITIAL_DEGREES_BELOW_HORIZONTAL = 26; // Determined experimentally
     public static double P = 0.0005;
     public static double I = 0;
-    public static double D = 0;
+    public static double D = 0.00005;
     public static double F = 0.1;
     public static double RETRACT_SLIDE_POWER = 1;
     public static double EXTEND_SLIDE_POWER = -1;
