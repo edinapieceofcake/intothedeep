@@ -11,7 +11,6 @@ public class GamePadClick {
 
     public boolean dpad_up, dpad_down, dpad_left, dpad_right;
     public boolean a, b, x, y;
-    public boolean left_bumper, right_bumper;
 
     public void read() {
         dpad_up = gamepad.dpad_up && !dpad_up;
@@ -22,7 +21,5 @@ public class GamePadClick {
         b = gamepad.b && !b;
         x = gamepad.x && !x;
         y = gamepad.y && !y;
-        left_bumper = gamepad.left_bumper && !left_bumper;
-        right_bumper = gamepad.right_bumper && !right_bumper;
     }
 }

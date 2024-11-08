@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import edu.edina.Libraries.Robot.ArmExtension;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -26,10 +25,8 @@ public class CompoundArm {
     private FtcDashboard ftcDashboard;
     private boolean clawOpen;
     private boolean wristUp;
-    private ArmExtension armExtension;
 
     double armMotorPower;
-    double armExtensionTarget;
     double leftLiftPower;
     double rightLiftPower;
     double clawPosition;
@@ -56,13 +53,9 @@ public class CompoundArm {
 
         robotHardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        
         //robotHardware.armMotor.setTargetPosition(0);
         robotHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robotHardware.armMotor.setPower(ARM_MOTOR_SPEED);
-        
-        // Arm extension.
-        armExtension = new ArmExtension(robotHardware);
     }
 
     public void update() throws InterruptedException {
@@ -112,26 +105,11 @@ public class CompoundArm {
         wristRightPos;*/
 
         // Check gamepad.
-        // Set power variables.
+            // Set power variables.
 
         // Turtle mode multipliers.
 
         // Call set power.
-        double currentExtensionPos = armExtension.getPosition(false);
-        double armExtensionDistance = armExtensionTarget - currentExtensionPos;
-        armExtension.setPower(armExtensionDistance / 10);
-
-        robotHardware.claw.setPosition(clawPosition);
-
-        robotHardware.wristLeft.setPosition(wristLeftPos);
-    }
-
-    public void toggleLift() {
-
-    }
-
-    public void extendArm(double armExtensionTarget) {
-        this.armExtensionTarget = armExtensionTarget;
     }
 
     public void toggleClaw() {
@@ -160,9 +138,5 @@ public class CompoundArm {
             armMotorPosition = ARM_CHAMBER_POSITION;
         }
         robotHardware.armMotor.setTargetPosition(armMotorPosition);
-    }
-
-    public ArmExtension getArmExtension() {
-        return armExtension;
     }
 }

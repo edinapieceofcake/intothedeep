@@ -61,33 +61,11 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 compoundArm.setArmPosition(4);
             }
 
-            if (click1.y) {
-                compoundArm.extendArm(6);
-            }
-
-            if (click1.left_bumper) {
-
-            }
-
-            if (click1.left_bumper && gamepad1.b) {
-
-            }
-
-            if (click1.right_bumper) {
-
-            }
-
-            if (click1.right_bumper && gamepad1.b) {
-
-            }
-
-
             driveTrain.update();
 
             compoundArm.update();
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("extension pos", compoundArm.getArmExtension().getPosition(false));
             telemetry.update();
         }
     }
