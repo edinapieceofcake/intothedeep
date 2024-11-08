@@ -257,8 +257,8 @@ public class RobotHardware {
         // Lower the wrist.
         compoundArm.lowerWrist();
 
-        // Open the claw.
-        compoundArm.openClaw();
+        // Close the claw.
+        compoundArm.closeClaw();
 
         // Get the first arm position.
         int firstArmPosition = ARM_POSITIONS[0];
