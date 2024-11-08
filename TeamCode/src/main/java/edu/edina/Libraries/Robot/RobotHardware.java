@@ -55,7 +55,7 @@ public class RobotHardware {
     private final Arm arm;
     private final Claw claw;
     private final Lift lift;
-    private final ArmExtension extension;
+    private final Slide slide;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -68,11 +68,11 @@ public class RobotHardware {
         // Initialize the claw.
         claw = new Claw(this);
 
-        // Initialize the extension.
-        extension = new ArmExtension(this);
-
         // Initialize the lift.
         lift = new Lift(this);
+
+        // Initialize the slide.
+        slide = new Slide(this);
 
         // Initialize the wrist.
         wrist = new Wrist(this);
@@ -182,11 +182,11 @@ public class RobotHardware {
         // Update the drivetrain.
         drivetrain.update();
 
-        // Update the extension.
-        extension.update();
-
         // Update the lift.
         lift.update();
+
+        // Update the slide.
+        slide.update();
 
         // Update the wrist.
         wrist.update();
@@ -257,27 +257,27 @@ public class RobotHardware {
 
     }
 
-    // Sets the extension's position.
-    public void setExtensionPosition(double position) {
+    // Sets the slide's position.
+    public void setSlidePosition(double position) {
 
-        // Set the extension's position.
-        extension.setPosition(position);
-
-    }
-
-    // Retracts the extension.
-    public void retractExtension() {
-
-        // Retract the extension.
-        extension.retract();
+        // Set the slide's position.
+        slide.setPosition(position);
 
     }
 
-    // Extends the extension.
-    public void extendExtension() {
+    // Retracts the slide.
+    public void retractSlide() {
 
-        // Extend the extension.
-        extension.extend();
+        // Retract the slide.
+        slide.retract();
+
+    }
+
+    // Extends the slide.
+    public void extendSlide() {
+
+        // Extend the slide.
+        slide.extend();
 
     }
 
@@ -285,7 +285,7 @@ public class RobotHardware {
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-        extension.setMinimumExtension();
+        slide.setMinimumExtension();
 
     }
 
@@ -293,7 +293,7 @@ public class RobotHardware {
     public void setLowBasketExtension() {
 
         // Set the low basket extension.
-        extension.setLowBasketExtension();
+        slide.setLowBasketExtension();
 
     }
 

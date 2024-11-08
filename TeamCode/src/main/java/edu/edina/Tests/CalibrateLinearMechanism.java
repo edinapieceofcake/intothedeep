@@ -1,14 +1,12 @@
 package edu.edina.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.Robot.ArmExtension;
 import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.Robot.GamePadClick;

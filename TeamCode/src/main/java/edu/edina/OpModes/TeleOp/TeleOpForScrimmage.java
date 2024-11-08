@@ -112,16 +112,16 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user is holding dpad right...
                 if (currentGamepad.dpad_right) {
 
-                    // Extend the extension.
-                    robotHardware.extendExtension();
+                    // Extend the slide.
+                    robotHardware.extendSlide();
 
                 }
 
                 // If the user is holding dpad left...
                 if(currentGamepad.dpad_left) {
 
-                    // Retract the extension.
-                    robotHardware.retractExtension();
+                    // Retract the slide.
+                    robotHardware.retractSlide();
 
                 }
 

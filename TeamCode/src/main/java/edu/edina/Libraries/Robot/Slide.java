@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
-public class ArmExtension {
+public class Slide {
 
     // Epsilon
     private static final double EPSILON = 0.0001;
@@ -60,7 +60,7 @@ public class ArmExtension {
     private final CRServo servo;
 
     // Initializes this.
-    public ArmExtension(RobotHardware robotHardware) {
+    public Slide(RobotHardware robotHardware) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
@@ -185,7 +185,7 @@ public class ArmExtension {
         Telemetry telemetry = opMode.telemetry;
 
         // Display extension telemetry.
-        telemetry.addData("Extension", "====================");
+        telemetry.addData("Slide", "====================");
         telemetry.addData("- Current Extension", currentExtension);
         telemetry.addData("- Current Voltage", currentVoltage);
         telemetry.addData("- Extension Error", extensionError);
