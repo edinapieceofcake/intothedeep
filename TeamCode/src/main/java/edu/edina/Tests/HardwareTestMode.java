@@ -209,7 +209,7 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
-            Servo wrist = hw.wristLeft;
+            //Servo wrist = hw.wristLeft;
             Servo claw = hw.claw;
 
             double pos = 0;
@@ -227,7 +227,7 @@ public class HardwareTestMode extends LinearOpMode {
                 telemetry.addData("pos", pos);
                 telemetry.update();
 
-                wrist.setPosition(pos);
+                //wrist.setPosition(pos);
                 claw.setPosition(pos);
             }
         }

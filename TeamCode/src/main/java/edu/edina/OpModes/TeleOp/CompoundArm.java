@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.ArmExtension;
 
@@ -22,8 +21,6 @@ import edu.edina.Libraries.Robot.ArmExtension;
 public class CompoundArm {
     public static double CLAW_OPEN_POSITION = 0.56;
     public static double CLAW_CLOSED_POSITION = 0.77;
-    public static double WRIST_DOWN_POSITION = 0.07;
-    public static double WRIST_UP_POSITION = 0.4;
     public static int[] ARM_POSITIONS = new int[] {-400, 400, 3000, 4900};
     public static double TICKS_PER_DEGREE = 23.3; // Determined experimentally
     private static final double INITIAL_DEGREES_BELOW_HORIZONTAL = 26; // Determined experimentally
@@ -44,7 +41,6 @@ public class CompoundArm {
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
     private boolean clawOpen;
-    private boolean wristUp;
     private PIDController controller;
     private Lift lift;
 
@@ -95,18 +91,6 @@ public class CompoundArm {
         }
         if (robotHardware.slideEncoder == null) {
             throw new InterruptedException("The slide servo encoder is missing.");
-        }
-        if (robotHardware.wristLeft == null) {
-            throw new InterruptedException("The left wrist servo is missing.");
-        }
-        if (robotHardware.wristRight == null) {
-            throw new InterruptedException("The right wrist servo is missing.");
-        }
-        if (robotHardware.wristEncoderR == null) {
-            throw new InterruptedException("The right wrist servo encoder is missing.");
-        }
-        if (robotHardware.wristEncoderL == null) {
-            throw new InterruptedException("The left wrist servo encoder is missing.");
         }
 
         // Update the arm motor.
@@ -234,47 +218,12 @@ public class CompoundArm {
         telemetry.addData("- Power", slidePower);
         telemetry.addData("- Voltage", slideVoltage);
 
-        // Update the wrist.
+        // Update the slider.
         //////////////////////////////////////////////////////////////////////
-
-        // Get the wrist.
-        Servo wrist = robotHardware.wristLeft;
-
-        // Get the wrist's position.
-        double wristPosition = wrist.getPosition();
-
-        // Display wrist telemetry.
-        telemetry.addData("Wrist", "====================");
-        telemetry.addData("- Up", wristUp);
-        telemetry.addData("- Position", wristPosition);
 
         double currentExtensionPos = armExtension.getPosition(false);
         double armExtensionDistance = armExtensionTarget - currentExtensionPos;
         armExtension.setPower(armExtensionDistance / 10);
-    }
-
-    // Toggles the wrist.
-    public void toggleWrist() {
-        if(wristUp) {
-            lowerWrist();
-        }
-        else {
-            raiseWrist();
-        }
-    }
-
-    // Lowers the wrist.
-    public void lowerWrist() {
-        Servo wrist = robotHardware.wristLeft;
-        wrist.setPosition(WRIST_DOWN_POSITION);
-        wristUp = false;
-    }
-
-    // Raises the wrist.
-    public void raiseWrist() {
-        Servo wrist = robotHardware.wristLeft;
-        wrist.setPosition(WRIST_UP_POSITION);
-        wristUp = true;
     }
 
     // Sets the arm position.

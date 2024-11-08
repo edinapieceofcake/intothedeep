@@ -86,7 +86,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if (currentGamepad.x && !previousGamepad.x) {
-                compoundArm.toggleWrist();
+                robotHardware.toggleWrist();
             }
 
             if (currentGamepad.left_bumper) {
@@ -126,6 +126,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
             if(currentGamepad.y && !previousGamepad.y) {
                 driveTrain.toggleTurtleMode();
             }
+
+            robotHardware.update();
 
             driveTrain.update();
 

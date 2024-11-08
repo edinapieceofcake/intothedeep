@@ -61,8 +61,8 @@ public class RobotHardware {
     public final DcMotorEx liftMotorLeft, liftMotorRight;
     public final DcMotorEx armMotor;
     public final CRServo slideServo;
-    public final Servo claw, wristLeft, wristRight;
-    public final AnalogInput slideEncoder, wristEncoderL, wristEncoderR;
+    public final Servo claw;
+    public final AnalogInput slideEncoder;
     public final IMU imu;
     public ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
@@ -71,9 +71,12 @@ public class RobotHardware {
     public final TouchSensor liftTouch;
     public DriveTrain driveTrain;
     public CompoundArm compoundArm;
+    private Wrist wrist;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
         this.opMode = opMode;
+
+        wrist = new Wrist(opMode);
 
         HardwareMap hardwareMap = opMode.hardwareMap;
 
@@ -119,16 +122,12 @@ public class RobotHardware {
         armMotor.setDirection(DcMotor.Direction.REVERSE);
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
 
-        wristLeft = hardwareMap.get(Servo.class, "wrist_left");
-        wristRight = hardwareMap.get(Servo.class, "wrist_right");
         claw = hardwareMap.get(Servo.class, "claw_servo");
 
         armTouch = hardwareMap.get(TouchSensor.class, "arm_touch");
         liftTouch = hardwareMap.get(TouchSensor.class, "lift_touch");
 
         slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
-        wristEncoderL = hardwareMap.get(AnalogInput.class, "wrist_left_encoder");
-        wristEncoderR = hardwareMap.get(AnalogInput.class, "wrist_right_encoder");
 
         // Get the robot drive train.
         driveTrain = new DriveTrain(opMode, this);
@@ -139,14 +138,6 @@ public class RobotHardware {
 
     public double getSlideVoltage() {
         return slideEncoder.getVoltage();
-    }
-
-    public double getWristLVolt() {
-        return wristEncoderL.getVoltage();
-    }
-
-    public double getWristRVolt() {
-        return wristEncoderR.getVoltage();
     }
 
     public int getLeftLift() {
@@ -255,7 +246,7 @@ public class RobotHardware {
     public void initializeRobot() {
 
         // Lower the wrist.
-        compoundArm.lowerWrist();
+        wrist.lower();
 
         // Close the claw.
         compoundArm.closeClaw();
@@ -280,6 +271,22 @@ public class RobotHardware {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+    }
+
+    // Toggles the wrist.
+    public void toggleWrist() {
+
+        // Toggle the wrist.
+        wrist.toggle();
+
+    }
+
+    // Updates this.
+    public void update() {
+
+        // Update the wrist.
+        wrist.update();
 
     }
 
