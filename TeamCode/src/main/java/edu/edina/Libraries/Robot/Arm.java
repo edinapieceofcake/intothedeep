@@ -25,6 +25,9 @@ public class Arm {
     // Initial degrees below horizontal (determined experimentally)
     public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 26;
 
+    // Nearly down position threshold
+    public static int NEARLY_DOWN_POSITION = 100;
+
     // Proportional coefficient
     public static double PROPORTIONAL = 0.0005;
 
@@ -265,6 +268,17 @@ public class Arm {
 
         // Move the arm to its first position.
         targetPosition = POSITIONS[0];
+
+    }
+
+    // Determines whether the arm is nearly down.
+    public boolean isNearlyDown() {
+
+        // Determine whether the arm is nearly down.
+        boolean isNearlyDown = targetPosition <= NEARLY_DOWN_POSITION;
+
+        // Return the result.
+        return isNearlyDown;
 
     }
 

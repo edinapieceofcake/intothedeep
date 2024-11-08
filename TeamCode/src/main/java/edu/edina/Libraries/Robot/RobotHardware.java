@@ -257,4 +257,15 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the arm is nearly down.
+    public boolean isArmNearlyDown() {
+
+        // Determine whether the arm is nearly down.
+        boolean isNearlyDown = arm.isNearlyDown();
+
+        // Return the result.
+        return isNearlyDown;
+
+    }
+
 }
