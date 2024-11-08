@@ -101,6 +101,7 @@ public class RobotHardware {
         liftMotorLeft = hardwareMap.get(DcMotorEx.class, "left_lift_motor");
         liftMotorRight = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
         liftMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

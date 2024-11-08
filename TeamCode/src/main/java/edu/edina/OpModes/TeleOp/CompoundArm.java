@@ -43,7 +43,7 @@ public class CompoundArm {
     private boolean clawOpen;
     private boolean wristUp;
     private PIDController controller;
-    private ArmLift lift;
+    private Lift lift;
 
     // Initializes this.
     public CompoundArm(LinearOpMode opMode, RobotHardware robotHardware) throws InterruptedException {
@@ -66,7 +66,7 @@ public class CompoundArm {
         // Initialize the arm controller.
         controller = new PIDController(P, I, D);
 
-        lift = new ArmLift(robotHardware);
+        lift = new Lift(opMode, robotHardware);
     }
 
     // Updates this.
@@ -172,6 +172,11 @@ public class CompoundArm {
         // Update the lift.
         //////////////////////////////////////////////////////////////////////
 
+        lift.update();
+
+        /*
+        //*** Already In Lift Class ***
+
         // Get the lift touch sensor.
         TouchSensor liftTouch = robotHardware.liftTouch;
 
@@ -197,11 +202,12 @@ public class CompoundArm {
         double leftLiftPosition = liftMotorLeft.getCurrentPosition();
         double rightLiftPosition = liftMotorRight.getCurrentPosition();
 
-        // Display claw telemetry.
+        // Display lift telemetry.
         telemetry.addData("Lift", "====================");
         telemetry.addData("- Down", liftDown);
         telemetry.addData("- Left Position", leftLiftPosition);
         telemetry.addData("- Right Position", rightLiftPosition);
+         */
 
         // Update the slide.
         //////////////////////////////////////////////////////////////////////
@@ -326,7 +332,6 @@ public class CompoundArm {
         lift.setPower(LOWER_LIFT_POWER);
     }
 
-    // Stops the lift.
     public void stopLift() {
         lift.setPower(0);
     }
