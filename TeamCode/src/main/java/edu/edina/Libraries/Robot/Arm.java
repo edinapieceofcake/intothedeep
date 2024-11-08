@@ -44,9 +44,6 @@ public class Arm {
     // Motor
     private final DcMotorEx motor;
 
-    // Op mode
-    private final LinearOpMode opMode;
-
     // Robot hardware
     private final RobotHardware robotHardware;
 
@@ -57,13 +54,13 @@ public class Arm {
     private final TouchSensor touch;
 
     // Initializes this.
-    public Arm(LinearOpMode opMode, RobotHardware robotHardware) {
-
-        // Remember the op mode.
-        this.opMode = opMode;
+    public Arm(RobotHardware robotHardware) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -118,6 +115,9 @@ public class Arm {
 
         }
 
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
+
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
 
@@ -146,7 +146,10 @@ public class Arm {
     }
 
     // Waits for the user to lower the arm.
-    public void waitForDown() throws InterruptedException {
+    public void waitForDown() {
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // While the arm is up...
         while (!opMode.isStopRequested() && !touch.isPressed()) {
@@ -244,8 +247,8 @@ public class Arm {
 
     }
 
-    // Sets the arm position.
-    public void setArmPosition(int position) {
+    // Sets the arm's position.
+    public void setPosition(int position) {
 
         // Set the target position.
         targetPosition = position;

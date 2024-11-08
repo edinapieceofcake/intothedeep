@@ -29,7 +29,7 @@ public class TeleOpTest extends LinearOpMode {
                 hw.liftMotorRight.setPower(0);
                 hw.liftMotorLeft.setPower(0);
             }
-            */
+
             if (gamepad1.right_bumper) {
                 hw.slideServo.setDirection(DcMotorSimple.Direction.FORWARD);
                 hw.slideServo.setPower(1);
@@ -39,7 +39,7 @@ public class TeleOpTest extends LinearOpMode {
             } else {
                 hw.slideServo.setPower(0);
             }
-            /*
+
             if (gamepad1.left_trigger > 0.1) {
                 hw.claw.setPosition(pos + 0.001);
             } else if (gamepad1.left_trigger < 0.1) {
@@ -57,8 +57,8 @@ public class TeleOpTest extends LinearOpMode {
             telemetry.addData("left lift", hw.getLeftLift());
             telemetry.addData("right lift", hw.getRightLift());
             telemetry.addData("arm motor", hw.getArmMotor());
-            */
             telemetry.addData("slide enc", hw.getSlideVoltage());
+            */
             telemetry.update();
         }
     }

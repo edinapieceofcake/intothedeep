@@ -29,9 +29,6 @@ public class Lift {
     // Left motor
     private final DcMotorEx leftMotor;
 
-    // Op mode
-    private LinearOpMode opMode;
-
     // Right motor
     private final DcMotorEx rightMotor;
 
@@ -45,13 +42,13 @@ public class Lift {
     private final TouchSensor touch;
 
     // Initializes this.
-    public Lift(LinearOpMode opMode, RobotHardware robotHardware) {
-
-        // Remember the op mode.
-        this.opMode = opMode;
+    public Lift(RobotHardware robotHardware) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -100,6 +97,9 @@ public class Lift {
 
         // Determine whether the lift is down.
         boolean down = touch.isPressed();
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
@@ -220,6 +220,9 @@ public class Lift {
 
     // Waits for the user to lower the lift.
     public void waitForDown() {
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // While the lift is up...
         while (!opMode.isStopRequested() && !touch.isPressed()) {

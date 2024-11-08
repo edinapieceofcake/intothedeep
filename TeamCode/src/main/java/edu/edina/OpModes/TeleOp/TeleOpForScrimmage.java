@@ -4,9 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -37,10 +35,10 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     */
 
+    // Trigger threshold
     private static final double TRIGGER_THRESHOLD = 0.5;
 
-    private ElapsedTime runtime = new ElapsedTime();
-
+    // Runs the op mode.
     public void runOpMode() throws InterruptedException {
 
         // Get hardware.
@@ -66,19 +64,17 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 
+        // Wait for the user to press start.
         waitForStart();
 
-        runtime.reset();
-
+        // Get current and previous gamepads.
         Gamepad currentGamepad = new Gamepad();
         Gamepad previousGamepad = new Gamepad();
 
-        CompoundArm compoundArm = robotHardware.compoundArm;
-
-        Drivetrain driveTrain = robotHardware.drivetrain;
-
+        // While the op mode is active...
         while (opModeIsActive()) {
 
+            // Update the gamepads.
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
@@ -91,13 +87,10 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if (currentGamepad.left_bumper) {
-                compoundArm.extendArm(0);
+                robotHardware.setExtensionPosition(0);
             }
             else if(currentGamepad.right_bumper) {
-                compoundArm.extendArm(10);
-            }
-            else {
-                compoundArm.extendArm(compoundArm.getArmExtension().getPosition(false));
+                robotHardware.setExtensionPosition(5);
             }
 
             if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
@@ -125,19 +118,17 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if(currentGamepad.y && !previousGamepad.y) {
-                driveTrain.toggleTurtleMode();
+                robotHardware.toggleTurtleMode();
             }
 
+            // Update the robot hardware.
             robotHardware.update();
 
-            compoundArm.update();
-
-            telemetry.addData("Main", "====================");
-            telemetry.addData("Run Time", runtime.toString());
-
+            // Update the telemetry.
             telemetry.update();
 
         }
+
     }
 
 }

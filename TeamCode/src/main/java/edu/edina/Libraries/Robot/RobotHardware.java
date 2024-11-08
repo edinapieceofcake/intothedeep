@@ -1,8 +1,6 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -13,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
-import edu.edina.OpModes.TeleOp.CompoundArm;
 
 public class RobotHardware {
     /*
@@ -49,18 +46,16 @@ public class RobotHardware {
     */
 
     private final LinearOpMode opMode;
-    public final CRServo slideServo;
-    public final AnalogInput slideEncoder;
     public final IMU imu;
     public ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
-    public Drivetrain drivetrain;
-    public CompoundArm compoundArm;
+    private Drivetrain drivetrain;
     private final Wrist wrist;
     private final Arm arm;
     private final Claw claw;
     private final Lift lift;
+    private final ArmExtension extension;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -68,16 +63,19 @@ public class RobotHardware {
         this.opMode = opMode;
 
         // Initialize the arm.
-        arm = new Arm(opMode, this);
+        arm = new Arm(this);
 
         // Initialize the claw.
-        claw = new Claw(opMode);
+        claw = new Claw(this);
+
+        // Initialize the extension.
+        extension = new ArmExtension(this);
 
         // Initialize the lift.
-        lift = new Lift(opMode, this);
+        lift = new Lift(this);
 
         // Initialize the wrist.
-        wrist = new Wrist(opMode);
+        wrist = new Wrist(this);
 
         HardwareMap hardwareMap = opMode.hardwareMap;
 
@@ -93,19 +91,9 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
-        slideServo = hardwareMap.get(CRServo.class, "slide_servo");
-
-        slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
-
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
 
-        // Get the robot compound arm
-        compoundArm = new CompoundArm(opMode, this);
-    }
-
-    public double getSlideVoltage() {
-        return slideEncoder.getVoltage();
     }
 
     // Waits for the user to lower the lift.
@@ -178,6 +166,9 @@ public class RobotHardware {
         // Update the drivetrain.
         drivetrain.update();
 
+        // Update the extension.
+        extension.update();
+
         // Update the lift.
         lift.update();
 
@@ -247,6 +238,30 @@ public class RobotHardware {
 
         // Stop the lift.
         lift.stop();
+
+    }
+
+    // Gets the op mode.
+    public LinearOpMode getOpMode() {
+
+        // Return the op mode.
+        return opMode;
+
+    }
+
+    // Sets the extension's position.
+    public void setExtensionPosition(double position) {
+
+        // Set the extension's position.
+        extension.setPosition(position);
+
+    }
+
+    // Toggles turtle mode.
+    public void toggleTurtleMode() {
+
+        // Toggle turtle mode.
+        drivetrain.toggleTurtleMode();
 
     }
 

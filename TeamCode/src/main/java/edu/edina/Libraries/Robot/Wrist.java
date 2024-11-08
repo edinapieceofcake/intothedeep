@@ -17,8 +17,8 @@ public class Wrist {
     // Up position
     public static double UP_POSITION = 0.4;
 
-    // Op mode
-    private final LinearOpMode opMode;
+    // Robot hardware
+    private final RobotHardware robotHardware;
 
     // Servo
     private final Servo servo;
@@ -27,10 +27,13 @@ public class Wrist {
     private boolean up;
 
     // Initializes this.
-    public Wrist(LinearOpMode opMode) {
+    public Wrist(RobotHardware robotHardware) {
 
-        // Remember the op mode.
-        this.opMode = opMode;
+        // Remember the robot hardware.
+        this.robotHardware = robotHardware;
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -45,6 +48,9 @@ public class Wrist {
 
         // Get the wrist's position.
         double position = servo.getPosition();
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;

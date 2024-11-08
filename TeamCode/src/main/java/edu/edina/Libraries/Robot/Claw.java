@@ -20,17 +20,20 @@ public class Claw {
     // Open
     private boolean open;
 
-    // Op mode
-    private final LinearOpMode opMode;
+    // Robot hardware
+    private final RobotHardware robotHardware;
 
     // Servo
     private final Servo servo;
 
     // Initializes this.
-    public Claw(LinearOpMode opMode) {
+    public Claw(RobotHardware robotHardware) {
 
-        // Remember the op mode.
-        this.opMode = opMode;
+        // Remember the robot hardware.
+        this.robotHardware = robotHardware;
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -45,6 +48,9 @@ public class Claw {
 
         // Get the claw's position.
         double position = servo.getPosition();
+
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
 
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;

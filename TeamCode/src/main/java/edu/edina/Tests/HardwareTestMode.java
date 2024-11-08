@@ -263,7 +263,7 @@ public class HardwareTestMode extends LinearOpMode {
 
         @Override
         public void runTest() {
-            CRServo slide = hw.slideServo;
+            //CRServo slide = hw.slideServo;
 
             double pow = 0.0;
 
@@ -280,7 +280,7 @@ public class HardwareTestMode extends LinearOpMode {
                     pow *= -1.0;
                 }
 
-                slide.setPower(pow);
+                //slide.setPower(pow);
             }
         }
     }
