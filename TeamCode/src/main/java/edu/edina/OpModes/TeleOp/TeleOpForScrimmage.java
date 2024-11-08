@@ -15,23 +15,27 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     Robot Controls
 
-    left stick = move robot
-    right stick = rotate robot
+    Normal Mode
+    - left stick = move robot
+    - right stick = rotate robot
+    - a = toggle claw
+    - x = toggle wrist
+    - y = toggle turtle mode
+    - dpad up = next arm position
+    - dpad down = previous arm position
+    - dpad right = increment arm position
+    - dpad left = decrement arm position
 
-    a = toggle claw
-    x = toggle wrist
-    y = toggle turtle mode
+    Preset Mode (hold right trigger)
+    - a = ground
+    - x = low basket
+    - y = high basket
 
-    dpad up = next arm position
-    dpad down = previous arm position
-    dpad right = increment arm position
-    dpad left = decrement arm position
-
-    right trigger = raise lift
-    left trigger = lower lift
-
-    left bumper = retract slide
-    right bumper = extend slide
+    Manual Mode (hold left trigger)
+    - dpad up = raise lift
+    - dpad down = lower lift
+    - dpad right = extend slide
+    - dpad left = retract slide
 
     */
 
