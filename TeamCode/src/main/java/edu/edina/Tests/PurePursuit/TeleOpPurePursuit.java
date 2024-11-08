@@ -92,12 +92,12 @@ public class TeleOpPurePursuit extends LinearOpMode {
             MotorCommand mc = new MotorCommand(axial, lateral, yaw);
             
             telemetry.addData("\n\nmotor cmd", mc.toString());
-
+            /*
             hw.leftFrontDrive.setPower(mc.getLeftFrontPower());
             hw.rightFrontDrive.setPower(mc.getRightFrontPower());
             hw.leftBackDrive.setPower(mc.getLeftBackPower());
             hw.rightBackDrive.setPower(mc.getRightBackPower());
-
+            */
             telemetry.update();
         }
     }

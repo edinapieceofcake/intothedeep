@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -74,7 +75,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
         CompoundArm compoundArm = robotHardware.compoundArm;
 
-        DriveTrain driveTrain = robotHardware.driveTrain;
+        Drivetrain driveTrain = robotHardware.drivetrain;
 
         while (opModeIsActive()) {
 
@@ -128,8 +129,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             robotHardware.update();
-
-            driveTrain.update();
 
             compoundArm.update();
 

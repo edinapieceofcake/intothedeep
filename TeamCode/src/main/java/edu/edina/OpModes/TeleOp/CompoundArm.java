@@ -11,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.ArmExtension;
 
-
 @Config
 public class CompoundArm {
     private ArmExtension armExtension;

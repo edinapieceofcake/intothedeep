@@ -141,12 +141,12 @@ public class HardwareTestMode extends LinearOpMode {
                     leftBackPower /= max;
                     rightBackPower /= max;
                 }
-
+                /*
                 hw.leftFrontDrive.setPower(leftFrontPower * 0.3);
                 hw.rightFrontDrive.setPower(rightFrontPower * 0.3);
                 hw.leftBackDrive.setPower(leftBackPower * 0.3);
                 hw.rightBackDrive.setPower(rightBackPower * 0.3);
-
+                */
                 telemetry.addData("Left", odometry.par0.getPositionAndVelocity().position - basePosPar0);
                 telemetry.addData("Right", odometry.par1.getPositionAndVelocity().position - basePosPar1);
                 telemetry.addData("Back", odometry.perp.getPositionAndVelocity().position - basePosPerp);
@@ -181,7 +181,7 @@ public class HardwareTestMode extends LinearOpMode {
                 telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;&uarr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Right</font>");
                 telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;&rarr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Right</font>");
                 telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;&darr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
-
+                /*
                 hw.leftFrontDrive.setPower(0);
                 hw.rightFrontDrive.setPower(0);
                 hw.leftBackDrive.setPower(0);
@@ -195,7 +195,7 @@ public class HardwareTestMode extends LinearOpMode {
                     hw.leftBackDrive.setPower(0.7);
                 if (gamepad1.dpad_right)
                     hw.rightBackDrive.setPower(0.7);
-
+                */
                 telemetry.update();
             }
         }
@@ -330,12 +330,13 @@ public class HardwareTestMode extends LinearOpMode {
             double leftFrontPower = gamepad1.a ? 1.0 : 0.0;  // A gamepad
             double rightBackPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
             double rightFrontPower = gamepad1.b ? 1.0 : 0.0;  // B gamepad
-
+            /*
             // Move the robot.
             hw.leftFrontDrive.setPower(leftFrontPower);
             hw.rightFrontDrive.setPower(rightFrontPower);
             hw.leftBackDrive.setPower(leftBackPower);
             hw.rightBackDrive.setPower(rightBackPower);
+            */
         }
     }
 }

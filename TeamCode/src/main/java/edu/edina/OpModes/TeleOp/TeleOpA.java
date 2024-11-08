@@ -43,12 +43,12 @@ public class TeleOpA extends LinearOpMode {
                 leftBackPower   /= max;
                 rightBackPower  /= max;
             }
-
+            /*
             hw.leftFrontDrive.setPower(leftFrontPower);
             hw.rightFrontDrive.setPower(rightFrontPower);
             hw.leftBackDrive.setPower(leftBackPower);
             hw.rightBackDrive.setPower(rightBackPower);
-
+            */
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }

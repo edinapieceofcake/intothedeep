@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+// This represents a lift.
 @Config
 public class Lift {
 

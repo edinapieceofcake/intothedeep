@@ -53,12 +53,12 @@ public class OdometryAndIMU extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
-
+            /*
             hw.leftFrontDrive.setPower(leftFrontPower);
             hw.rightFrontDrive.setPower(rightFrontPower);
             hw.leftBackDrive.setPower(leftBackPower);
             hw.rightBackDrive.setPower(rightBackPower);
-
+            */
             Twist2dDual<Time> t = hw.odometry.update();
             pose = pose.plus(t.value());
 

@@ -106,12 +106,12 @@ public class OdometryMultiTest extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
-
+            /*
             hw.leftFrontDrive.setPower(leftFrontPower * 0.3);
             hw.rightFrontDrive.setPower(rightFrontPower * 0.3);
             hw.leftBackDrive.setPower(leftBackPower * 0.3);
             hw.rightBackDrive.setPower(rightBackPower * 0.3);
-
+            */
             Twist2dDual<Time> t = hw.odometry.update();
             pos3DW = pos3DW.plus(t.value());
 
