@@ -179,8 +179,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     // Move the lift to the high basket position
                     robotHardware.setLiftHighBasketPosition();
 
-                    // Fully retract the slide.
-                    robotHardware.setMinimumExtension();
+                    // Use the high basket extension.
+                    robotHardware.setHighBasketExtension();
 
                 }
 

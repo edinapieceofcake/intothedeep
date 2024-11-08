@@ -23,7 +23,7 @@ public class Arm {
     public static int GROUND_POSITION = -400;
 
     // High basket position
-    public static int HIGH_BASKET_POSITION = 3000;
+    public static int HIGH_BASKET_POSITION = 2800;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
@@ -32,7 +32,7 @@ public class Arm {
     public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 26;
 
     // Low basket position
-    public static int LOW_BASKET_POSITION = 3500;
+    public static int LOW_BASKET_POSITION = 2700;
 
     // Nearly down position threshold
     public static int NEARLY_DOWN_POSITION = 100;

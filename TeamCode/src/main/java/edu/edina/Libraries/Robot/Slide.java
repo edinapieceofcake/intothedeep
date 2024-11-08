@@ -26,6 +26,9 @@ public class Slide {
     // Low basket extension
     public static double LOW_BASKET_EXTENSION = 5;
 
+    // High basket extension
+    public static double HIGH_BASKET_EXTENSION = 9;
+
     // Maximum extension
     public static double MAXIMUM_EXTENSION = 9;
 
@@ -218,6 +221,14 @@ public class Slide {
 
         // Set the low basket extension.
         extensionTarget = LOW_BASKET_EXTENSION;
+
+    }
+
+    // Sets the high basket extension.
+    public void setHighBasketExtension() {
+
+        // Set the high basket extension.
+        extensionTarget = HIGH_BASKET_EXTENSION;
 
     }
 

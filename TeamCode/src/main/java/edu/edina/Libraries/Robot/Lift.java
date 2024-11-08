@@ -20,7 +20,7 @@ public class Lift {
     public static double FEEDFORWARD = 0.1;
 
     // High baskket position
-    public static int HIGH_BASKET_POSITION = 1500;
+    public static int HIGH_BASKET_POSITION = 1800;
 
     // Integral coefficient
     public static double INTEGRAL = 0;

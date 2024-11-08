@@ -297,6 +297,14 @@ public class RobotHardware {
 
     }
 
+    // Sets the high basket extension.
+    public void setHighBasketExtension() {
+
+        // Set the high basket extension.
+        slide.setHighBasketExtension();
+
+    }
+
     // Toggles turtle mode.
     public void toggleTurtleMode() {
 
