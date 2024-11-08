@@ -15,8 +15,6 @@ import edu.edina.Libraries.Robot.ArmExtension;
 
 @Config
 public class CompoundArm {
-    public static double CLAW_OPEN_POSITION = 0.56;
-    public static double CLAW_CLOSED_POSITION = 0.77;
     public static double RAISE_LIFT_POWER = 1;
     public static double LOWER_LIFT_POWER = -1;
 
@@ -24,7 +22,6 @@ public class CompoundArm {
     double armExtensionTarget;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
-    private boolean clawOpen;
     private Lift lift;
 
     // Initializes this.
@@ -54,9 +51,6 @@ public class CompoundArm {
         if (robotHardware.liftMotorRight == null) {
             throw new InterruptedException("The right lift motor is missing.");
         }
-        if (robotHardware.claw == null) {
-            throw new InterruptedException("The claw servo is missing.");
-        }
         if (robotHardware.slideServo == null) {
             throw new InterruptedException("The slide servo is missing.");
         }
@@ -64,62 +58,10 @@ public class CompoundArm {
             throw new InterruptedException("The slide servo encoder is missing.");
         }
 
-        // Update the claw.
-        //////////////////////////////////////////////////////////////////////
-
-        // Get the claw.
-        Servo claw = robotHardware.claw;
-
-        // Get the telemetry.
-        Telemetry telemetry = opMode.telemetry;
-
-        // Get the claw's position.
-        double clawPosition = claw.getPosition();
-
-        // Display claw telemetry.
-        telemetry.addData("Claw", "====================");
-        telemetry.addData("- Open", clawOpen);
-        telemetry.addData("- Position", clawPosition);
-
         // Update the lift.
         //////////////////////////////////////////////////////////////////////
 
         lift.update();
-
-        /*
-        //*** Already In Lift Class ***
-
-        // Get the lift touch sensor.
-        TouchSensor liftTouch = robotHardware.liftTouch;
-
-        // Determine whether the lift is down.
-        boolean liftDown = liftTouch.isPressed();
-
-        // Get the lift motors.
-        DcMotorEx liftMotorLeft = robotHardware.liftMotorLeft;
-        DcMotorEx liftMotorRight = robotHardware.liftMotorRight;
-
-        // If the lift is down...
-        if(liftDown) {
-
-            // Reset the lift position to zero.
-            liftMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        }
-
-        // Get the lift's position.
-        double leftLiftPosition = liftMotorLeft.getCurrentPosition();
-        double rightLiftPosition = liftMotorRight.getCurrentPosition();
-
-        // Display lift telemetry.
-        telemetry.addData("Lift", "====================");
-        telemetry.addData("- Down", liftDown);
-        telemetry.addData("- Left Position", leftLiftPosition);
-        telemetry.addData("- Right Position", rightLiftPosition);
-         */
 
         // Update the slide.
         //////////////////////////////////////////////////////////////////////
@@ -136,6 +78,9 @@ public class CompoundArm {
         // Get the slide's voltage.
         double slideVoltage = slideEncoder.getVoltage();
 
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
+
         // Display slide telemetry.
         telemetry.addData("Slide", "====================");
         telemetry.addData("- Power", slidePower);
@@ -147,30 +92,6 @@ public class CompoundArm {
         double currentExtensionPos = armExtension.getPosition(false);
         double armExtensionDistance = armExtensionTarget - currentExtensionPos;
         armExtension.setPower(armExtensionDistance / 10);
-    }
-
-    // Toggles the claw.
-    public void toggleClaw() {
-        if(clawOpen) {
-            closeClaw();
-        }
-        else {
-            openClaw();
-        }
-    }
-
-    // Closes the claw.
-    public void closeClaw() {
-        Servo claw = robotHardware.claw;
-        claw.setPosition(CLAW_CLOSED_POSITION);
-        clawOpen = false;
-    }
-
-    // Opens the claw.
-    public void openClaw() {
-        Servo claw = robotHardware.claw;
-        claw.setPosition(CLAW_OPEN_POSITION);
-        clawOpen = true;
     }
 
     public void extendArm(double armExtensionTarget) {

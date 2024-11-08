@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -58,7 +57,6 @@ public class RobotHardware {
     public final DcMotorEx leftFrontDrive, rightFrontDrive, rightBackDrive, leftBackDrive;
     public final DcMotorEx liftMotorLeft, liftMotorRight;
     public final CRServo slideServo;
-    public final Servo claw;
     public final AnalogInput slideEncoder;
     public final IMU imu;
     public ThreeDeadWheelLocalizer odometry;
@@ -69,11 +67,20 @@ public class RobotHardware {
     public CompoundArm compoundArm;
     private final Wrist wrist;
     private final Arm arm;
+    private final Claw claw;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
+
+        // Remember the op mode.
         this.opMode = opMode;
 
+        // Initialize the arm.
         arm = new Arm(opMode, this);
+
+        // Initialize the claw.
+        claw = new Claw(opMode);
+
+        // Initialize the wrist.
         wrist = new Wrist(opMode);
 
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -117,8 +124,6 @@ public class RobotHardware {
         imu.initialize(parameters);
 
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
-
-        claw = hardwareMap.get(Servo.class, "claw_servo");
 
         liftTouch = hardwareMap.get(TouchSensor.class, "lift_touch");
 
@@ -225,14 +230,14 @@ public class RobotHardware {
     // Initializes the robot.
     public void initializeRobot() {
 
-        // Lower the wrist.
-        wrist.lower();
-
-        // Close the claw.
-        compoundArm.closeClaw();
-
         // Move the arm to its first position.
         arm.setFirstPosition();
+
+        // Close the claw.
+        claw.close();
+
+        // Lower the wrist.
+        wrist.lower();
 
     }
 
@@ -249,6 +254,9 @@ public class RobotHardware {
 
         // Update the arm.
         arm.update();
+
+        // Update the claw.
+        claw.update();
 
         // Update the wrist.
         wrist.update();
@@ -284,6 +292,14 @@ public class RobotHardware {
 
         // Increment the arm position.
         arm.incrementPosition();
+
+    }
+
+    // Toggles the claw.
+    public void toggleClaw() {
+
+        // Toggle the claw.
+        claw.toggle();
 
     }
 

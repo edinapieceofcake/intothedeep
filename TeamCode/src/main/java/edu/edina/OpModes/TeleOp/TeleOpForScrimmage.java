@@ -82,7 +82,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
             currentGamepad.copy(gamepad1);
 
             if (currentGamepad.a && !previousGamepad.a) {
-                compoundArm.toggleClaw();
+                robotHardware.toggleClaw();
             }
 
             if (currentGamepad.x && !previousGamepad.x) {

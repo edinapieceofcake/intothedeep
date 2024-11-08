@@ -17,7 +17,7 @@ public class TeleOpTest extends LinearOpMode {
         double pos = 0;
 
         while (opModeIsActive()) {
-            pos = hw.claw.getPosition();
+            //pos = hw.claw.getPosition();
 
             if (gamepad1.dpad_up) {
                 hw.liftMotorRight.setPower(1);
@@ -39,13 +39,13 @@ public class TeleOpTest extends LinearOpMode {
             } else {
                 hw.slideServo.setPower(0);
             }
-
+            /*
             if (gamepad1.left_trigger > 0.1) {
                 hw.claw.setPosition(pos + 0.001);
             } else if (gamepad1.left_trigger < 0.1) {
                 hw.claw.setPosition(pos - 0.001);
             }
-            /*
+
             if (gamepad1.a) {
                 hw.armMotor.setPower(0.4);
             } else if (gamepad1.b) {
@@ -53,8 +53,8 @@ public class TeleOpTest extends LinearOpMode {
             } else {
                 hw.armMotor.setPower(0.0);
             }
-            */
             telemetry.addData("claw pos", hw.claw.getPosition());
+            */
             telemetry.addData("left lift", hw.getLeftLift());
             telemetry.addData("right lift", hw.getRightLift());
             //telemetry.addData("arm motor", hw.getArmMotor());
