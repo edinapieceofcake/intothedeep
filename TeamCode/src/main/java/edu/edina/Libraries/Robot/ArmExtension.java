@@ -20,6 +20,9 @@ public class ArmExtension {
     // Inches per volt
     public static double INCHES_PER_VOLT = 6.375 / 4.4;
 
+    // Maximum voltage difference
+    public static double MAXIMUM_VOLTAGE_DIFFERENCE = 0.5;
+
     // Power
     public static double POWER = 1;
 
@@ -76,8 +79,12 @@ public class ArmExtension {
         // Get the maximum voltage.
         double maximumVoltage = encoder.getMaxVoltage();
 
+        // If the current voltage is invalid...
         if(currentVoltage < 0 || currentVoltage > maximumVoltage) {
+
+            // Exit the method.
             return;
+
         }
 
         // If the last voltage is uninitialized...
@@ -103,13 +110,13 @@ public class ArmExtension {
         double highVoltage = maximumVoltage - lowVoltage;
 
         // Update the offset voltage.
-        offsetVoltage += currentVoltage - lastVoltage;
+        double newOffsetVoltage = offsetVoltage + currentVoltage - lastVoltage;
 
         // If we wrapped around from high to low voltage...
         if (currentVoltage < lowVoltage && lastVoltage > highVoltage) {
 
             // Update the offset voltage.
-            offsetVoltage += maximumVoltage;
+            newOffsetVoltage += maximumVoltage;
 
         }
 
@@ -117,9 +124,23 @@ public class ArmExtension {
         else if (currentVoltage > highVoltage && lastVoltage < lowVoltage) {
 
             // Update the offset voltage.
-            offsetVoltage -= maximumVoltage;
+            newOffsetVoltage -= maximumVoltage;
 
         }
+
+        // Get the offset voltage difference.
+        double offsetVoltageDifference = Math.abs(newOffsetVoltage - offsetVoltage);
+
+        // If the offset voltage difference is too high...
+        if(offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
+
+            // Exit the method.
+            return;
+
+        }
+
+        // Update the offset voltage.
+        offsetVoltage = newOffsetVoltage;
 
         // Update the last voltage.
         lastVoltage = currentVoltage;
