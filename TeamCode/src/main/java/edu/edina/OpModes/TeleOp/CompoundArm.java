@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -15,14 +14,10 @@ import edu.edina.Libraries.Robot.ArmExtension;
 
 @Config
 public class CompoundArm {
-    public static double RAISE_LIFT_POWER = 1;
-    public static double LOWER_LIFT_POWER = -1;
-
     private ArmExtension armExtension;
     double armExtensionTarget;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
-    private Lift lift;
 
     // Initializes this.
     public CompoundArm(LinearOpMode opMode, RobotHardware robotHardware) throws InterruptedException {
@@ -36,8 +31,6 @@ public class CompoundArm {
         // Initialize the FTC dashboard.
         FtcDashboard.getInstance();
 
-        lift = new Lift(opMode, robotHardware);
-
         armExtension = new ArmExtension(robotHardware);
     }
 
@@ -45,23 +38,12 @@ public class CompoundArm {
     public void update() throws InterruptedException {
 
         // Verify input exists.
-        if (robotHardware.liftMotorLeft == null) {
-            throw new InterruptedException("The left lift motor is missing.");
-        }
-        if (robotHardware.liftMotorRight == null) {
-            throw new InterruptedException("The right lift motor is missing.");
-        }
         if (robotHardware.slideServo == null) {
             throw new InterruptedException("The slide servo is missing.");
         }
         if (robotHardware.slideEncoder == null) {
             throw new InterruptedException("The slide servo encoder is missing.");
         }
-
-        // Update the lift.
-        //////////////////////////////////////////////////////////////////////
-
-        lift.update();
 
         // Update the slide.
         //////////////////////////////////////////////////////////////////////
@@ -119,19 +101,5 @@ public class CompoundArm {
 //        CRServo slideServo = robotHardware.slideServo;
 //        slideServo.setPower(0);
 //    }
-
-    // Raises the lift.
-    public void raiseLift() {
-        lift.setPower(RAISE_LIFT_POWER);
-    }
-
-    // Lowers the lift.
-    public void lowerLift() {
-        lift.setPower(LOWER_LIFT_POWER);
-    }
-
-    public void stopLift() {
-        lift.setPower(0);
-    }
 
 }

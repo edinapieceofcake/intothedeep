@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 public class ArmLift implements ILinearMechanism {
     private HardwareMap hardwareMap;
-    private final DcMotorEx left, right;
+    private DcMotorEx left, right;
     private final VoltageSensor vs;
     private double nominalVolt;
 
@@ -24,8 +24,8 @@ public class ArmLift implements ILinearMechanism {
 
     public ArmLift(RobotHardware hw) {
         this.hardwareMap = hardwareMap;
-        left = hw.liftMotorLeft;
-        right = hw.liftMotorRight;
+        //left = hw.liftMotorLeft;
+        //right = hw.liftMotorRight;
         vs = hw.voltageSensor;
 
         nominalVolt = 11.0;

@@ -5,11 +5,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -55,19 +53,18 @@ public class RobotHardware {
 
     private final LinearOpMode opMode;
     public final DcMotorEx leftFrontDrive, rightFrontDrive, rightBackDrive, leftBackDrive;
-    public final DcMotorEx liftMotorLeft, liftMotorRight;
     public final CRServo slideServo;
     public final AnalogInput slideEncoder;
     public final IMU imu;
     public ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
-    public final TouchSensor liftTouch;
     public DriveTrain driveTrain;
     public CompoundArm compoundArm;
     private final Wrist wrist;
     private final Arm arm;
     private final Claw claw;
+    private final Lift lift;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -79,6 +76,9 @@ public class RobotHardware {
 
         // Initialize the claw.
         claw = new Claw(opMode);
+
+        // Initialize the lift.
+        lift = new Lift(opMode, this);
 
         // Initialize the wrist.
         wrist = new Wrist(opMode);
@@ -106,17 +106,6 @@ public class RobotHardware {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        liftMotorLeft = hardwareMap.get(DcMotorEx.class, "left_lift_motor");
-        liftMotorRight = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
-        liftMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
@@ -124,8 +113,6 @@ public class RobotHardware {
         imu.initialize(parameters);
 
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
-
-        liftTouch = hardwareMap.get(TouchSensor.class, "lift_touch");
 
         slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
 
@@ -140,30 +127,11 @@ public class RobotHardware {
         return slideEncoder.getVoltage();
     }
 
-    public int getLeftLift() {
-        return liftMotorLeft.getCurrentPosition();
-    }
-
-    public int getRightLift() {
-        return liftMotorRight.getCurrentPosition();
-    }
-
     // Waits for the user to lower the lift.
-    public void waitForLiftDown() throws InterruptedException {
+    public void waitForLiftDown() {
 
-        // While the lift is up...
-        while (!opMode.isStopRequested() && !liftTouch.isPressed()) {
-
-            // Instruct the user to lower the lift.
-            log("Please lower the lift...");
-
-        }
-
-        // Reset the lift.
-        resetLift();
-
-        // Notify the user that the lift is down.
-        log("Lift is down");
+        // Waits for the user to lower the lift.
+        lift.waitForDown();
 
     }
 
@@ -192,38 +160,6 @@ public class RobotHardware {
         // Show the message.
         telemetry.addData("Message", message);
         telemetry.update();
-
-    }
-
-    // Resets the lift.
-    private void resetLift() throws InterruptedException {
-
-        // Verify inputs exist.
-        if(liftMotorLeft == null) {
-            throw new InterruptedException("The left lift motor is missing.");
-        }
-        if(liftMotorRight == null) {
-            throw new InterruptedException("The right lift motor is missing.");
-        }
-
-        // Reset the lift.
-        resetLift(liftMotorLeft);
-        resetLift(liftMotorRight);
-
-    }
-
-    // Resets a lift motor.
-    private static void resetLift(DcMotor liftMotor) throws InterruptedException {
-
-        // Verify inputs exist.
-        if(liftMotor == null) {
-            throw new InterruptedException("The lift motor is missing.");
-        }
-
-        // Reset the lift motor.
-        liftMotor.setPower(0);
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -257,6 +193,9 @@ public class RobotHardware {
 
         // Update the claw.
         claw.update();
+
+        // Update the lift.
+        lift.update();
 
         // Update the wrist.
         wrist.update();
@@ -300,6 +239,30 @@ public class RobotHardware {
 
         // Toggle the claw.
         claw.toggle();
+
+    }
+
+    // Raises the lift.
+    public void raiseLift() {
+
+        // Raise the lift.
+        lift.raise();
+
+    }
+
+    // Lowers the lift.
+    public void lowerLift() {
+
+        // Lower the lift.
+        lift.lower();
+
+    }
+
+    // Stops the lift.
+    public void stopLift() {
+
+        // Stop the lift.
+        lift.stop();
 
     }
 
