@@ -23,6 +23,9 @@ public class ArmExtension {
     // Inches per volt
     public static double INCHES_PER_VOLT = 6.375 / 4.4;
 
+    // Low basket extension
+    public static double LOW_BASKET_EXTENSION = 5;
+
     // Maximum extension
     public static double MAXIMUM_EXTENSION = 9;
 
@@ -207,6 +210,14 @@ public class ArmExtension {
 
         // Set the minimum extension.
         extensionTarget = MINIMUM_EXTENSION;
+
+    }
+
+    // Sets the low basket extension.
+    public void setLowBasketExtension() {
+
+        // Set the low basket extension.
+        extensionTarget = LOW_BASKET_EXTENSION;
 
     }
 

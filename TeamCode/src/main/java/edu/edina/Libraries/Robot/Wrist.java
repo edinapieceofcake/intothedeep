@@ -12,10 +12,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Wrist {
 
     // Down position
-    public static double DOWN_POSITION = 0.07;
+    public static double DOWN_POSITION = 0.15;
 
     // Up position
-    public static double UP_POSITION = 0.4;
+    public static double UP_POSITION = 0.48;
 
     // Robot hardware
     private final RobotHardware robotHardware;

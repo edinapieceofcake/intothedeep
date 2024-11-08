@@ -81,6 +81,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
             // If left trigger is down...
             if(currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
 
+                // Manual mode
+                //////////////////////////////////////////////////////////////////////
+
                 // If the user is holding dpad up...
                 if (currentGamepad.dpad_up) {
 
@@ -123,6 +126,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
             // Otherwise, if right trigger is down...
             else if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
 
+                // Preset mode
+                //////////////////////////////////////////////////////////////////////
+
                 // If the user pressed a...
                 if(currentGamepad.a && !previousGamepad.a) {
 
@@ -137,6 +143,23 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                     // Fully retract the slide.
                     robotHardware.setMinimumExtension();
+
+                }
+
+                // If the user pressed x...
+                if(currentGamepad.x && !previousGamepad.x) {
+
+                    // Raise the wrist.
+                    robotHardware.raiseWrist();
+
+                    // Move the arm to the low basket position.
+                    robotHardware.setArmLowBasketPosition();
+
+                    // Move the lift to the ground position
+                    robotHardware.setLiftGroundPosition();
+
+                    // Use the low basket extension.
+                    robotHardware.setLowBasketExtension();
 
                 }
 
@@ -161,6 +184,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
             // Otherwise (if both triggers are up)...
             else {
+
+                // Normal mode
+                //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed a...
                 if (currentGamepad.a && !previousGamepad.a) {

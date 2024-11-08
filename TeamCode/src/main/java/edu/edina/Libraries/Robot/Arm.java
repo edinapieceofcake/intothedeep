@@ -31,6 +31,9 @@ public class Arm {
     // Initial degrees below horizontal (determined experimentally)
     public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 26;
 
+    // Low basket position
+    public static int LOW_BASKET_POSITION = 3500;
+
     // Nearly down position threshold
     public static int NEARLY_DOWN_POSITION = 100;
 
@@ -45,7 +48,7 @@ public class Arm {
 
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
-    
+
     // Wall position
     public static int WALL_POSITION = 400;
 
@@ -54,6 +57,7 @@ public class Arm {
             GROUND_POSITION,
             WALL_POSITION,
             HIGH_BASKET_POSITION,
+            LOW_BASKET_POSITION,
             SUBMERSIBLE_POSITION
     };
 
@@ -285,6 +289,14 @@ public class Arm {
 
         // Move the arm to the ground position.
         targetPosition = GROUND_POSITION;
+
+    }
+
+    // Moves the arm to the low basket position.
+    public void setLowBasketPosition() {
+
+        // Move the arm to the low basket position.
+        targetPosition = LOW_BASKET_POSITION;
 
     }
 

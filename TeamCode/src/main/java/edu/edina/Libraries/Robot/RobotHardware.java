@@ -289,6 +289,14 @@ public class RobotHardware {
 
     }
 
+    // Sets the low basket extension.
+    public void setLowBasketExtension() {
+
+        // Set the low basket extension.
+        extension.setLowBasketExtension();
+
+    }
+
     // Toggles turtle mode.
     public void toggleTurtleMode() {
 
@@ -313,6 +321,14 @@ public class RobotHardware {
 
         // Move the arm to the ground position.
         arm.setGroundPosition();
+
+    }
+
+    // Moves the arm to the low basket position.
+    public void setArmLowBasketPosition() {
+
+        // Move the arm to the low basket position.
+        arm.setLowBasketPosition();
 
     }
 
