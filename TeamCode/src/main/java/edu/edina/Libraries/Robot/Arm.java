@@ -3,7 +3,6 @@ package edu.edina.Libraries.Robot;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -15,19 +14,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Arm {
 
     // Derivative coefficient
-    public static double D = 0.00005;
+    public static double DERIVATIVE = 0.00005;
 
-    // Feed forward coefficient
-    public static double F = 0.1;
+    // Feedforward coefficient
+    public static double FEEDFORWARD = 0.1;
 
     // Integral coefficient
-    public static double I = 0;
+    public static double INTEGRAL = 0;
 
     // Initial degrees below horizontal (determined experimentally)
     public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 26;
 
     // Proportional coefficient
-    public static double P = 0.0005;
+    public static double PROPORTIONAL = 0.0005;
 
     // Position increment (ticks)
     public static int POSITION_INCREMENT = 25;
@@ -48,7 +47,7 @@ public class Arm {
     private final RobotHardware robotHardware;
 
     // Target position
-    private int targetPosition = 0;
+    private int targetPosition;
 
     // Touch sensor
     private final TouchSensor touch;
@@ -69,39 +68,43 @@ public class Arm {
         motor = hardwareMap.get(DcMotorEx.class, "arm_motor");
 
         // Reverse the motor.
-        motor.setDirection(DcMotor.Direction.REVERSE);
+        motor.setDirection(DcMotorEx.Direction.REVERSE);
 
-        // Configure the motor.
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // Reset the motor.
+        reset();
 
         // Get the touch sensor.
         touch = hardwareMap.get(TouchSensor.class, "arm_touch");
 
         // Initialize the arm controller.
-        controller = new PIDController(P, I, D);
+        controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
     }
 
     // Updates this.
     public void update() {
 
+        // Update the arm controller.
+        //////////////////////////////////////////////////////////////////////
+
         // PIDF Loops & Arm Control | FTC | 16379 KookyBotz
         // https://www.youtube.com/watch?v=E6H6Nqe6qJo
 
         // Determine the appropriate arm power.
-        controller.setPID(P, I, D);
-        int actualPosition = motor.getCurrentPosition();
-        double actualDegrees = getDegrees(actualPosition);
-        double actualRadians = Math.toRadians(actualDegrees);
-        double pid = controller.calculate(actualPosition, targetPosition);
+        controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
+        int currentPosition = motor.getCurrentPosition();
+        double currentDegrees = getDegrees(currentPosition);
+        double currentRadians = Math.toRadians(currentDegrees);
+        double pid = controller.calculate(currentPosition, targetPosition);
         double targetDegrees = getDegrees(targetPosition);
-        double feedForward = Math.cos(actualRadians) * F;
+        double feedForward = Math.cos(currentRadians) * FEEDFORWARD;
         double power = pid + feedForward;
 
         // Set the arm's power.
         motor.setPower(power);
+
+        // Reset the arm if appropriate
+        //////////////////////////////////////////////////////////////////////
 
         // Determine whether the arm is down.
         boolean down = touch.isPressed();
@@ -109,11 +112,13 @@ public class Arm {
         // If the arm is down...
         if(down) {
 
-            // Reset the arm position to zero.
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            // Reset the arm motor.
+            reset();
 
         }
+
+        // Display arm telemetry.
+        //////////////////////////////////////////////////////////////////////
 
         // Get the op mode.
         LinearOpMode opMode = robotHardware.getOpMode();
@@ -123,14 +128,14 @@ public class Arm {
 
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");
+        telemetry.addData("- Current Degrees", currentDegrees);
+        telemetry.addData("- Current Position", currentPosition);
         telemetry.addData("- Down", down);
+        telemetry.addData("- Feedforward", feedForward);
         telemetry.addData("- PID", pid);
-        telemetry.addData("- Feed Forward", feedForward);
         telemetry.addData("- Power", power);
-        telemetry.addData("- Actual Position", actualPosition);
-        telemetry.addData("- Actual Degrees", actualDegrees);
-        telemetry.addData("- Target Position", targetPosition);
         telemetry.addData("- Target Degrees", targetDegrees);
+        telemetry.addData("- Target Position", targetPosition);
 
     }
 
@@ -171,9 +176,9 @@ public class Arm {
     private void reset() {
 
         // Reset the arm motor.
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 

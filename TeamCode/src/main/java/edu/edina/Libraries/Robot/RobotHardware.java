@@ -233,14 +233,6 @@ public class RobotHardware {
 
     }
 
-    // Stops the lift.
-    public void stopLift() {
-
-        // Stop the lift.
-        lift.stop();
-
-    }
-
     // Gets the op mode.
     public LinearOpMode getOpMode() {
 

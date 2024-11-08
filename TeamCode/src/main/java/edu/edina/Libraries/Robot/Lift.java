@@ -1,10 +1,9 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -14,17 +13,32 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Lift {
 
-    // Down position
-    public static int DOWN_POSITION = 0;
+    // Derivative coefficient
+    public static double DERIVATIVE = 0.0001;
 
-    // Lower power
-    public static double LOWER_POWER = -0.6;
+    // Feedforward coefficient
+    public static double FEEDFORWARD = 0.1;
 
-    // Raise power
-    public static double RAISE_POWER = 1;
+    // Position increment
+    public static int POSITION_INCREMENT = 50;
+
+    // Integral coefficient
+    public static double INTEGRAL = 0;
+
+    // Maximum position
+    public static int MAXIMUM_POSITION = 1800;
+
+    // Minimum position
+    public static int MINIMUM_POSITION = 0;
+
+    // Proportional coefficient
+    public static double PROPORTIONAL = 0.002;
 
     // Threshold
     public static int THRESHOLD = 50;
+
+    // Controller
+    private PIDController controller;
 
     // Left motor
     private final DcMotorEx leftMotor;
@@ -56,40 +70,62 @@ public class Lift {
         // Get the left motor.
         leftMotor = hardwareMap.get(DcMotorEx.class, "left_lift_motor");
 
-        // Configure the left motor.
-        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // Set the left motor's direction.
+        leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Get the right motor.
         rightMotor = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
 
-        // Configure the right motor.
-        rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // Set the right motor's direction.
+        rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+
+        // Reset the motors.
+        reset();
 
         // Get the touch sensor.
         touch = hardwareMap.get(TouchSensor.class, "lift_touch");
+
+        // Initialize the lift controller.
+        controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
     }
 
     // Update this.
     public void update() {
 
-        // Get the lift's position.
-        int leftPosition = leftMotor.getCurrentPosition();
-        int rightPosition = rightMotor.getCurrentPosition();
+        // Update the lift controller.
+        //////////////////////////////////////////////////////////////////////
+
+        // PIDF Loops & Arm Control | FTC | 16379 KookyBotz
+        // https://www.youtube.com/watch?v=E6H6Nqe6qJo
+
+        // Determine the appropriate lift power.
+        controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
+        int currentPosition = leftMotor.getCurrentPosition();
+        double pid = controller.calculate(currentPosition, targetPosition);
+        double power = pid + FEEDFORWARD;
+
+        // Set the lift's power.
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
+
+        // Reset the lift if appropriate
+        //////////////////////////////////////////////////////////////////////
 
         // If we finished lowering the lift...
-        if(targetPosition == DOWN_POSITION && touch.isPressed()) {
+        if(targetPosition == MINIMUM_POSITION && touch.isPressed()) {
 
             // Reset the lift.
             reset();
 
         }
+
+        // Display lift telemetry.
+        //////////////////////////////////////////////////////////////////////
+
+        // Get the lift's position.
+        int leftPosition = leftMotor.getCurrentPosition();
+        int rightPosition = rightMotor.getCurrentPosition();
 
         // Get the lift's power.
         double leftPower = leftMotor.getPower();
@@ -106,9 +142,11 @@ public class Lift {
 
         // Display lift telemetry.
         telemetry.addData("Lift", "====================");
+        telemetry.addData("- Current Position", "%d/%d", leftPosition, rightPosition);
         telemetry.addData("- Down", down);
-        telemetry.addData("- Position", "%d/%d", leftPosition, rightPosition);
+        telemetry.addData("- PID", pid);
         telemetry.addData("- Power", "%.2f/%.2f", leftPower, rightPower);
+        telemetry.addData("- Target Position", targetPosition);
 
         // Add lift information to the telemetry.
         telemetry.addData("Lift", "Position = %d/%d, Power = %.2f/%.2f", leftPosition, rightPosition, leftPower, rightPower);
@@ -125,52 +163,12 @@ public class Lift {
     }
 
     // Resets a lift motor.
-    private static void reset(DcMotor liftMotor) {
+    private static void reset(DcMotorEx motor) {
 
-        // Reset the lift motor.
-        liftMotor.setPower(0);
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    }
-
-    // Sets the lift's power.
-    public void setPower(double power) {
-        setPower(leftMotor, power);
-        setPower(rightMotor, power);
-    }
-
-    // Sets a motor's power.
-    private static void setPower(DcMotorEx motor, double power) {
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor.setPower(power);
-    }
-
-    // Sets the lift's position.
-    public void setPosition(int targetPosition) {
-
-        // Remember the target position.
-        this.targetPosition = targetPosition;
-
-        // Get the lift's current position.
-        int currentPosition = leftMotor.getCurrentPosition();
-
-        // Get the appropriate power.
-        double power = targetPosition > currentPosition ? RAISE_POWER : LOWER_POWER;
-
-        // Lower the lift.
-        setPosition(leftMotor, targetPosition, power);
-        setPosition(rightMotor, targetPosition, power);
-
-    }
-
-    // Sets the lift position.
-    private void setPosition(DcMotor liftMotor, int position, double power) {
-
-        // Set the lift position.
-        liftMotor.setTargetPosition(position);
-        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(power);
+        // Reset the motor.
+        motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
@@ -189,16 +187,11 @@ public class Lift {
         }
     }
 
-    // Gets the lift's position.
-    public int getLiftPosition() {
-        return leftMotor.getCurrentPosition();
-    }
-
     // Raises the lift.
     public void raise() {
 
         // Raise the lift.
-        setPower(RAISE_POWER);
+        targetPosition = Math.min(targetPosition + POSITION_INCREMENT, MAXIMUM_POSITION);
 
     }
 
@@ -206,15 +199,7 @@ public class Lift {
     public void lower() {
 
         // Lower the lift.
-        setPower(LOWER_POWER);
-
-    }
-
-    // Stops the lift.
-    public void stop() {
-
-        // Stop the lift.
-        setPower(0);
+        targetPosition = Math.max(targetPosition - POSITION_INCREMENT, MINIMUM_POSITION);
 
     }
 
