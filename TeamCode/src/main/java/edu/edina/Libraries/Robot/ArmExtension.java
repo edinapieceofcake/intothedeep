@@ -36,7 +36,7 @@ public class ArmExtension implements ILinearMechanism {
 
         double maxV = encoder.getMaxVoltage();
 
-        double lo = maxV / 10;
+        double lo = maxV / 3;
         double hi = maxV - lo;
 
         if (v < lo && lastVolts > hi)
