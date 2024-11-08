@@ -90,13 +90,13 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if (currentGamepad.left_bumper) {
-                compoundArm.retractSlide();
+                compoundArm.extendArm(0);
             }
             else if(currentGamepad.right_bumper) {
-                compoundArm.extendSlide();
+                compoundArm.extendArm(10);
             }
             else {
-                compoundArm.stopSlide();
+                compoundArm.extendArm(compoundArm.getArmExtension().getPosition(false));
             }
 
             if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {

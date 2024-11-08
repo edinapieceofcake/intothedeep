@@ -15,10 +15,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.ArmExtension;
+
 
 @Config
 public class CompoundArm {
-
     public static double CLAW_OPEN_POSITION = 0.56;
     public static double CLAW_CLOSED_POSITION = 0.77;
     public static double WRIST_DOWN_POSITION = 0.05;
@@ -37,6 +38,8 @@ public class CompoundArm {
     public static int ARM_POSITION_INCREMENT = 25;
 
     private int targetArmPosition = 0;
+    private ArmExtension armExtension;
+    double armExtensionTarget;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
     private FtcDashboard ftcDashboard;
@@ -67,6 +70,8 @@ public class CompoundArm {
         controller = new PIDController(P, I, D);
 
         lift = new Lift(opMode, robotHardware);
+
+        armExtension = new ArmExtension(robotHardware);
     }
 
     // Updates this.
@@ -243,6 +248,9 @@ public class CompoundArm {
         telemetry.addData("- Up", wristUp);
         telemetry.addData("- Position", wristPosition);
 
+        double currentExtensionPos = armExtension.getPosition(false);
+        double armExtensionDistance = armExtensionTarget - currentExtensionPos;
+        armExtension.setPower(armExtensionDistance / 10);
     }
 
     // Toggles the wrist.
@@ -304,23 +312,31 @@ public class CompoundArm {
         clawOpen = true;
     }
 
-    // Retracts the slide
-    public void retractSlide() {
-        CRServo slideServo = robotHardware.slideServo;
-        slideServo.setPower(RETRACT_SLIDE_POWER);
+    public void extendArm(double armExtensionTarget) {
+        this.armExtensionTarget = armExtensionTarget;
     }
 
-    // Extends the slide.
-    public void extendSlide() {
-        CRServo slideServo = robotHardware.slideServo;
-        slideServo.setPower(EXTEND_SLIDE_POWER);
+    public ArmExtension getArmExtension() {
+        return armExtension;
     }
 
-    // Stops the slide.
-    public void stopSlide() {
-        CRServo slideServo = robotHardware.slideServo;
-        slideServo.setPower(0);
-    }
+//    // Retracts the slide
+//    public void retractSlide() {
+//        CRServo slideServo = robotHardware.slideServo;
+//        slideServo.setPower(RETRACT_SLIDE_POWER);
+//    }
+//
+//    // Extends the slide.
+//    public void extendSlide() {
+//        CRServo slideServo = robotHardware.slideServo;
+//        slideServo.setPower(EXTEND_SLIDE_POWER);
+//    }
+//
+//    // Stops the slide.
+//    public void stopSlide() {
+//        CRServo slideServo = robotHardware.slideServo;
+//        slideServo.setPower(0);
+//    }
 
     // Raises the lift.
     public void raiseLift() {

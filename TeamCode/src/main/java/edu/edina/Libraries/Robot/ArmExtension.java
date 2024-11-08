@@ -36,6 +36,12 @@ public class ArmExtension implements ILinearMechanism {
 
         double maxV = encoder.getMaxVoltage();
 
+        if (v > maxV)
+            throw new RuntimeException("voltage reading is too high");
+
+        if (v < 0)
+            throw new RuntimeException("voltave reading is negative");
+
         double lo = maxV / 10;
         double hi = maxV - lo;
 
