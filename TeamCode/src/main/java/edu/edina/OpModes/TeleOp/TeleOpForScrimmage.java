@@ -100,19 +100,19 @@ public class TeleOpForScrimmage extends LinearOpMode {
             }
 
             if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-                compoundArm.previousArmPosition();
+                robotHardware.previousArmPosition();
             }
 
             if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-                compoundArm.nextArmPosition();
+                robotHardware.nextArmPosition();
             }
 
             if (currentGamepad.dpad_left) {
-                compoundArm.decrementArmPosition();
+                robotHardware.decrementArmPosition();
             }
 
             if (currentGamepad.dpad_right) {
-                compoundArm.incrementArmPosition();
+                robotHardware.incrementArmPosition();
             }
 
             if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {

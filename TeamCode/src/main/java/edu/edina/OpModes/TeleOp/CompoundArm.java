@@ -5,11 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -21,27 +17,14 @@ import edu.edina.Libraries.Robot.ArmExtension;
 public class CompoundArm {
     public static double CLAW_OPEN_POSITION = 0.56;
     public static double CLAW_CLOSED_POSITION = 0.77;
-    public static int[] ARM_POSITIONS = new int[] {-400, 400, 3000, 4900};
-    public static double TICKS_PER_DEGREE = 23.3; // Determined experimentally
-    private static final double INITIAL_DEGREES_BELOW_HORIZONTAL = 26; // Determined experimentally
-    public static double P = 0.0005;
-    public static double I = 0;
-    public static double D = 0.00005;
-    public static double F = 0.1;
-    public static double RETRACT_SLIDE_POWER = 1;
-    public static double EXTEND_SLIDE_POWER = -1;
     public static double RAISE_LIFT_POWER = 1;
     public static double LOWER_LIFT_POWER = -1;
-    public static int ARM_POSITION_INCREMENT = 25;
 
-    private int targetArmPosition = 0;
     private ArmExtension armExtension;
     double armExtensionTarget;
     private LinearOpMode opMode;
     private RobotHardware robotHardware;
-    private FtcDashboard ftcDashboard;
     private boolean clawOpen;
-    private PIDController controller;
     private Lift lift;
 
     // Initializes this.
@@ -54,16 +37,7 @@ public class CompoundArm {
         this.robotHardware = robotHardware;
 
         // Initialize the FTC dashboard.
-        ftcDashboard = FtcDashboard.getInstance();
-
-        // Configure the arm motor.
-        DcMotorEx armMotor = robotHardware.armMotor;
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Initialize the arm controller.
-        controller = new PIDController(P, I, D);
+        FtcDashboard.getInstance();
 
         lift = new Lift(opMode, robotHardware);
 
@@ -74,9 +48,6 @@ public class CompoundArm {
     public void update() throws InterruptedException {
 
         // Verify input exists.
-        if (robotHardware.armMotor == null) {
-            throw new InterruptedException("The arm motor is missing.");
-        }
         if (robotHardware.liftMotorLeft == null) {
             throw new InterruptedException("The left lift motor is missing.");
         }
@@ -93,62 +64,14 @@ public class CompoundArm {
             throw new InterruptedException("The slide servo encoder is missing.");
         }
 
-        // Update the arm motor.
-        //////////////////////////////////////////////////////////////////////
-
-        // Get the arm motor.
-        DcMotorEx armMotor = robotHardware.armMotor;
-
-        // PIDF Loops & Arm Control | FTC | 16379 KookyBotz
-        // https://www.youtube.com/watch?v=E6H6Nqe6qJo
-
-        // Determine the appropriate arm power.
-        controller.setPID(P, I, D);
-        int actualArmPosition = armMotor.getCurrentPosition();
-        double actualArmDegrees = getDegrees(actualArmPosition);
-        double actualArmRadians = Math.toRadians(actualArmDegrees);
-        double pid = controller.calculate(actualArmPosition, targetArmPosition);
-        double targetArmDegrees = getDegrees(targetArmPosition);
-        double feedForward = Math.cos(actualArmRadians) * F;
-        double power = pid + feedForward;
-
-        // Set the arm's power.
-        armMotor.setPower(power);
-
-        // Get the arm touch sensor.
-        TouchSensor armTouch = robotHardware.armTouch;
-
-        // Determine whether the arm is down.
-        boolean armDown = armTouch.isPressed();
-
-        // If the arm is down...
-        if(armDown) {
-
-            // Reset the arm position to zero.
-            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        }
-
-        // Get the telemetry.
-        Telemetry telemetry = opMode.telemetry;
-
-        // Display arm telemetry.
-        telemetry.addData("Arm", "====================");
-        telemetry.addData("- Down", armDown);
-        telemetry.addData("- PID", pid);
-        telemetry.addData("- Feed Forward", feedForward);
-        telemetry.addData("- Power", power);
-        telemetry.addData("- Actual Position", actualArmPosition);
-        telemetry.addData("- Actual Degrees", actualArmDegrees);
-        telemetry.addData("- Target Position", targetArmPosition);
-        telemetry.addData("- Target Degrees", targetArmDegrees);
-
         // Update the claw.
         //////////////////////////////////////////////////////////////////////
 
         // Get the claw.
         Servo claw = robotHardware.claw;
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
 
         // Get the claw's position.
         double clawPosition = claw.getPosition();
@@ -226,17 +149,6 @@ public class CompoundArm {
         armExtension.setPower(armExtensionDistance / 10);
     }
 
-    // Sets the arm position.
-    public void setArmPosition(int position) {
-        targetArmPosition = position;
-    }
-
-    // Converts the arm motor's ticks to degrees.
-    private double getDegrees(double ticks) {
-        double degrees = ticks / TICKS_PER_DEGREE - INITIAL_DEGREES_BELOW_HORIZONTAL;
-        return degrees;
-    }
-
     // Toggles the claw.
     public void toggleClaw() {
         if(clawOpen) {
@@ -299,76 +211,6 @@ public class CompoundArm {
 
     public void stopLift() {
         lift.setPower(0);
-    }
-
-    // Goes to the previous arm position.
-    public void previousArmPosition() {
-
-        // Count the arm positions.
-        int count = ARM_POSITIONS.length;
-
-        // For each arm position...
-        for(int index = count - 1; index >= 0; index--) {
-
-            // Get the current arm position.
-            int currentArmPosition = ARM_POSITIONS[index];
-
-            // If the current arm position is less than the target...
-            if(currentArmPosition < targetArmPosition) {
-
-                // Use the current arm position as the target.
-                targetArmPosition = currentArmPosition;
-
-                // Exit the method.
-                return;
-
-            }
-
-        }
-
-    }
-
-    // Goes to the next arm position.
-    public void nextArmPosition() {
-
-        // Count the arm positions.
-        int count = ARM_POSITIONS.length;
-
-        // For each arm position...
-        for(int index = 0; index < count; index++) {
-
-            // Get the current arm position.
-            int currentArmPosition = ARM_POSITIONS[index];
-
-            // If the current arm position is greater than the target...
-            if(currentArmPosition > targetArmPosition) {
-
-                // Use the current arm position as the target.
-                targetArmPosition = currentArmPosition;
-
-                // Exit the method.
-                return;
-
-            }
-
-        }
-
-    }
-
-    // Decrements the arm position.
-    public void decrementArmPosition() {
-
-        // Decrement the arm position.
-        targetArmPosition -= ARM_POSITION_INCREMENT;
-
-    }
-
-    // Increments the arm position.
-    public void incrementArmPosition() {
-
-        // Increment the arm position.
-        targetArmPosition += ARM_POSITION_INCREMENT;
-
     }
 
 }

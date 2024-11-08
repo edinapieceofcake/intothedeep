@@ -1,7 +1,5 @@
 package edu.edina.Libraries.Robot;
 
-import static edu.edina.OpModes.TeleOp.CompoundArm.ARM_POSITIONS;
-
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -59,7 +57,6 @@ public class RobotHardware {
     private final LinearOpMode opMode;
     public final DcMotorEx leftFrontDrive, rightFrontDrive, rightBackDrive, leftBackDrive;
     public final DcMotorEx liftMotorLeft, liftMotorRight;
-    public final DcMotorEx armMotor;
     public final CRServo slideServo;
     public final Servo claw;
     public final AnalogInput slideEncoder;
@@ -67,15 +64,16 @@ public class RobotHardware {
     public ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
-    public final TouchSensor armTouch;
     public final TouchSensor liftTouch;
     public DriveTrain driveTrain;
     public CompoundArm compoundArm;
-    private Wrist wrist;
+    private final Wrist wrist;
+    private final Arm arm;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
         this.opMode = opMode;
 
+        arm = new Arm(opMode, this);
         wrist = new Wrist(opMode);
 
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -118,13 +116,10 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
-        armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
         slideServo = hardwareMap.get(CRServo.class, "slide_servo");
 
         claw = hardwareMap.get(Servo.class, "claw_servo");
 
-        armTouch = hardwareMap.get(TouchSensor.class, "arm_touch");
         liftTouch = hardwareMap.get(TouchSensor.class, "lift_touch");
 
         slideEncoder = hardwareMap.get(AnalogInput.class, "slide_encoder");
@@ -146,10 +141,6 @@ public class RobotHardware {
 
     public int getRightLift() {
         return liftMotorRight.getCurrentPosition();
-    }
-
-    public int getArmMotor() {
-        return armMotor.getCurrentPosition();
     }
 
     // Waits for the user to lower the lift.
@@ -174,19 +165,8 @@ public class RobotHardware {
     // Waits for the user to lower the arm.
     public void waitForArmDown() throws InterruptedException {
 
-        // While the arm is up...
-        while (!opMode.isStopRequested() && !armTouch.isPressed()) {
-
-            // Instruct the user to lower the arm.
-            log("Please lower the arm...");
-
-        }
-
-        // Reset the arm.
-        resetArm();
-
-        // Notify the user that the arm is down.
-        log("Arm is down");
+        // Waits for the user to lower the arm.
+        arm.waitForDown();
 
     }
 
@@ -251,26 +231,8 @@ public class RobotHardware {
         // Close the claw.
         compoundArm.closeClaw();
 
-        // Get the first arm position.
-        int firstArmPosition = ARM_POSITIONS[0];
-
-        // Lower the arm.
-        compoundArm.setArmPosition(firstArmPosition);
-
-    }
-
-    // Resets the arm motor.
-    private void resetArm() throws InterruptedException {
-
-        // Verify inputs exist.
-        if(armMotor == null) {
-            throw new InterruptedException("The arm motor is missing.");
-        }
-
-        // Reset the arm motor.
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // Move the arm to its first position.
+        arm.setFirstPosition();
 
     }
 
@@ -285,8 +247,43 @@ public class RobotHardware {
     // Updates this.
     public void update() {
 
+        // Update the arm.
+        arm.update();
+
         // Update the wrist.
         wrist.update();
+
+    }
+
+    // Goes to the previous arm position.
+    public void previousArmPosition() {
+
+        // Go to the previous arm position.
+        arm.previousPosition();
+
+    }
+
+    // Goes to the next arm position.
+    public void nextArmPosition() {
+
+        // Go to the next arm position.
+        arm.nextPosition();
+
+    }
+
+    // Decrements the arm position.
+    public void decrementArmPosition() {
+
+        // Decrement the arm position.
+        arm.decrementPosition();
+
+    }
+
+    // Increments the arm position.
+    public void incrementArmPosition() {
+
+        // Increment the arm position.
+        arm.incrementPosition();
 
     }
 

@@ -21,7 +21,7 @@ public class Wrist {
     private final LinearOpMode opMode;
 
     // Servo
-    public final Servo servo;
+    private final Servo servo;
 
     // Up
     private boolean up;
