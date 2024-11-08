@@ -19,6 +19,12 @@ public class Arm {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
+    // Ground position
+    public static int GROUND_POSITION = -400;
+
+    // High basket position
+    public static int HIGH_BASKET_POSITION = 3000;
+
     // Integral coefficient
     public static double INTEGRAL = 0;
 
@@ -34,11 +40,22 @@ public class Arm {
     // Position increment (ticks)
     public static int POSITION_INCREMENT = 25;
 
-    // Positions
-    public static int[] POSITIONS = new int[] {-400, 400, 3000, 4900};
+    // Submersible position
+    public static int SUBMERSIBLE_POSITION = 4900;
 
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
+    
+    // Wall position
+    public static int WALL_POSITION = 400;
+
+    // Positions
+    public static int[] POSITIONS = new int[] {
+            GROUND_POSITION,
+            WALL_POSITION,
+            HIGH_BASKET_POSITION,
+            SUBMERSIBLE_POSITION
+    };
 
     // Controller
     private PIDController controller;
@@ -263,11 +280,19 @@ public class Arm {
 
     }
 
-    // Move the arm to its first position.
-    public void setFirstPosition() {
+    // Moves the arm to the ground position.
+    public void setGroundPosition() {
 
-        // Move the arm to its first position.
-        targetPosition = POSITIONS[0];
+        // Move the arm to the ground position.
+        targetPosition = GROUND_POSITION;
+
+    }
+
+    // Moves the arm to the high basket position.
+    public void setHighBasketPosition() {
+
+        // Move the arm to the high basket position.
+        targetPosition = HIGH_BASKET_POSITION;
 
     }
 

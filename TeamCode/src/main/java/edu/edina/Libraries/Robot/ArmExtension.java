@@ -17,8 +17,17 @@ public class ArmExtension {
     // Extension error threshold
     public static double EXTENSION_ERROR_THRESHOLD = 0.5;
 
+    // Extension increment.
+    public static double EXTENSION_INCREMENT = 0.1;
+
     // Inches per volt
     public static double INCHES_PER_VOLT = 6.375 / 4.4;
+
+    // Maximum extension
+    public static double MAXIMUM_EXTENSION = 9;
+
+    // Minimum extension
+    public static double MINIMUM_EXTENSION = 0;
 
     // Maximum voltage difference
     public static double MAXIMUM_VOLTAGE_DIFFERENCE = 0.5;
@@ -190,6 +199,30 @@ public class ArmExtension {
 
         // Set the extension's position.
         this.extensionTarget = position;
+
+    }
+
+    // Sets the minimum extension.
+    public void setMinimumExtension() {
+
+        // Set the minimum extension.
+        extensionTarget = MINIMUM_EXTENSION;
+
+    }
+
+    // Extends this.
+    public void extend() {
+
+        // Extend this.
+        extensionTarget = Math.min(extensionTarget + EXTENSION_INCREMENT, MAXIMUM_EXTENSION);
+
+    }
+
+    // Retracts this.
+    public void retract() {
+
+        // Retract this.
+        extensionTarget = Math.max(extensionTarget - EXTENSION_INCREMENT, MINIMUM_EXTENSION);
 
     }
 

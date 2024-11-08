@@ -78,97 +78,146 @@ public class TeleOpForScrimmage extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            // If the user pressed a...
-            if (currentGamepad.a && !previousGamepad.a) {
+            // If left trigger is down...
+            if(currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
 
-                // Toggle the claw.
-                robotHardware.toggleClaw();
+                // If the user is holding dpad up...
+                if (currentGamepad.dpad_up) {
 
-            }
+                    // If the arm is not nearly down...
+                    if (!robotHardware.isArmNearlyDown()) {
 
-            // If the user pressed x...
-            if (currentGamepad.x && !previousGamepad.x) {
+                        // Raise the lift.
+                        robotHardware.raiseLift();
 
-                // Toggle the wrist.
-                robotHardware.toggleWrist();
+                    }
 
-            }
+                }
 
-            // If the user pressed left bumper...
-            if (currentGamepad.left_bumper) {
+                // If the user is holding dpad down...
+                if (currentGamepad.dpad_down) {
 
-                // Retract the extension.
-                robotHardware.setExtensionPosition(0);
+                    // Lower the lift.
+                    robotHardware.lowerLift();
 
-            }
+                }
 
-            // Otherwise, if the user pressed right bumper...
-            else if(currentGamepad.right_bumper) {
+                // If the user is holding dpad right...
+                if (currentGamepad.dpad_right) {
 
-                // Extend the extension.
-                robotHardware.setExtensionPosition(5);
+                    // Extend the extension.
+                    robotHardware.extendExtension();
 
-            }
+                }
 
-            // If the user pressed dpad down...
-            if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+                // If the user is holding dpad left...
+                if(currentGamepad.dpad_left) {
 
-                // Go to the previous arm position.
-                robotHardware.previousArmPosition();
-
-            }
-
-            // If the user pressed dpad up...
-            if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-
-                // Go to the next arm position.
-                robotHardware.nextArmPosition();
-
-            }
-
-            // If the user pressed dpad left...
-            if (currentGamepad.dpad_left) {
-
-                // Decrement the arm position.
-                robotHardware.decrementArmPosition();
-
-            }
-
-            // If the user pressed dpad right...
-            if (currentGamepad.dpad_right) {
-
-                // Increment the arm position.
-                robotHardware.incrementArmPosition();
-
-            }
-
-            // If the user is holding right trigger...
-            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
-
-                // If the arm is not nearly down...
-                if (!robotHardware.isArmNearlyDown()) {
-
-                    // Raise the lift.
-                    robotHardware.raiseLift();
+                    // Retract the extension.
+                    robotHardware.retractExtension();
 
                 }
 
             }
 
-            // Otherwise, if the user is holding left trigger...
-            else if (currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
+            // Otherwise, if right trigger is down...
+            else if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
 
-                // Lower the lift.
-                robotHardware.lowerLift();
+                // If the user pressed a...
+                if(currentGamepad.a && !previousGamepad.a) {
+
+                    // Raise the wrist.
+                    robotHardware.raiseWrist();
+
+                    // Move the arm to the ground position.
+                    robotHardware.setArmGroundPosition();
+
+                    // Move the lift to the ground position
+                    robotHardware.setLiftGroundPosition();
+
+                    // Fully retract the slide.
+                    robotHardware.setMinimumExtension();
+
+                }
+
+                // If the user pressed y...
+                if(currentGamepad.y && !previousGamepad.y) {
+
+                    // Raise the wrist.
+                    robotHardware.raiseWrist();
+
+                    // Move the arm to the high basket position.
+                    robotHardware.setArmHighBasketPosition();
+
+                    // Move the lift to the high basket position
+                    robotHardware.setLiftHighBasketPosition();
+
+                    // Fully retract the slide.
+                    robotHardware.setMinimumExtension();
+
+                }
 
             }
 
-            // If the user pressed y...
-            if(currentGamepad.y && !previousGamepad.y) {
+            // Otherwise (if both triggers are up)...
+            else {
 
-                // Toggle turtle mode.
-                robotHardware.toggleTurtleMode();
-                
+                // If the user pressed a...
+                if (currentGamepad.a && !previousGamepad.a) {
+
+                    // Toggle the claw.
+                    robotHardware.toggleClaw();
+
+                }
+
+                // If the user pressed x...
+                if (currentGamepad.x && !previousGamepad.x) {
+
+                    // Toggle the wrist.
+                    robotHardware.toggleWrist();
+
+                }
+
+                // If the user pressed y...
+                if(currentGamepad.y && !previousGamepad.y) {
+
+                    // Toggle turtle mode.
+                    robotHardware.toggleTurtleMode();
+
+                }
+
+                // If the user pressed dpad down...
+                if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+
+                    // Go to the previous arm position.
+                    robotHardware.previousArmPosition();
+
+                }
+
+                // If the user pressed dpad up...
+                if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+
+                    // Go to the next arm position.
+                    robotHardware.nextArmPosition();
+
+                }
+
+                // If the user pressed dpad left...
+                if (currentGamepad.dpad_left) {
+
+                    // Decrement the arm position.
+                    robotHardware.decrementArmPosition();
+
+                }
+
+                // If the user pressed dpad right...
+                if (currentGamepad.dpad_right) {
+
+                    // Increment the arm position.
+                    robotHardware.incrementArmPosition();
+
+                }
+
             }
 
             // Update the robot hardware.

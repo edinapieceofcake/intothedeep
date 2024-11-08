@@ -19,8 +19,8 @@ public class Lift {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
-    // Position increment
-    public static int POSITION_INCREMENT = 50;
+    // High baskket position
+    public static int HIGH_BASKET_POSITION = 1500;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
@@ -30,6 +30,9 @@ public class Lift {
 
     // Minimum position
     public static int MINIMUM_POSITION = 0;
+
+    // Position increment
+    public static int POSITION_INCREMENT = 50;
 
     // Proportional coefficient
     public static double PROPORTIONAL = 0.002;
@@ -222,6 +225,22 @@ public class Lift {
 
         // Notify the user that the lift is down.
         robotHardware.log("Lift is down");
+
+    }
+
+    // Moves the lift to the ground position.
+    public void setGroundPosition() {
+
+        // Move the lift to the minimum position.
+        targetPosition = MINIMUM_POSITION;
+
+    }
+
+    // Moves the lift to the high basket position.
+    public void setHighBasketPosition() {
+
+        // Move the lift to the high basket position.
+        targetPosition = HIGH_BASKET_POSITION;
 
     }
 

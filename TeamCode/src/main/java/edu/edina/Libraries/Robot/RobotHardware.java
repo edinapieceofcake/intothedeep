@@ -135,8 +135,8 @@ public class RobotHardware {
     // Initializes the robot.
     public void initializeRobot() {
 
-        // Move the arm to its first position.
-        arm.setFirstPosition();
+        // Move the arm to the ground position.
+        arm.setGroundPosition();
 
         // Close the claw.
         claw.close();
@@ -151,6 +151,22 @@ public class RobotHardware {
 
         // Toggle the wrist.
         wrist.toggle();
+
+    }
+
+    // Raises the wrist.
+    public void raiseWrist() {
+
+        // Raise the wrist.
+        wrist.raise();
+
+    }
+
+    // Lowers the wrist.
+    public void lowerWrist() {
+
+        // Lowers the wrist.
+        wrist.lower();
 
     }
 
@@ -249,6 +265,30 @@ public class RobotHardware {
 
     }
 
+    // Retracts the extension.
+    public void retractExtension() {
+
+        // Retract the extension.
+        extension.retract();
+
+    }
+
+    // Extends the extension.
+    public void extendExtension() {
+
+        // Extend the extension.
+        extension.extend();
+
+    }
+
+    // Sets the minimum extension.
+    public void setMinimumExtension() {
+
+        // Set the minimum extension.
+        extension.setMinimumExtension();
+
+    }
+
     // Toggles turtle mode.
     public void toggleTurtleMode() {
 
@@ -265,6 +305,38 @@ public class RobotHardware {
 
         // Return the result.
         return isNearlyDown;
+
+    }
+
+    // Moves the arm to the ground position.
+    public void setArmGroundPosition() {
+
+        // Move the arm to the ground position.
+        arm.setGroundPosition();
+
+    }
+
+    // Moves the arm to the high basket position.
+    public void setArmHighBasketPosition() {
+
+        // Move the arm to the high basket position.
+        arm.setHighBasketPosition();
+
+    }
+
+    // Moves the lift to the ground position.
+    public void setLiftGroundPosition() {
+
+        // Move the lift to the ground position.
+        lift.setGroundPosition();
+
+    }
+
+    // Moves the lift to the high basket position.
+    public void setLiftHighBasketPosition() {
+
+        // Move the lift to the high basket position.
+        lift.setHighBasketPosition();
 
     }
 
