@@ -9,8 +9,8 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @TeleOp
 public class TeleOpTest extends LinearOpMode {
     @Override
-    public void runOpMode() {
-        RobotHardware hw = new RobotHardware(hardwareMap);
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
 
         waitForStart();
 
@@ -20,14 +20,14 @@ public class TeleOpTest extends LinearOpMode {
             pos = hw.claw.getPosition();
 
             if (gamepad1.dpad_up) {
-                hw.liftMotorR.setPower(1);
-                hw.liftMotorL.setPower(1);
+                hw.liftMotorRight.setPower(1);
+                hw.liftMotorLeft.setPower(1);
             } else if (gamepad1.dpad_down) {
-                hw.liftMotorR.setPower(-1);
-                hw.liftMotorL.setPower(-1);
+                hw.liftMotorRight.setPower(-1);
+                hw.liftMotorLeft.setPower(-1);
             } else {
-                hw.liftMotorR.setPower(0);
-                hw.liftMotorL.setPower(0);
+                hw.liftMotorRight.setPower(0);
+                hw.liftMotorLeft.setPower(0);
             }
 
             if (gamepad1.right_bumper) {

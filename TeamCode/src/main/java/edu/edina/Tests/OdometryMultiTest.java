@@ -22,7 +22,7 @@ public class OdometryMultiTest extends LinearOpMode {
     double yawIMU;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         yawIMU = 0.0;
 
         Vector2d[] actualTestVecs = new Vector2d[]{
@@ -68,7 +68,7 @@ public class OdometryMultiTest extends LinearOpMode {
         telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
         telemetry.update();
 
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+        RobotHardware hw = new RobotHardware(this);
 
         Pose2d pos3DW = new Pose2d(0, 0, 0);
 

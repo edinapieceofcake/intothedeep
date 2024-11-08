@@ -25,8 +25,8 @@ public class PurePursuitOTOS extends LinearOpMode {
     SparkFunOTOS myOtos;
 
     @Override
-    public void runOpMode() {
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
         myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sensor_otos");
 
         myOtos.setLinearUnit(DistanceUnit.INCH);

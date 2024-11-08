@@ -26,8 +26,8 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @TeleOp
 public class TeleOpPurePursuit2 extends LinearOpMode {
     @Override
-    public void runOpMode() {
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
 
         Pose2d pose = new Pose2d(0, 0, 0);
 

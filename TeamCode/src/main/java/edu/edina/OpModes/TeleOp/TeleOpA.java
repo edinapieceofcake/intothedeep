@@ -12,8 +12,8 @@ public class TeleOpA extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void runOpMode() {
-        RobotHardware hw = new RobotHardware(hardwareMap, telemetry);
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

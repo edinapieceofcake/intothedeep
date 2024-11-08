@@ -28,8 +28,8 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     ILinearMechanism linearMech;
 
     @Override
-    public void runOpMode() {
-        linearMech = new ArmLift(new RobotHardware(hardwareMap));
+    public void runOpMode() throws InterruptedException {
+        linearMech = new ArmLift(new RobotHardware(this));
         click1 = new GamePadClick(gamepad1);
 
         waitForStart();

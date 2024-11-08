@@ -6,67 +6,137 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import edu.edina.Libraries.Robot.GamePadClick;
+import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 @TeleOp
 public class TeleOpForScrimmage extends LinearOpMode {
-    private DriveTrain driveTrain;
-    private CompoundArm compoundArm;
+
+    /*
+
+    Robot Controls
+
+    left stick = move robot
+    right stick = rotate robot
+
+    a = toggle claw
+    x = toggle wrist
+    y = toggle turtle mode
+
+    dpad up = next arm position
+    dpad down = previous arm position
+    dpad right = increment arm position
+    dpad left = decrement arm position
+
+    right trigger = raise lift
+    left trigger = lower lift
+
+    left bumper = retract slide
+    right bumper = extend slide
+
+    */
+
+    private static final double TRIGGER_THRESHOLD = 0.5;
+
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Gamepad currentGamepad = new Gamepad();
-    private Gamepad previousGamepad = new Gamepad();
-    private Boolean redAlliance;
-    private Boolean basketSide;
-
     public void runOpMode() throws InterruptedException {
-        // Get the robot drive train.
-        driveTrain = new DriveTrain(this);
 
-        // Get the robot compound arm
-        compoundArm = new CompoundArm(this);
+        // Get hardware.
+        RobotHardware robotHardware = new RobotHardware(this);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+        // Wait for the user to lower the lift.
+        robotHardware.waitForLiftDown();
+
+        // Wait for the user to lower the arm.
+        robotHardware.waitForArmDown();
+
+        // Initialize the robot.
+        robotHardware.initializeRobot();
+
+        // If stop is requested...
+        if(isStopRequested()) {
+
+            // Exit the method.
+            return;
+
+        }
+
+        // Prompt the user to press start.
+        robotHardware.log("Waiting for start...");
 
         waitForStart();
+
         runtime.reset();
 
-        GamePadClick click1=new GamePadClick(gamepad1);
-        while (opModeIsActive()) {
-            click1.read();
+        Gamepad currentGamepad = new Gamepad();
+        Gamepad previousGamepad = new Gamepad();
 
-            if (click1.a) {
+        CompoundArm compoundArm = robotHardware.compoundArm;
+
+        DriveTrain driveTrain = robotHardware.driveTrain;
+
+        while (opModeIsActive()) {
+
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            if (currentGamepad.a && !previousGamepad.a) {
                 compoundArm.toggleClaw();
             }
 
-            if (click1.x) {
+            if (currentGamepad.x && !previousGamepad.x) {
                 compoundArm.toggleWrist();
             }
 
-            if (click1.dpad_down) {
-                compoundArm.setArmPosition(1);
+            if (currentGamepad.left_bumper) {
+                compoundArm.retractSlide();
+            }
+            else if(currentGamepad.right_bumper) {
+                compoundArm.extendSlide();
+            }
+            else {
+                compoundArm.stopSlide();
             }
 
-            if (click1.dpad_left) {
-                compoundArm.setArmPosition(2);
+            if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+                compoundArm.previousArmPosition();
             }
 
-            if (click1.dpad_up) {
-                compoundArm.setArmPosition(3);
+            if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+                compoundArm.nextArmPosition();
             }
 
-            if (click1.dpad_right) {
-                compoundArm.setArmPosition(4);
+            if (currentGamepad.dpad_left) {
+                compoundArm.decrementArmPosition();
+            }
+
+            if (currentGamepad.dpad_right) {
+                compoundArm.incrementArmPosition();
+            }
+
+            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+                compoundArm.raiseLift();
+            } else if (currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
+                compoundArm.lowerLift();
+            } else {
+                compoundArm.stopLift();
+            }
+
+            if(currentGamepad.y && !previousGamepad.y) {
+                driveTrain.toggleTurtleMode();
             }
 
             driveTrain.update();
 
             compoundArm.update();
 
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Main", "====================");
+            telemetry.addData("Run Time", runtime.toString());
+
             telemetry.update();
+
         }
     }
+
 }
