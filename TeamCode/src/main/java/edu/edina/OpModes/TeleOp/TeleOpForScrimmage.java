@@ -90,7 +90,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user is holding dpad up...
-                if (currentGamepad.dpad_up) {
+                if (currentGamepad.dpad_right) {
 
                     // If the arm is not nearly down...
                     if (!robotHardware.isArmNearlyDown()) {
@@ -103,16 +103,15 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user is holding dpad down...
-                if (currentGamepad.dpad_down) {
+                if (currentGamepad.dpad_left) {
 
                     // Lower the lift.
                     robotHardware.retractSlide();
 
                 }
 
-                /*
                 // If the user is holding dpad right...
-                if (currentGamepad.dpad_right) {
+                if (currentGamepad.dpad_up) {
 
                     // Extend the slide.
                     robotHardware.raiseLift();
@@ -120,13 +119,12 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user is holding dpad left...
-                if(currentGamepad.dpad_left) {
+                if(currentGamepad.dpad_down) {
 
                     // Retract the slide.
                     robotHardware.lowerLift();
 
                 }
-                 */
 
             }
 
@@ -144,6 +142,23 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                     // Move the arm to the ground position.
                     robotHardware.setArmGroundPosition();
+
+                    // Move the lift to the ground position
+                    robotHardware.setLiftGroundPosition();
+
+                    // Fully retract the slide.
+                    robotHardware.setMinimumExtension();
+
+                }
+
+                // If the user pressed b...
+                if(currentGamepad.b && !previousGamepad.b) {
+
+                    // Raise the wrist.
+                    //robotHardware.raiseWrist();
+
+                    // Move the arm to the ground position.
+                    robotHardware.setArmAlmostGroundPosition();
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
@@ -171,7 +186,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad up...
-                if(currentGamepad.dpad_up) {
+                if(currentGamepad.dpad_up && !previousGamepad.dpad_up) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -188,7 +203,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad down...
-                if(currentGamepad.dpad_down) {
+                if(currentGamepad.dpad_down && !previousGamepad.dpad_down) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -272,19 +287,19 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                 }
 
-                // If the user pressed dpad down...
-                if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+                // If the user is holding dpad down...
+                if (currentGamepad.dpad_down) {
 
                     // Decrement the arm position.
-                    robotHardware.decrementArmPosition();
+                    robotHardware.incrementArmPosition();
 
                 }
 
-                // If the user pressed dpad up...
-                if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+                // If the user is holding dpad up...
+                if (currentGamepad.dpad_up) {
 
                     // Increment the arm position.
-                    robotHardware.incrementArmPosition();
+                    robotHardware.decrementArmPosition();
 
                 }
 

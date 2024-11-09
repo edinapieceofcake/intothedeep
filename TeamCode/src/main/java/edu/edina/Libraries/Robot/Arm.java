@@ -58,6 +58,9 @@ public class Arm {
     // Low Chamber Position
     public static int LOW_CHAMBER_POSITION = 4150;
 
+    // Almost Ground Position
+    public static int ALMOST_GROUND_POSITION = 200;
+
     // Positions
     public static int[] POSITIONS = new int[] {
             GROUND_POSITION,
@@ -66,7 +69,8 @@ public class Arm {
             LOW_BASKET_POSITION,
             SUBMERSIBLE_POSITION,
             HIGH_CHAMBER_POSITION,
-            LOW_CHAMBER_POSITION
+            LOW_CHAMBER_POSITION,
+            ALMOST_GROUND_POSITION
     };
 
     // Controller
@@ -337,6 +341,14 @@ public class Arm {
 
         // Move the arm to the submersible position.
         targetPosition = SUBMERSIBLE_POSITION;
+
+    }
+
+    // Moves the arm to the almost ground position.
+    public void setAlmostGroundPosition() {
+
+        // Move the arm to the almost ground position.
+        targetPosition = ALMOST_GROUND_POSITION;
 
     }
 

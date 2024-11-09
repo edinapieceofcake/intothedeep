@@ -372,6 +372,14 @@ public class RobotHardware {
 
     }
 
+    // Moves the arm to the almost ground position.
+    public void setArmAlmostGroundPosition() {
+
+        // Move the arm to the almost ground position.
+        arm.setAlmostGroundPosition();
+
+    }
+
     // Moves the lift to the ground position.
     public void setLiftGroundPosition() {
 

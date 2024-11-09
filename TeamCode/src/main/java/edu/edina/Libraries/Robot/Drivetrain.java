@@ -17,7 +17,7 @@ public class Drivetrain {
     public static double NORMAL_MULTIPLIER = 1;
 
     // Turtle multiplier
-    public static double TURTLE_MULTIPLIER = 0.6;
+    public static double TURTLE_MULTIPLIER = 0.3;
 
     // Left back drive
     private final DcMotorEx leftBack;
