@@ -25,6 +25,9 @@ public class Arm {
     // High basket position
     public static int HIGH_BASKET_POSITION = 2800;
 
+    // High basket position
+    public static int HIGH_BASKET_AUTO_POSITION = 3000;
+
     // Integral coefficient
     public static double INTEGRAL = 0;
 
@@ -41,7 +44,7 @@ public class Arm {
     public static double PROPORTIONAL = 0.0005;
 
     // Position increment (ticks)
-    public static int POSITION_INCREMENT = 25;
+    public static int POSITION_INCREMENT = 400;
 
     // Submersible position
     public static int SUBMERSIBLE_POSITION = 4900;
@@ -317,6 +320,14 @@ public class Arm {
 
         // Move the arm to the high basket position.
         targetPosition = HIGH_BASKET_POSITION;
+
+    }
+
+    // Moves the arm to the high basket auto position.
+    public void setHighBasketAutoPosition() {
+
+        // Move the arm to the high basket auto position.
+        targetPosition = HIGH_BASKET_AUTO_POSITION;
 
     }
 

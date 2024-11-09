@@ -1,6 +1,9 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -345,6 +348,14 @@ public class RobotHardware {
 
         // Move the arm to the high basket position.
         arm.setHighBasketPosition();
+
+    }
+
+    // Moves the arm to the high basket auto position.
+    public void setArmHighBasketAutoPosition() {
+
+        // Move the arm to the high basket auto position.
+        arm.setHighBasketAutoPosition();
 
     }
 

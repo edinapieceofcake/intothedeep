@@ -20,8 +20,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
     - right stick = rotate robot
     - a = toggle claw
     - y = toggle turtle mode
-    - dpad up = increment arm position
-    - dpad down = decrement arm position
+    - right bumper = increment arm position
+    - left bumper = decrement arm position
 
     Preset Mode (hold right trigger)
     - a = ground
@@ -287,22 +287,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                 }
 
-                // If the user is holding dpad down...
-                if (currentGamepad.dpad_down) {
-
-                    // Decrement the arm position.
-                    robotHardware.incrementArmPosition();
-
-                }
-
-                // If the user is holding dpad up...
-                if (currentGamepad.dpad_up) {
-
-                    // Increment the arm position.
-                    robotHardware.decrementArmPosition();
-
-                }
-
                 /*
                 // If the user pressed dpad left...
                 if (currentGamepad.dpad_left) {
@@ -320,6 +304,22 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                 }
                  */
+
+            }
+
+            // If the user tapped right bumper...
+            if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
+
+                // Increment the arm position.
+                robotHardware.incrementArmPosition();
+
+            }
+
+            // If the user tapped left bumper...
+            if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+
+                // Increment the arm position.
+                robotHardware.decrementArmPosition();
 
             }
 
