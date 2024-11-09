@@ -17,6 +17,9 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @Autonomous(preselectTeleOp = "TeleOpForScrimmage")
 public class AutoForScrimmage extends LinearOpMode {
     public static double BASKET_DIAGONAL_POSITION = -50;
+    public static double FIRST_NEUTRAL_SPIKE_MARK_X = -50;
+    public static double FIRST_NEUTRAL_SPIKE_MARK_Y = -38;
+
 
     private ElapsedTime timer = new ElapsedTime();
 
@@ -85,7 +88,96 @@ public class AutoForScrimmage extends LinearOpMode {
 
         while (timer.milliseconds() < 2000) {
             // Update the robot hardware.
-            robotHardware.update();}
+            robotHardware.update();
+        }
+
+        // Reset the timer.
+        timer.reset();
+
+        while (timer.milliseconds() < 2000) {
+            // Move the lift to the ground position
+            robotHardware.setLiftGroundPosition();
+
+            // Use the low basket extension.
+            robotHardware.setLowBasketExtension();
+
+            // Update the robot hardware.
+            robotHardware.update();
+        }
+
+        // Reset the timer.
+        timer.reset();
+
+        while (timer.milliseconds() < 2000) {
+            // Move the arm to the ground position.
+            robotHardware.setArmAlmostGroundPosition();
+
+            // Fully retract the slide.
+            robotHardware.setMinimumExtension();
+
+            // Update the robot hardware.
+            robotHardware.update();
+        }
+
+        // Reset the timer.
+        timer.reset();
+
+        while (timer.milliseconds() < 2000) {
+            // Move the arm to the ground position.
+            robotHardware.setArmGroundPosition();
+
+            // Update the robot hardware.
+            robotHardware.update();
+        }
+
+        beginPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+        Actions.runBlocking(drive.actionBuilder(beginPose)
+                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+                .build());
+
+        // Reset the timer.
+        timer.reset();
+
+        // Toggle the claw.
+        robotHardware.toggleClaw();
+
+        while (timer.milliseconds() < 2000) {
+            // Update the robot hardware.
+            robotHardware.update();
+        }
+
+        beginPose = new Pose2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y, 1.0 / 2 * Math.PI);
+        Actions.runBlocking(drive.actionBuilder(beginPose)
+                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+                .build());
+
+        // Reset the timer.
+        timer.reset();
+
+        while (timer.milliseconds() < 2000) {
+            // Move the arm to the high basket position.
+            robotHardware.setArmHighBasketAutoPosition();
+
+            // Move the lift to the high basket position
+            robotHardware.setLiftHighBasketPosition();
+
+            // Use the high basket extension.
+            robotHardware.setHighBasketExtension();
+
+            // Update the robot hardware.
+            robotHardware.update();
+        }
+
+        // Reset the timer.
+        timer.reset();
+
+        // Toggle the claw.
+        robotHardware.toggleClaw();
+
+        while (timer.milliseconds() < 2000) {
+            // Update the robot hardware.
+            robotHardware.update();
+        }
 
         // Reset the timer.
         timer.reset();
@@ -134,5 +226,6 @@ public class AutoForScrimmage extends LinearOpMode {
 
         // Update the telemetry.
         telemetry.update();
+
     }
 }
