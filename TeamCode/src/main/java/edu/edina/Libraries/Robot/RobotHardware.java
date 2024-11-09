@@ -348,6 +348,30 @@ public class RobotHardware {
 
     }
 
+    // Moves the arm to the high chamber position.
+    public void setArmHighChamberPosition() {
+
+        // Move the arm to the high chamber position.
+        arm.setHighChamberPosition();
+
+    }
+
+    // Moves the arm to the low chamber position.
+    public void setArmLowChamberPosition() {
+
+        // Move the arm to the low chamber position.
+        arm.setLowChamberPosition();
+
+    }
+
+    // Moves the arm to the submersible position.
+    public void setArmSubmersiblePosition() {
+
+        // Move the arm to the submersible position.
+        arm.setSubmersiblePosition();
+
+    }
+
     // Moves the lift to the ground position.
     public void setLiftGroundPosition() {
 

@@ -52,13 +52,21 @@ public class Arm {
     // Wall position
     public static int WALL_POSITION = 400;
 
+    // High Chamber Position
+    public static int HIGH_CHAMBER_POSITION = 3000;
+
+    // Low Chamber Position
+    public static int LOW_CHAMBER_POSITION = 4150;
+
     // Positions
     public static int[] POSITIONS = new int[] {
             GROUND_POSITION,
             WALL_POSITION,
             HIGH_BASKET_POSITION,
             LOW_BASKET_POSITION,
-            SUBMERSIBLE_POSITION
+            SUBMERSIBLE_POSITION,
+            HIGH_CHAMBER_POSITION,
+            LOW_CHAMBER_POSITION
     };
 
     // Controller
@@ -305,6 +313,30 @@ public class Arm {
 
         // Move the arm to the high basket position.
         targetPosition = HIGH_BASKET_POSITION;
+
+    }
+
+    // Moves the arm to the high chamber position.
+    public void setHighChamberPosition() {
+
+        // Move the arm to the high chamber position.
+        targetPosition = HIGH_CHAMBER_POSITION;
+
+    }
+
+    // Moves the arm to the low chamber position.
+    public void setLowChamberPosition() {
+
+        // Move the arm to the low chamber position.
+        targetPosition = LOW_CHAMBER_POSITION;
+
+    }
+
+    // Moves the arm to the submersible position.
+    public void setSubmersiblePosition() {
+
+        // Move the arm to the submersible position.
+        targetPosition = SUBMERSIBLE_POSITION;
 
     }
 
