@@ -20,8 +20,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
     - right stick = rotate robot
     - a = toggle claw
     - y = toggle turtle mode
-    - right bumper = increment arm position
-    - left bumper = decrement arm position
+    - right bumper = raise arm
+    - left bumper = lower arm
 
     Preset Mode (hold right trigger)
     - a = ground
