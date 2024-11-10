@@ -236,6 +236,22 @@ public class RobotHardware {
 
     }
 
+    // Opens the claw.
+    public void openClaw() {
+
+        // Open the claw.
+        claw.open();
+
+    }
+
+    // Closes the claw.
+    public void closeClaw() {
+
+        // Close the claw.
+        claw.close();
+
+    }
+
     // Raises the lift.
     public void raiseLift() {
 
