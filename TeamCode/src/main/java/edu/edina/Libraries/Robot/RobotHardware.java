@@ -332,6 +332,14 @@ public class RobotHardware {
 
     }
 
+    // Sets turtle mode.
+    public void setTurtleMode(boolean turtleMode) {
+
+        // Set turtle mode.
+        drivetrain.setTurtleMode(turtleMode);
+
+    }
+
     // Determines whether the arm is nearly down.
     public boolean isArmNearlyDown() {
 
@@ -422,5 +430,4 @@ public class RobotHardware {
         lift.setHighBasketPosition();
 
     }
-
 }

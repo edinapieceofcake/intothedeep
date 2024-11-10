@@ -129,4 +129,11 @@ public class Drivetrain {
 
     }
 
+    // Sets turtle mode.
+    public void setTurtleMode(boolean tMode) {
+
+        //
+        turtleMode = tMode;
+
+    }
 }
