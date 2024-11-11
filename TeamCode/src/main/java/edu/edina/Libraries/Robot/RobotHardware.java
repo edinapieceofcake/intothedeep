@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -77,10 +78,10 @@ public class RobotHardware {
         // Initialize the slide.
         slide = new Slide(this);
 
-        // Initialize the wrist.
-        wrist = new Wrist(this);
-
         HardwareMap hardwareMap = opMode.hardwareMap;
+
+        // Initialize the wrist.
+        wrist = new Wrist(hardwareMap, opMode.telemetry);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 

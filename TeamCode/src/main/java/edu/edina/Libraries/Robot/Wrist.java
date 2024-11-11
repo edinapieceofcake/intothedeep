@@ -1,7 +1,6 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -10,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // This represents a wrist.
 @Config
 public class Wrist {
+    public static double WRIST_SERVO_TRAVEL_TIME = 0.5;
 
     // Down position
     public static double DOWN_POSITION = 0.15;
@@ -21,45 +21,31 @@ public class Wrist {
     // Up position
     public static double UP_POSITION = 0.48;
 
-    // Robot hardware
-    private final RobotHardware robotHardware;
-
     private boolean wristHighRung;
 
     // Servo
-    private final Servo servo;
+    private final TrackingServo servo;
+
+    private final Telemetry telemetry;
 
     // Up
     private boolean up;
 
     // Initializes this.
-    public Wrist(RobotHardware robotHardware) {
+    public Wrist(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.servo = new TrackingServo(hardwareMap.get(Servo.class, "wrist_left"),
+                WRIST_SERVO_TRAVEL_TIME);
+        this.telemetry = telemetry;
+    }
 
-        // Remember the robot hardware.
-        this.robotHardware = robotHardware;
-
-        // Get the op mode.
-        LinearOpMode opMode = robotHardware.getOpMode();
-
-        // Get the hardware map.
-        HardwareMap hardwareMap = opMode.hardwareMap;
-
-        // Get the wrist servo.
-        servo = hardwareMap.get(Servo.class, "wrist_left");
-
+    public double getEstimatedPosition() {
+        return servo.getEstimatedPosition();
     }
 
     // Updates this.
     public void update() {
-
         // Get the wrist's position.
-        double position = servo.getPosition();
-
-        // Get the op mode.
-        LinearOpMode opMode = robotHardware.getOpMode();
-
-        // Get the telemetry.
-        Telemetry telemetry = opMode.telemetry;
+        double position = servo.getEstimatedPosition();
 
         // Display wrist telemetry.
         telemetry.addData("Wrist", "====================");
@@ -72,7 +58,7 @@ public class Wrist {
     public void toggle() {
 
         // If the wrist is up...
-        if(up) {
+        if (up) {
 
             // Lower the wrist.
             lower();
