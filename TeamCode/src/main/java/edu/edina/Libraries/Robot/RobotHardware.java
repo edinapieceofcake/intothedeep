@@ -173,8 +173,21 @@ public class RobotHardware {
 
     }
 
+    private void updateHardwareInteractions() {
+        if (arm.armWillCrossWristLimit())
+            raiseWrist();
+        else if (arm.targetingScoringPos())
+            lowerWrist();
+
+        if (arm.targetingScoringPos() || lift.targetingScoringPos())
+            drivetrain.setAutoTurtle(true);
+        else
+            drivetrain.setAutoTurtle(false);
+    }
+
     // Updates this.
     public void update() {
+        updateHardwareInteractions();
 
         // Update the arm.
         arm.update();
@@ -191,14 +204,8 @@ public class RobotHardware {
         // Update the slide.
         slide.update();
 
-        if (arm.armWillCrossWristLimit())
-            raiseWrist();
-        else if (arm.targetingScoringPos())
-            lowerWrist();
-
         // Update the wrist.
         wrist.update();
-
     }
 
     // Goes to the previous arm position.

@@ -244,4 +244,7 @@ public class Lift {
 
     }
 
+    public boolean targetingScoringPos() {
+        return targetPosition > MINIMUM_POSITION;
+    }
 }

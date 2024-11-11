@@ -26,12 +26,11 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
     Sample basket scoring (hold right trigger)
     - x = low basket
+    - y = high basket
 
     Submersible & rungs (hold left trigger)
-    - dpad up = raise lift
-    - dpad down = lower lift
-    - dpad right = extend slide
-    - dpad left = retract slide
+    - dpad-up = high rung
+    - dpad-down = low rung
 
     */
 
@@ -81,109 +80,16 @@ public class TeleOpPostScrimmage extends LinearOpMode {
             // If left trigger is down...
             if(currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
 
-                // Manual mode
+                // Specimen and Submersible
                 //////////////////////////////////////////////////////////////////////
-
-                // If the user is holding dpad up...
-                if (currentGamepad.dpad_right) {
-
-                    // If the arm is not nearly down...
-                    if (!robotHardware.isArmNearlyDown()) {
-
-                        // Raise the lift.
-                        robotHardware.extendSlide();
-
-                    }
-
-                }
-
-                // If the user is holding dpad down...
-                if (currentGamepad.dpad_left) {
-
-                    // Lower the lift.
-                    robotHardware.retractSlide();
-
-                }
-
-                // If the user is holding dpad right...
-                if (currentGamepad.dpad_up) {
-
-                    // Extend the slide.
-                    robotHardware.raiseLift();
-
-                }
-
-                // If the user is holding dpad left...
-                if(currentGamepad.dpad_down) {
-
-                    // Retract the slide.
-                    robotHardware.lowerLift();
-
-                }
-
-            }
-
-            // Otherwise, if right trigger is down...
-            else if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
-
-                // Preset mode
-                //////////////////////////////////////////////////////////////////////
-
-                // If the user pressed a...
-                if(currentGamepad.a && !previousGamepad.a) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
-                    // Move the arm to the ground position.
-                    robotHardware.setArmGroundPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Fully retract the slide.
-                    robotHardware.setMinimumExtension();
-
-                }
-
-                // If the user pressed b...
-                if(currentGamepad.b && !previousGamepad.b) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
-                    // Move the arm to the ground position.
-                    robotHardware.setArmAlmostGroundPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Fully retract the slide.
-                    robotHardware.setMinimumExtension();
-
-                }
-
-                // low basket
-                if(currentGamepad.x && !previousGamepad.x) {
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
-                    // Move the arm to the low basket position.
-                    robotHardware.setArmLowBasketPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Use the low basket extension.
-                    robotHardware.setLowBasketExtension();
-
-                }
 
                 // If the user pressed dpad up...
                 if(currentGamepad.dpad_up && !previousGamepad.dpad_up) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
+
+                    robotHardware.setTurtleMode(true);
 
                     // Move the arm to the high chamber position.
                     robotHardware.setArmHighChamberPosition();
@@ -202,6 +108,8 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
 
+                    robotHardware.setTurtleMode(true);
+
                     // Move the arm to the low chamber position.
                     robotHardware.setArmLowChamberPosition();
 
@@ -213,11 +121,13 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                 }
 
-                // If the user pressed dpad down...
+                // If the user pressed dpad right...
                 if(currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
+
+                    robotHardware.setTurtleMode(true);
 
                     // Move the arm to the submersible position.
                     robotHardware.setArmSubmersiblePosition();
@@ -229,12 +139,77 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     robotHardware.setMinimumExtension();
 
                 }
+            }
+
+            // Otherwise, if right trigger is down...
+            else if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+
+                // Sample mode
+                //////////////////////////////////////////////////////////////////////
+
+                // If the user pressed a...
+                if(currentGamepad.a && !previousGamepad.a) {
+
+                    // Raise the wrist.
+                    //robotHardware.raiseWrist();
+
+                    robotHardware.setTurtleMode(false);
+
+                    // Move the arm to the ground position.
+                    robotHardware.setArmGroundPosition();
+
+                    // Move the lift to the ground position
+                    robotHardware.setLiftGroundPosition();
+
+                    // Fully retract the slide.
+                    robotHardware.setMinimumExtension();
+
+                }
+
+                // If the user pressed b...
+                if(currentGamepad.b && !previousGamepad.b) {
+
+                    // Raise the wrist.
+                    //robotHardware.raiseWrist();
+
+                    robotHardware.setTurtleMode(false);
+
+                    // Move the arm to the ground position.
+                    robotHardware.setArmAlmostGroundPosition();
+
+                    // Move the lift to the ground position
+                    robotHardware.setLiftGroundPosition();
+
+                    // Fully retract the slide.
+                    robotHardware.setMinimumExtension();
+
+                }
+
+                // low basket
+                if(currentGamepad.x && !previousGamepad.x) {
+                    // Raise the wrist.
+                    //robotHardware.raiseWrist();
+
+                    robotHardware.setTurtleMode(true);
+
+                    // Move the arm to the low basket position.
+                    robotHardware.setArmLowBasketPosition();
+
+                    // Move the lift to the ground position
+                    robotHardware.setLiftGroundPosition();
+
+                    // Use the low basket extension.
+                    robotHardware.setLowBasketExtension();
+
+                }
 
                 // If the user pressed y...
                 if(currentGamepad.y && !previousGamepad.y) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
+
+                    robotHardware.setTurtleMode(true);
 
                     // Move the arm to the high basket position.
                     robotHardware.setArmHighBasketPosition();
@@ -252,7 +227,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
             // Otherwise (if both triggers are up)...
             else {
 
-                // Normal mode
+                // Universal mode
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed a...

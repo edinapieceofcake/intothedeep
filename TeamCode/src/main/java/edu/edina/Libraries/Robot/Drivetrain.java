@@ -31,6 +31,8 @@ public class Drivetrain {
     // Right front drive
     private final DcMotorEx rightFront;
 
+    private boolean autoTurtle;
+
     // Op mode
     private LinearOpMode opMode;
 
@@ -95,7 +97,7 @@ public class Drivetrain {
 
         double multiplier;
 
-        if (turtleMode) {
+        if (getTurtleMode()) {
             multiplier = TURTLE_MULTIPLIER;
         } else {
             multiplier = NORMAL_MULTIPLIER;
@@ -134,6 +136,16 @@ public class Drivetrain {
 
         //
         turtleMode = tMode;
+
+    }
+
+    public void setAutoTurtle(boolean tMode) {
+        autoTurtle = tMode;
+    }
+
+    public boolean getTurtleMode() {
+
+        return turtleMode || autoTurtle;
 
     }
 }
