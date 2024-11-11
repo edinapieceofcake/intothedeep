@@ -27,11 +27,13 @@ public class TeleOpPostScrimmage extends LinearOpMode {
     Sample basket scoring (hold right trigger)
     - x = low basket
     - y = high basket
+    - a = ground
 
-    Submersible & rungs (hold left trigger)
+    Submersible & rungs (hold left trigger) (driving reversed)
     - dpad-up = high rung
     - dpad-down = low rung
-
+    - dpad-right = submersible
+    - a = toggle claw
     */
 
     // Trigger threshold
@@ -53,7 +55,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
         robotHardware.initializeRobot();*/
 
         // If stop is requested...
-        if(isStopRequested()) {
+        if (isStopRequested()) {
 
             // Exit the method.
             return;
@@ -77,14 +79,18 @@ public class TeleOpPostScrimmage extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
+            boolean subAndRungs = currentGamepad.left_trigger > TRIGGER_THRESHOLD;
+
+            robotHardware.setReversed(subAndRungs);
+
             // If left trigger is down...
-            if(currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
+            if (subAndRungs) {
 
                 // Specimen and Submersible
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed dpad up...
-                if(currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+                if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -103,7 +109,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad down...
-                if(currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+                if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -122,7 +128,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad right...
-                if(currentGamepad.dpad_right && !previousGamepad.dpad_right) {
+                if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -139,16 +145,24 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     robotHardware.setMinimumExtension();
 
                 }
+
+                if (currentGamepad.a) {
+                    robotHardware.toggleClaw();
+                }
+
+                if (currentGamepad.x) {
+                    specimenScoring(robotHardware);
+                }
             }
 
             // Otherwise, if right trigger is down...
-            else if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            else if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
 
                 // Sample mode
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed a...
-                if(currentGamepad.a && !previousGamepad.a) {
+                if (currentGamepad.a && !previousGamepad.a) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -167,7 +181,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed b...
-                if(currentGamepad.b && !previousGamepad.b) {
+                if (currentGamepad.b && !previousGamepad.b) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -186,7 +200,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                 }
 
                 // low basket
-                if(currentGamepad.x && !previousGamepad.x) {
+                if (currentGamepad.x && !previousGamepad.x) {
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
 
@@ -204,7 +218,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed y...
-                if(currentGamepad.y && !previousGamepad.y) {
+                if (currentGamepad.y && !previousGamepad.y) {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
@@ -247,7 +261,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
 
                 // If the user pressed y...
-                if(currentGamepad.y && !previousGamepad.y) {
+                if (currentGamepad.y && !previousGamepad.y) {
 
                     // Toggle turtle mode.
                     robotHardware.toggleTurtleMode();
@@ -300,4 +314,18 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
     }
 
+    public void specimenScoring(RobotHardware hw) {
+        while (opModeIsActive()) {
+            if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
+                boolean stillScoring = hw.score();
+
+                if (!stillScoring) {
+                    hw.toggleClaw();
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
 }

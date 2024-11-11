@@ -1,14 +1,12 @@
 package edu.edina.Libraries.Robot;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -59,6 +57,8 @@ public class RobotHardware {
     private final Claw claw;
     private final Lift lift;
     private final Slide slide;
+
+    private ElapsedTime stalledTimer;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -173,16 +173,34 @@ public class RobotHardware {
 
     }
 
+    public boolean score() {
+        if (stalledTimer == null) {
+            stalledTimer = new ElapsedTime();
+        } else if (stalledTimer.milliseconds() > 750) {
+            stalledTimer = null;
+            return false;
+        }
+
+        drivetrain.updateForScore();
+        wrist.score();
+        wrist.update();
+
+        return true;
+    }
+
     private void updateHardwareInteractions() {
         if (arm.armWillCrossWristLimit())
             raiseWrist();
         else if (arm.targetingScoringPos())
             lowerWrist();
 
-        if (arm.targetingScoringPos() || lift.targetingScoringPos())
-            drivetrain.setAutoTurtle(true);
-        else
-            drivetrain.setAutoTurtle(false);
+        drivetrain.setAutoTurtle(arm.targetingScoringPos() || lift.targetingScoringPos());
+
+        wrist.setHighRung(arm.isHighRung());
+    }
+
+    public void setReversed(boolean reversed) {
+        drivetrain.setReverse(reversed);
     }
 
     // Updates this.

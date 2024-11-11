@@ -67,7 +67,7 @@ public class Arm {
     public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
 
     // Positions
-    public static int[] POSITIONS = new int[] {
+    public static int[] POSITIONS = new int[]{
             GROUND_POSITION,
             WALL_POSITION,
             HIGH_BASKET_POSITION,
@@ -151,7 +151,7 @@ public class Arm {
         boolean down = touch.isPressed();
 
         // If the arm is down...
-        if(down) {
+        if (down) {
 
             // Reset the arm motor.
             reset();
@@ -230,13 +230,13 @@ public class Arm {
         int count = POSITIONS.length;
 
         // For each arm position...
-        for(int index = count - 1; index >= 0; index--) {
+        for (int index = count - 1; index >= 0; index--) {
 
             // Get the current arm position.
             int currentPosition = POSITIONS[index];
 
             // If the current arm position is less than the target...
-            if(currentPosition < targetPosition) {
+            if (currentPosition < targetPosition) {
 
                 // Use the current arm position as the target.
                 targetPosition = currentPosition;
@@ -257,13 +257,13 @@ public class Arm {
         int count = POSITIONS.length;
 
         // For each arm position...
-        for(int index = 0; index < count; index++) {
+        for (int index = 0; index < count; index++) {
 
             // Get the current arm position.
             int currentPosition = POSITIONS[index];
 
             // If the current arm position is greater than the target...
-            if(currentPosition > targetPosition) {
+            if (currentPosition > targetPosition) {
 
                 // Use the current arm position as the target.
                 targetPosition = currentPosition;
@@ -299,6 +299,10 @@ public class Arm {
         // Set the target position.
         targetPosition = position;
 
+    }
+
+    public boolean isHighRung() {
+        return targetPosition == HIGH_CHAMBER_POSITION;
     }
 
     // Moves the arm to the ground position.
@@ -389,4 +393,5 @@ public class Arm {
         return targetPosition >= LOW_BASKET_POSITION && targetPosition <= LOW_CHAMBER_POSITION &&
                 currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD;
     }
+
 }

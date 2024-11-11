@@ -14,11 +14,17 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.15;
 
+    public static double HIGH_RUNG_POSITION = 0.30;
+
+    public static double LOW_RUNG_POSITION = 0.00;
+
     // Up position
     public static double UP_POSITION = 0.48;
 
     // Robot hardware
     private final RobotHardware robotHardware;
+
+    private boolean wristHighRung;
 
     // Servo
     private final Servo servo;
@@ -102,7 +108,17 @@ public class Wrist {
 
         // Remember that the wrist is up.
         up = true;
-
     }
 
+    public void setHighRung(boolean position) {
+        wristHighRung = position;
+    }
+
+    public void score() {
+        if (wristHighRung) {
+            servo.setPosition(HIGH_RUNG_POSITION);
+        } else {
+            servo.setPosition(LOW_RUNG_POSITION);
+        }
+    }
 }
