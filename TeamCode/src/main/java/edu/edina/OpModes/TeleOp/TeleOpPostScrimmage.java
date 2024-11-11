@@ -20,19 +20,14 @@ public class TeleOpPostScrimmage extends LinearOpMode {
     - right stick = rotate robot
     - a = toggle claw
     - y = toggle turtle mode
+    - x = wrist toggle
     - right bumper = raise arm
     - left bumper = lower arm
 
-    Preset Mode (hold right trigger)
-    - a = ground
-    - b = almost ground
+    Sample basket scoring (hold right trigger)
     - x = low basket
-    - y = high basket
-    - d-pad up = high chamber
-    - d-pad down = low chamber
-    - d-pad right = submersible
 
-    Manual Mode (hold left trigger)
+    Submersible & rungs (hold left trigger)
     - dpad up = raise lift
     - dpad down = lower lift
     - dpad right = extend slide
@@ -168,9 +163,8 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                 }
 
-                // If the user pressed x...
+                // low basket
                 if(currentGamepad.x && !previousGamepad.x) {
-
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
 
@@ -191,9 +185,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
 
-                    // Set turtle mode.
-                    robotHardware.setTurtleMode(true);
-
                     // Move the arm to the high chamber position.
                     robotHardware.setArmHighChamberPosition();
 
@@ -203,7 +194,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     // Use the high chamber extension.
                     robotHardware.setMinimumExtension();
 
-
                 }
 
                 // If the user pressed dpad down...
@@ -211,9 +201,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
-
-                    // Set turtle mode.
-                    robotHardware.setTurtleMode(true);
 
                     // Move the arm to the low chamber position.
                     robotHardware.setArmLowChamberPosition();
@@ -232,9 +219,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
 
-                    // Set turtle mode.
-                    robotHardware.setTurtleMode(true);
-
                     // Move the arm to the submersible position.
                     robotHardware.setArmSubmersiblePosition();
 
@@ -251,9 +235,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                     // Raise the wrist.
                     //robotHardware.raiseWrist();
-
-                    // Set turtle mode.
-                    robotHardware.setTurtleMode(true);
 
                     // Move the arm to the high basket position.
                     robotHardware.setArmHighBasketPosition();
@@ -282,15 +263,13 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                 }
 
-                /*
-                // If the user pressed x...
+
                 if (currentGamepad.x && !previousGamepad.x) {
 
-                    // Toggle the wrist.
                     robotHardware.toggleWrist();
 
                 }
-                 */
+
 
                 // If the user pressed y...
                 if(currentGamepad.y && !previousGamepad.y) {
@@ -319,8 +298,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                  */
 
             }
-
-
 
             // If the user tapped right bumper...
             if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {

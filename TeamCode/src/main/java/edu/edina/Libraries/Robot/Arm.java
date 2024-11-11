@@ -64,6 +64,8 @@ public class Arm {
     // Almost Ground Position
     public static int ALMOST_GROUND_POSITION = 200;
 
+    public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
+
     // Positions
     public static int[] POSITIONS = new int[] {
             GROUND_POSITION,
@@ -374,4 +376,17 @@ public class Arm {
 
     }
 
+    public boolean armWillCrossWristLimit() {
+        int currentPosition = motor.getCurrentPosition();
+
+        return (currentPosition <= ALMOST_GROUND_POSITION && targetPosition >= ALMOST_GROUND_POSITION) ||
+                (targetPosition <= WRIST_EXTENSION_LIMIT_THRESHOLD && currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD);
+    }
+
+    public boolean targetingScoringPos() {
+        int currentPosition = motor.getCurrentPosition();
+
+        return targetPosition >= LOW_BASKET_POSITION && targetPosition <= LOW_CHAMBER_POSITION &&
+                currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD;
+    }
 }

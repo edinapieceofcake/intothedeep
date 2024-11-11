@@ -208,6 +208,10 @@ public class Slide {
 
     }
 
+    public double getPosition() {
+        return INCHES_PER_VOLT * offsetVoltage;
+    }
+
     // Sets the minimum extension.
     public void setMinimumExtension() {
 

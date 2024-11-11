@@ -191,6 +191,11 @@ public class RobotHardware {
         // Update the slide.
         slide.update();
 
+        if (arm.armWillCrossWristLimit())
+            raiseWrist();
+        else if (arm.targetingScoringPos())
+            lowerWrist();
+
         // Update the wrist.
         wrist.update();
 
@@ -339,6 +344,10 @@ public class RobotHardware {
         drivetrain.setTurtleMode(turtleMode);
 
     }
+//
+//    public boolean wristCanBeExtended() {
+//        return arm.isForward();
+//    }
 
     // Determines whether the arm is nearly down.
     public boolean isArmNearlyDown() {
