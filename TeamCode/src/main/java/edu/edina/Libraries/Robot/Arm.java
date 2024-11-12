@@ -293,6 +293,14 @@ public class Arm {
 
     }
 
+    public int getCurrentPosition() {
+        return motor.getCurrentPosition();
+    }
+
+    public void overridePower(double power) {
+        motor.setPower(power);
+    }
+
     // Sets the arm's position.
     public void setPosition(int position) {
 

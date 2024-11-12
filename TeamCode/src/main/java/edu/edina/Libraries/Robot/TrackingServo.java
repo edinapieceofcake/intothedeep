@@ -20,22 +20,22 @@ public class TrackingServo {
         s.setPosition(tgtPos);
 
         if (t == null) { // first time
-            prevPos = this.tgtPos = tgtPos;
+            prevPos = tgtPos;
         } else {
             prevPos = getEstimatedPosition();
-            this.tgtPos = tgtPos;
         }
 
+        this.tgtPos = tgtPos;
         t = new ElapsedTime();
     }
 
     public double getEstimatedPosition() {
-        if (t == null)
+        if (t == null || tgtPos == prevPos)
             return tgtPos;
 
         double elapsedTime = t.seconds();
         double estTravelTime = Math.abs(tgtPos - prevPos) * fullRangeTime;
-        double x = Math.max(elapsedTime / estTravelTime, 1);
+        double x = Math.min(elapsedTime / estTravelTime, 1);
         return (tgtPos - prevPos) * x + prevPos;
     }
 }

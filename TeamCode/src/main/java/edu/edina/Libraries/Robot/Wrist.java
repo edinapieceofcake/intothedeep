@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // This represents a wrist.
 @Config
 public class Wrist {
-    public static double WRIST_SERVO_TRAVEL_TIME = 0.5;
+    public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
     // Down position
     public static double DOWN_POSITION = 0.15;

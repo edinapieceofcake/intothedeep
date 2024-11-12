@@ -116,7 +116,7 @@ public class Lift {
         //////////////////////////////////////////////////////////////////////
 
         // If we finished lowering the lift...
-        if(targetPosition == MINIMUM_POSITION && touch.isPressed()) {
+        if (targetPosition == MINIMUM_POSITION && touch.isPressed()) {
 
             // Reset the lift.
             reset();
@@ -175,6 +175,17 @@ public class Lift {
 
     }
 
+    public double getPosition() {
+        double leftPosition = leftMotor.getCurrentPosition();
+        double rightPosition = rightMotor.getCurrentPosition();
+        return (leftPosition + rightPosition) / 2;
+    }
+
+    public void overridePower(double power) {
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
+    }
+
     // Determines whether the lift is in a position.
     public boolean isInPosition(int targetPosition) {
 
@@ -184,8 +195,7 @@ public class Lift {
         int rightDifference = Math.abs(rightPosition - targetPosition);
         if (leftDifference < THRESHOLD && rightDifference < THRESHOLD) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

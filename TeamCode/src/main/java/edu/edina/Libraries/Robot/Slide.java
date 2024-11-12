@@ -95,7 +95,7 @@ public class Slide {
         double maximumVoltage = encoder.getMaxVoltage();
 
         // If the current voltage is invalid...
-        if(currentVoltage < 0 || currentVoltage > maximumVoltage) {
+        if (currentVoltage < 0 || currentVoltage > maximumVoltage) {
 
             // Exit the method.
             return;
@@ -103,10 +103,10 @@ public class Slide {
         }
 
         // If the last voltage is uninitialized...
-        if(lastVoltage == UNINITIALIZED) {
+        if (lastVoltage == UNINITIALIZED) {
 
             // If we have a current voltage...
-            if(currentVoltage > EPSILON) {
+            if (currentVoltage > EPSILON) {
 
                 // Initialize the last voltage.
                 lastVoltage = currentVoltage;
@@ -147,7 +147,7 @@ public class Slide {
         double offsetVoltageDifference = Math.abs(newOffsetVoltage - offsetVoltage);
 
         // If the offset voltage difference is too high...
-        if(offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
+        if (offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
 
             // Exit the method.
             return;
@@ -168,10 +168,9 @@ public class Slide {
 
         // Get a power.
         double inputPower;
-        if(Math.abs(extensionError) < EXTENSION_ERROR_THRESHOLD) {
+        if (Math.abs(extensionError) < EXTENSION_ERROR_THRESHOLD) {
             inputPower = 0;
-        }
-        else {
+        } else {
             inputPower = extensionError > 0 ? POWER : -POWER;
         }
 
@@ -210,6 +209,10 @@ public class Slide {
 
     public double getPosition() {
         return INCHES_PER_VOLT * offsetVoltage;
+    }
+
+    public void overridePower(double power) {
+        servo.setPower(power);
     }
 
     // Sets the minimum extension.
