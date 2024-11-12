@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -174,19 +173,24 @@ public class RobotHardware {
 
     }
 
-    public boolean score() {
-        if (stalledTimer == null) {
-            stalledTimer = new ElapsedTime();
-        } else if (stalledTimer.milliseconds() > 750) {
-            stalledTimer = null;
+    public boolean update(MiniAutoMode mode) {
+        if (mode == MiniAutoMode.SCORE) {
+            if (stalledTimer == null) {
+                stalledTimer = new ElapsedTime();
+            } else if (stalledTimer.milliseconds() > 750) {
+                stalledTimer = null;
+                toggleClaw();
+                return false;
+            }
+
+            drivetrain.updateForScore();
+            wrist.score();
+            wrist.update();
+
+            return true;
+        } else {
             return false;
         }
-
-        drivetrain.updateForScore();
-        wrist.score();
-        wrist.update();
-
-        return true;
     }
 
     private void updateHardwareInteractions() {

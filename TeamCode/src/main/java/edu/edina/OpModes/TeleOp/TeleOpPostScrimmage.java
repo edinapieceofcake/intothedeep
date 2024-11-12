@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import edu.edina.Libraries.Robot.MiniAutoMode;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -317,10 +318,8 @@ public class TeleOpPostScrimmage extends LinearOpMode {
     public void specimenScoring(RobotHardware hw) {
         while (opModeIsActive()) {
             if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
-                boolean stillScoring = hw.score();
-
+                boolean stillScoring = hw.update(MiniAutoMode.SCORE);
                 if (!stillScoring) {
-                    hw.toggleClaw();
                     break;
                 }
             } else {
