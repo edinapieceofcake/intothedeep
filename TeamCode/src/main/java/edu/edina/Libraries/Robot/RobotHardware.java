@@ -57,6 +57,7 @@ public class RobotHardware {
     private final Claw claw;
     private final Lift lift;
     private final Slide slide;
+    private final BoundingBoxFailsafe failsafe;
 
     private ElapsedTime stalledTimer;
 
@@ -81,6 +82,8 @@ public class RobotHardware {
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
+
+        failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -174,22 +177,26 @@ public class RobotHardware {
     }
 
     public boolean update(MiniAutoMode mode) {
-        if (mode == MiniAutoMode.SCORE) {
-            if (stalledTimer == null) {
-                stalledTimer = new ElapsedTime();
-            } else if (stalledTimer.milliseconds() > 750) {
-                stalledTimer = null;
-                toggleClaw();
+        try {
+            if (mode == MiniAutoMode.SCORE) {
+                if (stalledTimer == null) {
+                    stalledTimer = new ElapsedTime();
+                } else if (stalledTimer.milliseconds() > 750) {
+                    stalledTimer = null;
+                    toggleClaw();
+                    return false;
+                }
+
+                drivetrain.updateForScore();
+                wrist.score();
+                wrist.update();
+
+                return true;
+            } else {
                 return false;
             }
-
-            drivetrain.updateForScore();
-            wrist.score();
-            wrist.update();
-
-            return true;
-        } else {
-            return false;
+        } finally {
+            failsafe.apply();
         }
     }
 
@@ -210,25 +217,29 @@ public class RobotHardware {
 
     // Updates this.
     public void update() {
-        updateHardwareInteractions();
+        try {
+            updateHardwareInteractions();
 
-        // Update the arm.
-        arm.update();
+            // Update the arm.
+            arm.update();
 
-        // Update the claw.
-        claw.update();
+            // Update the claw.
+            claw.update();
 
-        // Update the drivetrain.
-        drivetrain.update();
+            // Update the drivetrain.
+            drivetrain.update();
 
-        // Update the lift.
-        lift.update();
+            // Update the lift.
+            lift.update();
 
-        // Update the slide.
-        slide.update();
+            // Update the slide.
+            slide.update();
 
-        // Update the wrist.
-        wrist.update();
+            // Update the wrist.
+            wrist.update();
+        } finally {
+            failsafe.apply();
+        }
     }
 
     // Goes to the previous arm position.
