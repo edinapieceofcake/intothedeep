@@ -23,9 +23,8 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - left_back_drive (encoder port returns 0 and -1)
                 3 - GoBILDA 5201 series - left_front_drive (has left odometry encoder)
             Servos
-                0 - Axon Micro+ ServoE - wrist_left
-                1 - GoBilda 5 turn - claw_servo
-                2 - Axon Micro+ ServoF - wrist_right
+                0 - GoBILDA torque servo - wrist_left
+                1 - GoBILDA torque servo - claw_servo
             Digital Devices
                 5 - REV Touch Sensor - arm_touch
                 7 - REV Touch Sensor - lift_touch
@@ -41,7 +40,7 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
-                0 - CRServo Axon Mini+ - slide_servo
+                0 - GoBILDA 5 turn - slide_servo
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */

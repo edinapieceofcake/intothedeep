@@ -41,7 +41,7 @@ public class BoundingBoxFailsafe {
         }
 
         if (armPos < FORWARD_ARM_SLIDE_CONFLICT_LIMIT && Math.abs(slidePos) > SLIDE_TOL) {
-            slide.overridePower(-1);
+           // slide.overridePower(-1);
             arm.overridePower(1);
             return;
         }
