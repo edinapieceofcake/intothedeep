@@ -93,12 +93,12 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
                     // If the arm is not nearly down...
-                    //if (!robotHardware.isArmNearlyDown()) {
+                    if (!robotHardware.isArmNearlyDown()) {
 
                         // Extend the slide.
                         robotHardware.extendSlide();
 
-                    //}
+                    }
 
                 }
 

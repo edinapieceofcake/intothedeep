@@ -12,27 +12,23 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Slide {
 
-
     // Low basket extension
-    public static double LOW_BASKET_EXTENSION = 0.5;
+    public static double LOW_BASKET_EXTENSION = 0.6;
 
     // High basket extension
     public static double HIGH_BASKET_EXTENSION = 0.9;
 
     // Maximum extension
-    public static double MAXIMUM_EXTENSION = 1;
+    public static double MAXIMUM_EXTENSION = .95;
 
     // Minimum extension
-    public static double MINIMUM_EXTENSION = 0;
-
+    public static double MINIMUM_EXTENSION = .48;
 
     // Robot hardware
     private final RobotHardware robotHardware;
 
     // Servo
     private final Servo servo;
-    private double targetPosition;
-
 
     // Initializes this.
     public Slide(RobotHardware robotHardware) {
@@ -53,37 +49,48 @@ public class Slide {
 
     // Updates this.
     public void update() {
-        double position = servo.getPosition();
 
+        // Get the servo's position.
+        double position = servo.getPosition();
 
         // Get the op mode.
         LinearOpMode opMode = robotHardware.getOpMode();
 
+        // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
+
+        // Update the telemetry.
         telemetry.addData("Slide", "====================");
         telemetry.addData("- Position", position);
-        telemetry.addData("- Target Position", targetPosition);
-
 
     }
+
+    // Gets the exten
     public double getPosition () {
         return servo.getPosition();
     }
 
-    // Sets the extension's position.
+    // Sets the slide's position.
     public void setPosition(double position) {
 
-        // Set the extension's position.
-        //servo.setPosition(position);
+        // Set the slide's position.
+        servo.setPosition(position);
 
     }
-
 
     // Sets the minimum extension.
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-        //servo.setPosition(MINIMUM_EXTENSION);
+        servo.setPosition(MINIMUM_EXTENSION);
+
+    }
+
+    // Sets the maximum extension.
+    public void setMaximumExtension() {
+
+        // Set the maximum extension.
+        servo.setPosition(MAXIMUM_EXTENSION);
 
     }
 
@@ -91,7 +98,7 @@ public class Slide {
     public void setLowBasketExtension() {
 
         // Set the low basket extension.
-        //servo.setPosition(LOW_BASKET_EXTENSION);
+        servo.setPosition(LOW_BASKET_EXTENSION);
 
     }
 
@@ -99,25 +106,7 @@ public class Slide {
     public void setHighBasketExtension() {
 
         // Set the high basket extension.
-        //servo.setPosition(HIGH_BASKET_EXTENSION);
-
-    }
-
-    // Extends this.
-    public void extend() {
-
-        // Extend this.
-        servo.setPosition(MAXIMUM_EXTENSION);
-        targetPosition = MAXIMUM_EXTENSION;
-
-    }
-
-    // Retracts this.
-    public void retract() {
-        // Retract this.
-        servo.setPosition(MINIMUM_EXTENSION);
-        targetPosition = MINIMUM_EXTENSION;
-
+        servo.setPosition(HIGH_BASKET_EXTENSION);
 
     }
 
