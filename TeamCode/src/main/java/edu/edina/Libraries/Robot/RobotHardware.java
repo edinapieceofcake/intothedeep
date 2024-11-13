@@ -40,7 +40,7 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
-                0 - GoBILDA 5 turn - slide_servo
+                0 - CRServo Axon Mini+ - slide_servo
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */
@@ -134,20 +134,6 @@ public class RobotHardware {
         // Show the message.
         telemetry.addData("Message", message);
         telemetry.update();
-
-    }
-
-    // Initializes the robot.
-    public void initializeRobot() {
-
-        // Move the arm to the ground position.
-        arm.setGroundPosition();
-
-        // Close the claw.
-        claw.close();
-
-        // Raise the wrist.
-        wrist.raise();
 
     }
 
@@ -317,7 +303,7 @@ public class RobotHardware {
     public void retractSlide() {
 
         // Retract the slide.
-        slide.setMinimumExtension();
+        slide.retract();
 
     }
 
@@ -325,7 +311,7 @@ public class RobotHardware {
     public void extendSlide() {
 
         // Extend the slide.
-        slide.setMaximumExtension();
+        slide.extend();
 
     }
 

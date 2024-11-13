@@ -48,13 +48,14 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Get hardware.
         RobotHardware robotHardware = new RobotHardware(this);
 
-        // If stop is requested...
-        if(isStopRequested()) {
+        // Move the arm to the ground position.
+        robotHardware.setArmGroundPosition();
 
-            // Exit the method.
-            return;
+        // Open the claw.
+        robotHardware.openClaw();
 
-        }
+        // Lowers the wrist.
+        robotHardware.lowerWrist();
 
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
@@ -80,7 +81,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed dpad right...
-                if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
+                if (currentGamepad.dpad_right) {
 
                     // If the arm is not nearly down...
                     if (!robotHardware.isArmNearlyDown()) {
@@ -93,7 +94,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad left...
-                if (currentGamepad.dpad_left && !previousGamepad.dpad_left) {
+                if (currentGamepad.dpad_left) {
 
                     // Retract the slide.
                     robotHardware.retractSlide();

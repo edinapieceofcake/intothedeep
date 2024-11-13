@@ -45,8 +45,14 @@ public class AutoForScrimmage extends LinearOpMode {
         // Wait for the user to lower the arm.
         robotHardware.waitForArmDown();
 
-        // Initialize the robot.
-        robotHardware.initializeRobot();
+        // Move the arm to the ground position.
+        robotHardware.setArmGroundPosition();
+
+        // Close the claw.
+        robotHardware.closeClaw();
+
+        // Raise the wrist.
+        robotHardware.raiseWrist();
 
         // If stop is requested...
         if (isStopRequested()) {
