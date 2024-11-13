@@ -1,14 +1,12 @@
 package edu.edina.Libraries.Robot;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -25,9 +23,8 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - left_back_drive (encoder port returns 0 and -1)
                 3 - GoBILDA 5201 series - left_front_drive (has left odometry encoder)
             Servos
-                0 - Axon Micro+ ServoE - wrist_left
-                1 - GoBilda 5 turn - claw_servo
-                2 - Axon Micro+ ServoF - wrist_right
+                0 - GoBILDA torque servo - wrist_left
+                1 - GoBILDA torque servo - claw_servo
             Digital Devices
                 5 - REV Touch Sensor - arm_touch
                 7 - REV Touch Sensor - lift_touch
@@ -43,7 +40,7 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
-                0 - CRServo Axon Mini+ - slide_servo
+                0 - GoBILDA 5 turn - slide_servo
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */
@@ -59,6 +56,9 @@ public class RobotHardware {
     private final Claw claw;
     private final Lift lift;
     private final Slide slide;
+    private final BoundingBoxFailsafe failsafe;
+
+    private ElapsedTime stalledTimer;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -77,10 +77,12 @@ public class RobotHardware {
         // Initialize the slide.
         slide = new Slide(this);
 
-        // Initialize the wrist.
-        wrist = new Wrist(this);
-
         HardwareMap hardwareMap = opMode.hardwareMap;
+
+        // Initialize the wrist.
+        wrist = new Wrist(hardwareMap, opMode.telemetry);
+
+        failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -173,27 +175,70 @@ public class RobotHardware {
 
     }
 
+    public boolean update(MiniAutoMode mode) {
+        try {
+            if (mode == MiniAutoMode.SCORE) {
+                if (stalledTimer == null) {
+                    stalledTimer = new ElapsedTime();
+                } else if (stalledTimer.milliseconds() > 750) {
+                    stalledTimer = null;
+                    toggleClaw();
+                    return false;
+                }
+
+                drivetrain.updateForScore();
+                wrist.score();
+                wrist.update();
+
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            failsafe.apply();
+        }
+    }
+
+    private void updateHardwareInteractions() {
+        if (arm.armWillCrossWristLimit())
+            raiseWrist();
+        else if (arm.targetingScoringPos())
+            lowerWrist();
+
+        drivetrain.setAutoTurtle(arm.targetingScoringPos() || lift.targetingScoringPos());
+
+        wrist.setHighRung(arm.isHighRung());
+    }
+
+    public void setReversed(boolean reversed) {
+        drivetrain.setReverse(reversed);
+    }
+
     // Updates this.
     public void update() {
+        try {
+            updateHardwareInteractions();
 
-        // Update the arm.
-        arm.update();
+            // Update the arm.
+            arm.update();
 
-        // Update the claw.
-        claw.update();
+            // Update the claw.
+            claw.update();
 
-        // Update the drivetrain.
-        drivetrain.update();
+            // Update the drivetrain.
+            drivetrain.update();
 
-        // Update the lift.
-        lift.update();
+            // Update the lift.
+            lift.update();
 
-        // Update the slide.
-        slide.update();
+            // Update the slide.
+            slide.update();
 
-        // Update the wrist.
-        wrist.update();
-
+            // Update the wrist.
+            wrist.update();
+        } finally {
+            failsafe.apply();
+        }
     }
 
     // Goes to the previous arm position.
@@ -332,6 +377,18 @@ public class RobotHardware {
 
     }
 
+    // Sets turtle mode.
+    public void setTurtleMode(boolean turtleMode) {
+
+        // Set turtle mode.
+        drivetrain.setTurtleMode(turtleMode);
+
+    }
+//
+//    public boolean wristCanBeExtended() {
+//        return arm.isForward();
+//    }
+
     // Determines whether the arm is nearly down.
     public boolean isArmNearlyDown() {
 
@@ -422,5 +479,4 @@ public class RobotHardware {
         lift.setHighBasketPosition();
 
     }
-
 }

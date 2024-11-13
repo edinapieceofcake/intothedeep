@@ -19,6 +19,8 @@ public class Drivetrain {
     // Turtle multiplier
     public static double TURTLE_MULTIPLIER = 0.3;
 
+    public final static boolean ENABLE_REVERSE = true;
+
     // Left back drive
     private final DcMotorEx leftBack;
 
@@ -31,10 +33,14 @@ public class Drivetrain {
     // Right front drive
     private final DcMotorEx rightFront;
 
+    private boolean autoTurtle;
+
     // Op mode
     private LinearOpMode opMode;
 
     private boolean turtleMode;
+
+    private boolean reversed;
 
     // Initializes this.
     public Drivetrain(LinearOpMode opMode) {
@@ -67,10 +73,12 @@ public class Drivetrain {
 
     // Updates this.
     public void update() {
+        double m = drivingReverseMult();
+
         Gamepad currentGamepad = opMode.gamepad1;
 
-        double axial = -currentGamepad.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral = currentGamepad.left_stick_x;
+        double axial = -currentGamepad.left_stick_y * m;  // Note: pushing stick forward gives negative value
+        double lateral = currentGamepad.left_stick_x * m;
         double yaw = currentGamepad.right_stick_x;
 
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -95,7 +103,7 @@ public class Drivetrain {
 
         double multiplier;
 
-        if (turtleMode) {
+        if (getTurtleMode()) {
             multiplier = TURTLE_MULTIPLIER;
         } else {
             multiplier = NORMAL_MULTIPLIER;
@@ -118,7 +126,21 @@ public class Drivetrain {
         // Display arm telemetry.
         telemetry.addData("Drivetrain", "====================");
         telemetry.addData("- Turtle Mode", turtleMode);
+    }
 
+    public void updateForScore() {
+        double power = TURTLE_MULTIPLIER;
+
+        leftFront.setPower(power);
+        rightFront.setPower(power);
+        leftBack.setPower(power);
+        rightBack.setPower(power);
+
+        Telemetry telemetry = opMode.telemetry;
+
+        // Display arm telemetry.
+        telemetry.addData("Drivetrain", "====================");
+        telemetry.addData("- Scoring Mode", true);
     }
 
     // Toggles turtle mode.
@@ -129,4 +151,32 @@ public class Drivetrain {
 
     }
 
+    // Sets turtle mode.
+    public void setTurtleMode(boolean tMode) {
+
+        //
+        turtleMode = tMode;
+
+    }
+
+    public void setAutoTurtle(boolean tMode) {
+        autoTurtle = tMode;
+    }
+
+    public boolean getTurtleMode() {
+
+        return turtleMode || autoTurtle;
+
+    }
+
+    public void setReverse(boolean reverse) {
+        reversed = reverse;
+    }
+
+    private double drivingReverseMult() {
+        if (reversed && ENABLE_REVERSE)
+            return -1;
+        else
+            return 1;
+    }
 }
