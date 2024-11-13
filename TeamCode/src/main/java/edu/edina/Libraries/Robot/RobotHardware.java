@@ -241,22 +241,6 @@ public class RobotHardware {
         //}
     }
 
-    // Goes to the previous arm position.
-    public void previousArmPosition() {
-
-        // Go to the previous arm position.
-        arm.previousPosition();
-
-    }
-
-    // Goes to the next arm position.
-    public void nextArmPosition() {
-
-        // Go to the next arm position.
-        arm.nextPosition();
-
-    }
-
     // Decrements the arm position.
     public void decrementArmPosition() {
 
