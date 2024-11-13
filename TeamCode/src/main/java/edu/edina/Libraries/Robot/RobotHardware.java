@@ -146,8 +146,8 @@ public class RobotHardware {
         // Close the claw.
         claw.close();
 
-        // Lower the wrist.
-        wrist.lower();
+        // Raise the wrist.
+        wrist.raise();
 
     }
 
@@ -216,8 +216,8 @@ public class RobotHardware {
 
     // Updates this.
     public void update() {
-        try {
-            updateHardwareInteractions();
+        //try {
+            //updateHardwareInteractions();
 
             // Update the arm.
             arm.update();
@@ -236,25 +236,9 @@ public class RobotHardware {
 
             // Update the wrist.
             wrist.update();
-        } finally {
-            failsafe.apply();
-        }
-    }
-
-    // Goes to the previous arm position.
-    public void previousArmPosition() {
-
-        // Go to the previous arm position.
-        arm.previousPosition();
-
-    }
-
-    // Goes to the next arm position.
-    public void nextArmPosition() {
-
-        // Go to the next arm position.
-        arm.nextPosition();
-
+        //} finally {
+            //failsafe.apply();
+        //}
     }
 
     // Decrements the arm position.
@@ -333,7 +317,7 @@ public class RobotHardware {
     public void retractSlide() {
 
         // Retract the slide.
-        slide.retract();
+        slide.setMinimumExtension();
 
     }
 
@@ -341,7 +325,7 @@ public class RobotHardware {
     public void extendSlide() {
 
         // Extend the slide.
-        slide.extend();
+        slide.setMaximumExtension();
 
     }
 

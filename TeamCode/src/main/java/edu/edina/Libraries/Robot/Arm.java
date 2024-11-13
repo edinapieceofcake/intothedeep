@@ -67,18 +67,6 @@ public class Arm {
     public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
     public static int THRESHOLD = 50;
 
-    // Positions
-    public static int[] POSITIONS = new int[]{
-            GROUND_POSITION,
-            WALL_POSITION,
-            HIGH_BASKET_POSITION,
-            LOW_BASKET_POSITION,
-            SUBMERSIBLE_POSITION,
-            HIGH_CHAMBER_POSITION,
-            LOW_CHAMBER_POSITION,
-            ALMOST_GROUND_POSITION
-    };
-
     // Controller
     private PIDController controller;
 
@@ -221,60 +209,6 @@ public class Arm {
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
-    }
-
-    // Goes to the previous arm position.
-    public void previousPosition() {
-
-        // Count the arm positions.
-        int count = POSITIONS.length;
-
-        // For each arm position...
-        for (int index = count - 1; index >= 0; index--) {
-
-            // Get the current arm position.
-            int currentPosition = POSITIONS[index];
-
-            // If the current arm position is less than the target...
-            if (currentPosition < targetPosition) {
-
-                // Use the current arm position as the target.
-                targetPosition = currentPosition;
-
-                // Exit the method.
-                return;
-
-            }
-
-        }
-
-    }
-
-    // Goes to the next arm position.
-    public void nextPosition() {
-
-        // Count the arm positions.
-        int count = POSITIONS.length;
-
-        // For each arm position...
-        for (int index = 0; index < count; index++) {
-
-            // Get the current arm position.
-            int currentPosition = POSITIONS[index];
-
-            // If the current arm position is greater than the target...
-            if (currentPosition > targetPosition) {
-
-                // Use the current arm position as the target.
-                targetPosition = currentPosition;
-
-                // Exit the method.
-                return;
-
-            }
-
-        }
 
     }
 

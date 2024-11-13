@@ -12,14 +12,14 @@ public class Wrist {
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
     // Down position
-    public static double DOWN_POSITION = 0.15;
+    public static double DOWN_POSITION = 0.22;
 
     public static double HIGH_RUNG_POSITION = 0.30;
 
     public static double LOW_RUNG_POSITION = 0.00;
 
     // Up position
-    public static double UP_POSITION = 0.48;
+    public static double UP_POSITION = 0.05;
 
     private boolean wristHighRung;
 
