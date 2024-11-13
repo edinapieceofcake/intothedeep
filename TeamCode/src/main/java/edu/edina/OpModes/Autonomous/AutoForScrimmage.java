@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -23,6 +22,11 @@ public class AutoForScrimmage extends LinearOpMode {
     public static double BASKET_DIAGONAL_POSITION = -50;
     public static double FIRST_NEUTRAL_SPIKE_MARK_X = -50;
     public static double FIRST_NEUTRAL_SPIKE_MARK_Y = -38;
+    public static int HIGH_BASKET_DELAY = 3000;
+    public static int CLAW_DELAY = 2000;
+    public static int HIGH_BASKET_TO_LOW_BASKET_DELAY = 2000;
+    public static int LOW_BASKET_TO_ALMOST_GROUND_DELAY = 2000;
+    public static int ALMOST_GROUND_TO_GROUND_DELAY = 1000;
 
 
     private RobotHardware robotHardware;
@@ -58,43 +62,88 @@ public class AutoForScrimmage extends LinearOpMode {
         // Wait for the user to press start.
         waitForStart();
 
-        Pose2d beginPose = new Pose2d(-38, -62, 0);
+        Pose2d lastPose = new Pose2d(-38, -62, 0);
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, lastPose);
 
-        Action driveToBasket = drive.actionBuilder(beginPose)
+        Action driveToBasket0 = drive.actionBuilder(lastPose)
                 .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
                 .build();
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+
+        Action driveToSpikeMark1 = drive.actionBuilder(lastPose)
+                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+                .build();
+        lastPose = new Pose2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y, 1.0 / 2 * Math.PI);
+
+        Action driveToBasket1 = drive.actionBuilder(lastPose)
+                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+                .build();
+        /*lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+
+        Action driveToBasket2 = drive.actionBuilder(lastPose)
+                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+                .build();
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+
+        Action driveToSpikeMark2 = drive.actionBuilder(lastPose)
+                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+                .build();
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+
+        Action driveToBasket3 = drive.actionBuilder(lastPose)
+                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+                .build();
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+
+        Action driveToSpikeMark3 = drive.actionBuilder(lastPose)
+                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+                .build();*/
 
         Actions.runBlocking(
                 new SequentialAction(
                         // Declared above, blocks while running
-                        driveToBasket,
+                        driveToBasket0,
                         // Sets positions, runs once
                         new MoveToHighBasket(),
                         // Waits and updates robot hardware
-                        new WaitAndUpdate(3000),
+                        new WaitAndUpdate(HIGH_BASKET_DELAY),
                         // Opens the claw, runs once
                         new OpenClaw(),
-                        new WaitAndUpdate(2000),
+                        new WaitAndUpdate(CLAW_DELAY),
                         new MoveToLowBasket(),
-                        new WaitAndUpdate(2000),
+                        new WaitAndUpdate(HIGH_BASKET_TO_LOW_BASKET_DELAY),
                         new MoveToAlmostGround(),
-                        new WaitAndUpdate(2000),
+                        new WaitAndUpdate(LOW_BASKET_TO_ALMOST_GROUND_DELAY),
                         new MoveToGround(),
-                        new WaitAndUpdate(1000)
+                        new WaitAndUpdate(ALMOST_GROUND_TO_GROUND_DELAY),
+                        driveToSpikeMark1,
+                        new CloseClaw(),
+                        new WaitAndUpdate(CLAW_DELAY),
+                        driveToBasket1,
+                        new MoveToHighBasket(),
+                        new WaitAndUpdate(HIGH_BASKET_DELAY),
+                        new OpenClaw(),
+                        new WaitAndUpdate(CLAW_DELAY),
+                        new MoveToLowBasket(),
+                        new WaitAndUpdate(HIGH_BASKET_TO_LOW_BASKET_DELAY),
+                        new MoveToAlmostGround(),
+                        new WaitAndUpdate(LOW_BASKET_TO_ALMOST_GROUND_DELAY),
+                        new MoveToGround(),
+                        new WaitAndUpdate(ALMOST_GROUND_TO_GROUND_DELAY)
+
                 )
         );
 
         /*
         // Drive To Basket
-        Pose2d beginPose = new Pose2d(-38, -62, 0);
+        Pose2d lastPose = new Pose2d(-38, -62, 0);
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, lastPose);
 
         waitForStart();
 
-        Actions.runBlocking(drive.actionBuilder(beginPose)
+        Actions.runBlocking(drive.actionBuilder(lastPose)
                 .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
                 .build());
 
@@ -165,8 +214,8 @@ public class AutoForScrimmage extends LinearOpMode {
             robotHardware.update();
         }
 
-        beginPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
-        Actions.runBlocking(drive.actionBuilder(beginPose)
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+        Actions.runBlocking(drive.actionBuilder(lastPose)
                 .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
                 .build());
 
@@ -181,8 +230,8 @@ public class AutoForScrimmage extends LinearOpMode {
             robotHardware.update();
         }
 
-        beginPose = new Pose2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y, 1.0 / 2 * Math.PI);
-        Actions.runBlocking(drive.actionBuilder(beginPose)
+        lastPose = new Pose2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y, 1.0 / 2 * Math.PI);
+        Actions.runBlocking(drive.actionBuilder(lastPose)
                 .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
                 .build());
 
@@ -270,6 +319,15 @@ public class AutoForScrimmage extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             robotHardware.openClaw();
+            return false;
+        }
+    }
+
+    public class CloseClaw implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            robotHardware.closeClaw();
             return false;
         }
     }
