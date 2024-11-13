@@ -186,17 +186,17 @@ public class Lift {
         rightMotor.setPower(power);
     }
 
-    // Determines whether the lift is in a position.
-    public boolean isInPosition(int targetPosition) {
+    // Determines whether the lift is busy.
+    public boolean isBusy() {
 
         int leftPosition = leftMotor.getCurrentPosition();
         int rightPosition = rightMotor.getCurrentPosition();
         int leftDifference = Math.abs(leftPosition - targetPosition);
         int rightDifference = Math.abs(rightPosition - targetPosition);
         if (leftDifference < THRESHOLD && rightDifference < THRESHOLD) {
-            return true;
-        } else {
             return false;
+        } else {
+            return true;
         }
     }
 

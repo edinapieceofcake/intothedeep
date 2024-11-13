@@ -479,4 +479,20 @@ public class RobotHardware {
         lift.setHighBasketPosition();
 
     }
+
+    // Checks if the lift is busy.
+    public boolean getIsLiftBusy() {
+
+        // Checks if the lift is busy.
+        return lift.isBusy();
+
+    }
+
+    // Checks if the arm is busy.
+    public boolean getIsArmBusy() {
+
+        // Checks if the arm is busy.
+        return arm.isBusy();
+
+    }
 }

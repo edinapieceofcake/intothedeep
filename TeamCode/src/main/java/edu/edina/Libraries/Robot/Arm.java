@@ -65,6 +65,7 @@ public class Arm {
     public static int ALMOST_GROUND_POSITION = 200;
 
     public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
+    public static int THRESHOLD = 50;
 
     // Positions
     public static int[] POSITIONS = new int[]{
@@ -402,4 +403,15 @@ public class Arm {
                 currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD;
     }
 
+    // Determines whether the lift is busy.
+    public boolean isBusy() {
+
+        int position = motor.getCurrentPosition();
+        int difference = Math.abs(position - targetPosition);
+        if (difference < THRESHOLD) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

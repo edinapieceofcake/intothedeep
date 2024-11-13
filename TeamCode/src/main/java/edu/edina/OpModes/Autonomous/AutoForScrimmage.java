@@ -112,25 +112,59 @@ public class AutoForScrimmage extends LinearOpMode {
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
                         new MoveToLowBasket(),
-                        new WaitAndUpdate(HIGH_BASKET_TO_LOW_BASKET_DELAY),
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy(),
+                        // Wait for extension delay (and wrist?)
+
                         new MoveToAlmostGround(),
-                        new WaitAndUpdate(LOW_BASKET_TO_ALMOST_GROUND_DELAY),
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy(),
+                        // Wait for extension delay (and wrist?)
+
                         new MoveToGround(),
-                        new WaitAndUpdate(ALMOST_GROUND_TO_GROUND_DELAY),
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy(),
+                        // Wait for extension delay (and wrist?)
+
                         driveToSpikeMark1,
                         new CloseClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
                         driveToBasket1,
                         new MoveToHighBasket(),
-                        new WaitAndUpdate(HIGH_BASKET_DELAY),
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy(),
+                        // Wait for extension delay (and wrist?)
+
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
                         new MoveToLowBasket(),
-                        new WaitAndUpdate(HIGH_BASKET_TO_LOW_BASKET_DELAY),
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy(),
+                        // Wait for extension delay (and wrist?)
+
                         new MoveToAlmostGround(),
-                        new WaitAndUpdate(LOW_BASKET_TO_ALMOST_GROUND_DELAY),
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy(),
+                        // Wait for extension delay (and wrist?)
+
                         new MoveToGround(),
-                        new WaitAndUpdate(ALMOST_GROUND_TO_GROUND_DELAY)
+
+                        // Waiting
+                        new WaitForLiftNotBusy(),
+                        new WaitForArmNotBusy()
+                        // Wait for extension delay (and wrist?)
 
                 )
         );
@@ -416,6 +450,22 @@ public class AutoForScrimmage extends LinearOpMode {
             robotHardware.update();
 
             return timer.milliseconds() < milliseconds;
+        }
+    }
+
+    public class WaitForLiftNotBusy implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            robotHardware.update();
+            return !robotHardware.getIsLiftBusy();
+        }
+    }
+
+    public class WaitForArmNotBusy implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            robotHardware.update();
+            return !robotHardware.getIsArmBusy();
         }
     }
 
