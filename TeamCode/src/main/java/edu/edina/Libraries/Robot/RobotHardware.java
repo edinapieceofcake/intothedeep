@@ -146,8 +146,8 @@ public class RobotHardware {
         // Close the claw.
         claw.close();
 
-        // Lower the wrist.
-        wrist.lower();
+        // Raise the wrist.
+        wrist.raise();
 
     }
 
