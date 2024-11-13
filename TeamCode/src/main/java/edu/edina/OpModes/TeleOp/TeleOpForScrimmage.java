@@ -25,7 +25,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     Preset Mode (hold right trigger)
     - a = ground
-    - b = almost ground
     - x = low basket
     - y = high basket
     - d-pad up = high chamber
@@ -133,23 +132,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                     // Move the arm to the ground position.
                     robotHardware.setArmGroundPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Fully retract the slide.
-                    robotHardware.setMinimumExtension();
-
-                }
-
-                // If the user pressed b...
-                if(currentGamepad.b && !previousGamepad.b) {
-
-                    // Raise the wrist.
-                    robotHardware.raiseWrist();
-
-                    // Move the arm to the ground position.
-                    robotHardware.setArmAlmostGroundPosition();
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
