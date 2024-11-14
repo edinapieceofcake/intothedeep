@@ -28,8 +28,8 @@ public class Lift {
     // Minimum position
     public static int MINIMUM_POSITION = 0;
 
-    // Nearly down position
-    public static int NEARLY_DOWN_POSITION = 400;
+    // Up position threshold
+    public static int RAISED_POSITION_THRESHOLD = 400;
 
     // Nearly up position
     public static int NEARLY_UP_POSITION = 1500;
@@ -272,17 +272,17 @@ public class Lift {
 
     }
 
-    // Determines whether the lift is nearly down.
-    public boolean isNearlyDown() {
+    // Determines whether the lift is raised.
+    public boolean isRaised() {
 
         // Get the lift's current position.
         double currentPosition = getPosition();
 
-        // Determine whether the lift is nearly down.
-        boolean isNearlyDown = currentPosition <= NEARLY_DOWN_POSITION;
+        // Determine whether the lift is raised.
+        boolean isRaised = currentPosition > RAISED_POSITION_THRESHOLD;
 
         // Return the result.
-        return isNearlyDown;
+        return isRaised;
 
     }
 

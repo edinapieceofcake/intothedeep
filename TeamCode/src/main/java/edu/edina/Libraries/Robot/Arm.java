@@ -364,17 +364,17 @@ public class Arm {
 
     }
 
-    // Determines whether the arm is high.
-    public boolean isHigh() {
+    // Determines whether the arm is raised.
+    public boolean isRaised() {
 
         // Get the arm's current position.
         int currentPosition = motor.getCurrentPosition();
 
-        // Determine whether the arm is high.
-        boolean isHigh = currentPosition > Arm.ALMOST_GROUND_POSITION + BUSY_THRESHOLD;
+        // Determine whether the arm is raised.
+        boolean isRaised = currentPosition > Arm.ALMOST_GROUND_POSITION + BUSY_THRESHOLD;
 
         // Return the result.
-        return isHigh;
+        return isRaised;
 
     }
 

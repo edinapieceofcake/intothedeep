@@ -253,7 +253,7 @@ public class RobotHardware {
         //////////////////////////////////////////////////////////////////////
 
         // Determine whether to use turtle mode.
-        boolean outputTurtleMode = inputTurtleMode || !lift.isNearlyDown();
+        boolean outputTurtleMode = inputTurtleMode || arm.isRaised() || lift.isRaised();
 
         // Set turtle mode.
         drivetrain.setTurtleMode(outputTurtleMode);
@@ -425,7 +425,7 @@ public class RobotHardware {
     public void setArmGroundPosition() {
 
         // If the arm is high...
-        if(arm.isHigh()) {
+        if(arm.isRaised()) {
 
             // Move the arm to the almost ground position.
             arm.setAlmostGroundPosition();
