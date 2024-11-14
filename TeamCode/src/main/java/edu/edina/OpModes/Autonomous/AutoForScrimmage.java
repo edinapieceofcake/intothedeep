@@ -19,18 +19,33 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @Autonomous(preselectTeleOp = "TeleOpForScrimmage")
 public class AutoForScrimmage extends LinearOpMode {
 
-    public static Pose2d START_POSE = new Pose2d(-38, -62, 0);
-    public static Pose2d BASKET_POSE = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
-    public static Pose2d FIRST_SPIKE_MARK_POSE = new Pose2d(-50, -38, 1.0 / 2 * Math.PI);
-    public static int HIGH_BASKET_DELAY = 3000;
-    public static int HIGH_BASKET_TO_GROUND_DELAY = 3000;
-    public static int CLAW_DELAY = 2000;
-    public static int HIGH_BASKET_TO_LOW_BASKET_DELAY = 2000;
-    public static int LOW_BASKET_TO_ALMOST_GROUND_DELAY = 2000;
-    public static int ALMOST_GROUND_TO_GROUND_DELAY = 1000;
+    // Start pose
+    public static double START_X = -38;
+    public static double START_Y = -62;
+    public static double START_HEADING = 0;
 
+    // Basket pose
+    public static double BASKET_X = -50;
+    public static double BASKET_Y = -50;
+    public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
+
+    // First spike mark pose
+    public static double FIRST_SPIKE_MARK_X = -47.5;
+    public static double FIRST_SPIKE_MARK_Y = -38;
+    public static double FIRST_SPIKE_MARK_HEADING = 1.0 / 2 * Math.PI;
+
+    // Second spike mark pose
+    public static double SECOND_SPIKE_MARK_X = -57.5;
+    public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
+    public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
+
+    // Duration in milliseconds to toggle the claw
+    public static int CLAW_DELAY = 2000;
+
+    // Robot hardware
     private RobotHardware robotHardware;
 
+    // Runs the op mode.
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -66,50 +81,51 @@ public class AutoForScrimmage extends LinearOpMode {
         // Wait for the user to press start.
         waitForStart();
 
+        // Construct a start pose.
+        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
+
+        // Construct a basket pose.
+        Pose2d basketPose = new Pose2d(BASKET_X, BASKET_Y, BASKET_HEADING);
+
+        // Construct a first spike mark pose.
+        Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+
+        // Construct a second spike mark pose.
+        Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, SECOND_SPIKE_MARK_HEADING);
+
         // Construct a drive interface.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, START_POSE);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         // Construct an action for driving from the start to the basket.
-        Action driveFromStartToBasket = drive.actionBuilder(START_POSE)
-                .strafeToLinearHeading(BASKET_POSE.position, BASKET_POSE.heading)
+        Action driveFromStartToBasket = drive.actionBuilder(startPose)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
         // Construct an action for driving from the basket to the first spike mark.
-        Action driveFromBasketToFirstSpikeMark = drive.actionBuilder(BASKET_POSE)
-                .strafeToLinearHeading(FIRST_SPIKE_MARK_POSE.position, FIRST_SPIKE_MARK_POSE.heading)
+        Action driveFromBasketToFirstSpikeMark = drive.actionBuilder(basketPose)
+                .strafeToLinearHeading(firstSpikeMarkPose.position, firstSpikeMarkPose.heading)
                 .build();
 
         // Construct an action for driving from the first spike mark to the basket.
-        Action driveFromFirstSpikeMarkToBasket = drive.actionBuilder(FIRST_SPIKE_MARK_POSE)
-                .strafeToLinearHeading(BASKET_POSE.position, BASKET_POSE.heading)
+        Action driveFromFirstSpikeMarkToBasket = drive.actionBuilder(firstSpikeMarkPose)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
-        /*lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
-
-        Action driveToBasket2 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), BASKET_DIAGONAL_HEADING)
+        // Construct an action for driving from the basket to the second spike mark.
+        Action driveFromBasketToSecondSpikeMark = drive.actionBuilder(basketPose)
+                .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
                 .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
 
-        Action driveToSpikeMark2 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), FIRST_NEUTRAL_SPIKE_MARK_HEADING)
+        // Construct an action for driving from the second spike mark to the basket.
+        Action driveFromSecondSpikeMarkToBasket = drive.actionBuilder(secondSpikeMarkPose)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
 
-        Action driveToBasket3 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), BASKET_DIAGONAL_HEADING)
-                .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
-
-        Action driveToSpikeMark3 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), FIRST_NEUTRAL_SPIKE_MARK_HEADING)
-                .build();*/
-
+        // Run the actions.
         Actions.runBlocking(
                 new SequentialAction(
 
                         // Score preloaded sample
-
                         driveFromStartToBasket,
                         new MoveToHighBasket(),
                         new WaitForNotBusy(),
@@ -119,7 +135,6 @@ public class AutoForScrimmage extends LinearOpMode {
                         new WaitForNotBusy(),
 
                         // Score first spike mark sample
-
                         driveFromBasketToFirstSpikeMark,
                         new CloseClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
@@ -129,187 +144,23 @@ public class AutoForScrimmage extends LinearOpMode {
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
                         new MoveToGround(),
+                        new WaitForNotBusy(),
+
+                        // Score second spike mark sample
+                        driveFromBasketToSecondSpikeMark,
+                        new CloseClaw(),
+                        new WaitAndUpdate(CLAW_DELAY),
+                        driveFromSecondSpikeMarkToBasket,
+                        new MoveToHighBasket(),
+                        new WaitForNotBusy(),
+                        new OpenClaw(),
+                        new WaitAndUpdate(CLAW_DELAY),
+                        new MoveToGround(),
                         new WaitForNotBusy()
 
                 )
+
         );
-
-        /*
-        // Drive To Basket
-        Pose2d lastPose = new Pose2d(-38, -62, 0);
-
-        MecanumDrive drive = new MecanumDrive(hardwareMap, lastPose);
-
-        waitForStart();
-
-        Actions.runBlocking(drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
-                .build());
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the high basket position.
-            robotHardware.setArmHighBasketAutoPosition();
-
-            // Move the lift to the high basket position
-            robotHardware.setLiftHighBasketPosition();
-
-            // Use the high basket extension.
-            robotHardware.setHighBasketExtension();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        // Toggle the claw.
-        robotHardware.toggleClaw();
-
-        while (timer.milliseconds() < 2000) {
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
-
-            // Use the low basket extension.
-            robotHardware.setLowBasketExtension();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the ground position.
-            robotHardware.setArmAlmostGroundPosition();
-
-            // Fully retract the slide.
-            robotHardware.setMinimumExtension();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the ground position.
-            robotHardware.setArmGroundPosition();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
-        Actions.runBlocking(drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
-                .build());
-
-        // Reset the timer.
-        timer.reset();
-
-        // Toggle the claw.
-        robotHardware.toggleClaw();
-
-        while (timer.milliseconds() < 2000) {
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        lastPose = new Pose2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y, 1.0 / 2 * Math.PI);
-        Actions.runBlocking(drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
-                .build());
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the high basket position.
-            robotHardware.setArmHighBasketAutoPosition();
-
-            // Move the lift to the high basket position
-            robotHardware.setLiftHighBasketPosition();
-
-            // Use the high basket extension.
-            robotHardware.setHighBasketExtension();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        // Toggle the claw.
-        robotHardware.toggleClaw();
-
-        while (timer.milliseconds() < 2000) {
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the low basket position.
-            robotHardware.setArmLowBasketPosition();
-
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
-
-            // Use the low basket extension.
-            robotHardware.setLowBasketExtension();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the ground position.
-            robotHardware.setArmAlmostGroundPosition();
-
-            // Fully retract the slide.
-            robotHardware.setMinimumExtension();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Reset the timer.
-        timer.reset();
-
-        while (timer.milliseconds() < 2000) {
-            // Move the arm to the ground position.
-            robotHardware.setArmGroundPosition();
-
-            // Update the robot hardware.
-            robotHardware.update();
-        }
-
-        // Update the robot hardware.
-        robotHardware.update();
-
-        // Update the telemetry.
-        telemetry.update();
-         */
 
     }
 
@@ -464,14 +315,4 @@ public class AutoForScrimmage extends LinearOpMode {
 
     }
 
-    /*
-    public class Default implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            return false;
-        }
-    }
-     */
 }
