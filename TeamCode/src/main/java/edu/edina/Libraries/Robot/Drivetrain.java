@@ -33,11 +33,10 @@ public class Drivetrain {
     // Right front drive
     private final DcMotorEx rightFront;
 
-    private boolean autoTurtle;
-
     // Op mode
     private LinearOpMode opMode;
 
+    // Turtle mode
     private boolean turtleMode;
 
     private boolean reversed;
@@ -101,13 +100,7 @@ public class Drivetrain {
             rightBackPower /= max;
         }
 
-        double multiplier;
-
-        if (getTurtleMode()) {
-            multiplier = TURTLE_MULTIPLIER;
-        } else {
-            multiplier = NORMAL_MULTIPLIER;
-        }
+        double multiplier = turtleMode ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
 
         leftFrontPower *= multiplier;
         leftBackPower *= multiplier;
@@ -151,21 +144,11 @@ public class Drivetrain {
 
     }
 
-    // Sets turtle mode.
-    public void setTurtleMode(boolean tMode) {
+    // Sets the turtle mode value.
+    public void setTurtleMode(boolean turtleMode) {
 
-        //
-        turtleMode = tMode;
-
-    }
-
-    public void setAutoTurtle(boolean tMode) {
-        autoTurtle = tMode;
-    }
-
-    public boolean getTurtleMode() {
-
-        return turtleMode || autoTurtle;
+        // Set the turtle mode value.
+        this.turtleMode = turtleMode;
 
     }
 

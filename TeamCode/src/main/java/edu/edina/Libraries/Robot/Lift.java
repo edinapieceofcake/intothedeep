@@ -28,6 +28,9 @@ public class Lift {
     // Minimum position
     public static int MINIMUM_POSITION = 0;
 
+    // Nearly down position
+    public static int NEARLY_DOWN_POSITION = 400;
+
     // Nearly up position
     public static int NEARLY_UP_POSITION = 1500;
 
@@ -266,6 +269,20 @@ public class Lift {
 
         // Move the lift to the high basket position.
         targetPosition = HIGH_BASKET_POSITION;
+
+    }
+
+    // Determines whether the lift is nearly down.
+    public boolean isNearlyDown() {
+
+        // Get the lift's current position.
+        double currentPosition = getPosition();
+
+        // Determine whether the lift is nearly down.
+        boolean isNearlyDown = currentPosition <= NEARLY_DOWN_POSITION;
+
+        // Return the result.
+        return isNearlyDown;
 
     }
 

@@ -63,6 +63,7 @@ public class RobotHardware {
     private final BoundingBoxFailsafe failsafe;
     private ElapsedTime stalledTimer;
     private ElapsedTime loweringToGroundTimer;
+    private boolean inputTurtleMode;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -196,7 +197,7 @@ public class RobotHardware {
             failsafe.apply();
         }
     }
-
+    /*
     private void updateHardwareInteractions() {
         if (arm.armWillCrossWristLimit())
             raiseWrist();
@@ -207,7 +208,7 @@ public class RobotHardware {
 
         wrist.setHighRung(arm.isHighRung());
     }
-
+    */
     public void setReversed(boolean reversed) {
         drivetrain.setReverse(reversed);
     }
@@ -251,29 +252,30 @@ public class RobotHardware {
         // Update hardware.
         //////////////////////////////////////////////////////////////////////
 
-        //try {
-            //updateHardwareInteractions();
+        // Determine whether to use turtle mode.
+        boolean outputTurtleMode = inputTurtleMode || !lift.isNearlyDown();
 
-            // Update the arm.
-            arm.update();
+        // Set turtle mode.
+        drivetrain.setTurtleMode(outputTurtleMode);
 
-            // Update the claw.
-            claw.update();
+        // Update the arm.
+        arm.update();
 
-            // Update the drivetrain.
-            drivetrain.update();
+        // Update the claw.
+        claw.update();
 
-            // Update the lift.
-            lift.update();
+        // Update the drivetrain.
+        drivetrain.update();
 
-            // Update the slide.
-            slide.update();
+        // Update the lift.
+        lift.update();
 
-            // Update the wrist.
-            wrist.update();
-        //} finally {
-            //failsafe.apply();
-        //}
+        // Update the slide.
+        slide.update();
+
+        // Update the wrist.
+        wrist.update();
+
     }
 
     // Decrements the arm position.
@@ -392,7 +394,7 @@ public class RobotHardware {
     public void toggleTurtleMode() {
 
         // Toggle turtle mode.
-        drivetrain.toggleTurtleMode();
+        inputTurtleMode = !inputTurtleMode;
 
     }
 
@@ -400,7 +402,7 @@ public class RobotHardware {
     public void setTurtleMode(boolean turtleMode) {
 
         // Set turtle mode.
-        drivetrain.setTurtleMode(turtleMode);
+        inputTurtleMode = turtleMode;
 
     }
 //
