@@ -45,6 +45,9 @@ public class RobotHardware {
                 0 - Axon Mini+ Encoder - slide_encoder
     */
 
+    // Delay before going from the nearly ground position to the ground position
+    public static int GROUND_DELAY_MILLISECONDS = 500;
+
     private final LinearOpMode opMode;
     public final IMU imu;
     public ThreeDeadWheelLocalizer odometry;
@@ -55,10 +58,11 @@ public class RobotHardware {
     private final Arm arm;
     private final Claw claw;
     private final Lift lift;
+    private boolean loweringToGround;
     private final Slide slide;
     private final BoundingBoxFailsafe failsafe;
-
     private ElapsedTime stalledTimer;
+    private ElapsedTime loweringToGroundTimer;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -210,6 +214,43 @@ public class RobotHardware {
 
     // Updates this.
     public void update() {
+
+        // Finish lowering to ground if appropriate.
+        //////////////////////////////////////////////////////////////////////
+
+        // If we are lowering to the ground...
+        if(loweringToGround) {
+
+            // If we reached the nearly down position...
+            if(loweringToGroundTimer == null && !isArmBusy()) {
+
+                // Start a timer.
+                loweringToGroundTimer = new ElapsedTime();
+
+            }
+
+            // If we have waited long enough after reaching the the nearly down position...
+            if(loweringToGroundTimer != null && loweringToGroundTimer.milliseconds() > GROUND_DELAY_MILLISECONDS) {
+
+                // Move the arm to the ground.
+                setArmGroundPosition();
+
+                // Remember that we are done lowering to ground.
+                loweringToGround = false;
+
+                // Clear the timer.
+                loweringToGroundTimer = null;
+
+                // Lower the wrist.
+                lowerWrist();
+
+            }
+
+        }
+
+        // Update hardware.
+        //////////////////////////////////////////////////////////////////////
+
         //try {
             //updateHardwareInteractions();
 
@@ -381,8 +422,24 @@ public class RobotHardware {
     // Moves the arm to the ground position.
     public void setArmGroundPosition() {
 
-        // Move the arm to the ground position.
-        arm.setGroundPosition();
+        // If the arm is high...
+        if(arm.isHigh()) {
+
+            // Move the arm to the almost ground position.
+            arm.setAlmostGroundPosition();
+
+            // Remember that we are lowering the arm to the ground.
+            loweringToGround = true;
+
+        }
+
+        // Otherwise (if the arm is low)...
+        else {
+
+            // Move the arm to the ground position.
+            arm.setGroundPosition();
+
+        }
 
     }
 
@@ -459,7 +516,7 @@ public class RobotHardware {
     }
 
     // Checks if the lift is busy.
-    public boolean getIsLiftBusy() {
+    public boolean isLiftBusy() {
 
         // Checks if the lift is busy.
         return lift.isBusy();
@@ -467,7 +524,7 @@ public class RobotHardware {
     }
 
     // Checks if the arm is busy.
-    public boolean getIsArmBusy() {
+    public boolean isArmBusy() {
 
         // Checks if the arm is busy.
         return arm.isBusy();
@@ -475,7 +532,7 @@ public class RobotHardware {
     }
 
     // Checks if the slide is busy.
-    public boolean getIsSlideBusy() {
+    public boolean isSlideBusy() {
 
         // Checks if the slide is busy.
         return slide.isBusy();

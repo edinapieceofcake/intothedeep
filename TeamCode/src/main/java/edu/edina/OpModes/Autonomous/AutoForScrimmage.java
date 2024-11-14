@@ -455,7 +455,7 @@ public class AutoForScrimmage extends LinearOpMode {
             robotHardware.update();
 
             // Determine whether the robot hardware is busy.
-            boolean isBusy = robotHardware.getIsArmBusy() || robotHardware.getIsLiftBusy() || robotHardware.getIsSlideBusy();
+            boolean isBusy = robotHardware.isArmBusy() || robotHardware.isLiftBusy() || robotHardware.isSlideBusy();
 
             // Return the result.
             return isBusy;
