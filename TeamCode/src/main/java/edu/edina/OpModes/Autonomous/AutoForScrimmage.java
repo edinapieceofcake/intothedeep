@@ -23,6 +23,7 @@ public class AutoForScrimmage extends LinearOpMode {
     public static double FIRST_NEUTRAL_SPIKE_MARK_X = -50;
     public static double FIRST_NEUTRAL_SPIKE_MARK_Y = -38;
     public static int HIGH_BASKET_DELAY = 3000;
+    public static int HIGH_BASKET_TO_GROUND_DELAY = 3000;
     public static int CLAW_DELAY = 2000;
     public static int HIGH_BASKET_TO_LOW_BASKET_DELAY = 2000;
     public static int LOW_BASKET_TO_ALMOST_GROUND_DELAY = 2000;
@@ -117,26 +118,29 @@ public class AutoForScrimmage extends LinearOpMode {
                         // Opens the claw, runs once
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
-                        new MoveToLowBasket(),
+                        /*new MoveToLowBasket(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy(),
+                        //new WaitForLiftNotBusy(),
+                        //new WaitForArmNotBusy(),
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(3000),
 
                         new MoveToAlmostGround(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy(),
+//                        new WaitForLiftNotBusy(),
+//                        new WaitForArmNotBusy(),
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(3000),*/
 
                         new MoveToGround(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy(),
+//                        new WaitForLiftNotBusy(),
+//                        new WaitForArmNotBusy(),
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(HIGH_BASKET_TO_GROUND_DELAY),
 
                         driveToSpikeMark1,
                         new CloseClaw(),
@@ -145,32 +149,36 @@ public class AutoForScrimmage extends LinearOpMode {
                         new MoveToHighBasket(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy(),
+//                        new WaitForLiftNotBusy(),
+//                        new WaitForArmNotBusy(),
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(HIGH_BASKET_TO_GROUND_DELAY),
 
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
-                        new MoveToLowBasket(),
+                        /*new MoveToLowBasket(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy(),
+//                        new WaitForLiftNotBusy(),
+//                        new WaitForArmNotBusy(),
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(3000),
 
                         new MoveToAlmostGround(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy(),
+//                        new WaitForLiftNotBusy(),
+//                        new WaitForArmNotBusy(),
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(3000),*/
 
                         new MoveToGround(),
 
                         // Waiting
-                        new WaitForLiftNotBusy(),
-                        new WaitForArmNotBusy()
+//                        new WaitForLiftNotBusy(),
+//                        new WaitForArmNotBusy()
                         // Wait for extension delay (and wrist?)
+                        new WaitAndUpdate(HIGH_BASKET_TO_GROUND_DELAY)
 
                 )
         );
@@ -384,6 +392,9 @@ public class AutoForScrimmage extends LinearOpMode {
 
             // Use the high basket extension.
             robotHardware.setHighBasketExtension();
+
+            // Lower the wrist.
+            robotHardware.lowerWrist();
             return false;
         }
     }
