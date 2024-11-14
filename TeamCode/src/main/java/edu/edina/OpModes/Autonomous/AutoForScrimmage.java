@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,9 +18,10 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @Config
 @Autonomous(preselectTeleOp = "TeleOpForScrimmage")
 public class AutoForScrimmage extends LinearOpMode {
-    public static double BASKET_DIAGONAL_POSITION = -50;
-    public static double FIRST_NEUTRAL_SPIKE_MARK_X = -50;
-    public static double FIRST_NEUTRAL_SPIKE_MARK_Y = -38;
+
+    public static Pose2d START_POSE = new Pose2d(-38, -62, 0);
+    public static Pose2d BASKET_POSE = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
+    public static Pose2d FIRST_SPIKE_MARK_POSE = new Pose2d(-50, -38, 1.0 / 2 * Math.PI);
     public static int HIGH_BASKET_DELAY = 3000;
     public static int HIGH_BASKET_TO_GROUND_DELAY = 3000;
     public static int CLAW_DELAY = 2000;
@@ -29,10 +29,7 @@ public class AutoForScrimmage extends LinearOpMode {
     public static int LOW_BASKET_TO_ALMOST_GROUND_DELAY = 2000;
     public static int ALMOST_GROUND_TO_GROUND_DELAY = 1000;
 
-
     private RobotHardware robotHardware;
-
-    private Pose2d lastEnd;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -69,116 +66,70 @@ public class AutoForScrimmage extends LinearOpMode {
         // Wait for the user to press start.
         waitForStart();
 
-        Pose2d lastPose = new Pose2d(-38, -62, 0);
+        // Construct a drive interface.
+        MecanumDrive drive = new MecanumDrive(hardwareMap, START_POSE);
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, lastPose);
-
-        Action driveToBasket0 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+        // Construct an action for driving from the start to the basket.
+        Action driveFromStartToBasket = drive.actionBuilder(START_POSE)
+                .strafeToLinearHeading(BASKET_POSE.position, BASKET_POSE.heading)
                 .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
 
-        Action driveToSpikeMark1 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+        // Construct an action for driving from the basket to the first spike mark.
+        Action driveFromBasketToFirstSpikeMark = drive.actionBuilder(BASKET_POSE)
+                .strafeToLinearHeading(FIRST_SPIKE_MARK_POSE.position, FIRST_SPIKE_MARK_POSE.heading)
                 .build();
-        lastPose = new Pose2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y, 1.0 / 2 * Math.PI);
 
-        Action driveToBasket1 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+        // Construct an action for driving from the first spike mark to the basket.
+        Action driveFromFirstSpikeMarkToBasket = drive.actionBuilder(FIRST_SPIKE_MARK_POSE)
+                .strafeToLinearHeading(BASKET_POSE.position, BASKET_POSE.heading)
                 .build();
-        /*lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+
+        /*lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
 
         Action driveToBasket2 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), BASKET_DIAGONAL_HEADING)
                 .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
 
         Action driveToSpikeMark2 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), FIRST_NEUTRAL_SPIKE_MARK_HEADING)
                 .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
 
         Action driveToBasket3 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), 1.0 / 4 * Math.PI)
+                .strafeToLinearHeading(new Vector2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION), BASKET_DIAGONAL_HEADING)
                 .build();
-        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, 1.0 / 4 * Math.PI);
+        lastPose = new Pose2d(BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_POSITION, BASKET_DIAGONAL_HEADING);
 
         Action driveToSpikeMark3 = drive.actionBuilder(lastPose)
-                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), 1.0 / 2 * Math.PI)
+                .strafeToLinearHeading(new Vector2d(FIRST_NEUTRAL_SPIKE_MARK_X, FIRST_NEUTRAL_SPIKE_MARK_Y), FIRST_NEUTRAL_SPIKE_MARK_HEADING)
                 .build();*/
 
         Actions.runBlocking(
                 new SequentialAction(
-                        // Declared above, blocks while running
-                        driveToBasket0,
-                        // Sets positions, runs once
+
+                        // Score preloaded sample
+
+                        driveFromStartToBasket,
                         new MoveToHighBasket(),
-                        // Waits and updates robot hardware
-                        new WaitAndUpdate(HIGH_BASKET_DELAY),
-                        // Opens the claw, runs once
+                        new WaitForNotBusy(),
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
-                        /*new MoveToLowBasket(),
-
-                        // Waiting
-                        //new WaitForLiftNotBusy(),
-                        //new WaitForArmNotBusy(),
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(3000),
-
-                        new MoveToAlmostGround(),
-
-                        // Waiting
-//                        new WaitForLiftNotBusy(),
-//                        new WaitForArmNotBusy(),
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(3000),*/
-
                         new MoveToGround(),
+                        new WaitForNotBusy(),
 
-                        // Waiting
-//                        new WaitForLiftNotBusy(),
-//                        new WaitForArmNotBusy(),
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(HIGH_BASKET_TO_GROUND_DELAY),
+                        // Score first spike mark sample
 
-                        driveToSpikeMark1,
+                        driveFromBasketToFirstSpikeMark,
                         new CloseClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
-                        driveToBasket1,
+                        driveFromFirstSpikeMarkToBasket,
                         new MoveToHighBasket(),
-
-                        // Waiting
-//                        new WaitForLiftNotBusy(),
-//                        new WaitForArmNotBusy(),
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(HIGH_BASKET_TO_GROUND_DELAY),
-
+                        new WaitForNotBusy(),
                         new OpenClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
-                        /*new MoveToLowBasket(),
-
-                        // Waiting
-//                        new WaitForLiftNotBusy(),
-//                        new WaitForArmNotBusy(),
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(3000),
-
-                        new MoveToAlmostGround(),
-
-                        // Waiting
-//                        new WaitForLiftNotBusy(),
-//                        new WaitForArmNotBusy(),
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(3000),*/
-
                         new MoveToGround(),
-
-                        // Waiting
-//                        new WaitForLiftNotBusy(),
-//                        new WaitForArmNotBusy()
-                        // Wait for extension delay (and wrist?)
-                        new WaitAndUpdate(HIGH_BASKET_TO_GROUND_DELAY)
+                        new WaitForNotBusy()
 
                 )
         );
@@ -362,28 +313,47 @@ public class AutoForScrimmage extends LinearOpMode {
 
     }
 
+    // Opens the claw.
     public class OpenClaw implements Action {
 
+        // Runs this.
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
+            // Open the claw.
             robotHardware.openClaw();
+
+            // Return indicating that the action is done.
             return false;
+
         }
+
     }
 
+    // Closes the claw.
     public class CloseClaw implements Action {
 
+        // Runs this.
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
+            // Close the claw.
             robotHardware.closeClaw();
+
+            // Return indicating that the action is done.
             return false;
+
         }
+
     }
 
+    // Moves the claw to the high basket.
     public class MoveToHighBasket implements Action {
 
+        // Runs this.
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
             // Move the arm to the high basket position.
             robotHardware.setArmHighBasketAutoPosition();
 
@@ -395,46 +365,21 @@ public class AutoForScrimmage extends LinearOpMode {
 
             // Lower the wrist.
             robotHardware.lowerWrist();
+
+            // Return indicating that the action is done.
             return false;
+
         }
+
     }
 
-    public class MoveToLowBasket implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            // Move the arm to the low basket position.
-            robotHardware.setArmLowBasketPosition();
-
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
-
-            // Use the low basket extension.
-            robotHardware.setLowBasketExtension();
-            return false;
-        }
-    }
-
-    public class MoveToAlmostGround implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            // Move the arm to the ground position.
-            robotHardware.setArmAlmostGroundPosition();
-
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
-
-            // Fully retract the slide.
-            robotHardware.setMinimumExtension();
-            return false;
-        }
-    }
-
+    // Moves the claw to the ground.
     public class MoveToGround implements Action {
 
+        // Runs this.
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
             // Move the arm to the ground position.
             robotHardware.setArmGroundPosition();
 
@@ -443,47 +388,80 @@ public class AutoForScrimmage extends LinearOpMode {
 
             // Fully retract the slide.
             robotHardware.setMinimumExtension();
+
+            // Return indicating that the action is done.
             return false;
+
         }
+
     }
 
+    // Waits for a specified duration.
     public class WaitAndUpdate implements Action {
 
+        // Timer
         private ElapsedTime timer;
+
+        // Duration in milliseconds
         private double milliseconds;
+
+        // Initialized value
         private boolean initialized;
 
-        public WaitAndUpdate(double milliseconds) {
+        // Initialzies this.
+        public WaitAndUpdate(double milliseconds)
+        {
+
+            // Remember the duration in milliseconds.
             this.milliseconds = milliseconds;
+
         }
 
+        // Runs this.
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
+            // If this is not initialized...
             if (!initialized) {
+
+                // Start a timer.
                 timer = new ElapsedTime();
+
+                // Remember that this is initialized.
                 initialized = true;
             }
 
+            // Update the robot hardware.
             robotHardware.update();
 
-            return timer.milliseconds() < milliseconds;
+            // Determine whether we are waiting.
+            boolean waiting = timer.milliseconds() < milliseconds;
+
+            // Return the result.
+            return waiting;
+
         }
+
     }
 
-    public class WaitForLiftNotBusy implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            robotHardware.update();
-            return !robotHardware.getIsLiftBusy();
-        }
-    }
+    // Waits for the robot hardware to finish moving.
+    public class WaitForNotBusy implements Action {
 
-    public class WaitForArmNotBusy implements Action {
+        // Runs this.
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
+            // Update the robot hardware.
             robotHardware.update();
-            return !robotHardware.getIsArmBusy();
+
+            // Determine whether the robot hardware is busy.
+            boolean isBusy = robotHardware.getIsArmBusy() || robotHardware.getIsLiftBusy() || robotHardware.getIsSlideBusy();
+
+            // Return the result.
+            return isBusy;
+
         }
+
     }
 
     /*

@@ -19,9 +19,6 @@ public class Lift {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
-    // High baskket position
-    public static int HIGH_BASKET_POSITION = 1800;
-
     // Integral coefficient
     public static double INTEGRAL = 0;
 
@@ -31,14 +28,20 @@ public class Lift {
     // Minimum position
     public static int MINIMUM_POSITION = 0;
 
+    // Nearly up position
+    public static int NEARLY_UP_POSITION = 1500;
+
     // Position increment
     public static int POSITION_INCREMENT = 50;
 
     // Proportional coefficient
     public static double PROPORTIONAL = 0.002;
 
-    // Threshold
-    public static int THRESHOLD = 50;
+    // Busy threshold
+    public static int BUSY_THRESHOLD = 150;
+
+    // High basket position
+    public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
 
     // Controller
     private PIDController controller;
@@ -143,8 +146,12 @@ public class Lift {
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
 
+        // Determine whether the lift is busy.
+        boolean isBusy = isBusy();
+
         // Display lift telemetry.
         telemetry.addData("Lift", "====================");
+        telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Position", "%d/%d", leftPosition, rightPosition);
         telemetry.addData("- Down", down);
         telemetry.addData("- PID", pid);
@@ -189,15 +196,23 @@ public class Lift {
     // Determines whether the lift is busy.
     public boolean isBusy() {
 
-        int leftPosition = leftMotor.getCurrentPosition();
-        int rightPosition = rightMotor.getCurrentPosition();
-        int leftDifference = Math.abs(leftPosition - targetPosition);
-        int rightDifference = Math.abs(rightPosition - targetPosition);
-        if (leftDifference < THRESHOLD && rightDifference < THRESHOLD) {
+        // Get the lift's current position.
+        double currentPosition = getPosition();
+
+        // If the lift is up as requested...
+        if(currentPosition >= NEARLY_UP_POSITION && targetPosition >= NEARLY_UP_POSITION) {
+
+            // Return indicating that the lift is not busy.
             return false;
-        } else {
-            return true;
+
         }
+
+        // Get the position difference.
+        double difference = Math.abs(currentPosition - targetPosition);
+
+        // Return indicating if the lift is busy.
+        return difference >= BUSY_THRESHOLD;
+
     }
 
     // Raises the lift.

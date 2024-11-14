@@ -47,8 +47,8 @@ public class Slide {
     // Encoder
     private final AnalogInput encoder;
 
-    // Extension target
-    private double extensionTarget;
+    // Target extension
+    private double targetExtension;
 
     // Last voltage
     private double lastVoltage = UNINITIALIZED;
@@ -161,10 +161,10 @@ public class Slide {
         lastVoltage = currentVoltage;
 
         // Get the current extension.
-        double currentExtension = INCHES_PER_VOLT * offsetVoltage;
+        double currentExtension = getCurrentExtension();
 
         // Get the extension error.
-        double extensionError = currentExtension - extensionTarget;
+        double extensionError = currentExtension - targetExtension;
 
         // Get a power.
         double inputPower;
@@ -187,12 +187,16 @@ public class Slide {
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
 
+        // Determine whether the slide is busy.
+        boolean isBusy = isBusy();
+
         // Display extension telemetry.
         telemetry.addData("Slide", "====================");
+        telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Extension", currentExtension);
         telemetry.addData("- Current Voltage", currentVoltage);
         telemetry.addData("- Extension Error", extensionError);
-        telemetry.addData("- Extension Target", extensionTarget);
+        telemetry.addData("- Extension Target", targetExtension);
         telemetry.addData("- Input Power", inputPower);
         telemetry.addData("- Last Voltage", lastVoltage);
         telemetry.addData("- Offset Voltage", offsetVoltage);
@@ -204,19 +208,23 @@ public class Slide {
     public void setPosition(double position) {
 
         // Set the extension's position.
-        this.extensionTarget = position;
+        this.targetExtension = position;
 
     }
 
+    // Gets the slide's position.
     public double getPosition() {
+
+        // Return the slide's position.
         return INCHES_PER_VOLT * offsetVoltage;
+
     }
 
     // Sets the minimum extension.
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-        extensionTarget = MINIMUM_EXTENSION;
+        targetExtension = MINIMUM_EXTENSION;
 
     }
 
@@ -224,7 +232,7 @@ public class Slide {
     public void setLowBasketExtension() {
 
         // Set the low basket extension.
-        extensionTarget = LOW_BASKET_EXTENSION;
+        targetExtension = LOW_BASKET_EXTENSION;
 
     }
 
@@ -232,7 +240,7 @@ public class Slide {
     public void setHighBasketExtension() {
 
         // Set the high basket extension.
-        extensionTarget = HIGH_BASKET_EXTENSION;
+        targetExtension = HIGH_BASKET_EXTENSION;
 
     }
 
@@ -240,7 +248,7 @@ public class Slide {
     public void extend() {
 
         // Extend this.
-        extensionTarget = Math.min(extensionTarget + EXTENSION_INCREMENT, MAXIMUM_EXTENSION);
+        targetExtension = Math.min(targetExtension + EXTENSION_INCREMENT, MAXIMUM_EXTENSION);
 
     }
 
@@ -248,7 +256,29 @@ public class Slide {
     public void retract() {
 
         // Retract this.
-        extensionTarget = Math.max(extensionTarget - EXTENSION_INCREMENT, MINIMUM_EXTENSION);
+        targetExtension = Math.max(targetExtension - EXTENSION_INCREMENT, MINIMUM_EXTENSION);
+
+    }
+
+    // Determines whether the slide is busy.
+    public boolean isBusy() {
+
+        // Get the slide's current extension.
+        double currentExtension = getCurrentExtension();
+
+        // Get the extension difference.
+        double difference = Math.abs(currentExtension - targetExtension);
+
+        // Return indicating if the slide is busy.
+        return difference >= EXTENSION_ERROR_THRESHOLD;
+
+    }
+
+    // Get the current exetension.
+    public double getCurrentExtension() {
+
+        // Return the current extension.
+        return INCHES_PER_VOLT * offsetVoltage;
 
     }
 

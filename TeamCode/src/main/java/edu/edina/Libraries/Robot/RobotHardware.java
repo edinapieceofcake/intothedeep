@@ -473,4 +473,13 @@ public class RobotHardware {
         return arm.isBusy();
 
     }
+
+    // Checks if the slide is busy.
+    public boolean getIsSlideBusy() {
+
+        // Checks if the slide is busy.
+        return slide.isBusy();
+
+    }
+
 }

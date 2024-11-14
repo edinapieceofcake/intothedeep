@@ -23,9 +23,6 @@ public class Arm {
     // Delay before going from the nearly ground position to the ground position
     public static int GROUND_DELAY_MILLISECONDS = 500;
 
-    // Ground position
-    public static int GROUND_POSITION = -400;
-
     // High basket position
     public static int HIGH_BASKET_POSITION = 2800;
 
@@ -40,6 +37,15 @@ public class Arm {
 
     // Low basket position
     public static int LOW_BASKET_POSITION = 2700;
+
+    // Maximum position
+    public static int MAXIMUM_POSITION = 6000;
+
+    // Minimum position
+    public static int MINIMUM_POSITION = -400;
+
+    // Ground position
+    public static int GROUND_POSITION = MINIMUM_POSITION;
 
     // Nearly down position threshold
     public static int NEARLY_DOWN_POSITION = 100;
@@ -72,7 +78,7 @@ public class Arm {
     public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
 
     // Busy threshold
-    public static int BUSY_THRESHOLD = 100;
+    public static int BUSY_THRESHOLD = 600;
 
     // Controller
     private PIDController controller;
@@ -163,11 +169,14 @@ public class Arm {
         // Finish lowering to ground if appropriate.
         //////////////////////////////////////////////////////////////////////
 
+        // Determine whether the arm is busy.
+        boolean isBusy = isBusy();
+
         // If we are lowering to the ground...
         if(loweringToGround) {
 
             // If we reached the nearly down position...
-            if(timer == null && !isBusy()) {
+            if(timer == null && !isBusy) {
 
                 // Start a timer.
                 timer = new ElapsedTime();
@@ -203,6 +212,7 @@ public class Arm {
 
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");
+        telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
         telemetry.addData("- Current Position", currentPosition);
         telemetry.addData("- Down", down);
@@ -261,7 +271,7 @@ public class Arm {
     public void decrementPosition() {
 
         // Decrement the arm position.
-        targetPosition -= POSITION_INCREMENT;
+        targetPosition = Math.max(targetPosition - POSITION_INCREMENT, MINIMUM_POSITION);
 
     }
 
@@ -269,7 +279,7 @@ public class Arm {
     public void incrementPosition() {
 
         // Increment the arm position.
-        targetPosition += POSITION_INCREMENT;
+        targetPosition = Math.min(targetPosition + POSITION_INCREMENT, MAXIMUM_POSITION);
 
     }
 
@@ -401,15 +411,18 @@ public class Arm {
                 currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD;
     }
 
-    // Determines whether the lift is busy.
+    // Determines whether the arm is busy.
     public boolean isBusy() {
 
-        int position = motor.getCurrentPosition();
-        int difference = Math.abs(position - targetPosition);
-        if (difference < BUSY_THRESHOLD) {
-            return false;
-        } else {
-            return true;
-        }
+        // Get the arm's current position.
+        int currentPosition = motor.getCurrentPosition();
+
+        // Get the position difference.
+        int difference = Math.abs(currentPosition - targetPosition);
+
+        // Return indicating if the arm is busy.
+        return difference >= BUSY_THRESHOLD;
+
     }
+
 }
