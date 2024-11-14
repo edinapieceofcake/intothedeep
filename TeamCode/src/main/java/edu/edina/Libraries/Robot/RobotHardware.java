@@ -153,6 +153,14 @@ public class RobotHardware {
 
     }
 
+    // Initializes the wrist.
+    public void initializeWrist() {
+
+        // Raise the wrist.
+        wrist.initialize();
+
+    }
+
     // Lowers the wrist.
     public void lowerWrist() {
 

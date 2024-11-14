@@ -52,7 +52,7 @@ public class AutoForScrimmage extends LinearOpMode {
         robotHardware.closeClaw();
 
         // Raise the wrist.
-        robotHardware.raiseWrist();
+        robotHardware.initializeWrist();
 
         // If stop is requested...
         if (isStopRequested()) {
