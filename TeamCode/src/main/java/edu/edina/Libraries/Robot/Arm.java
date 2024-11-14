@@ -48,10 +48,10 @@ public class Arm {
     public static double PROPORTIONAL = 0.0005;
 
     // Position increment (ticks)
-    public static int POSITION_INCREMENT = 400;
+    public static int POSITION_INCREMENT = 275;
 
     // Submersible position
-    public static int SUBMERSIBLE_POSITION = 4900;
+    public static int SUBMERSIBLE_POSITION = 4700;
 
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
@@ -185,6 +185,8 @@ public class Arm {
 
                 // Clear the timer.
                 timer = null;
+
+                robotHardware.lowerWrist();
 
             }
 

@@ -48,6 +48,12 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Get hardware.
         RobotHardware robotHardware = new RobotHardware(this);
 
+        // Prompt the user to press start.
+        robotHardware.log("Waiting for start...");
+
+        // Wait for the user to press start.
+        waitForStart();
+
         // Move the arm to the ground position.
         robotHardware.setArmGroundPosition();
 
@@ -56,12 +62,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
         // Lowers the wrist.
         robotHardware.lowerWrist();
-
-        // Prompt the user to press start.
-        robotHardware.log("Waiting for start...");
-
-        // Wait for the user to press start.
-        waitForStart();
 
         // Get current and previous gamepads.
         Gamepad currentGamepad = new Gamepad();
