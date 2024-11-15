@@ -39,8 +39,17 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     */
 
+    // Rumble milliseconds
+    public static int RUMBLE_MILLISECONDS = 500;
+
     // Trigger threshold
-    private static final double TRIGGER_THRESHOLD = 0.5;
+    public static double TRIGGER_THRESHOLD = 0.5;
+
+    // Current gamepad
+    private Gamepad currentGamepad = new Gamepad();
+
+    // Previous gamepad
+    private Gamepad previousGamepad = new Gamepad();
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
@@ -63,10 +72,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Lowers the wrist.
         robotHardware.lowerWrist();
 
-        // Get current and previous gamepads.
-        Gamepad currentGamepad = new Gamepad();
-        Gamepad previousGamepad = new Gamepad();
-
         // While the op mode is active...
         while (opModeIsActive()) {
 
@@ -83,8 +88,16 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad right...
                 if (currentGamepad.dpad_right) {
 
-                    // If the arm is not nearly down...
-                    if (!robotHardware.isArmNearlyDown()) {
+                    // If the arm is nearly down...
+                    if (robotHardware.isArmNearlyDown()) {
+
+                        // Rumble the gamepad.
+                        rumble();
+
+                    }
+
+                    // Otherwise (if the arm is not nearly down)...
+                    else {
 
                         // Extend the slide.
                         robotHardware.extendSlide();
@@ -284,6 +297,14 @@ public class TeleOpForScrimmage extends LinearOpMode {
             telemetry.update();
 
         }
+
+    }
+
+    // Rumbles the gamepad.
+    private void rumble() {
+
+        // Rumble the gamepad.
+        currentGamepad.rumble(RUMBLE_MILLISECONDS);
 
     }
 
