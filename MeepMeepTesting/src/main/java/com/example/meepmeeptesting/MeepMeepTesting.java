@@ -26,11 +26,15 @@ public class MeepMeepTesting {
             // COPY THIS LINE
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
-
                     // COPY HERE
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
-                    .strafeToLinearHeading(new Vector2d(-55, -55), 1.0 / 4 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-47.5, -38), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-57.5, -44), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-57.5, -38), 1.0 / 2 * Math.PI)
+                    //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
 
+                    /*
                     .waitSeconds(1)
                     .strafeToLinearHeading(new Vector2d(-48, -38), 1.0 / 2 * Math.PI)
                     .waitSeconds(0.5)
@@ -61,8 +65,8 @@ public class MeepMeepTesting {
                     .waitSeconds(1)
                     .setReversed(true)
                     .splineTo(new Vector2d(-60, -50), 3.0 / 2 * Math.PI)
+                    */
                     // STOP COPYING
-
                     .build());
 
 
