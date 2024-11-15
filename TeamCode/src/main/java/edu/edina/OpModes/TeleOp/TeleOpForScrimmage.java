@@ -39,6 +39,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     */
 
+    // Maximum slide extension in submersible (so robot stays within extension box)
+    public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 6;
+
     // Rumble milliseconds
     public static int RUMBLE_MILLISECONDS = 500;
 
@@ -88,15 +91,30 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad right...
                 if (currentGamepad.dpad_right) {
 
-                    // If the arm is nearly down...
-                    if (robotHardware.isArmNearlyDown()) {
+                    // Determine whether the arm is nearly down.
+                    boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
+
+                    // Determine whether the arm is in the submersible position.
+                    boolean isArmInSubmersiblePosition = robotHardware.isArmInSubmersiblePosition();
+
+                    // Get the current slide extension.
+                    double currentSlideExtension = robotHardware.getCurrentSlideExtension();
+
+                    // Determine whether the slide is maximally extended in the submersible.
+                    boolean isSlideMaximallyExtendedInSubmersible = isArmInSubmersiblePosition && currentSlideExtension >= MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
+
+                    // Determine whether to disallow slide extension.
+                    boolean disallowSlideExtension = isArmNearlyDown || isSlideMaximallyExtendedInSubmersible;
+
+                    // If slide extension is disallowed...
+                    if (disallowSlideExtension) {
 
                         // Rumble the gamepad.
                         rumble();
 
                     }
 
-                    // Otherwise (if the arm is not nearly down)...
+                    // Otherwise (if slide extension is allowed)...
                     else {
 
                         // Extend the slide.

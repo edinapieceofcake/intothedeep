@@ -545,6 +545,22 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the arm is in the submersible position.
+    public boolean isArmInSubmersiblePosition() {
+
+        // Return indicating if the arm is in the submersible position.
+        return arm.isInSubmersiblePosition();
+
+    }
+
+    // Gets the current slide extension.
+    public double getCurrentSlideExtension() {
+
+        // Return the current slide extension.
+        return slide.getCurrentExtension();
+
+    }
+
     public BoundingBoxFailsafe getFailsafe() {
         return failsafe;
     }

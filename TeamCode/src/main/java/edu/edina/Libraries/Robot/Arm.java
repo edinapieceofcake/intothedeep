@@ -378,4 +378,15 @@ public class Arm {
 
     }
 
+    // Determines whether the arm is in the submersible position.
+    public boolean isInSubmersiblePosition() {
+
+        // Determine whether the arm is in the submersible position.
+        boolean isInSubmersiblePosition = targetPosition == SUBMERSIBLE_POSITION;
+
+        // Return the result
+        return isInSubmersiblePosition;
+
+    }
+
 }
