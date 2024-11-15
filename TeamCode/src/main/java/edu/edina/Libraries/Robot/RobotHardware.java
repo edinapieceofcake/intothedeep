@@ -210,7 +210,7 @@ public class RobotHardware {
         else if (arm.targetingScoringPos())
             lowerWrist();
 
-        drivetrain.setAutoTurtle(arm.targetingScoringPos() || lift.targetingScoringPos());
+        drivetrain.setAutoTurtleMode(arm.targetingScoringPos() || lift.targetingScoringPos());
 
         wrist.setHighRung(arm.isHighRung());
     }

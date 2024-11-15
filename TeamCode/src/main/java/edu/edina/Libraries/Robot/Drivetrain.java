@@ -37,7 +37,7 @@ public class Drivetrain {
     private LinearOpMode opMode;
 
     // Turtle mode
-    private boolean turtleMode;
+    private boolean turtleMode, autoTurtleMode;
 
     private boolean reversed;
 
@@ -100,7 +100,7 @@ public class Drivetrain {
             rightBackPower /= max;
         }
 
-        double multiplier = turtleMode ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
+        double multiplier = getTurtleMode() ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
 
         leftFrontPower *= multiplier;
         leftBackPower *= multiplier;
@@ -150,6 +150,14 @@ public class Drivetrain {
         // Set the turtle mode value.
         this.turtleMode = turtleMode;
 
+    }
+
+    public void setAutoTurtleMode(boolean autoTurtleMode) {
+        this.autoTurtleMode = autoTurtleMode;
+    }
+
+    private boolean getTurtleMode() {
+        return turtleMode || autoTurtleMode;
     }
 
     public void setReverse(boolean reverse) {

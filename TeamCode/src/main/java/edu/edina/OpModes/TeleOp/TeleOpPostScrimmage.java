@@ -307,12 +307,11 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
             // Update the robot hardware.
             robotHardware.update();
+            robotHardware.updateHardwareInteractions();
 
             // Update the telemetry.
             telemetry.update();
-
         }
-
     }
 
     public void specimenScoring(RobotHardware hw) {
