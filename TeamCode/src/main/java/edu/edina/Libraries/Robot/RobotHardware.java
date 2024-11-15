@@ -183,7 +183,7 @@ public class RobotHardware {
             if (mode == MiniAutoMode.SCORE) {
                 if (stalledTimer == null) {
                     stalledTimer = new ElapsedTime();
-                } else if (stalledTimer.milliseconds() > 500) {
+                } else if (stalledTimer.milliseconds() > 300) {
                     stalledTimer = null;
                     toggleClaw();
                     return false;
@@ -545,4 +545,7 @@ public class RobotHardware {
 
     }
 
+    public BoundingBoxFailsafe getFailsafe() {
+        return failsafe;
+    }
 }
