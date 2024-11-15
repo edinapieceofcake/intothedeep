@@ -169,12 +169,16 @@ public class RobotHardware {
 
     }
 
+    public void startMiniAutoMode() {
+        stalledTimer = null;
+    }
+
     public boolean update(MiniAutoMode mode) {
         try {
             if (mode == MiniAutoMode.SCORE) {
                 if (stalledTimer == null) {
                     stalledTimer = new ElapsedTime();
-                } else if (stalledTimer.milliseconds() > 750) {
+                } else if (stalledTimer.milliseconds() > 500) {
                     stalledTimer = null;
                     toggleClaw();
                     return false;
@@ -194,6 +198,8 @@ public class RobotHardware {
     }
 
     private void updateHardwareInteractions() {
+        stalledTimer = null;
+
         if (arm.armWillCrossWristLimit())
             raiseWrist();
         else if (arm.targetingScoringPos())
@@ -211,27 +217,27 @@ public class RobotHardware {
     // Updates this.
     public void update() {
         //try {
-            //updateHardwareInteractions();
+        updateHardwareInteractions();
 
-            // Update the arm.
-            arm.update();
+        // Update the arm.
+        arm.update();
 
-            // Update the claw.
-            claw.update();
+        // Update the claw.
+        claw.update();
 
-            // Update the drivetrain.
-            drivetrain.update();
+        // Update the drivetrain.
+        drivetrain.update();
 
-            // Update the lift.
-            lift.update();
+        // Update the lift.
+        lift.update();
 
-            // Update the slide.
-            slide.update();
+        // Update the slide.
+        slide.update();
 
-            // Update the wrist.
-            wrist.update();
+        // Update the wrist.
+        wrist.update();
         //} finally {
-            //failsafe.apply();
+        //failsafe.apply();
         //}
     }
 

@@ -316,6 +316,8 @@ public class TeleOpPostScrimmage extends LinearOpMode {
     }
 
     public void specimenScoring(RobotHardware hw) {
+        hw.startMiniAutoMode();
+
         while (opModeIsActive()) {
             if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
                 boolean stillScoring = hw.update(MiniAutoMode.SCORE);
