@@ -17,7 +17,7 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpForScrimmage")
-public class AutoForScrimmage extends LinearOpMode {
+public class AutoSample extends LinearOpMode {
 
     // Start pose
     public static double START_X = -38;
@@ -39,8 +39,13 @@ public class AutoForScrimmage extends LinearOpMode {
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
+    // First and a half spike mark pose
+    public static double FIRST_AND_A_HALF_SPIKE_MARK_X = SECOND_SPIKE_MARK_X;
+    public static double FIRST_AND_A_HALF_SPIKE_MARK_Y = -44;
+    public static double FIRST_AND_A_HALF_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
+
     // Duration in milliseconds to toggle the claw
-    public static int CLAW_DELAY = 2000;
+    public static int CLAW_DELAY = 500;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -111,8 +116,13 @@ public class AutoForScrimmage extends LinearOpMode {
                 .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
-        // Construct an action for driving from the basket to the second spike mark.
-        Action driveFromBasketToSecondSpikeMark = drive.actionBuilder(basketPose)
+        // Construct an action for driving from the basket to the first and half spike mark.
+        Action driveFromBasketToFirstAndAHalfSpikeMark = drive.actionBuilder(basketPose)
+                .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
+                .build();
+
+        // Construct an action for driving from the first and a half spike mark to the second spike mark.
+        Action driveFromFirstAndAHalfToSecondSpikeMark = drive.actionBuilder(basketPose)
                 .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
                 .build();
 
@@ -147,7 +157,8 @@ public class AutoForScrimmage extends LinearOpMode {
                         new WaitForNotBusy(),
 
                         // Score second spike mark sample
-                        driveFromBasketToSecondSpikeMark,
+                        driveFromBasketToFirstAndAHalfSpikeMark,
+                        driveFromFirstAndAHalfToSecondSpikeMark,
                         new CloseClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
                         driveFromSecondSpikeMarkToBasket,
