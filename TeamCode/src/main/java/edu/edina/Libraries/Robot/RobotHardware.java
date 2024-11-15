@@ -174,12 +174,16 @@ public class RobotHardware {
 
     }
 
+    public void startMiniAutoMode() {
+        stalledTimer = null;
+    }
+
     public boolean update(MiniAutoMode mode) {
         try {
             if (mode == MiniAutoMode.SCORE) {
                 if (stalledTimer == null) {
                     stalledTimer = new ElapsedTime();
-                } else if (stalledTimer.milliseconds() > 750) {
+                } else if (stalledTimer.milliseconds() > 500) {
                     stalledTimer = null;
                     toggleClaw();
                     return false;
@@ -197,25 +201,26 @@ public class RobotHardware {
             failsafe.apply();
         }
     }
-    /*
-    private void updateHardwareInteractions() {
+
+    public void updateHardwareInteractions() {
+        stalledTimer = null;
+
         if (arm.armWillCrossWristLimit())
             raiseWrist();
         else if (arm.targetingScoringPos())
             lowerWrist();
 
-        drivetrain.setAutoTurtle(arm.targetingScoringPos() || lift.targetingScoringPos());
+        drivetrain.setAutoTurtleMode(arm.targetingScoringPos() || lift.targetingScoringPos());
 
         wrist.setHighRung(arm.isHighRung());
     }
-    */
+
     public void setReversed(boolean reversed) {
         drivetrain.setReverse(reversed);
     }
 
     // Updates this.
     public void update() {
-
         // Finish lowering to ground if appropriate.
         //////////////////////////////////////////////////////////////////////
 
@@ -275,7 +280,6 @@ public class RobotHardware {
 
         // Update the wrist.
         wrist.update();
-
     }
 
     // Decrements the arm position.
