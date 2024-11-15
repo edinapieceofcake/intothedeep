@@ -39,8 +39,20 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     */
 
+    // Maximum slide extension in submersible (so the robot stays within the expansion box)
+    public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 6;
+
+    // Rumble milliseconds
+    public static int RUMBLE_MILLISECONDS = 500;
+
     // Trigger threshold
-    private static final double TRIGGER_THRESHOLD = 0.5;
+    public static double TRIGGER_THRESHOLD = 0.5;
+
+    // Current gamepad
+    private Gamepad currentGamepad = new Gamepad();
+
+    // Previous gamepad
+    private Gamepad previousGamepad = new Gamepad();
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
@@ -63,10 +75,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
         // Lowers the wrist.
         robotHardware.lowerWrist();
 
-        // Get current and previous gamepads.
-        Gamepad currentGamepad = new Gamepad();
-        Gamepad previousGamepad = new Gamepad();
-
         // While the op mode is active...
         while (opModeIsActive()) {
 
@@ -83,8 +91,31 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad right...
                 if (currentGamepad.dpad_right) {
 
-                    // If the arm is not nearly down...
-                    if (!robotHardware.isArmNearlyDown()) {
+                    // Determine whether the arm is nearly down.
+                    boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
+
+                    // Determine whether the arm is in the submersible position.
+                    boolean isArmInSubmersiblePosition = robotHardware.isArmInSubmersiblePosition();
+
+                    // Get the current slide extension.
+                    double currentSlideExtension = robotHardware.getCurrentSlideExtension();
+
+                    // Determine whether the slide is maximally extended in the submersible.
+                    boolean isSlideMaximallyExtendedInSubmersible = isArmInSubmersiblePosition && currentSlideExtension >= MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
+
+                    // Determine whether to disallow slide extension (so the robot stays within the expansion box).
+                    boolean disallowSlideExtension = isArmNearlyDown || isSlideMaximallyExtendedInSubmersible;
+
+                    // If slide extension is disallowed...
+                    if (disallowSlideExtension) {
+
+                        // Rumble the gamepad.
+                        rumble();
+
+                    }
+
+                    // Otherwise (if slide extension is allowed)...
+                    else {
 
                         // Extend the slide.
                         robotHardware.extendSlide();
@@ -196,17 +227,39 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad down...
                 if(currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
-                    // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    // Determine whether the arm is in the low basket position.
+                    boolean isArmInLowBasketPosition = robotHardware.isArmInLowBasketPosition();
 
-                    // Move the arm to the submersible position.
-                    robotHardware.setArmSubmersiblePosition();
+                    // Determine whether the arm is in the high basket position.
+                    boolean isArmInHighBasketPosition = robotHardware.isArmInHighBasketPosition();
 
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
+                    // Determine whether to disallow the submersible preset (so the robot stays within the expansion box).
+                    boolean disallowSubmersiblePreset = isArmInLowBasketPosition || isArmInHighBasketPosition;
 
-                    // Use the low chamber extension.
-                    robotHardware.setMinimumExtension();
+                    // If the submersible preset is disallowed...
+                    if (disallowSubmersiblePreset) {
+
+                        // Rumble the gamepad.
+                        rumble();
+
+                    }
+
+                    // Otherwise (if the submersible preset is allowed)...
+                    else {
+
+                        // Raise the wrist.
+                        robotHardware.raiseWrist();
+
+                        // Move the arm to the submersible position.
+                        robotHardware.setArmSubmersiblePosition();
+
+                        // Move the lift to the ground position
+                        robotHardware.setLiftGroundPosition();
+
+                        // Use the low chamber extension.
+                        robotHardware.setMinimumExtension();
+
+                    }
 
                 }
 
@@ -284,6 +337,14 @@ public class TeleOpForScrimmage extends LinearOpMode {
             telemetry.update();
 
         }
+
+    }
+
+    // Rumbles the gamepad.
+    private void rumble() {
+
+        // Rumble the gamepad.
+        currentGamepad.rumble(RUMBLE_MILLISECONDS);
 
     }
 

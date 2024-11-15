@@ -545,6 +545,38 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the arm is in the submersible position.
+    public boolean isArmInSubmersiblePosition() {
+
+        // Return indicating if the arm is in the submersible position.
+        return arm.isInSubmersiblePosition();
+
+    }
+
+    // Determines whether the arm is in the low basket position.
+    public boolean isArmInLowBasketPosition() {
+
+        // Return indicating if the arm is in the low basket position.
+        return arm.isInLowBasketPosition();
+
+    }
+
+    // Determines whether the arm is in the high basket position.
+    public boolean isArmInHighBasketPosition() {
+
+        // Return indicating if the arm is in the high basket position.
+        return arm.isInHighBasketPosition();
+
+    }
+
+    // Gets the current slide extension.
+    public double getCurrentSlideExtension() {
+
+        // Return the current slide extension.
+        return slide.getCurrentExtension();
+
+    }
+
     public BoundingBoxFailsafe getFailsafe() {
         return failsafe;
     }
