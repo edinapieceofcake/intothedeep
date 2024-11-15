@@ -162,8 +162,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad up...
                 if(currentGamepad.dpad_up && !previousGamepad.dpad_up) {
 
-                    // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    // Lower the wrist.
+                    robotHardware.lowerWrist();
 
                     // Move the arm to the high chamber position.
                     robotHardware.setArmHighChamberPosition();
@@ -179,8 +179,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad down...
                 if(currentGamepad.dpad_down && !previousGamepad.dpad_down) {
 
-                    // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    // Lower the wrist.
+                    robotHardware.lowerWrist();
 
                     // Move the arm to the low chamber position.
                     robotHardware.setArmLowChamberPosition();

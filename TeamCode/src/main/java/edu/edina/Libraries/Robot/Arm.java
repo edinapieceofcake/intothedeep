@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -19,12 +18,6 @@ public class Arm {
 
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
-
-    // Delay before going from the nearly ground position to the ground position
-    public static int GROUND_DELAY_MILLISECONDS = 500;
-
-    // Ground position
-    public static int GROUND_POSITION = -400;
 
     // High basket position
     public static int HIGH_BASKET_POSITION = 2800;
@@ -40,6 +33,15 @@ public class Arm {
 
     // Low basket position
     public static int LOW_BASKET_POSITION = 2700;
+
+    // Maximum position
+    public static int MAXIMUM_POSITION = 6000;
+
+    // Minimum position
+    public static int MINIMUM_POSITION = -400;
+
+    // Ground position
+    public static int GROUND_POSITION = MINIMUM_POSITION;
 
     // Nearly down position threshold
     public static int NEARLY_DOWN_POSITION = 100;
@@ -72,13 +74,10 @@ public class Arm {
     public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
 
     // Busy threshold
-    public static int BUSY_THRESHOLD = 100;
+    public static int BUSY_THRESHOLD = 600;
 
     // Controller
     private PIDController controller;
-
-    // Lowering to ground value
-    private boolean loweringToGround;
 
     // Motor
     private final DcMotorEx motor;
@@ -88,9 +87,6 @@ public class Arm {
 
     // Target position
     private int targetPosition;
-
-    // Timer
-    private ElapsedTime timer;
 
     // Touch sensor
     private final TouchSensor touch;
@@ -160,40 +156,11 @@ public class Arm {
 
         }
 
-        // Finish lowering to ground if appropriate.
-        //////////////////////////////////////////////////////////////////////
-
-        // If we are lowering to the ground...
-        if(loweringToGround) {
-
-            // If we reached the nearly down position...
-            if(timer == null && !isBusy()) {
-
-                // Start a timer.
-                timer = new ElapsedTime();
-
-            }
-
-            // If we have waited long enough after reaching the the nearly down position...
-            if(timer != null && timer.milliseconds() > GROUND_DELAY_MILLISECONDS) {
-
-                // Go to ground.
-                targetPosition = GROUND_POSITION;
-
-                // Remember that we are done lowering to ground.
-                loweringToGround = false;
-
-                // Clear the timer.
-                timer = null;
-
-                robotHardware.lowerWrist();
-
-            }
-
-        }
-
         // Display arm telemetry.
         //////////////////////////////////////////////////////////////////////
+
+        // Determine whether the arm is busy.
+        boolean isBusy = isBusy();
 
         // Get the op mode.
         LinearOpMode opMode = robotHardware.getOpMode();
@@ -203,6 +170,7 @@ public class Arm {
 
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");
+        telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
         telemetry.addData("- Current Position", currentPosition);
         telemetry.addData("- Down", down);
@@ -261,7 +229,7 @@ public class Arm {
     public void decrementPosition() {
 
         // Decrement the arm position.
-        targetPosition -= POSITION_INCREMENT;
+        targetPosition = Math.max(targetPosition - POSITION_INCREMENT, MINIMUM_POSITION);
 
     }
 
@@ -269,7 +237,7 @@ public class Arm {
     public void incrementPosition() {
 
         // Increment the arm position.
-        targetPosition += POSITION_INCREMENT;
+        targetPosition = Math.min(targetPosition + POSITION_INCREMENT, MAXIMUM_POSITION);
 
     }
 
@@ -296,27 +264,8 @@ public class Arm {
     // Moves the arm to the ground position.
     public void setGroundPosition() {
 
-        // Get the arm's current position.
-        int currentPosition = getCurrentPosition();
-
-        // If the arm is high...
-        if(currentPosition > ALMOST_GROUND_POSITION + BUSY_THRESHOLD) {
-
-            // Move the arm to the almost ground position.
-            targetPosition = ALMOST_GROUND_POSITION;
-
-            // Remember that we are lowering the arm to the ground.
-            loweringToGround = true;
-
-        }
-
-        // Otherwise (if the arm is low)...
-        else {
-
-            // Move the arm to the ground position.
-            targetPosition = GROUND_POSITION;
-
-        }
+        // Move the arm to the ground position.
+        targetPosition = GROUND_POSITION;
 
     }
 
@@ -401,15 +350,32 @@ public class Arm {
                 currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD;
     }
 
-    // Determines whether the lift is busy.
+    // Determines whether the arm is busy.
     public boolean isBusy() {
 
-        int position = motor.getCurrentPosition();
-        int difference = Math.abs(position - targetPosition);
-        if (difference < BUSY_THRESHOLD) {
-            return false;
-        } else {
-            return true;
-        }
+        // Get the arm's current position.
+        int currentPosition = motor.getCurrentPosition();
+
+        // Get the position difference.
+        int difference = Math.abs(currentPosition - targetPosition);
+
+        // Return indicating if the arm is busy.
+        return difference >= BUSY_THRESHOLD;
+
     }
+
+    // Determines whether the arm is raised.
+    public boolean isRaised() {
+
+        // Get the arm's current position.
+        int currentPosition = motor.getCurrentPosition();
+
+        // Determine whether the arm is raised.
+        boolean isRaised = currentPosition > Arm.ALMOST_GROUND_POSITION + BUSY_THRESHOLD;
+
+        // Return the result.
+        return isRaised;
+
+    }
+
 }
