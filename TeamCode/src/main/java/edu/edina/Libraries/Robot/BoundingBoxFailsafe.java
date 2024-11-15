@@ -12,13 +12,19 @@ package edu.edina.Libraries.Robot;
   Wrist angle is measured relative to the arm.
  */
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class BoundingBoxFailsafe {
     public static double WRIST_UP_POSITION_DEG = 100;
     public static double WRIST_DOWN_POSITION_DEG = 20;
     public static double LIFT_INCH_MULT = 1;
     public static double LIFT_ANGLE = 120;
+    public static double WRIST_HEEL_X = 1;
+    public static double WRIST_TIP_X = 4;
+    public static double WRIST_Y = -1;
 
     private final Wrist wrist;
     private final Arm arm;
@@ -32,11 +38,13 @@ public class BoundingBoxFailsafe {
         this.slide = slide;
     }
 
-    public void updateSensorsForTestEventuallyRemoveThisMethod(){
+    public void updateSensorsForTestEventuallyRemoveThisMethod() {
         slide.updateVoltage();
     }
 
     public void apply() {
+        double hx = estimateWristExtent(WRIST_HEEL_X);
+        double tx = estimateWristExtent(WRIST_TIP_X);
     }
 
     public void addToTelemetry(Telemetry telemetry) {
@@ -44,6 +52,9 @@ public class BoundingBoxFailsafe {
         telemetry.addData("lift position", getLiftPosition());
         telemetry.addData("slide position", getSlidePosition());
         telemetry.addData("wrist position", getWristPosDeg());
+    }
+
+    private double estimateWristExtent(double wristX) {
     }
 
     private double getArmPosition() {
