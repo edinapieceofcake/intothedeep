@@ -32,6 +32,10 @@ public class BoundingBoxFailsafe {
         this.slide = slide;
     }
 
+    public void updateSensorsForTestEventuallyRemoveThisMethod(){
+        slide.updateVoltage();
+    }
+
     public void apply() {
     }
 

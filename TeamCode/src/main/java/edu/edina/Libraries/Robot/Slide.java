@@ -1,5 +1,7 @@
 package edu.edina.Libraries.Robot;
 
+import androidx.annotation.Nullable;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -85,9 +87,8 @@ public class Slide {
 
     }
 
-    // Updates this.
-    public void update() {
-
+    // return true if a reading was made
+    public boolean updateVoltage() {
         // Get the current voltage.
         double currentVoltage = encoder.getVoltage();
 
@@ -95,18 +96,18 @@ public class Slide {
         double maximumVoltage = encoder.getMaxVoltage();
 
         // If the current voltage is invalid...
-        if(currentVoltage < 0 || currentVoltage > maximumVoltage) {
+        if (currentVoltage < 0 || currentVoltage > maximumVoltage) {
 
             // Exit the method.
-            return;
+            return false;
 
         }
 
         // If the last voltage is uninitialized...
-        if(lastVoltage == UNINITIALIZED) {
+        if (lastVoltage == UNINITIALIZED) {
 
             // If we have a current voltage...
-            if(currentVoltage > EPSILON) {
+            if (currentVoltage > EPSILON) {
 
                 // Initialize the last voltage.
                 lastVoltage = currentVoltage;
@@ -114,7 +115,7 @@ public class Slide {
             }
 
             // Exit the method.
-            return;
+            return false;
 
         }
 
@@ -147,10 +148,10 @@ public class Slide {
         double offsetVoltageDifference = Math.abs(newOffsetVoltage - offsetVoltage);
 
         // If the offset voltage difference is too high...
-        if(offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
+        if (offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
 
             // Exit the method.
-            return;
+            return false;
 
         }
 
@@ -160,6 +161,14 @@ public class Slide {
         // Update the last voltage.
         lastVoltage = currentVoltage;
 
+        return true;
+    }
+
+    // Updates this.
+    public void update() {
+        if (!updateVoltage())
+            return;
+
         // Get the current extension.
         double currentExtension = getCurrentExtension();
 
@@ -168,10 +177,9 @@ public class Slide {
 
         // Get a power.
         double inputPower;
-        if(Math.abs(extensionError) < EXTENSION_ERROR_THRESHOLD) {
+        if (Math.abs(extensionError) < EXTENSION_ERROR_THRESHOLD) {
             inputPower = 0;
-        }
-        else {
+        } else {
             inputPower = extensionError > 0 ? POWER : -POWER;
         }
 
@@ -194,11 +202,10 @@ public class Slide {
         telemetry.addData("Slide", "====================");
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Extension", currentExtension);
-        telemetry.addData("- Current Voltage", currentVoltage);
+        telemetry.addData("- Current Voltage", lastVoltage);
         telemetry.addData("- Extension Error", extensionError);
         telemetry.addData("- Extension Target", targetExtension);
         telemetry.addData("- Input Power", inputPower);
-        telemetry.addData("- Last Voltage", lastVoltage);
         telemetry.addData("- Offset Voltage", offsetVoltage);
         telemetry.addData("- Output Power", outputPower);
 
