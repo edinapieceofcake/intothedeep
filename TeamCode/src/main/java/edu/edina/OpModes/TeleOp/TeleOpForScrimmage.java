@@ -39,7 +39,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
     */
 
-    // Maximum slide extension in submersible (so robot stays within extension box)
+    // Maximum slide extension in submersible (so the robot stays within the expansion box)
     public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 6;
 
     // Rumble milliseconds
@@ -103,7 +103,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     // Determine whether the slide is maximally extended in the submersible.
                     boolean isSlideMaximallyExtendedInSubmersible = isArmInSubmersiblePosition && currentSlideExtension >= MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
 
-                    // Determine whether to disallow slide extension.
+                    // Determine whether to disallow slide extension (so the robot stays within the expansion box).
                     boolean disallowSlideExtension = isArmNearlyDown || isSlideMaximallyExtendedInSubmersible;
 
                     // If slide extension is disallowed...
@@ -227,17 +227,39 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad down...
                 if(currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
-                    // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    // Determine whether the arm is in the low basket position.
+                    boolean isArmInLowBasketPosition = robotHardware.isArmInLowBasketPosition();
 
-                    // Move the arm to the submersible position.
-                    robotHardware.setArmSubmersiblePosition();
+                    // Determine whether the arm is in the high basket position.
+                    boolean isArmInHighBasketPosition = robotHardware.isArmInHighBasketPosition();
 
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
+                    // Determine whether to disallow the submersible preset (so the robot stays within the expansion box).
+                    boolean disallowSubmersiblePreset = isArmInLowBasketPosition || isArmInHighBasketPosition;
 
-                    // Use the low chamber extension.
-                    robotHardware.setMinimumExtension();
+                    // If the submersible preset is disallowed...
+                    if (disallowSubmersiblePreset) {
+
+                        // Rumble the gamepad.
+                        rumble();
+
+                    }
+
+                    // Otherwise (if the submersible preset is allowed)...
+                    else {
+
+                        // Raise the wrist.
+                        robotHardware.raiseWrist();
+
+                        // Move the arm to the submersible position.
+                        robotHardware.setArmSubmersiblePosition();
+
+                        // Move the lift to the ground position
+                        robotHardware.setLiftGroundPosition();
+
+                        // Use the low chamber extension.
+                        robotHardware.setMinimumExtension();
+
+                    }
 
                 }
 

@@ -389,4 +389,26 @@ public class Arm {
 
     }
 
+    // Determines whether the arm is in the low basket position.
+    public boolean isInLowBasketPosition() {
+
+        // Determine whether the arm is in the low basket position.
+        boolean isInLowBasketPosition = targetPosition == LOW_BASKET_POSITION;
+
+        // Return the result
+        return isInLowBasketPosition;
+
+    }
+
+    // Determines whether the arm is in the high basket position.
+    public boolean isInHighBasketPosition() {
+
+        // Determine whether the arm is in the high basket position.
+        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
+
+        // Return the result
+        return isInHighBasketPosition;
+
+    }
+
 }

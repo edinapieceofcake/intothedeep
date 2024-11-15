@@ -553,6 +553,22 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the arm is in the low basket position.
+    public boolean isArmInLowBasketPosition() {
+
+        // Return indicating if the arm is in the low basket position.
+        return arm.isInLowBasketPosition();
+
+    }
+
+    // Determines whether the arm is in the high basket position.
+    public boolean isArmInHighBasketPosition() {
+
+        // Return indicating if the arm is in the high basket position.
+        return arm.isInHighBasketPosition();
+
+    }
+
     // Gets the current slide extension.
     public double getCurrentSlideExtension() {
 
