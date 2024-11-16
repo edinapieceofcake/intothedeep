@@ -64,6 +64,7 @@ public class RobotHardware {
     private ElapsedTime stalledTimer;
     private ElapsedTime loweringToGroundTimer;
     private boolean inputTurtleMode;
+    private Light light;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -104,6 +105,7 @@ public class RobotHardware {
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
 
+        light = new Light(hardwareMap);
     }
 
     // Waits for the user to lower the lift.
@@ -280,6 +282,8 @@ public class RobotHardware {
 
         // Update the wrist.
         wrist.update();
+
+        light.update();
     }
 
     // Decrements the arm position.
@@ -580,25 +584,11 @@ public class RobotHardware {
         wrist.moveToHighChamberScorePosition();
     }
 
-    public void specimenScoring() {
-        /*hw.startMiniAutoMode();
-
-        while (opModeIsActive()) {
-            if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
-                boolean stillScoring = hw.update(MiniAutoMode.SCORE);
-                if (!stillScoring) {
-                    hw.raiseWrist();
-                    break;
-                }
-            } else {
-                break;
-            }
-        }*/
-
-
-    }
-
     public BoundingBoxFailsafe getFailsafe() {
         return failsafe;
+    }
+
+    public void setColor(SampleColor sampleColor) {
+        light.setSampleColor(sampleColor);
     }
 }
