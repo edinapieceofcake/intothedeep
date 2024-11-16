@@ -233,6 +233,15 @@ public class TeleOpMain extends LinearOpMode {
             // Otherwise (if both triggers are up)...
             else {
 
+
+                if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+                    robotHardware.setLiftHighBasketPosition();
+                }
+
+                if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+                    robotHardware.setLiftGroundPosition();
+                }
+
                 // Universal mode
                 //////////////////////////////////////////////////////////////////////
 
