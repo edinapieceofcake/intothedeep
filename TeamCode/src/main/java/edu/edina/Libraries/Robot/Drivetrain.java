@@ -122,7 +122,7 @@ public class Drivetrain {
     }
 
     public void updateForScore() {
-        double power = TURTLE_MULTIPLIER;
+        double power = TURTLE_MULTIPLIER + 0.2;
 
         leftFront.setPower(power);
         rightFront.setPower(power);

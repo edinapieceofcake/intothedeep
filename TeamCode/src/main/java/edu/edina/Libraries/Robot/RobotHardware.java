@@ -207,7 +207,7 @@ public class RobotHardware {
 
         if (arm.armWillCrossWristLimit())
             raiseWrist();
-        else if (arm.targetingScoringPos())
+        else if (arm.targetingScoringPos() || arm.isInHighBar() || arm.isInLowBar())
             lowerWrist();
 
         drivetrain.setAutoTurtleMode(arm.targetingScoringPos() || lift.targetingScoringPos());

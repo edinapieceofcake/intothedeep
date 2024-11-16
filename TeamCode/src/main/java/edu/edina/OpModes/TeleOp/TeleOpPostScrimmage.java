@@ -92,10 +92,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                 // If the user pressed dpad up...
                 if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
                     robotHardware.setTurtleMode(true);
 
                     // Move the arm to the high chamber position.
@@ -107,14 +103,11 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     // Use the high chamber extension.
                     robotHardware.setMinimumExtension();
 
+                    robotHardware.lowerWrist();
                 }
 
                 // If the user pressed dpad down...
                 if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
                     robotHardware.setTurtleMode(true);
 
                     // Move the arm to the low chamber position.
@@ -126,14 +119,11 @@ public class TeleOpPostScrimmage extends LinearOpMode {
                     // Use the low chamber extension.
                     robotHardware.setMinimumExtension();
 
+                    robotHardware.lowerWrist();
                 }
 
                 // If the user pressed dpad right...
                 if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
                     robotHardware.setTurtleMode(true);
 
                     // Move the arm to the submersible position.
@@ -253,14 +243,6 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                 }
 
-
-                if (currentGamepad.x && !previousGamepad.x) {
-
-                    robotHardware.toggleWrist();
-
-                }
-
-
                 // If the user pressed y...
                 if (currentGamepad.y && !previousGamepad.y) {
 
@@ -286,6 +268,12 @@ public class TeleOpPostScrimmage extends LinearOpMode {
 
                 }
                  */
+
+            }
+
+            if (currentGamepad.x && !previousGamepad.x) {
+
+                robotHardware.toggleWrist();
 
             }
 
@@ -321,6 +309,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
             if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
                 boolean stillScoring = hw.update(MiniAutoMode.SCORE);
                 if (!stillScoring) {
+                    hw.raiseWrist();
                     break;
                 }
             } else {

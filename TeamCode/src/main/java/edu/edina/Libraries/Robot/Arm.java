@@ -346,8 +346,8 @@ public class Arm {
     public boolean targetingScoringPos() {
         int currentPosition = motor.getCurrentPosition();
 
-        return targetPosition >= LOW_BASKET_POSITION && targetPosition <= LOW_CHAMBER_POSITION &&
-                currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD;
+        return targetPosition >= LOW_BASKET_POSITION && targetPosition <= HIGH_BASKET_POSITION &&
+                currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD ;
     }
 
     // Determines whether the arm is busy.
@@ -411,4 +411,11 @@ public class Arm {
 
     }
 
+    public boolean isInLowBar() {
+        return targetPosition == LOW_CHAMBER_POSITION;
+    }
+
+    public boolean isInHighBar() {
+        return targetPosition == HIGH_CHAMBER_POSITION;
+    }
 }
