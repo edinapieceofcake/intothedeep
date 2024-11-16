@@ -227,10 +227,10 @@ public class RobotHardware {
         //////////////////////////////////////////////////////////////////////
 
         // If we are lowering to the ground...
-        if(loweringToGround) {
+        if (loweringToGround) {
 
             // If we reached the nearly down position...
-            if(loweringToGroundTimer == null && !isArmBusy()) {
+            if (loweringToGroundTimer == null && !isArmBusy()) {
 
                 // Start a timer.
                 loweringToGroundTimer = new ElapsedTime();
@@ -238,7 +238,7 @@ public class RobotHardware {
             }
 
             // If we have waited long enough after reaching the the nearly down position...
-            if(loweringToGroundTimer != null && loweringToGroundTimer.milliseconds() > GROUND_DELAY_MILLISECONDS) {
+            if (loweringToGroundTimer != null && loweringToGroundTimer.milliseconds() > GROUND_DELAY_MILLISECONDS) {
 
                 // Move the arm to the ground.
                 setArmGroundPosition();
@@ -433,7 +433,7 @@ public class RobotHardware {
     public void setArmGroundPosition() {
 
         // If the arm is high...
-        if(arm.isRaised()) {
+        if (arm.isRaised()) {
 
             // Move the arm to the almost ground position.
             arm.setAlmostGroundPosition();
@@ -580,6 +580,7 @@ public class RobotHardware {
         return slide.getCurrentExtension();
 
     }
+
     public void moveWristToHighChamberScorePosition() {
         wrist.moveToHighChamberScorePosition();
     }

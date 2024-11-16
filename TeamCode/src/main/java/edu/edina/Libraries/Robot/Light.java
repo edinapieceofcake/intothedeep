@@ -72,7 +72,7 @@ public class Light {
             int greenByte = n * 3;
             int redByte = n * 3 + 1;
             int blueByte = n * 3 + 2;
-            
+
             pixArray[greenByte] = g;
             pixArray[redByte] = r;
             pixArray[blueByte] = b;
