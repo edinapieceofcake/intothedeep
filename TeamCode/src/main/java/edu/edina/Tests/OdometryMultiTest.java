@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -17,6 +18,7 @@ import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
 
 @TeleOp
+@Disabled
 public class OdometryMultiTest extends LinearOpMode {
     SparkFunOTOS myOtos;
     double yawIMU;

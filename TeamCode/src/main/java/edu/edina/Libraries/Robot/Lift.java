@@ -46,6 +46,8 @@ public class Lift {
     // High basket position
     public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
 
+    private static double INCHES_PER_POS = 14.835 / 1679.0;
+
     // Controller
     private PIDController controller;
 
@@ -191,6 +193,10 @@ public class Lift {
         return (leftPosition + rightPosition) / 2;
     }
 
+    public double getPositionInInches() {
+        return getPosition() * INCHES_PER_POS;
+    }
+
     public void overridePower(double power) {
         leftMotor.setPower(power);
         rightMotor.setPower(power);
@@ -203,7 +209,7 @@ public class Lift {
         double currentPosition = getPosition();
 
         // If the lift is up as requested...
-        if(currentPosition >= NEARLY_UP_POSITION && targetPosition >= NEARLY_UP_POSITION) {
+        if (currentPosition >= NEARLY_UP_POSITION && targetPosition >= NEARLY_UP_POSITION) {
 
             // Return indicating that the lift is not busy.
             return false;

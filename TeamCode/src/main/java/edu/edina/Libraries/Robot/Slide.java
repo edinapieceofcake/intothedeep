@@ -211,6 +211,10 @@ public class Slide {
 
     }
 
+    public void overridePower(double power) {
+        servo.setPower(power);
+    }
+
     // Sets the extension's position.
     public void setPosition(double position) {
 

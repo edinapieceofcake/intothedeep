@@ -207,7 +207,7 @@ public class RobotHardware {
 
         if (arm.armWillCrossWristLimit())
             raiseWrist();
-        else if (arm.targetingScoringPos())
+        else if (arm.targetingScoringPos() || arm.isInHighBar() || arm.isInLowBar())
             lowerWrist();
 
         drivetrain.setAutoTurtleMode(arm.targetingScoringPos() || lift.targetingScoringPos());
@@ -578,6 +578,24 @@ public class RobotHardware {
     }
     public void moveWristToHighChamberScorePosition() {
         wrist.moveToHighChamberScorePosition();
+    }
+
+    public void specimenScoring() {
+        /*hw.startMiniAutoMode();
+
+        while (opModeIsActive()) {
+            if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
+                boolean stillScoring = hw.update(MiniAutoMode.SCORE);
+                if (!stillScoring) {
+                    hw.raiseWrist();
+                    break;
+                }
+            } else {
+                break;
+            }
+        }*/
+
+
     }
 
     public BoundingBoxFailsafe getFailsafe() {

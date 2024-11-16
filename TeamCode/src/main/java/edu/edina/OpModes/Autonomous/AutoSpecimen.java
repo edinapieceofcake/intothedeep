@@ -1,25 +1,24 @@
-	package edu.edina.OpModes.Autonomous;
+package edu.edina.OpModes.Autonomous;
 
-	import androidx.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-	import com.acmerobotics.dashboard.config.Config;
-	import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-	import com.acmerobotics.roadrunner.Action;
-	import com.acmerobotics.roadrunner.ParallelAction;
-	import com.acmerobotics.roadrunner.Pose2d;
-	import com.acmerobotics.roadrunner.SequentialAction;
-	import com.acmerobotics.roadrunner.ftc.Actions;
-	import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-	import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-	import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-	import edu.edina.Libraries.RoadRunner.MecanumDrive;
-	import edu.edina.Libraries.Robot.RobotHardware;
-	import edu.edina.OpModes.TeleOp.TeleOpPostScrimmage;
+import edu.edina.Libraries.RoadRunner.MecanumDrive;
+import edu.edina.Libraries.Robot.RobotHardware;
 
-	@Config
-	@Autonomous(preselectTeleOp = "TeleOpForScrimmage")
-	public class AutoSpecimen extends LinearOpMode {
+@Config
+@Autonomous(preselectTeleOp = "TeleOpMain")
+public class AutoSpecimen extends LinearOpMode {
 
 		// Start pose
 		public static double START_X = 0;
@@ -59,7 +58,6 @@
 
 		// Robot hardware
 		private RobotHardware robotHardware;
-		private TeleOpPostScrimmage teleOpPostScrimmage;
 
 		// Runs the op mode.
 		@Override

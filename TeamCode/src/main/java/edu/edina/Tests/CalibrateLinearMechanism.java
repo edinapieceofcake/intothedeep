@@ -1,5 +1,6 @@
 package edu.edina.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,6 +19,7 @@ import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 
 @TeleOp
+@Disabled
 public class CalibrateLinearMechanism extends LinearOpMode {
     double powerStep = 0.02;
     double speedThres = 1;

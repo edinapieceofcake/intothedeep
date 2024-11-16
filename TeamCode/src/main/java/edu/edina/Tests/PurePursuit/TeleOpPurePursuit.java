@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,6 +16,7 @@ import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
+@Disabled
 public class TeleOpPurePursuit extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
