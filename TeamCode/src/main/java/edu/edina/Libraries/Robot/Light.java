@@ -43,6 +43,14 @@ public class Light {
             x = greenFrequency * n;
             pixArray[greenByte] = toByte(Math.sin(blueTime + x), -1, 1, 0, 150);
         }
+
+        //pixel before and after white
+        int firstPixel = numPixel / 2;
+
+        for (int n = 0; n < 3; n++) {
+            pixArray[(byte) ((firstPixel - 3) * 3 + n)] = (byte) 255;
+            pixArray[(byte) ((firstPixel + 2) * 3 + n)] = (byte) 255;
+        }
     }
 
     public void setSampleColor(SampleColor sample) {
@@ -63,8 +71,11 @@ public class Light {
             r = (byte) 255;
             g = (byte) 255;
             b = (byte) 0;
-        } else
-            return;
+        } else {
+            r = (byte) 255;
+            g = (byte) 255;
+            b = (byte) 255;
+        }
 
         int firstPixel = numPixel / 2 - 2;
 

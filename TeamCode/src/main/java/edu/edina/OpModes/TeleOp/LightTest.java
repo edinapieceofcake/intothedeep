@@ -3,28 +3,35 @@ package edu.edina.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.SampleColor;
 
 @TeleOp
 public class LightTest extends LinearOpMode {
+    private Light light;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotHardware hw = new RobotHardware(this);
+        light = new Light(hardwareMap);
 
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.y)
-                hw.setColor(SampleColor.YELLOW);
+                setColor(SampleColor.YELLOW);
             else if (gamepad1.b)
-                hw.setColor(SampleColor.RED);
+                setColor(SampleColor.RED);
             else if (gamepad1.x)
-                hw.setColor(SampleColor.BLUE);
+                setColor(SampleColor.BLUE);
             else
-                hw.setColor(SampleColor.NOTHING);
+                setColor(SampleColor.NOTHING);
 
-            hw.update();
+            light.update();
         }
+    }
+
+    public void setColor(SampleColor sampleColor) {
+        light.setSampleColor(sampleColor);
     }
 }
