@@ -47,28 +47,20 @@ public class TeleOpMain extends LinearOpMode {
         // Get hardware.
         RobotHardware robotHardware = new RobotHardware(this);
 
-        /*// Wait for the user to lower the lift.
-        robotHardware.waitForLiftDown();
-
-        // Wait for the user to lower the arm.
-        robotHardware.waitForArmDown();
-
-        // Initialize the robot.
-        robotHardware.initializeRobot();*/
-
-        // If stop is requested...
-        if (isStopRequested()) {
-
-            // Exit the method.
-            return;
-
-        }
-
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 
         // Wait for the user to press start.
         waitForStart();
+
+        // Move the arm to the ground position.
+        robotHardware.setArmGroundPosition();
+
+        // Open the claw.
+        robotHardware.openClaw();
+
+        // Lowers the wrist.
+        robotHardware.lowerWrist();
 
         // Get current and previous gamepads.
         Gamepad currentGamepad = new Gamepad();
