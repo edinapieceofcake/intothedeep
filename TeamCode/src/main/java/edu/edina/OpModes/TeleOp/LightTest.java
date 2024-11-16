@@ -24,7 +24,7 @@ public class LightTest extends LinearOpMode {
             else
                 hw.setColor(SampleColor.NOTHING);
 
-            hw.update(true);
+            hw.update();
         }
     }
 }
