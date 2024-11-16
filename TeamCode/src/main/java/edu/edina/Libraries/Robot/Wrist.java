@@ -120,4 +120,7 @@ public class Wrist {
             servo.setPosition(LOW_RUNG_POSITION);
         }
     }
+    public void moveToHighChamberScorePosition() {
+        servo.setPosition(HIGH_RUNG_POSITION);
+    }
 }

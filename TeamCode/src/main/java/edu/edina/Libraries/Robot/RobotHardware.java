@@ -298,7 +298,7 @@ public class RobotHardware {
 
     }
 
-    // Toggles the claw.
+    // Toggles the updateHardwareInteractions.
     public void toggleClaw() {
 
         // Toggle the claw.
@@ -575,6 +575,9 @@ public class RobotHardware {
         // Return the current slide extension.
         return slide.getCurrentExtension();
 
+    }
+    public void moveWristToHighChamberScorePosition() {
+        wrist.moveToHighChamberScorePosition();
     }
 
     public BoundingBoxFailsafe getFailsafe() {
