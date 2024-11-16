@@ -184,11 +184,11 @@ public class AutoSpecimen extends LinearOpMode {
                             // score preloaded specimen
 
                             driveFromStartToChamber,
-							getScoreAction(driveFromChamberToScore)
-//							//pick up sample on first spike mark
-//							driveFromScoreToFirstSpikeMark,
-//							new CloseClaw(),
-//							new WaitAndUpdate(CLAW_DELAY),
+							getScoreAction(driveFromChamberToScore),
+							//pick up sample on first spike mark
+							driveFromScoreToFirstSpikeMark,
+							new CloseClaw(),
+							new WaitAndUpdate(CLAW_DELAY)
 //							//deliver sample to human player
 //							driveFirstSpikeMarkToHumanPlayer,
 //							new OpenClaw(),
