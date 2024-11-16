@@ -49,7 +49,7 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double CONSTANT_X = 47;
 		public static double HUMAN_PAYER_2_Y = -50;
 		public static double HUMAN_PAYER_2_X = 44;
-		public static double SCORE_Y = -37;
+		public static double SCORE_Y = -42;
 		public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
 		// Duration in milliseconds to toggle the claw
 		public static int CLAW_DELAY = 500;
@@ -184,11 +184,11 @@ public class AutoSpecimen extends LinearOpMode {
                             // score preloaded specimen
 
                             driveFromStartToChamber,
-							getScoreAction(driveFromChamberToScore)
-//							//pick up sample on first spike mark
-//							driveFromScoreToFirstSpikeMark,
-//							new CloseClaw(),
-//							new WaitAndUpdate(CLAW_DELAY),
+							getScoreAction(driveFromChamberToScore),
+							//pick up sample on first spike mark
+							driveFromScoreToFirstSpikeMark,
+							new CloseClaw(),
+							new WaitAndUpdate(CLAW_DELAY)
 //							//deliver sample to human player
 //							driveFirstSpikeMarkToHumanPlayer,
 //							new OpenClaw(),
@@ -234,6 +234,7 @@ public class AutoSpecimen extends LinearOpMode {
             Action scoreAction = new SequentialAction(
                     new MoveToHighChamber(),
                     new WaitForNotBusy(),
+					new WaitAndUpdate(200),
                     new ParallelAction(
                             new LowerWrist(),
                             driveFromChamberToScore,
@@ -242,6 +243,7 @@ public class AutoSpecimen extends LinearOpMode {
                                     new OpenClaw()
                             )
                     ),
+					new WaitAndUpdate(200),
                     new MoveToGround(),
                     new WaitForNotBusy()
             );

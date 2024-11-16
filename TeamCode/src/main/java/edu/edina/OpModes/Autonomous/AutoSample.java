@@ -30,12 +30,12 @@ public class AutoSample extends LinearOpMode {
     public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
 
     // First spike mark pose
-    public static double FIRST_SPIKE_MARK_X = -47.5;
-    public static double FIRST_SPIKE_MARK_Y = -35;
+    public static double FIRST_SPIKE_MARK_X = -49;
+    public static double FIRST_SPIKE_MARK_Y = -36.5;
     public static double FIRST_SPIKE_MARK_HEADING = 1.0 / 2 * Math.PI;
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = -57.5;
+    public static double SECOND_SPIKE_MARK_X = -61;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
@@ -45,8 +45,8 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_AND_A_HALF_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -57;
-    public static double THIRD_SPIKE_MARK_Y = -25;
+    public static double THIRD_SPIKE_MARK_X = -58;
+    public static double THIRD_SPIKE_MARK_Y = -28;
     public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
 
     // Duration in milliseconds to toggle the claw
