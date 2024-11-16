@@ -24,12 +24,13 @@ public class BoundingBoxFailsafe {
     // DO NOT DISABLE IN CODE - only disable this for testing from the dashboard
     public static boolean DISABLE = false;
 
-    public static double WRIST_UP_POSITION_DEG = 80;
-    public static double WRIST_DOWN_POSITION_DEG = 25;
-    public static double LIFT_ANGLE = 180 - 72;
-    public static double WRIST_HEEL_X = 0.75;
-    public static double WRIST_TIP_X = 6.75;
-    public static double WRIST_Y = 2.125;
+    private static double WRIST_UP_POSITION_DEG = 80;
+    private static double WRIST_DOWN_POSITION_DEG = 25;
+    private static double LIFT_ANGLE = 180 - 72;
+    private static double WRIST_HEEL_X = 0.75;
+    private static double WRIST_TIP_X = 6.75;
+    private static double WRIST_Y = 2.125;
+    private static double MIN_SLIDE_LENGTH = 0;
 
     public static double BOUNDING_BOX_MAX = 19;
     public static double BOUNDING_BOX_MIN = BOUNDING_BOX_MAX - 42;
@@ -114,7 +115,7 @@ public class BoundingBoxFailsafe {
     }
 
     private double getSlidePosition() {
-        return slide.getPosition();
+        return slide.getPosition() + MIN_SLIDE_LENGTH;
     }
 
     private double getLiftPosition() {
