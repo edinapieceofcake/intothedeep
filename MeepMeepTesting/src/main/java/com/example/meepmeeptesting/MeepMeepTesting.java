@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = true;
+        boolean sampleSide = false;
 
         if (sampleSide) {
             // *****SAMPLES*****

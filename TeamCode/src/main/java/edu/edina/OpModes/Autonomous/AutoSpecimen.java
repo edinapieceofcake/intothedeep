@@ -23,12 +23,12 @@ public class AutoSpecimen extends LinearOpMode {
 		// Start pose
 		public static double START_X = 0;
 		public static double START_Y = -61.5;
-		public static double START_HEADING = 270;
+		public static double START_HEADING = 3.0/2*Math.PI;
 
 		// Chamber Pose
 		public static double CHAMBER_X = 0;
 		public static double CHAMBER_Y = -35;
-		public static double CHAMBER_HEADING = 3.0 / 2 * Math.PI;
+		public static double CHAMBER_HEADING = START_HEADING;
 
 		// First spike mark pose
 		public static double FIRST_SPIKE_MARK_X = 37.5;
@@ -181,11 +181,10 @@ public class AutoSpecimen extends LinearOpMode {
 			// Run the actions.
 			Actions.runBlocking(
 					new SequentialAction(
-							new CloseClaw(),
                             // score preloaded specimen
 
-                            driveFromStartToChamber
-//							getScoreAction(driveFromChamberToScore)
+                            driveFromStartToChamber,
+							getScoreAction(driveFromChamberToScore)
 //							//pick up sample on first spike mark
 //							driveFromScoreToFirstSpikeMark,
 //							new CloseClaw(),
