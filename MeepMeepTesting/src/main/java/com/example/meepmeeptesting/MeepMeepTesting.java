@@ -8,7 +8,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(600);
 
         // Only for meepmeep
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = true;
+        boolean sampleSide = false;
 
         if (sampleSide) {
             // *****SAMPLES*****
@@ -81,39 +81,47 @@ public class MeepMeepTesting {
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
                     // COPY HERE
+                    // High Rung Position
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
-                    .strafeTo(new Vector2d(47,-50))
+                    //First Spike
+                    .strafeToLinearHeading(new Vector2d(37.5,-24.7),4.0/2*Math.PI)
                     .waitSeconds(0.5)
-                    .strafeTo(new Vector2d(0,-35))
-                    .waitSeconds(1)
-                    .strafeTo(new Vector2d(47,-50))
-                    .waitSeconds(0.5)
-                    .strafeTo(new Vector2d(0,-35))
-                    .waitSeconds(1)
                     .setReversed(false)
-                    .splineTo(new Vector2d(38,-25), 0)
-                    .waitSeconds(0.5)
+                    //Human Player
                     .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
-                    .strafeTo(new Vector2d(0,-35))
-                    .waitSeconds(1)
-                    .setReversed(false)
-                    .splineTo(new Vector2d(48,-25), 0)
+                    //Second Spike
+                    .strafeToLinearHeading(new Vector2d(48,-25), 4.0/2*Math.PI)
                     .waitSeconds(0.5)
+                    //Human Player
                     .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
+                    //High Rung Position
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
                     .setReversed(false)
+                    //Third Spike
                     .splineTo(new Vector2d(58,-25), 0)
                     .waitSeconds(0.5)
+                    //Human Player
                     .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
+                    //High Rung
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
+                    //Human Player
                     .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
+                    //High Rung
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
                     // STOP COPYING
