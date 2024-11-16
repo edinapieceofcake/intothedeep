@@ -1,7 +1,7 @@
 package edu.edina.OpModes.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -10,7 +10,6 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 @TeleOp
-@Disabled
 public class TeleOpForScrimmage extends LinearOpMode {
 
     /*
@@ -44,9 +43,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
     // Maximum slide extension in submersible (so the robot stays within the expansion box)
     public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 6;
 
-    // Rumble milliseconds
-    public static int RUMBLE_MILLISECONDS = 500;
-
     // Trigger threshold
     public static double TRIGGER_THRESHOLD = 0.5;
 
@@ -56,11 +52,28 @@ public class TeleOpForScrimmage extends LinearOpMode {
     // Previous gamepad
     private Gamepad previousGamepad = new Gamepad();
 
+    // Beep sound identifier
+    private int beepSoundId;
+
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
 
         // Get hardware.
         RobotHardware robotHardware = new RobotHardware(this);
+
+        // Get the beep sound identifier.
+        beepSoundId = hardwareMap.appContext.getResources().getIdentifier("beep", "raw", hardwareMap.appContext.getPackageName());
+
+        // If the beep sound is missing...
+        if (beepSoundId == 0) {
+
+            // Complain.
+            throw new InterruptedException("The beep sound file is missing.");
+
+        }
+
+        // Preload the beep sound.
+        SoundPlayer.getInstance().preload(hardwareMap.appContext, beepSoundId);
 
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
@@ -111,8 +124,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     // If slide extension is disallowed...
                     if (disallowSlideExtension) {
 
-                        // Rumble the gamepad.
-                        rumble();
+                        // Notify the user.
+                        beep();
 
                     }
 
@@ -241,8 +254,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     // If the submersible preset is disallowed...
                     if (disallowSubmersiblePreset) {
 
-                        // Rumble the gamepad.
-                        rumble();
+                        // Notify the user.
+                        beep();
 
                     }
 
@@ -343,10 +356,10 @@ public class TeleOpForScrimmage extends LinearOpMode {
     }
 
     // Rumbles the gamepad.
-    private void rumble() {
+    private void beep() {
 
-        // Rumble the gamepad.
-        currentGamepad.rumble(RUMBLE_MILLISECONDS);
+        // Play the beep sound.
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, beepSoundId);
 
     }
 
