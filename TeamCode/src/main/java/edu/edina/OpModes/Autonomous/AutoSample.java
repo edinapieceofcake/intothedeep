@@ -16,7 +16,7 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
-@Autonomous(preselectTeleOp = "TeleOpForScrimmage")
+@Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSample extends LinearOpMode {
 
     // Start pose
