@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = false;
+        boolean sampleSide = true;
 
         if (sampleSide) {
             // *****SAMPLES*****
@@ -32,6 +32,8 @@ public class MeepMeepTesting {
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-57.5, -44), 1.0 / 2 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-57.5, -38), 1.0 / 2 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-57, -25), Math.PI)
                     //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
 
                     /*
