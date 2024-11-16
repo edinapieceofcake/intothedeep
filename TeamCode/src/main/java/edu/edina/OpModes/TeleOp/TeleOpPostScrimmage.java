@@ -25,12 +25,12 @@ public class TeleOpPostScrimmage extends LinearOpMode {
     - right bumper = raise arm
     - left bumper = lower arm
 
-    Sample basket scoring (hold right trigger)
+    Sample basket scoring (hold left trigger)
     - x = low basket
     - y = high basket
     - a = ground
 
-    Submersible & rungs (hold left trigger) (driving reversed)
+    Submersible & rungs (hold right trigger) (driving reversed)
     - dpad-up = high rung
     - dpad-down = low rung
     - dpad-right = submersible
@@ -80,7 +80,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            boolean subAndRungs = currentGamepad.left_trigger > TRIGGER_THRESHOLD;
+            boolean subAndRungs = currentGamepad.right_trigger > TRIGGER_THRESHOLD;
 
             robotHardware.setReversed(subAndRungs);
 
@@ -147,7 +147,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
             }
 
             // Otherwise, if right trigger is down...
-            else if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            else if (currentGamepad.left_trigger > TRIGGER_THRESHOLD) {
 
                 // Sample mode
                 //////////////////////////////////////////////////////////////////////
@@ -306,7 +306,7 @@ public class TeleOpPostScrimmage extends LinearOpMode {
         hw.startMiniAutoMode();
 
         while (opModeIsActive()) {
-            if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
+            if (gamepad1.right_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
                 boolean stillScoring = hw.update(MiniAutoMode.SCORE);
                 if (!stillScoring) {
                     hw.raiseWrist();
