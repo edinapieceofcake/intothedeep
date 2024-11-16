@@ -35,6 +35,7 @@ package edu.edina.OpModes.TeleOp;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -65,6 +66,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
  *   below the name of the Limelight on the top level configuration screen.
  */
 @TeleOp(name = "Sensor: Limelight3A1", group = "Sensor")
+@Disabled
 public class DriveToSample extends LinearOpMode {
     // Adjust these numbers to suit your robot.
     final double DESIRED_TARGET_Y = -20; //  in degrees

@@ -16,7 +16,7 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
-@Autonomous(preselectTeleOp = "TeleOpForScrimmage")
+@Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSample extends LinearOpMode {
 
     // Start pose
@@ -43,6 +43,11 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_AND_A_HALF_SPIKE_MARK_X = SECOND_SPIKE_MARK_X;
     public static double FIRST_AND_A_HALF_SPIKE_MARK_Y = -44;
     public static double FIRST_AND_A_HALF_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
+
+    // Third spike mark pose
+    public static double THIRD_SPIKE_MARK_X = -57;
+    public static double THIRD_SPIKE_MARK_Y = -25;
+    public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
 
     // Duration in milliseconds to toggle the claw
     public static int CLAW_DELAY = 500;
@@ -95,8 +100,14 @@ public class AutoSample extends LinearOpMode {
         // Construct a first spike mark pose.
         Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
 
+        // Construct a first and a half spike mark pose.
+        Pose2d firstAndAHalfSpikeMarkPose = new Pose2d(FIRST_AND_A_HALF_SPIKE_MARK_X, FIRST_AND_A_HALF_SPIKE_MARK_Y, FIRST_AND_A_HALF_SPIKE_MARK_HEADING);
+
         // Construct a second spike mark pose.
         Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, SECOND_SPIKE_MARK_HEADING);
+
+        // Construct a third spike mark pose.
+        Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, THIRD_SPIKE_MARK_HEADING);
 
         // Construct a drive interface.
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
@@ -118,7 +129,7 @@ public class AutoSample extends LinearOpMode {
 
         // Construct an action for driving from the basket to the first and half spike mark.
         Action driveFromBasketToFirstAndAHalfSpikeMark = drive.actionBuilder(basketPose)
-                .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
+                .strafeToLinearHeading(firstAndAHalfSpikeMarkPose.position, firstAndAHalfSpikeMarkPose.heading)
                 .build();
 
         // Construct an action for driving from the first and a half spike mark to the second spike mark.
@@ -128,6 +139,16 @@ public class AutoSample extends LinearOpMode {
 
         // Construct an action for driving from the second spike mark to the basket.
         Action driveFromSecondSpikeMarkToBasket = drive.actionBuilder(secondSpikeMarkPose)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
+                .build();
+
+        // Construct an action for driving from the basket to the third spike mark.
+        Action driveFromBasketToThirdSpikeMark = drive.actionBuilder(basketPose)
+                .strafeToLinearHeading(thirdSpikeMarkPose.position, thirdSpikeMarkPose.heading)
+                .build();
+
+        // Construct an action for driving from the third spike mark to the basket.
+        Action driveFromThirdSpikeMarkToBasket = drive.actionBuilder(thirdSpikeMarkPose)
                 .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
@@ -162,6 +183,17 @@ public class AutoSample extends LinearOpMode {
                         new CloseClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
                         driveFromSecondSpikeMarkToBasket,
+                        new MoveToHighBasket(),
+                        new WaitForNotBusy(),
+                        new OpenClaw(),
+                        new WaitAndUpdate(CLAW_DELAY),
+                        new MoveToGround(),
+                        new WaitForNotBusy(),
+
+                        // Score second third mark sample
+                        driveFromBasketToThirdSpikeMark,
+                        new CloseClaw(),
+                        new WaitAndUpdate(CLAW_DELAY),
                         new MoveToHighBasket(),
                         new WaitForNotBusy(),
                         new OpenClaw(),

@@ -1,6 +1,7 @@
 package edu.edina.OpModes.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -10,7 +11,7 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 @TeleOp
-public class TeleOpPostScrimmage extends LinearOpMode {
+public class TeleOpMain extends LinearOpMode {
 
     /*
 

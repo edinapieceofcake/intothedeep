@@ -1,5 +1,6 @@
 package edu.edina.OpModes.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
+@Disabled
 public class TeleOpA extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

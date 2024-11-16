@@ -1,12 +1,14 @@
 package edu.edina.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.NeoPixelDriverDevice;
 
 @Autonomous
+@Disabled
 public class NeoPixelWaveTest extends LinearOpMode {
     @Override
     public void runOpMode() {
