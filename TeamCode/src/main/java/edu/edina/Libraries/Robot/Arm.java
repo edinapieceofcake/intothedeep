@@ -20,7 +20,7 @@ public class Arm {
     public static double FEEDFORWARD = 0.1;
 
     // High basket position
-    public static int HIGH_BASKET_POSITION = 2800;
+    public static int HIGH_BASKET_POSITION = 3000;
 
     // High basket position
     public static int HIGH_BASKET_AUTO_POSITION = 3000;

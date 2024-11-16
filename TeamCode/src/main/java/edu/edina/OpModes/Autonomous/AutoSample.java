@@ -31,7 +31,7 @@ public class AutoSample extends LinearOpMode {
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = -47.5;
-    public static double FIRST_SPIKE_MARK_Y = -38;
+    public static double FIRST_SPIKE_MARK_Y = -35;
     public static double FIRST_SPIKE_MARK_HEADING = 1.0 / 2 * Math.PI;
 
     // Second spike mark pose
@@ -133,7 +133,7 @@ public class AutoSample extends LinearOpMode {
                 .build();
 
         // Construct an action for driving from the first and a half spike mark to the second spike mark.
-        Action driveFromFirstAndAHalfToSecondSpikeMark = drive.actionBuilder(basketPose)
+        Action driveFromFirstAndAHalfToSecondSpikeMark = drive.actionBuilder(firstAndAHalfSpikeMarkPose)
                 .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
                 .build();
 
@@ -194,6 +194,7 @@ public class AutoSample extends LinearOpMode {
                         driveFromBasketToThirdSpikeMark,
                         new CloseClaw(),
                         new WaitAndUpdate(CLAW_DELAY),
+                        driveFromThirdSpikeMarkToBasket,
                         new MoveToHighBasket(),
                         new WaitForNotBusy(),
                         new OpenClaw(),
