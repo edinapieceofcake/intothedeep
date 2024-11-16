@@ -8,7 +8,6 @@ import edu.edina.Libraries.Robot.GamePadClick;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
-@Disabled
 public class BoundingBoxTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
