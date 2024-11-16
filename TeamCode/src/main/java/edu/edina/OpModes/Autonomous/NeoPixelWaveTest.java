@@ -22,6 +22,7 @@ public class NeoPixelWaveTest extends LinearOpMode {
         ElapsedTime t = new ElapsedTime();
 
         while (opModeIsActive()) {
+            // move this to Light.update
             double x;
 
             double blueTime = Math.sin(t.seconds() * 1.5);
