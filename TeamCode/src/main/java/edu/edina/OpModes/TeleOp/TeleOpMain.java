@@ -27,10 +27,10 @@ public class TeleOpMain extends LinearOpMode {
     - right bumper = ground
     - left bumper = clip
     - back = toggle ascend
-    - dpad_up = increment arm
-    - dpad_down = decrement arm
-    - dpad_right = extend slide
-    - dpad_left = retract slide
+    - dpad up = increment arm
+    - dpad down = decrement arm
+    - dpad right = extend slide
+    - dpad left = retract slide
     - left trigger = hold for turtle
 
     */
@@ -51,9 +51,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // Wait for the user to press start.
         waitForStart();
-
-        // Move the arm to the ground position.
-        robotHardware.setArmGroundPosition();
 
         // Open the claw.
         robotHardware.openClaw();

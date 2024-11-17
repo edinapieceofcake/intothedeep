@@ -1,6 +1,11 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -10,6 +15,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
@@ -59,14 +67,14 @@ public class RobotHardware {
     private final Arm arm;
     private final Claw claw;
     private final Lift lift;
-    private boolean loweringToGround;
     private final Slide slide;
     private final BoundingBoxFailsafe failsafe;
     private ElapsedTime stalledTimer;
-    private ElapsedTime loweringToGroundTimer;
     private boolean turtleMode;
-    private Light light;
+    //private Light light;
     private int beepSoundId;
+    private List<Action> runningActions = new ArrayList<>();
+    private FtcDashboard dashboard;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -75,6 +83,9 @@ public class RobotHardware {
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
+
+        // Get an FTC dashboard instance.
+        dashboard = FtcDashboard.getInstance();
 
         // Get the beep sound identifier.
         beepSoundId = hardwareMap.appContext.getResources().getIdentifier("beep", "raw", hardwareMap.appContext.getPackageName());
@@ -122,7 +133,7 @@ public class RobotHardware {
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
 
-        light = new Light(hardwareMap);
+        //light = new Light(hardwareMap);
     }
 
     // Waits for the user to lower the lift.
@@ -246,38 +257,6 @@ public class RobotHardware {
 
     // Updates this.
     public void update() {
-        // Finish lowering to ground if appropriate.
-        //////////////////////////////////////////////////////////////////////
-
-        // If we are lowering to the ground...
-        if (loweringToGround) {
-
-            // If we reached the nearly down position...
-            if (loweringToGroundTimer == null && !isArmBusy()) {
-
-                // Start a timer.
-                loweringToGroundTimer = new ElapsedTime();
-
-            }
-
-            // If we have waited long enough after reaching the the nearly down position...
-            if (loweringToGroundTimer != null && loweringToGroundTimer.milliseconds() > GROUND_DELAY_MILLISECONDS) {
-
-                // Move the arm to the ground.
-                setArmGroundPosition();
-
-                // Remember that we are done lowering to ground.
-                loweringToGround = false;
-
-                // Clear the timer.
-                loweringToGroundTimer = null;
-
-                // Lower the wrist.
-                lowerWrist();
-
-            }
-
-        }
 
         // Update hardware.
         //////////////////////////////////////////////////////////////////////
@@ -303,7 +282,43 @@ public class RobotHardware {
         // Update the wrist.
         wrist.update();
 
-        light.update();
+        // Update the light.
+        //light.update();
+
+        // Update actions.
+        //////////////////////////////////////////////////////////////////////
+
+        // Road Runner Docs - Teleop Actions
+        // https://rr.brott.dev/docs/v1-0/guides/teleop-actions/
+
+        // Construct a telemetry packet.
+        TelemetryPacket packet = new TelemetryPacket();
+
+        // Construct a new action list.
+        List<Action> newActions = new ArrayList<>();
+
+        // For each running action...
+        for (Action action : runningActions) {
+
+            // Update the dashboard.
+            action.preview(packet.fieldOverlay());
+
+            // If the action is still running...
+            if (action.run(packet)) {
+
+                // Add the action to the new action list.
+                newActions.add(action);
+
+            }
+
+        }
+
+        // Update the running actions.
+        runningActions = newActions;
+
+        // Update the dashboard.
+        dashboard.sendTelemetryPacket(packet);
+
     }
 
     // Decrements the arm position.
@@ -455,11 +470,17 @@ public class RobotHardware {
         // If the arm is high...
         if (arm.isRaised()) {
 
-            // Move the arm to the almost ground position.
-            arm.setAlmostGroundPosition();
+            // Construct a lower to ground action.
+            Action lowerToGround = new SequentialAction(
+                    new InstantAction(() -> arm.setAlmostGroundPosition()),
+                    new WaitForNotBusy(this, false),
+                    new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
+                    new InstantAction(() -> arm.setGroundPosition()),
+                    new InstantAction(() -> lowerWrist())
+            );
 
-            // Remember that we are lowering the arm to the ground.
-            loweringToGround = true;
+            // Run the action.
+            runningActions.add(lowerToGround);
 
         }
 
@@ -470,7 +491,7 @@ public class RobotHardware {
             arm.setGroundPosition();
 
             // Lower the wrist.
-            wrist.lower();
+            lowerWrist();
 
         }
 
@@ -621,7 +642,7 @@ public class RobotHardware {
     }
 
     public void setColor(SampleColor sampleColor) {
-        light.setSampleColor(sampleColor);
+        //light.setSampleColor(sampleColor);
     }
 
     // Beeps

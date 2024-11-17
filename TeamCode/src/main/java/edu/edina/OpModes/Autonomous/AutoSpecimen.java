@@ -14,7 +14,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
+import edu.edina.Libraries.Robot.CloseClaw;
+import edu.edina.Libraries.Robot.LowerWrist;
+import edu.edina.Libraries.Robot.MoveToGround;
+import edu.edina.Libraries.Robot.MoveToHighChamber;
+import edu.edina.Libraries.Robot.OpenClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.WaitAndUpdate;
+import edu.edina.Libraries.Robot.WaitForNotBusy;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
@@ -58,6 +65,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Robot hardware
 		private RobotHardware robotHardware;
+		private Action driveFromChamberToScore;
 
 		// Runs the op mode.
 		@Override
@@ -123,7 +131,7 @@ public class AutoSpecimen extends LinearOpMode {
 			Action driveFromStartToChamber = drive.actionBuilder(startPose)
 					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
 					.build();
-			Action driveFromChamberToScore = drive.actionBuilder(chamberPose)
+			driveFromChamberToScore = drive.actionBuilder(chamberPose)
 					.strafeToLinearHeading(scorePose.position, scorePose.heading)
 					.build();
 
@@ -182,13 +190,12 @@ public class AutoSpecimen extends LinearOpMode {
 			Actions.runBlocking(
 					new SequentialAction(
                             // score preloaded specimen
-
                             driveFromStartToChamber,
-							getScoreAction(driveFromChamberToScore),
+							score(),
 							//pick up sample on first spike mark
 							driveFromScoreToFirstSpikeMark,
-							new CloseClaw(),
-							new WaitAndUpdate(CLAW_DELAY)
+							new CloseClaw(robotHardware),
+							new WaitAndUpdate(robotHardware, CLAW_DELAY, true)
 //							//deliver sample to human player
 //							driveFirstSpikeMarkToHumanPlayer,
 //							new OpenClaw(),
@@ -204,7 +211,7 @@ public class AutoSpecimen extends LinearOpMode {
 //							new CloseClaw(),
 //							// score specimen
 //							driveFromHumanPlayer2ToChamber,
-//								getScoreAction(driveFromChamberToScore)
+//							score(),
 //							//pick up sample from 3rd spike
 //							driveFromScoreToThirdSpikeMark,
 //							new CloseClaw(),
@@ -217,201 +224,37 @@ public class AutoSpecimen extends LinearOpMode {
 //							new CloseClaw(),
 //							//score the specimen from the 2nd spike mark, but third sample total.
 //							driveFromHumanPlayer2ToChamber,
-//								getScoreAction(driveFromChamberToScore)
+//							score(),
 //							// pick up specimen that was 3rd spike mark from the human player
 //							driveFromScoreToHumanPlayer,
 //							new CloseClaw(),
 //							// score the specimen
 //							driveFromHumanPlayerToChamber,
-//							getScoreAction(driveFromChamberToScore)
+//							score()
 					)
 
 			);
 
 		}
 
-        public Action getScoreAction(Action driveFromChamberToScore) {
-            Action scoreAction = new SequentialAction(
-                    new MoveToHighChamber(),
-                    new WaitForNotBusy(),
-					new WaitAndUpdate(200),
+		// Scores a specimen.
+        public Action score() {
+            return new SequentialAction(
+                    new MoveToHighChamber(robotHardware),
+                    new WaitForNotBusy(robotHardware, true),
+					new WaitAndUpdate(robotHardware, 200, true),
                     new ParallelAction(
-                            new LowerWrist(),
+                            new LowerWrist(robotHardware),
                             driveFromChamberToScore,
                             new SequentialAction(
-                                    new WaitAndUpdate(SCORE_DELAY),
-                                    new OpenClaw()
+                                    new WaitAndUpdate(robotHardware, SCORE_DELAY, true),
+                                    new OpenClaw(robotHardware)
                             )
                     ),
-					new WaitAndUpdate(200),
-                    new MoveToGround(),
-                    new WaitForNotBusy()
+					new WaitAndUpdate(robotHardware, 200, true),
+                    new MoveToGround(robotHardware),
+                    new WaitForNotBusy(robotHardware, true)
             );
-            return scoreAction;
         }
-
-		// Opens the claw.
-		public class OpenClaw implements Action {
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-
-				// Open the claw.
-				robotHardware.openClaw();
-
-				// Return indicating that the action is done.
-				return false;
-
-			}
-
-		}
-
-		// Closes the claw.
-		public class CloseClaw implements Action {
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-
-				// Close the claw.
-				robotHardware.closeClaw();
-
-				// Return indicating that the action is done.
-				return false;
-
-			}
-
-		}
-
-		// Moves the claw to the high chamber.
-		public class MoveToHighChamber implements Action {
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-
-				// Lower the wrist.
-				robotHardware.lowerWrist();
-
-				// Move the arm to the high chamber position.
-				robotHardware.setArmHighChamberPosition();
-
-				// Move the lift to the ground position
-				robotHardware.setLiftGroundPosition();
-
-				// Use the high chamber extension.
-				robotHardware.setMinimumExtension();
-
-				// Return indicating that the action is done.
-				return false;
-
-			}
-
-		}
-
-		// Moves the claw to the ground.
-		public class MoveToGround implements Action {
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-
-				// Move the arm to the ground position.
-				robotHardware.setArmGroundPosition();
-
-				// Move the lift to the ground position
-				robotHardware.setLiftGroundPosition();
-
-				// Fully retract the slide.
-				robotHardware.setMinimumExtension();
-
-				// Return indicating that the action is done.
-				return false;
-
-			}
-
-		}
-
-		public class LowerWrist implements Action {
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-				// Move Wrist to High Chamber Score Position
-				robotHardware.moveWristToHighChamberScorePosition();
-				// Return indicating that the action is done.
-				return false;
-
-			}
-
-		}
-
-		// Waits for a specified duration.
-		public class WaitAndUpdate implements Action {
-
-			// Timer
-			private ElapsedTime timer;
-
-			// Duration in milliseconds
-			private double milliseconds;
-
-			// Initialized value
-			private boolean initialized;
-
-			// Initialzies this.
-			public WaitAndUpdate(double milliseconds) {
-
-				// Remember the duration in milliseconds.
-				this.milliseconds = milliseconds;
-
-			}
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-
-				// If this is not initialized...
-				if (!initialized) {
-
-					// Start a timer.
-					timer = new ElapsedTime();
-
-					// Remember that this is initialized.
-					initialized = true;
-				}
-
-				// Update the robot hardware.
-				robotHardware.update();
-
-				// Determine whether we are waiting.
-				boolean waiting = timer.milliseconds() < milliseconds;
-
-				// Return the result.
-				return waiting;
-
-			}
-
-		}
-
-		// Waits for the robot hardware to finish moving.
-		public class WaitForNotBusy implements Action {
-
-			// Runs this.
-			@Override
-			public boolean run(@NonNull TelemetryPacket packet) {
-
-				// Update the robot hardware.
-				robotHardware.update();
-
-				// Determine whether the robot hardware is busy.
-				boolean isBusy = robotHardware.isArmBusy() || robotHardware.isLiftBusy() || robotHardware.isSlideBusy();
-
-				// Return the result.
-				return isBusy;
-
-			}
-
-		}
 
 	}

@@ -1,19 +1,21 @@
 package edu.edina.OpModes.Autonomous;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
+import edu.edina.Libraries.Robot.CloseClaw;
+import edu.edina.Libraries.Robot.MoveToGround;
+import edu.edina.Libraries.Robot.MoveToHighBasket;
+import edu.edina.Libraries.Robot.OpenClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.WaitAndUpdate;
+import edu.edina.Libraries.Robot.WaitForNotBusy;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
@@ -156,51 +158,31 @@ public class AutoSample extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
 
-                        // Score preloaded sample
+                        // Score preloaded sample.
                         driveFromStartToBasket,
-                        new MoveToHighBasket(),
-                        new WaitForNotBusy(),
-                        new OpenClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
-                        new MoveToGround(),
-                        new WaitForNotBusy(),
+                        score(),
 
-                        // Score first spike mark sample
+                        // Score first spike mark sample.
                         driveFromBasketToFirstSpikeMark,
-                        new CloseClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
+                        new CloseClaw(robotHardware),
+                        new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
                         driveFromFirstSpikeMarkToBasket,
-                        new MoveToHighBasket(),
-                        new WaitForNotBusy(),
-                        new OpenClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
-                        new MoveToGround(),
-                        new WaitForNotBusy(),
+                        score(),
 
-                        // Score second spike mark sample
+                        // Score second spike mark sample.
                         driveFromBasketToFirstAndAHalfSpikeMark,
                         driveFromFirstAndAHalfToSecondSpikeMark,
-                        new CloseClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
+                        new CloseClaw(robotHardware),
+                        new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
                         driveFromSecondSpikeMarkToBasket,
-                        new MoveToHighBasket(),
-                        new WaitForNotBusy(),
-                        new OpenClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
-                        new MoveToGround(),
-                        new WaitForNotBusy(),
+                        score(),
 
-                        // Score second third mark sample
+                        // Score second third mark sample.
                         driveFromBasketToThirdSpikeMark,
-                        new CloseClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
+                        new CloseClaw(robotHardware),
+                        new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
                         driveFromThirdSpikeMarkToBasket,
-                        new MoveToHighBasket(),
-                        new WaitForNotBusy(),
-                        new OpenClaw(),
-                        new WaitAndUpdate(CLAW_DELAY),
-                        new MoveToGround(),
-                        new WaitForNotBusy()
+                        score()
 
                 )
 
@@ -208,155 +190,16 @@ public class AutoSample extends LinearOpMode {
 
     }
 
-    // Opens the claw.
-    public class OpenClaw implements Action {
-
-        // Runs this.
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            // Open the claw.
-            robotHardware.openClaw();
-
-            // Return indicating that the action is done.
-            return false;
-
-        }
-
-    }
-
-    // Closes the claw.
-    public class CloseClaw implements Action {
-
-        // Runs this.
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            // Close the claw.
-            robotHardware.closeClaw();
-
-            // Return indicating that the action is done.
-            return false;
-
-        }
-
-    }
-
-    // Moves the claw to the high basket.
-    public class MoveToHighBasket implements Action {
-
-        // Runs this.
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            // Move the arm to the high basket position.
-            robotHardware.setArmHighBasketAutoPosition();
-
-            // Move the lift to the high basket position
-            robotHardware.setLiftHighBasketPosition();
-
-            // Use the high basket extension.
-            robotHardware.setHighBasketExtension();
-
-            // Lower the wrist.
-            robotHardware.lowerWrist();
-
-            // Return indicating that the action is done.
-            return false;
-
-        }
-
-    }
-
-    // Moves the claw to the ground.
-    public class MoveToGround implements Action {
-
-        // Runs this.
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            // Move the arm to the ground position.
-            robotHardware.setArmGroundPosition();
-
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
-
-            // Fully retract the slide.
-            robotHardware.setMinimumExtension();
-
-            // Return indicating that the action is done.
-            return false;
-
-        }
-
-    }
-
-    // Waits for a specified duration.
-    public class WaitAndUpdate implements Action {
-
-        // Timer
-        private ElapsedTime timer;
-
-        // Duration in milliseconds
-        private double milliseconds;
-
-        // Initialized value
-        private boolean initialized;
-
-        // Initialzies this.
-        public WaitAndUpdate(double milliseconds)
-        {
-
-            // Remember the duration in milliseconds.
-            this.milliseconds = milliseconds;
-
-        }
-
-        // Runs this.
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            // If this is not initialized...
-            if (!initialized) {
-
-                // Start a timer.
-                timer = new ElapsedTime();
-
-                // Remember that this is initialized.
-                initialized = true;
-            }
-
-            // Update the robot hardware.
-            robotHardware.update();
-
-            // Determine whether we are waiting.
-            boolean waiting = timer.milliseconds() < milliseconds;
-
-            // Return the result.
-            return waiting;
-
-        }
-
-    }
-
-    // Waits for the robot hardware to finish moving.
-    public class WaitForNotBusy implements Action {
-
-        // Runs this.
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            // Update the robot hardware.
-            robotHardware.update();
-
-            // Determine whether the robot hardware is busy.
-            boolean isBusy = robotHardware.isArmBusy() || robotHardware.isLiftBusy() || robotHardware.isSlideBusy();
-
-            // Return the result.
-            return isBusy;
-
-        }
-
+    // Scores a sample.
+    public Action score() {
+        return new SequentialAction(
+                new MoveToHighBasket(robotHardware),
+                new WaitForNotBusy(robotHardware, true),
+                new OpenClaw(robotHardware),
+                new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
+                new MoveToGround(robotHardware),
+                new WaitForNotBusy(robotHardware, true)
+        );
     }
 
 }
