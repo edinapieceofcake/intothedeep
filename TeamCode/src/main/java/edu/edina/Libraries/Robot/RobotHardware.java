@@ -224,10 +224,14 @@ public class RobotHardware {
     public void updateHardwareInteractions() {
         stalledTimer = null;
 
+        // RM: I commented out the following code because I do not think it is necessary to stay within the expansion box.
+
+        /*
         if (arm.armWillCrossWristLimit())
             raiseWrist();
         else if (arm.targetingScoringPos() || arm.isInHighBar() || arm.isInLowBar())
             lowerWrist();
+        */
 
         drivetrain.setAutoTurtleMode(lift.isRaised());
 
