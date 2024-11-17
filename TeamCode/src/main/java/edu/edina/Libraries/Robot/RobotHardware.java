@@ -64,7 +64,7 @@ public class RobotHardware {
     private final BoundingBoxFailsafe failsafe;
     private ElapsedTime stalledTimer;
     private ElapsedTime loweringToGroundTimer;
-    private boolean inputTurtleMode;
+    private boolean turtleMode;
     private Light light;
     private int beepSoundId;
 
@@ -276,11 +276,8 @@ public class RobotHardware {
         // Update hardware.
         //////////////////////////////////////////////////////////////////////
 
-        // Determine whether to use turtle mode.
-        boolean outputTurtleMode = inputTurtleMode || arm.isRaised() || lift.isRaised();
-
         // Set turtle mode.
-        drivetrain.setTurtleMode(outputTurtleMode);
+        drivetrain.setTurtleMode(turtleMode);
 
         // Update the arm.
         arm.update();
@@ -419,7 +416,7 @@ public class RobotHardware {
     public void toggleTurtleMode() {
 
         // Toggle turtle mode.
-        inputTurtleMode = !inputTurtleMode;
+        turtleMode = !turtleMode;
 
     }
 
@@ -427,7 +424,7 @@ public class RobotHardware {
     public void setTurtleMode(boolean turtleMode) {
 
         // Set turtle mode.
-        inputTurtleMode = turtleMode;
+        this.turtleMode = turtleMode;
 
     }
 //
