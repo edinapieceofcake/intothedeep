@@ -51,7 +51,7 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
-                0 - CRServo Axon Mini+ - slide_servo
+                2 - CRServo Axon Mini+ - slide_servo
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */
