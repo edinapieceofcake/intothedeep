@@ -20,11 +20,11 @@ public class TeleOpMain extends LinearOpMode {
 
     - left stick = move robot
     - right stick = rotate robot
-    - a = ground
+    - a = toggle claw
     - x = basket
     - y = chamber
     - b = submersible
-    - right bumper = toggle claw
+    - right bumper = ground
     - left bumper = clip
     - back = toggle ascend
     - dpad_up = increment arm
@@ -143,16 +143,8 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
+            // If user pressed right bumper...
             if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
-                robotHardware.toggleClaw();
-            }
-
-            if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
-                specimenScoring(robotHardware);
-            }
-
-            // If the user pressed a...
-            if (currentGamepad.a && !previousGamepad.a) {
 
                 // Raise the wrist.
                 robotHardware.raiseWrist();
@@ -165,6 +157,22 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Fully retract the slide.
                 robotHardware.setMinimumExtension();
+
+            }
+
+            // If user pressed left bumper...
+            if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+
+                // Score the specimen.
+                specimenScoring(robotHardware);
+                
+            }
+
+            // If the user pressed a...
+            if (currentGamepad.a && !previousGamepad.a) {
+
+                // Toggle the claw.
+                robotHardware.toggleClaw();
 
             }
 
