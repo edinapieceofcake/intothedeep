@@ -1,6 +1,7 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -65,11 +66,29 @@ public class RobotHardware {
     private ElapsedTime loweringToGroundTimer;
     private boolean inputTurtleMode;
     private Light light;
+    private int beepSoundId;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
         // Remember the op mode.
         this.opMode = opMode;
+
+        // Get the hardware map.
+        HardwareMap hardwareMap = opMode.hardwareMap;
+
+        // Get the beep sound identifier.
+        beepSoundId = hardwareMap.appContext.getResources().getIdentifier("beep", "raw", hardwareMap.appContext.getPackageName());
+
+        // If the beep sound is missing...
+        if (beepSoundId == 0) {
+
+            // Complain.
+            throw new InterruptedException("The beep sound file is missing.");
+
+        }
+
+        // Preload the beep sound.
+        SoundPlayer.getInstance().preload(hardwareMap.appContext, beepSoundId);
 
         // Initialize the arm.
         arm = new Arm(this);
@@ -82,8 +101,6 @@ public class RobotHardware {
 
         // Initialize the slide.
         slide = new Slide(this);
-
-        HardwareMap hardwareMap = opMode.hardwareMap;
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
@@ -592,4 +609,16 @@ public class RobotHardware {
     public void setColor(SampleColor sampleColor) {
         light.setSampleColor(sampleColor);
     }
+
+    // Beeps
+    public void beep() {
+
+        // Get the hardware map.
+        HardwareMap hardwareMap = opMode.hardwareMap;
+
+        // Play the beep sound.
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, beepSoundId);
+
+    }
+
 }

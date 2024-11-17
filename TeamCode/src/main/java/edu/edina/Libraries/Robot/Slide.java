@@ -20,7 +20,7 @@ public class Slide {
     public static double EXTENSION_ERROR_THRESHOLD = 0.5;
 
     // Extension increment.
-    public static double EXTENSION_INCREMENT = 0.1;
+    public static double EXTENSION_INCREMENT = 1;
 
     // Inches per volt
     public static double INCHES_PER_VOLT = 6.375 / 4.4;
@@ -261,16 +261,38 @@ public class Slide {
     // Extends this.
     public void extend() {
 
+        // If the slide is fully extended...
+        if(targetExtension + EXTENSION_INCREMENT > MAXIMUM_EXTENSION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Extend this.
-        targetExtension = Math.min(targetExtension + EXTENSION_INCREMENT, MAXIMUM_EXTENSION);
+        targetExtension += EXTENSION_INCREMENT;
 
     }
 
     // Retracts this.
     public void retract() {
 
+        // If the slide is fully retracted...
+        if(targetExtension - EXTENSION_INCREMENT < MINIMUM_EXTENSION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Retract this.
-        targetExtension = Math.max(targetExtension - EXTENSION_INCREMENT, MINIMUM_EXTENSION);
+        targetExtension -= EXTENSION_INCREMENT;
 
     }
 

@@ -228,16 +228,38 @@ public class Arm {
     // Decrements the arm position.
     public void decrementPosition() {
 
+        // If the arm is fully lowered...
+        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Decrement the arm position.
-        targetPosition = Math.max(targetPosition - POSITION_INCREMENT, MINIMUM_POSITION);
+        targetPosition -= POSITION_INCREMENT;
 
     }
 
     // Increments the arm position.
     public void incrementPosition() {
 
+        // If the arm is fully raised...
+        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Increment the arm position.
-        targetPosition = Math.min(targetPosition + POSITION_INCREMENT, MAXIMUM_POSITION);
+        targetPosition += POSITION_INCREMENT;
 
     }
 

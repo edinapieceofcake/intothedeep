@@ -52,28 +52,11 @@ public class TeleOpForScrimmage extends LinearOpMode {
     // Previous gamepad
     private Gamepad previousGamepad = new Gamepad();
 
-    // Beep sound identifier
-    private int beepSoundId;
-
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
 
         // Get hardware.
         RobotHardware robotHardware = new RobotHardware(this);
-
-        // Get the beep sound identifier.
-        beepSoundId = hardwareMap.appContext.getResources().getIdentifier("beep", "raw", hardwareMap.appContext.getPackageName());
-
-        // If the beep sound is missing...
-        if (beepSoundId == 0) {
-
-            // Complain.
-            throw new InterruptedException("The beep sound file is missing.");
-
-        }
-
-        // Preload the beep sound.
-        SoundPlayer.getInstance().preload(hardwareMap.appContext, beepSoundId);
 
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
@@ -104,7 +87,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed dpad right...
-                if (currentGamepad.dpad_right) {
+                if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
                     // Determine whether the arm is nearly down.
                     boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
@@ -125,7 +108,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     if (disallowSlideExtension) {
 
                         // Notify the user.
-                        beep();
+                        robotHardware.beep();
 
                     }
 
@@ -140,7 +123,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad left...
-                if (currentGamepad.dpad_left) {
+                if (currentGamepad.dpad_left && !previousGamepad.dpad_left) {
 
                     // Retract the slide.
                     robotHardware.retractSlide();
@@ -255,7 +238,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     if (disallowSubmersiblePreset) {
 
                         // Notify the user.
-                        beep();
+                        robotHardware.beep();
 
                     }
 
@@ -352,14 +335,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
             telemetry.update();
 
         }
-
-    }
-
-    // Rumbles the gamepad.
-    private void beep() {
-
-        // Play the beep sound.
-        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, beepSoundId);
 
     }
 

@@ -227,16 +227,38 @@ public class Lift {
     // Raises the lift.
     public void raise() {
 
+        // If the lift is fully raised...
+        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Raise the lift.
-        targetPosition = Math.min(targetPosition + POSITION_INCREMENT, MAXIMUM_POSITION);
+        targetPosition += POSITION_INCREMENT;
 
     }
 
     // Lowers the lift.
     public void lower() {
 
+        // If the lift is fully lowered...
+        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Lower the lift.
-        targetPosition = Math.max(targetPosition - POSITION_INCREMENT, MINIMUM_POSITION);
+        targetPosition -= POSITION_INCREMENT;
 
     }
 
