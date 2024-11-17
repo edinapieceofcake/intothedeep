@@ -28,6 +28,9 @@ public class Slide {
     // Low basket extension
     public static double LOW_BASKET_EXTENSION = 5;
 
+    // Low voltage divisor
+    public static double LOW_VOLTAGE_DIVISOR = 4;
+
     // High basket extension
     public static double HIGH_BASKET_EXTENSION = 9;
 
@@ -38,7 +41,7 @@ public class Slide {
     public static double MINIMUM_EXTENSION = 0;
 
     // Maximum voltage difference
-    public static double MAXIMUM_VOLTAGE_DIFFERENCE = 0.5;
+    public static double MAXIMUM_VOLTAGE_DIFFERENCE = 1;
 
     // Power
     public static double POWER = 1;
@@ -120,7 +123,7 @@ public class Slide {
         }
 
         // Get a low voltage threshold.
-        double lowVoltage = maximumVoltage / 4;
+        double lowVoltage = maximumVoltage / LOW_VOLTAGE_DIVISOR;
 
         // Get a high voltage threshold.
         double highVoltage = maximumVoltage - lowVoltage;
