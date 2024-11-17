@@ -25,7 +25,6 @@ public class TeleOpMain extends LinearOpMode {
     - y = basket
     - b = submersible
     - right bumper = ground
-    - left bumper = clip
     - back = toggle ascend
     - dpad up = increment arm
     - dpad down = decrement arm
@@ -144,32 +143,24 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-            // If user pressed left bumper...
-            if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+            // If the user pressed a...
+            if (currentGamepad.a && !previousGamepad.a) {
 
-                // If the arm is not in the high chamber position...
-                if (!robotHardware.isArmInHighBasketPosition()) {
-
-                    // Notify the user.
-                    robotHardware.beep();
-
-                }
-
-                // Otherwise (if the arm is in the high chamber position)...
-                else {
+                // If the arm is in the high chamber position...
+                if (robotHardware.isArmInHighBasketPosition()) {
 
                     // Score the specimen.
                     robotHardware.scoreSpecimen();
 
                 }
 
-            }
+                // Otherwise (if the arm is not in the high chamber position)...
+                else {
 
-            // If the user pressed a...
-            if (currentGamepad.a && !previousGamepad.a) {
+                    // Toggle the claw.
+                    robotHardware.toggleClaw();
 
-                // Toggle the claw.
-                robotHardware.toggleClaw();
+                }
 
             }
 
