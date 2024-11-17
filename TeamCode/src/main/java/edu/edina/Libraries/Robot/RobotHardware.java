@@ -470,17 +470,8 @@ public class RobotHardware {
         // If the arm is high...
         if (arm.isRaised()) {
 
-            // Construct a lower to ground action.
-            Action lowerToGround = new SequentialAction(
-                    new InstantAction(() -> arm.setAlmostGroundPosition()),
-                    new WaitForNotBusy(this, false),
-                    new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
-                    new InstantAction(() -> arm.setGroundPosition()),
-                    new InstantAction(() -> lowerWrist())
-            );
-
-            // Run the action.
-            runningActions.add(lowerToGround);
+            // Progressively lower the arm.
+            progressivelyLowerArm();
 
         }
 
@@ -653,6 +644,23 @@ public class RobotHardware {
 
         // Play the beep sound.
         SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, beepSoundId);
+
+    }
+
+    // Progressively lowers the arm.
+    private void progressivelyLowerArm() {
+
+        // Construct a lower to ground action.
+        Action lowerToGround = new SequentialAction(
+                new InstantAction(() -> arm.setAlmostGroundPosition()),
+                new WaitForNotBusy(this, false),
+                new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
+                new InstantAction(() -> arm.setGroundPosition()),
+                new InstantAction(() -> lowerWrist())
+        );
+
+        // Run the action.
+        runningActions.add(lowerToGround);
 
     }
 
