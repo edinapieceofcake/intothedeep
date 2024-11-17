@@ -5,13 +5,13 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
-public class LowerWrist implements Action {
+public class MoveWristToHighChamberScore implements Action {
 
     // Robot hardware
     private RobotHardware robotHardware;
 
     // Initializes this.
-    public LowerWrist(RobotHardware robotHardware) {
+    public MoveWristToHighChamberScore(RobotHardware robotHardware) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
@@ -23,7 +23,7 @@ public class LowerWrist implements Action {
     public boolean run(@NonNull TelemetryPacket packet) {
 
         // Move the wrist to the high chamber score position.
-        robotHardware.moveWristToHighChamberScorePosition();
+        robotHardware.moveWristToHighChamberScore();
 
         // Return indicating that the action is done.
         return false;

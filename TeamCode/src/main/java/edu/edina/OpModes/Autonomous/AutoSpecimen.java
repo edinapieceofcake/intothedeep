@@ -2,10 +2,7 @@ package edu.edina.OpModes.Autonomous;
 
 import static edu.edina.Libraries.Robot.RobotHardware.SCORE_SPECIMEN_BACKUP_INCHES;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -13,11 +10,10 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.CloseClaw;
-import edu.edina.Libraries.Robot.LowerWrist;
+import edu.edina.Libraries.Robot.MoveWristToHighChamberScore;
 import edu.edina.Libraries.Robot.MoveToGround;
 import edu.edina.Libraries.Robot.MoveToHighChamber;
 import edu.edina.Libraries.Robot.OpenClaw;
@@ -246,7 +242,7 @@ public class AutoSpecimen extends LinearOpMode {
                     new WaitForNotBusy(robotHardware, true),
 					new WaitAndUpdate(robotHardware, 200, true),
                     new ParallelAction(
-                            new LowerWrist(robotHardware),
+                            new MoveWristToHighChamberScore(robotHardware),
                             driveFromChamberToScore,
                             new SequentialAction(
                                     new WaitAndUpdate(robotHardware, SCORE_DELAY, true),

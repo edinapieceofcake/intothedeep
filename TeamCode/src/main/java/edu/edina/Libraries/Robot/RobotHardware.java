@@ -597,7 +597,7 @@ public class RobotHardware {
 
     }
 
-    public void moveWristToHighChamberScorePosition() {
+    public void moveWristToHighChamberScore() {
         wrist.scoreHighChamber();
     }
 
@@ -659,7 +659,7 @@ public class RobotHardware {
 
         // Construct a score specimen action.
         Action action = new SequentialAction(
-                new LowerWrist(this),
+                new MoveWristToHighChamberScore(this),
                 backup,
                 new SequentialAction(
                         new WaitAndUpdate(this, SCORE_DELAY, false),
