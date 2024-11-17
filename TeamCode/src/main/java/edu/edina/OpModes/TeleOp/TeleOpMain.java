@@ -21,8 +21,8 @@ public class TeleOpMain extends LinearOpMode {
     - left stick = move robot
     - right stick = rotate robot
     - a = toggle claw
-    - x = basket
-    - y = chamber
+    - x = chamber
+    - y = basket
     - b = submersible
     - right bumper = ground
     - left bumper = clip
@@ -77,30 +77,17 @@ public class TeleOpMain extends LinearOpMode {
             // If the user pressed y...
             if (currentGamepad.y && !previousGamepad.y) {
 
-                // If the arm is in the submersible...
-                if (robotHardware.isArmInSubmersiblePosition()) {
+                // Raise the wrist.
+                robotHardware.raiseWrist();
 
-                    // Notify the user.
-                    robotHardware.beep();
+                // Move the arm to the high basket position.
+                robotHardware.setArmHighBasketPosition();
 
-                }
+                // Move the lift to the high basket position
+                robotHardware.setLiftHighBasketPosition();
 
-                // Otherwise (if the arm is not in the submersible)...
-                else {
-
-                    // Lower the wrist.
-                    robotHardware.lowerWrist();
-
-                    // Move the arm to the high chamber position.
-                    robotHardware.setArmHighChamberPosition();
-
-                    // Move the lift to the ground position.
-                    robotHardware.setLiftGroundPosition();
-
-                    // Use the high chamber extension.
-                    robotHardware.setMinimumExtension();
-
-                }
+                // Use the high basket extension.
+                robotHardware.setHighBasketExtension();
 
             }
 
@@ -165,7 +152,7 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Score the specimen.
                 specimenScoring(robotHardware);
-                
+
             }
 
             // If the user pressed a...
@@ -179,17 +166,30 @@ public class TeleOpMain extends LinearOpMode {
             // If the user pressed x...
             if (currentGamepad.x && !previousGamepad.x) {
 
-                // Raise the wrist.
-                robotHardware.raiseWrist();
+                // If the arm is in the submersible...
+                if (robotHardware.isArmInSubmersiblePosition()) {
 
-                // Move the arm to the high basket position.
-                robotHardware.setArmHighBasketPosition();
+                    // Notify the user.
+                    robotHardware.beep();
 
-                // Move the lift to the high basket position
-                robotHardware.setLiftHighBasketPosition();
+                }
 
-                // Use the high basket extension.
-                robotHardware.setHighBasketExtension();
+                // Otherwise (if the arm is not in the submersible)...
+                else {
+
+                    // Lower the wrist.
+                    robotHardware.lowerWrist();
+
+                    // Move the arm to the high chamber position.
+                    robotHardware.setArmHighChamberPosition();
+
+                    // Move the lift to the ground position.
+                    robotHardware.setLiftGroundPosition();
+
+                    // Use the high chamber extension.
+                    robotHardware.setMinimumExtension();
+
+                }
 
             }
 
