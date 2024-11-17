@@ -1,5 +1,7 @@
 package edu.edina.Libraries.Robot;
 
+import static edu.edina.OpModes.Autonomous.AutoSpecimen.SCORE_DELAY;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -12,7 +14,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -54,6 +55,9 @@ public class RobotHardware {
                 0 - Axon Mini+ Encoder - slide_encoder
     */
 
+    // Inches to back up when scoring a specimen
+    public static int SCORE_SPECIMEN_BACKUP_INCHES = 5;
+
     // Delay before going from the nearly ground position to the ground position
     public static int GROUND_DELAY_MILLISECONDS = 500;
 
@@ -69,7 +73,6 @@ public class RobotHardware {
     private final Lift lift;
     private final Slide slide;
     private final BoundingBoxFailsafe failsafe;
-    private ElapsedTime stalledTimer;
     private boolean turtleMode;
     //private Light light;
     private int beepSoundId;
@@ -204,36 +207,7 @@ public class RobotHardware {
 
     }
 
-    public void startMiniAutoMode() {
-        stalledTimer = null;
-    }
-
-    public boolean update(MiniAutoMode mode) {
-        try {
-            if (mode == MiniAutoMode.SCORE) {
-                if (stalledTimer == null) {
-                    stalledTimer = new ElapsedTime();
-                } else if (stalledTimer.milliseconds() > 300) {
-                    stalledTimer = null;
-                    toggleClaw();
-                    return false;
-                }
-
-                drivetrain.updateForScore();
-                wrist.score();
-                wrist.update();
-
-                return true;
-            } else {
-                return false;
-            }
-        } finally {
-            failsafe.apply();
-        }
-    }
-
     public void updateHardwareInteractions() {
-        stalledTimer = null;
 
         // RM: I commented out the following code because it was causing unexpected behavior during
         // tele op I do not think toggling the wrist is necessary to keep the robot within the
@@ -248,7 +222,6 @@ public class RobotHardware {
 
         drivetrain.setAutoTurtleMode(lift.isRaised());
 
-        wrist.setHighRung(arm.isHighRung());
     }
 
     public void setReversed(boolean reversed) {
@@ -625,7 +598,7 @@ public class RobotHardware {
     }
 
     public void moveWristToHighChamberScorePosition() {
-        wrist.moveToHighChamberScorePosition();
+        wrist.scoreHighChamber();
     }
 
     public BoundingBoxFailsafe getFailsafe() {
@@ -651,7 +624,7 @@ public class RobotHardware {
     private void progressivelyLowerArm() {
 
         // Construct a lower to ground action.
-        Action lowerToGround = new SequentialAction(
+        Action action = new SequentialAction(
                 new InstantAction(() -> arm.setAlmostGroundPosition()),
                 new WaitForNotBusy(this, false),
                 new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
@@ -660,7 +633,42 @@ public class RobotHardware {
         );
 
         // Run the action.
-        runningActions.add(lowerToGround);
+        runningActions.add(action);
+
+    }
+
+    // Scores a specimen.
+    public void scoreSpecimen() {
+
+        // Get the hardware map.
+        HardwareMap hardwareMap = opMode.hardwareMap;
+
+        // Construct a start pose.
+        Pose2d startPose = new Pose2d(0, 0, 0);
+
+        // Construct an end pose.
+        Pose2d endPose = new Pose2d(SCORE_SPECIMEN_BACKUP_INCHES, 0, 0);
+
+        // Construct a drive interface.
+        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+
+        // Construct a backup action.
+        Action backup = drive.actionBuilder(startPose)
+                .strafeToLinearHeading(endPose.position, endPose.heading)
+                .build();
+
+        // Construct a score specimen action.
+        Action action = new SequentialAction(
+                new LowerWrist(this),
+                backup,
+                new SequentialAction(
+                        new WaitAndUpdate(this, SCORE_DELAY, false),
+                        new OpenClaw(this)
+                )
+        );
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 

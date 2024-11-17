@@ -1,5 +1,7 @@
 package edu.edina.OpModes.Autonomous;
 
+import static edu.edina.Libraries.Robot.RobotHardware.SCORE_SPECIMEN_BACKUP_INCHES;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -56,7 +58,7 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double CONSTANT_X = 47;
 		public static double HUMAN_PAYER_2_Y = -50;
 		public static double HUMAN_PAYER_2_X = 44;
-		public static double SCORE_Y = -42;
+		public static double SCORE_Y = CHAMBER_Y - SCORE_SPECIMEN_BACKUP_INCHES;
 		public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
 		// Duration in milliseconds to toggle the claw
 		public static int CLAW_DELAY = 500;

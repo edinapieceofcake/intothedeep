@@ -14,17 +14,15 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.66;
 
-    public static double HIGH_RUNG_POSITION = 0.30;
+    public static double HIGH_CHAMBER_SCORE_POSITION = 0.30;
 
-    public static double LOW_RUNG_POSITION = 0.00;
+    public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
     // Up position
     public static double UP_POSITION = 0.47;
 
     // Init position
     public static double INITIALIZE_POSITION = 0.33;
-
-    private boolean wristHighRung;
 
     // Servo
     private final TrackingServo servo;
@@ -109,18 +107,12 @@ public class Wrist {
         up = true;
     }
 
-    public void setHighRung(boolean position) {
-        wristHighRung = position;
+    public void scoreHighChamber() {
+        servo.setPosition(HIGH_CHAMBER_SCORE_POSITION);
     }
 
-    public void score() {
-        if (wristHighRung) {
-            servo.setPosition(HIGH_RUNG_POSITION);
-        } else {
-            servo.setPosition(LOW_RUNG_POSITION);
-        }
+    public void scoreLowChamber() {
+        servo.setPosition(LOW_CHAMBER_SCORE_POSITION);
     }
-    public void moveToHighChamberScorePosition() {
-        servo.setPosition(HIGH_RUNG_POSITION);
-    }
+
 }

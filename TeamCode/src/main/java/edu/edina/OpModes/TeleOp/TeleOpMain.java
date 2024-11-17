@@ -147,8 +147,21 @@ public class TeleOpMain extends LinearOpMode {
             // If user pressed left bumper...
             if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
 
-                // Score the specimen.
-                specimenScoring(robotHardware);
+                // If the arm is not in the high chamber position...
+                if (!robotHardware.isArmInHighBasketPosition()) {
+
+                    // Notify the user.
+                    robotHardware.beep();
+
+                }
+
+                // Otherwise (if the arm is in the high chamber position)...
+                else {
+
+                    // Score the specimen.
+                    robotHardware.scoreSpecimen();
+
+                }
 
             }
 
@@ -273,15 +286,4 @@ public class TeleOpMain extends LinearOpMode {
         }
     }
 
-    public void specimenScoring(RobotHardware hw) {
-        hw.startMiniAutoMode();
-
-        while (opModeIsActive()) {
-            boolean stillScoring = hw.update(MiniAutoMode.SCORE);
-            if (!stillScoring) {
-                hw.raiseWrist();
-                break;
-            }
-        }
-    }
 }
