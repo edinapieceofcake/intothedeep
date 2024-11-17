@@ -120,6 +120,9 @@ public class RobotHardware {
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
 
+        // Initialize the drivetrain.
+        drivetrain = new Drivetrain(opMode);
+
         failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -133,9 +136,6 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
-
-        // Initialize the drivetrain.
-        drivetrain = new Drivetrain(opMode);
 
         //light = new Light(hardwareMap);
     }
