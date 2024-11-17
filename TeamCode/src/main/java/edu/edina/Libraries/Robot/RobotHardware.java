@@ -534,6 +534,22 @@ public class RobotHardware {
 
     }
 
+    // Moves the lift to the ascend position.
+    public void setLiftAscendPosition() {
+
+        // Move the lift to the ascend position.
+        lift.setAscendPosition();
+
+    }
+
+    // Moves the lift to the ascend down position.
+    public void setLiftAscendDownPosition() {
+
+        // Move the lift to the ascend down position.
+        lift.setAscendDownPosition();
+
+    }
+
     // Checks if the lift is busy.
     public boolean isLiftBusy() {
 

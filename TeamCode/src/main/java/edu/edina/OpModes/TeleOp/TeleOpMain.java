@@ -204,10 +204,10 @@ public class TeleOpMain extends LinearOpMode {
             if (currentGamepad.back && !previousGamepad.back) {
                 robotHardware.setArmAlmostGroundPosition();
                 if (ascending) {
-                    robotHardware.setLiftGroundPosition();
+                    robotHardware.setLiftAscendDownPosition();
                 }
                 else {
-                    robotHardware.setLiftHighBasketPosition();
+                    robotHardware.setLiftAscendPosition();
                 }
                 ascending = !ascending;
             }

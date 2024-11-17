@@ -46,6 +46,12 @@ public class Lift {
     // High basket position
     public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
 
+    // Ascend position
+    public static int ASCEND_POSITION = 1100;
+
+    // Ascend down position
+    public static int ASCEND_DOWN_POSITION = -400;
+
     private static double INCHES_PER_POS = 14.835 / 1679.0;
 
     // Controller
@@ -297,6 +303,22 @@ public class Lift {
 
         // Move the lift to the high basket position.
         targetPosition = HIGH_BASKET_POSITION;
+
+    }
+
+    // Moves the lift to the ascend position.
+    public void setAscendPosition() {
+
+        // Move the lift to the ascend position.
+        targetPosition = ASCEND_POSITION;
+
+    }
+
+    // Moves the lift to the ascend down position.
+    public void setAscendDownPosition() {
+
+        // Move the lift to the ascend down position.
+        targetPosition = ASCEND_DOWN_POSITION;
 
     }
 
