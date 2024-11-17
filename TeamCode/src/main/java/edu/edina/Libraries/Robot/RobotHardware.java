@@ -667,12 +667,12 @@ public class RobotHardware {
                             new WaitAndUpdate(this, SCORE_DELAY, false),
                             new OpenClaw(this)
                     )
-                ),
-                new WaitAndUpdate(this, 300, false),
+                )
+                /*new WaitAndUpdate(this, 300, false),
                 new InstantAction(() -> arm.setAlmostGroundPosition()),
                 new WaitAndUpdate(this, 500, false),
                 new InstantAction(() -> arm.setGroundPosition()),
-                new InstantAction(() -> wrist.lower())
+                new InstantAction(() -> wrist.lower())*/
         );
 
         // Run the action.
