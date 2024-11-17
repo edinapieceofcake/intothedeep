@@ -3,6 +3,7 @@ package edu.edina.Libraries.Robot;
 import static edu.edina.OpModes.Autonomous.AutoSpecimen.SCORE_DELAY;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -24,6 +25,7 @@ import java.util.List;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 
+@Config
 public class RobotHardware {
     /*
     Control Hub Portal
@@ -244,8 +246,16 @@ public class RobotHardware {
         // Update the claw.
         claw.update();
 
-        // Update the drivetrain.
-        drivetrain.update();
+        // Count the actions.
+        int actionCount = runningActions.size();
+
+        // If there are no actions...
+        if(actionCount == 0) {
+
+            // Update the drivetrain.
+            drivetrain.update();
+
+        }
 
         // Update the lift.
         lift.update();
@@ -675,20 +685,13 @@ public class RobotHardware {
                 .build();
 
         // Construct a score specimen action.
-        Action action = new SequentialAction(
-                new ParallelAction(
-                    new MoveWristToHighChamberScore(this),
-                    backup,
-                    new SequentialAction(
-                            new WaitAndUpdate(this, SCORE_DELAY, false),
-                            new OpenClaw(this)
-                    )
+        Action action = new ParallelAction(
+                new MoveWristToHighChamberScore(this),
+                backup,
+                new SequentialAction(
+                        new WaitAndUpdate(this, SCORE_DELAY, false),
+                        new OpenClaw(this)
                 )
-                /*new WaitAndUpdate(this, 300, false),
-                new InstantAction(() -> arm.setAlmostGroundPosition()),
-                new WaitAndUpdate(this, 500, false),
-                new InstantAction(() -> arm.setGroundPosition()),
-                new InstantAction(() -> wrist.lower())*/
         );
 
         // Run the action.
