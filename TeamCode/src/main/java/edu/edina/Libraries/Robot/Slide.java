@@ -92,14 +92,24 @@ public class Slide {
 
     // return true if a reading was made
     public boolean updateVoltage() {
+
         // Get the current voltage.
         double currentVoltage = encoder.getVoltage();
 
         // Get the maximum voltage.
         double maximumVoltage = encoder.getMaxVoltage();
 
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
+
         // If the current voltage is invalid...
         if (currentVoltage < 0 || currentVoltage > maximumVoltage) {
+
+            // Display an error message.
+            telemetry.addData("Slide Error", "Voltage " + currentVoltage + " is invalid.  Max voltage is " + maximumVoltage + ".");
 
             // Exit the method.
             return false;
@@ -114,6 +124,14 @@ public class Slide {
 
                 // Initialize the last voltage.
                 lastVoltage = currentVoltage;
+
+            }
+
+            // Otherwise (if we do not have a current voltage)...
+            else {
+
+                // Display an error message.
+                telemetry.addData("Slide Error", "Voltage " + currentVoltage + " is less than epsilon.");
 
             }
 
@@ -152,6 +170,9 @@ public class Slide {
 
         // If the offset voltage difference is too high...
         if (offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
+
+            // Display an error message.
+            telemetry.addData("Slide Error", "Offset voltage difference " + offsetVoltageDifference + " is too large.");
 
             // Exit the method.
             return false;
