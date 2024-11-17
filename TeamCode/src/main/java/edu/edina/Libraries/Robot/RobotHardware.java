@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.ftccommon.SoundPlayer;
@@ -659,11 +660,13 @@ public class RobotHardware {
 
         // Construct a score specimen action.
         Action action = new SequentialAction(
-                new MoveWristToHighChamberScore(this),
-                backup,
-                new SequentialAction(
-                        new WaitAndUpdate(this, SCORE_DELAY, false),
-                        new OpenClaw(this)
+                new ParallelAction(
+                    new MoveWristToHighChamberScore(this),
+                    backup,
+                    new SequentialAction(
+                            new WaitAndUpdate(this, SCORE_DELAY, false),
+                            new OpenClaw(this)
+                    )
                 ),
                 new WaitAndUpdate(this, 300, false),
                 new InstantAction(() -> arm.setAlmostGroundPosition()),
