@@ -433,6 +433,17 @@ public class Arm {
 
     }
 
+    // Determines whether the arm is in the high chamber position.
+    public boolean isInHighChamberPosition() {
+
+        // Determine whether the arm is in the high chamber position.
+        boolean isInHighChamberPosition = targetPosition == HIGH_CHAMBER_POSITION;
+
+        // Return the result
+        return isInHighChamberPosition;
+
+    }
+
     public boolean isInLowBar() {
         return targetPosition == LOW_CHAMBER_POSITION;
     }

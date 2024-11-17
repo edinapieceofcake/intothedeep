@@ -229,7 +229,7 @@ public class RobotHardware {
         else if (arm.targetingScoringPos() || arm.isInHighBar() || arm.isInLowBar())
             lowerWrist();
 
-        drivetrain.setAutoTurtleMode(arm.targetingScoringPos() || lift.targetingScoringPos());
+        drivetrain.setAutoTurtleMode(lift.isRaised());
 
         wrist.setHighRung(arm.isHighRung());
     }
@@ -466,6 +466,9 @@ public class RobotHardware {
             // Move the arm to the ground position.
             arm.setGroundPosition();
 
+            // Lower the wrist.
+            wrist.lower();
+
         }
 
     }
@@ -587,6 +590,14 @@ public class RobotHardware {
 
         // Return indicating if the arm is in the high basket position.
         return arm.isInHighBasketPosition();
+
+    }
+
+    // Determines whether the arm is in the high chamber position.
+    public boolean isArmInHighChamberPosition() {
+
+        // Return indicating if the arm is in the high chamber position.
+        return arm.isInHighChamberPosition();
 
     }
 
