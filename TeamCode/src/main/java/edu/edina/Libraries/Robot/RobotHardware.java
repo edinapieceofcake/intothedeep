@@ -224,7 +224,9 @@ public class RobotHardware {
     public void updateHardwareInteractions() {
         stalledTimer = null;
 
-        // RM: I commented out the following code because I do not think it is necessary to stay within the expansion box.
+        // RM: I commented out the following code because it was causing unexpected behavior during
+        // tele op I do not think toggling the wrist is necessary to keep the robot within the
+        // expansion box.
 
         /*
         if (arm.armWillCrossWristLimit())
