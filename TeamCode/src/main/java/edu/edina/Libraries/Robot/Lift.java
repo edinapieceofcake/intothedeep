@@ -317,4 +317,27 @@ public class Lift {
     public boolean targetingScoringPos() {
         return targetPosition > MINIMUM_POSITION;
     }
+
+    // Determines whether the lift is in the high basket position.
+    public boolean isInHighBasketPosition() {
+
+        // Determine whether the lift is in the high basket position.
+        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
+
+        // Return the result.
+        return isInHighBasketPosition;
+
+    }
+
+    // Determines whether the lift is in the ground position.
+    public boolean isInGroundPosition() {
+
+        // Determine whether the lift is in the ground position.
+        boolean isInGroundPosition = targetPosition == MINIMUM_POSITION;
+
+        // Return the result.
+        return isInGroundPosition;
+
+    }
+
 }

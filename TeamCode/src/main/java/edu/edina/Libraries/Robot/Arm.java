@@ -428,7 +428,7 @@ public class Arm {
         // Determine whether the arm is in the high basket position.
         boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
 
-        // Return the result
+        // Return the result.
         return isInHighBasketPosition;
 
     }
@@ -439,7 +439,7 @@ public class Arm {
         // Determine whether the arm is in the high chamber position.
         boolean isInHighChamberPosition = targetPosition == HIGH_CHAMBER_POSITION;
 
-        // Return the result
+        // Return the result.
         return isInHighChamberPosition;
 
     }

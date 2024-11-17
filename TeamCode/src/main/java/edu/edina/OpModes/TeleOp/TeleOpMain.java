@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import edu.edina.Libraries.Robot.MiniAutoMode;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -25,12 +24,12 @@ public class TeleOpMain extends LinearOpMode {
     - y = basket
     - b = submersible
     - right bumper = ground
+    - left bumper = hold for turtle
     - back = toggle ascend
     - dpad up = increment arm
     - dpad down = decrement arm
     - dpad right = extend slide
     - dpad left = retract slide
-    - left trigger = hold for turtle
 
     */
 
@@ -146,15 +145,23 @@ public class TeleOpMain extends LinearOpMode {
             // If the user pressed a...
             if (currentGamepad.a && !previousGamepad.a) {
 
-                // If the arm is in the high chamber position...
-                if (robotHardware.isArmInHighBasketPosition()) {
+                // If the robot is in the basket position...
+                if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+
+                    // Score the sample.
+                    robotHardware.scoreSample();
+
+                }
+
+                // Otherwise, if the robot is in the chamber position...
+                else if (robotHardware.isArmInHighChamberPosition() && robotHardware.isLiftInGroundPosition()) {
 
                     // Score the specimen.
                     robotHardware.scoreSpecimen();
 
                 }
 
-                // Otherwise (if the arm is not in the high chamber position)...
+                // Otherwise...
                 else {
 
                     // Toggle the claw.
@@ -206,7 +213,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             // Set turtle mode.
-            robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
+            robotHardware.setTurtleMode(currentGamepad.left_bumper);
 
             // If the user tapped dpad up...
             if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {

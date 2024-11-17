@@ -677,4 +677,40 @@ public class RobotHardware {
 
     }
 
+    // Scores a sample.
+    public void scoreSample() {
+
+        // Construct a score sample action.
+        Action action = new SequentialAction(
+                new OpenClaw(this),
+                new WaitAndUpdate(this, 300, false),
+                new InstantAction(() -> arm.setAlmostGroundPosition()),
+                new InstantAction(() -> lift.setGroundPosition()),
+                new InstantAction(() -> slide.setMinimumExtension()),
+                new WaitAndUpdate(this, 500, false),
+                new InstantAction(() -> arm.setGroundPosition()),
+                new InstantAction(() -> wrist.lower())
+        );
+
+        // Run the action.
+        runningActions.add(action);
+
+    }
+
+    // Determines whether the lift is in the high basket position.
+    public boolean isLiftInHighBasketPosition() {
+
+        // Return indicating if the lift is in the high basket position.
+        return lift.isInHighBasketPosition();
+
+    }
+
+    // Determines whether the lift is in the ground position.
+    public boolean isLiftInGroundPosition() {
+
+        // Return indicating if the lift is in the ground position.
+        return lift.isInGroundPosition();
+
+    }
+
 }
