@@ -67,11 +67,8 @@ public class TeleOpMain extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            // Determine whether to reverse the robot.
-            boolean reverse = !robotHardware.isArmInGroundPosition() && !robotHardware.isArmInAlmostGroundPosition();
-
             // Reverse the robot if appropriate.
-            robotHardware.setReversed(reverse);
+            robotHardware.setReversed(!robotHardware.isArmAlmostGroundOrLower());
 
             // If the user pressed y...
             if (currentGamepad.y && !previousGamepad.y) {

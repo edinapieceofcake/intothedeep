@@ -51,6 +51,7 @@ public class WaitAndUpdate implements Action {
 
             // Remember that this is initialized.
             initialized = true;
+
         }
 
         // If we are updating...

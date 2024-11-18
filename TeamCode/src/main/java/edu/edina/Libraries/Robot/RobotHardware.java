@@ -675,11 +675,16 @@ public class RobotHardware {
     private void progressivelyLowerArm() {
 
         // Construct a lower to ground action.
+//        Action action = new SequentialAction(
+//                new InstantAction(() -> arm.setAlmostGroundPosition()),
+//                new WaitForNotBusy(this, false),
+//                new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
+//                new InstantAction(() -> arm.setGroundPosition()),
+//                new InstantAction(() -> lowerWrist())
+//        );
         Action action = new SequentialAction(
-                new InstantAction(() -> arm.setAlmostGroundPosition()),
+                new LowerArm(this),
                 new WaitForNotBusy(this, false),
-                new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
-                new InstantAction(() -> arm.setGroundPosition()),
                 new InstantAction(() -> lowerWrist())
         );
 
@@ -764,6 +769,30 @@ public class RobotHardware {
 
         // Clear any pending actions.
         runningActions.clear();
+
+    }
+
+    // Gets the arm's current position.
+    public int getCurrentArmPosition() {
+
+        // Return the arm's current position.
+        return arm.getCurrentPosition();
+
+    }
+
+    // Sets the arm's position.
+    public void setArmPosition(int position) {
+
+        // Set the arm's position.
+        arm.setPosition(position);
+
+    }
+
+    // Determines whether the arm's target position is almost ground or lower.
+    public boolean isArmAlmostGroundOrLower() {
+
+        // Return indicating whether the arm's target position is almost ground or lower.
+        return arm.isAlmostGroundOrLower();
 
     }
 

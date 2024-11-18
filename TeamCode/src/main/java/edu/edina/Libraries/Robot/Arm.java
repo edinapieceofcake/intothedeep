@@ -484,4 +484,12 @@ public class Arm {
     public boolean isInHighBar() {
         return targetPosition == HIGH_CHAMBER_POSITION;
     }
+
+    // Returns indicating if the arm's target position is almost ground or lower.
+    public boolean isAlmostGroundOrLower() {
+
+        // Return indicating if the arm's target position is almost ground or lower.
+        return targetPosition <= ALMOST_GROUND_POSITION;
+
+    }
 }
