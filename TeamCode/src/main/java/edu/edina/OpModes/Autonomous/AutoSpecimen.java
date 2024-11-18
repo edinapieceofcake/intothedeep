@@ -58,7 +58,7 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
 		// Duration in milliseconds to toggle the claw
 		public static int CLAW_DELAY = 500;
-		public static int SCORE_DELAY = 300;
+		public static int SCORE_DELAY = 400;
 
 
 		// Robot hardware

@@ -24,7 +24,7 @@ public class TeleOpMain extends LinearOpMode {
     - y = basket
     - b = submersible
     - right bumper = ground
-    - left bumper = hold for turtle
+    - left trigger = hold for turtle
     - back = toggle ascend
     - dpad up = increment arm
     - dpad down = decrement arm
@@ -60,8 +60,6 @@ public class TeleOpMain extends LinearOpMode {
         Gamepad currentGamepad = new Gamepad();
         Gamepad previousGamepad = new Gamepad();
 
-        robotHardware.setReversed(true);
-
         // While the op mode is active...
         while (opModeIsActive()) {
 
@@ -69,8 +67,17 @@ public class TeleOpMain extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
+            // Determine whether to reverse the robot.
+            boolean reverse = !robotHardware.isArmInGroundPosition() && !robotHardware.isArmInAlmostGroundPosition();
+
+            // Reverse the robot if appropriate.
+            robotHardware.setReversed(reverse);
+
             // If the user pressed y...
             if (currentGamepad.y && !previousGamepad.y) {
+
+                // Clear any pending actions.
+                robotHardware.clearActions();
 
                 // Raise the wrist.
                 robotHardware.raiseWrist();
@@ -89,24 +96,18 @@ public class TeleOpMain extends LinearOpMode {
             // If the user pressed b...
             if (currentGamepad.b && !previousGamepad.b) {
 
-                // Determine whether the arm is in the high basket position.
-                boolean isArmInHighBasketPosition = robotHardware.isArmInHighBasketPosition();
+                // Clear any pending actions.
+                robotHardware.clearActions();
 
-                // Determine whether the arm is in the high chamber position.
-                boolean isArmInHighChamberPosition = robotHardware.isArmInHighChamberPosition();
-
-                // Determine whether to disallow the submersible preset (so the robot stays within the expansion box).
-                boolean disallowSubmersiblePreset = isArmInHighBasketPosition || isArmInHighChamberPosition;
-
-                // If the submersible preset is disallowed...
-                if (disallowSubmersiblePreset) {
+                // If the robot is in the high basket position...
+                if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
 
                     // Notify the user.
                     robotHardware.beep();
 
                 }
 
-                // Otherwise (if the submersible preset is allowed)...
+                // Otherwise (if the robot is not in the high basket position)...
                 else {
 
                     // Raise the wrist.
@@ -127,6 +128,9 @@ public class TeleOpMain extends LinearOpMode {
 
             // If user pressed right bumper...
             if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
+
+                // Clear any pending actions.
+                robotHardware.clearActions();
 
                 // Raise the wrist.
                 robotHardware.raiseWrist();
@@ -174,6 +178,9 @@ public class TeleOpMain extends LinearOpMode {
             // If the user pressed x...
             if (currentGamepad.x && !previousGamepad.x) {
 
+                // Clear any pending actions.
+                robotHardware.clearActions();
+
                 // If the arm is in the submersible...
                 if (robotHardware.isArmInSubmersiblePosition()) {
 
@@ -201,19 +208,38 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
+            // If the user pressed back...
             if (currentGamepad.back && !previousGamepad.back) {
-                robotHardware.setArmAlmostGroundPosition();
+
+                // Clear any pending actions.
+                robotHardware.clearActions();
+
+                // Move the arm to the ascent position.
+                robotHardware.setArmAscentPosition();
+
+                // If we are ascending...
                 if (ascending) {
+
+                    // Descend.
                     robotHardware.setLiftAscendDownPosition();
+
                 }
+
+                // Otherwise (if we are descending)...
                 else {
+
+                    // Ascend.
                     robotHardware.setLiftAscendPosition();
+
                 }
+
+                // Toggle the ascending value.
                 ascending = !ascending;
+
             }
 
             // Set turtle mode.
-            robotHardware.setTurtleMode(currentGamepad.left_bumper);
+            robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
 
             // If the user tapped dpad up...
             if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {

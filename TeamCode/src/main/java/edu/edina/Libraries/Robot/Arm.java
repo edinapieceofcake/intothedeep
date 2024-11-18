@@ -38,7 +38,7 @@ public class Arm {
     public static int MAXIMUM_POSITION = 6000;
 
     // Minimum position
-    public static int MINIMUM_POSITION = -400;
+    public static int MINIMUM_POSITION = -200;
 
     // Ground position
     public static int GROUND_POSITION = MINIMUM_POSITION;
@@ -47,7 +47,7 @@ public class Arm {
     public static int NEARLY_DOWN_POSITION = 100;
 
     // Proportional coefficient
-    public static double PROPORTIONAL = 0.0005;
+    public static double PROPORTIONAL = 0.001;
 
     // Position increment (ticks)
     public static int POSITION_INCREMENT = 275;
@@ -69,6 +69,9 @@ public class Arm {
 
     // Almost Ground Position
     public static int ALMOST_GROUND_POSITION = 800;
+
+    // Ascent position
+    public static int ASCENT_POSITION = 700;
 
     // Wrist extension limit threshold
     public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
@@ -347,6 +350,14 @@ public class Arm {
 
     }
 
+    // Moves the arm to the ascent position.
+    public void setAscentPosition() {
+
+        // Move the arm to the ascent position.
+        targetPosition = ASCENT_POSITION;
+
+    }
+
     // Determines whether the arm is nearly down.
     public boolean isNearlyDown() {
 
@@ -406,8 +417,30 @@ public class Arm {
         // Determine whether the arm is in the submersible position.
         boolean isInSubmersiblePosition = targetPosition == SUBMERSIBLE_POSITION;
 
-        // Return the result
+        // Return the result.
         return isInSubmersiblePosition;
+
+    }
+
+    // Determines whether the arm is in the ground position.
+    public boolean isInGroundPosition() {
+
+        // Determine whether the arm is in the ground position.
+        boolean isInGroundPosition = targetPosition == GROUND_POSITION;
+
+        // Return the result.
+        return isInGroundPosition;
+
+    }
+
+    // Determines whether the arm is in the almost ground position.
+    public boolean isInAlmostGroundPosition() {
+
+        // Determine whether the arm is in the almost ground position.
+        boolean isInAlmostGroundPosition = targetPosition == ALMOST_GROUND_POSITION;
+
+        // Return the result.
+        return isInAlmostGroundPosition;
 
     }
 
@@ -417,7 +450,7 @@ public class Arm {
         // Determine whether the arm is in the low basket position.
         boolean isInLowBasketPosition = targetPosition == LOW_BASKET_POSITION;
 
-        // Return the result
+        // Return the result.
         return isInLowBasketPosition;
 
     }

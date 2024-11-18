@@ -62,7 +62,7 @@ public class RobotHardware {
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 5;
 
     // Delay before going from the nearly ground position to the ground position
-    public static int GROUND_DELAY_MILLISECONDS = 500;
+    public static int GROUND_DELAY_MILLISECONDS = 200;
 
     private final LinearOpMode opMode;
     public final IMU imu;
@@ -480,6 +480,14 @@ public class RobotHardware {
 
     }
 
+    // Moves the arm to the ascent position.
+    public void setArmAscentPosition() {
+
+        // Move the arm to the ascent position.
+        arm.setAscentPosition();
+
+    }
+
     // Moves the arm to the high basket position.
     public void setArmHighBasketPosition() {
 
@@ -608,6 +616,22 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the arm is in the ground position.
+    public boolean isArmInGroundPosition() {
+
+        // Return indicating if the arm is in the ground position.
+        return arm.isInGroundPosition();
+
+    }
+
+    // Determines whether the arm is in the almost ground position.
+    public boolean isArmInAlmostGroundPosition() {
+
+        // Return indicating if the arm is in the almost ground position.
+        return arm.isInAlmostGroundPosition();
+
+    }
+
     // Determines whether the arm is in the high chamber position.
     public boolean isArmInHighChamberPosition() {
 
@@ -732,6 +756,14 @@ public class RobotHardware {
 
         // Return indicating if the lift is in the ground position.
         return lift.isInGroundPosition();
+
+    }
+
+    // Clears any pending actions.
+    public void clearActions() {
+
+        // Clear any pending actions.
+        runningActions.clear();
 
     }
 
