@@ -93,6 +93,9 @@ public class AutoSample extends LinearOpMode {
         // Wait for the user to press start.
         waitForStart();
 
+        // Indicate that this is running.
+        robotHardware.log("Running...");
+
         // Construct a start pose.
         Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
 

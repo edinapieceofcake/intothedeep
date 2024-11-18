@@ -34,6 +34,9 @@ public class WaitAndUpdate implements Action {
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
 
+        // Remember the update value.
+        this.update = update;
+
     }
 
     // Runs this.
