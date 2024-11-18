@@ -351,4 +351,14 @@ public class Slide {
         return Math.max(min, Math.min(max, val));
     }
 
+    // Determines whether this is fully extended.
+    public boolean isFullyExtended() {
+        return targetExtension == MAXIMUM_EXTENSION;
+    }
+
+    // Determines whether this is fully retracted.
+    public boolean isFullyRetracted() {
+        return targetExtension == MINIMUM_EXTENSION;
+    }
+
 }

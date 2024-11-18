@@ -796,4 +796,14 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the slide is fully retracted.
+    public boolean isSlideFullyRetracted() {
+        return slide.isFullyRetracted();
+    }
+
+    // Determines whether the slide is fully extended.
+    public boolean isSlideFullyExtended() {
+        return slide.isFullyExtended();
+    }
+
 }

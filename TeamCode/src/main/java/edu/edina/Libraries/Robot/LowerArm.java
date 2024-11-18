@@ -12,14 +12,17 @@ import com.acmerobotics.roadrunner.Action;
 @Config
 public class LowerArm implements Action {
 
-    // Position increment
-    public static int POSITION_INCREMENT = 100;
+    // Fast increment
+    public static int FAST_INCREMENT = 200;
+
+    // Slow increment
+    public static int SLOW_INCREMENT = 100;
 
     // Current position
     private int currentPosition;
 
-    // Initialized value
-    private boolean initialized;
+    // Increment
+    private int increment;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -30,42 +33,39 @@ public class LowerArm implements Action {
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
 
+        // Get the arm's current position.
+        currentPosition = robotHardware.getCurrentArmPosition();
+
+        // Get an appropriate increment.
+        if(robotHardware.isLiftInGroundPosition() && robotHardware.isSlideFullyRetracted()) {
+            increment = FAST_INCREMENT;
+        }
+        else {
+            increment = SLOW_INCREMENT;
+        }
+
     }
 
     // Runs this.
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
 
-        // If this is uninitialized...
-        if (!initialized) {
+        // If the arm is in the ground position...
+        if(currentPosition <= GROUND_POSITION) {
 
-            // Get the arm's current position.
-            currentPosition = robotHardware.getCurrentArmPosition();
-
-            // Remember that this is initialized.
-            initialized = true;
-
-            // Return indicating that this is still running.
-            return true;
+            // Return indicating that this is done.
+            return false;
 
         }
 
-        // If the arm has not reached the ground...
-        if(currentPosition > GROUND_POSITION) {
+        // Decrement the current position.
+        currentPosition = Math.max(currentPosition - increment, GROUND_POSITION);
 
-            // Decrement the current position.
-            currentPosition = Math.max(currentPosition - POSITION_INCREMENT, GROUND_POSITION);
+        // Set the arm's position.
+        robotHardware.setArmPosition(currentPosition);
 
-            // Set the arm's position.
-            robotHardware.setArmPosition(currentPosition);
-
-            // Return indicating that this is still running.
-            return true;
-
-        }
-
-        // Return indicating that this is done.
-        return false;
+        // Return indicating that this is still running.
+        return true;
 
     }
 
