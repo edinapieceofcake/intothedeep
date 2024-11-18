@@ -13,9 +13,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Slide {
 
-    // Epsilon
-    private static final double EPSILON = 0.0001;
-
     // Extension error threshold
     public static double EXTENSION_ERROR_THRESHOLD = 0.5;
 
@@ -40,14 +37,23 @@ public class Slide {
     // Minimum extension
     public static double MINIMUM_EXTENSION = 0;
 
+    // Maximum power
+    public static double MAXIMUM_POWER = 1;
+
     // Maximum voltage difference
     public static double MAXIMUM_VOLTAGE_DIFFERENCE = 1;
 
-    // Power
-    public static double POWER = 1;
+    // Proportional coefficient
+    public static double PROPORTIONAL = 0.5;
 
     // Uninitialized value
     private static final double UNINITIALIZED = -1;
+
+    // Valid voltage threshold
+    private static final double VALID_VOLTAGE_THRESHOLD = 0.1;
+
+    // Zero power threshold
+    private static final double ZERO_POWER_THRESHOLD = 0.0001;
 
     // Encoder
     private final AnalogInput encoder;
@@ -106,7 +112,7 @@ public class Slide {
         Telemetry telemetry = opMode.telemetry;
 
         // If the current voltage is invalid...
-        if (currentVoltage < 0 || currentVoltage > maximumVoltage) {
+        if (currentVoltage < -VALID_VOLTAGE_THRESHOLD || currentVoltage > maximumVoltage + VALID_VOLTAGE_THRESHOLD) {
 
             // Display an error message.
             telemetry.addData("Slide Error", "Voltage " + currentVoltage + " is invalid.  Max voltage is " + maximumVoltage + ".");
@@ -120,7 +126,7 @@ public class Slide {
         if (lastVoltage == UNINITIALIZED) {
 
             // If we have a current voltage...
-            if (currentVoltage > EPSILON) {
+            if (currentVoltage > ZERO_POWER_THRESHOLD) {
 
                 // Initialize the last voltage.
                 lastVoltage = currentVoltage;
@@ -190,8 +196,14 @@ public class Slide {
 
     // Updates this.
     public void update() {
-        if (!updateVoltage())
+
+        // If updating the voltage failed...
+        if (!updateVoltage()) {
+
+            // Exit the method.
             return;
+
+        }
 
         // Get the current extension.
         double currentExtension = getCurrentExtension();
@@ -200,12 +212,7 @@ public class Slide {
         double extensionError = currentExtension - targetExtension;
 
         // Get a power.
-        double inputPower;
-        if (Math.abs(extensionError) < EXTENSION_ERROR_THRESHOLD) {
-            inputPower = 0;
-        } else {
-            inputPower = extensionError > 0 ? POWER : -POWER;
-        }
+        double inputPower = clamp(extensionError * PROPORTIONAL, -MAXIMUM_POWER, MAXIMUM_POWER);
 
         // Set the power.
         servo.setPower(inputPower);
@@ -337,6 +344,11 @@ public class Slide {
         // Return the current extension.
         return INCHES_PER_VOLT * offsetVoltage;
 
+    }
+
+    // Clamps a value.
+    public static double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
     }
 
 }
