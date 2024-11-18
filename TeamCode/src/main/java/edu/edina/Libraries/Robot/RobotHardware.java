@@ -40,7 +40,7 @@ public class RobotHardware {
                 2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
-                0 - CRServo Axon Mini+ - slide_servo
+                2 - CRServo Axon Mini+ - slide_servo
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */
@@ -65,11 +65,15 @@ public class RobotHardware {
     private ElapsedTime loweringToGroundTimer;
     private boolean inputTurtleMode;
     private Light light;
+    private SampleSensor sampleSensor;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
         // Remember the op mode.
         this.opMode = opMode;
+        HardwareMap hardwareMap = opMode.hardwareMap;
+
+        sampleSensor = new SampleSensor(hardwareMap);
 
         // Initialize the arm.
         arm = new Arm(this);
@@ -83,7 +87,6 @@ public class RobotHardware {
         // Initialize the slide.
         slide = new Slide(this);
 
-        HardwareMap hardwareMap = opMode.hardwareMap;
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
@@ -105,7 +108,7 @@ public class RobotHardware {
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
 
-        light = new Light(hardwareMap);
+        light = new Light(hardwareMap, sampleSensor);
     }
 
     // Waits for the user to lower the lift.
@@ -587,9 +590,5 @@ public class RobotHardware {
 
     public BoundingBoxFailsafe getFailsafe() {
         return failsafe;
-    }
-
-    public void setColor(SampleColor sampleColor) {
-        light.setSampleColor(sampleColor);
     }
 }
