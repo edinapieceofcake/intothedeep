@@ -451,88 +451,92 @@ public class RobotHardware {
     // Moves the arm to the ground position.
     public void setArmGroundPosition() {
 
-        // If the arm is high...
-        if (arm.isRaised()) {
+        // Construct an action to move the arm to the ground position.
+        Action action = new SequentialAction(
+                new MoveArm(this, Arm.GROUND_POSITION),
+                new WaitForNotBusy(this, false),
+                new InstantAction(() -> lowerWrist())
+        );
 
-            // Progressively lower the arm.
-            progressivelyLowerArm();
-
-        }
-
-        // Otherwise (if the arm is low)...
-        else {
-
-            // Move the arm to the ground position.
-            arm.setGroundPosition();
-
-            // Lower the wrist.
-            lowerWrist();
-
-        }
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the low basket position.
     public void setArmLowBasketPosition() {
 
-        // Move the arm to the low basket position.
-        arm.setLowBasketPosition();
+        // Construct an action to move the arm to the low basket position.
+        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION);
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the ascent position.
     public void setArmAscentPosition() {
 
-        // Move the arm to the ascent position.
-        arm.setAscentPosition();
+        // Construct an action to move the arm to the ascent position.
+        Action action = new MoveArm(this, Arm.ASCENT_POSITION);
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the high basket position.
     public void setArmHighBasketPosition() {
 
-        // Move the arm to the high basket position.
-        arm.setHighBasketPosition();
+        // Construct an action to move the arm to the high basket position.
+        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION);
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the high basket auto position.
     public void setArmHighBasketAutoPosition() {
 
-        // Move the arm to the high basket auto position.
-        arm.setHighBasketAutoPosition();
+        // Construct an action to move the arm to the high basket auto position.
+        Action action = new MoveArm(this, Arm.HIGH_BASKET_AUTO_POSITION);
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the high chamber position.
     public void setArmHighChamberPosition() {
 
-        // Move the arm to the high chamber position.
-        arm.setHighChamberPosition();
+        // Construct an action to move the arm to the high chamber position.
+        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION);
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the low chamber position.
     public void setArmLowChamberPosition() {
 
-        // Move the arm to the low chamber position.
-        arm.setLowChamberPosition();
+        // Construct an action to move the arm to the low chamber position.
+        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION);
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 
     // Moves the arm to the submersible position.
     public void setArmSubmersiblePosition() {
 
-        // Move the arm to the submersible position.
-        arm.setSubmersiblePosition();
+        // Construct an action to move the arm to the submersible position.
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION);
 
-    }
-
-    // Moves the arm to the almost ground position.
-    public void setArmAlmostGroundPosition() {
-
-        // Move the arm to the almost ground position.
-        arm.setAlmostGroundPosition();
+        // Run the action.
+        runningActions.add(action);
 
     }
 
@@ -652,21 +656,6 @@ public class RobotHardware {
 
         // Play the beep sound.
         SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, beepSoundId);
-
-    }
-
-    // Progressively lowers the arm.
-    private void progressivelyLowerArm() {
-
-        // Construct a lower to ground action.
-        Action action = new SequentialAction(
-                new LowerArm(this),
-                new WaitForNotBusy(this, false),
-                new InstantAction(() -> lowerWrist())
-        );
-
-        // Run the action.
-        runningActions.add(action);
 
     }
 

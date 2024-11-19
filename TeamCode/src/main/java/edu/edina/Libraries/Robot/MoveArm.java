@@ -1,16 +1,14 @@
 package edu.edina.Libraries.Robot;
 
-import static edu.edina.Libraries.Robot.Arm.GROUND_POSITION;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
-// Lowers the arm.
+// Moves the arm.
 @Config
-public class LowerArm implements Action {
+public class MoveArm implements Action {
 
     // Fast increment
     public static int FAST_INCREMENT = 200;
@@ -27,11 +25,17 @@ public class LowerArm implements Action {
     // Robot hardware
     private RobotHardware robotHardware;
 
+    // Target position
+    private int targetPosition;
+
     // Initializes this.
-    public LowerArm(RobotHardware robotHardware) {
+    public MoveArm(RobotHardware robotHardware, int targetPosition) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
+
+        // Get the target position.
+        this.targetPosition = targetPosition;
 
         // Get the arm's current position.
         currentPosition = robotHardware.getCurrentArmPosition();
@@ -44,22 +48,40 @@ public class LowerArm implements Action {
             increment = SLOW_INCREMENT;
         }
 
+        // If we are lowering the arm...
+        if(currentPosition > targetPosition) {
+
+            // Negate the increment.
+            increment = -increment;
+
+        }
+
     }
 
     // Runs this.
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
 
-        // If the arm is in the ground position...
-        if(currentPosition <= GROUND_POSITION) {
+        // Determine whether the arm is in position.
+        boolean inPosition =
+                (increment > 0 && currentPosition >= targetPosition) ||
+                        (increment < 0 && currentPosition <= targetPosition);
+
+        // If the arm is in position...
+        if(inPosition) {
 
             // Return indicating that this is done.
             return false;
 
         }
 
-        // Decrement the current position.
-        currentPosition = Math.max(currentPosition - increment, GROUND_POSITION);
+        // Update the current position.
+        if(increment > 0) {
+            currentPosition = Math.min(currentPosition + increment, targetPosition);
+        }
+        else {
+            currentPosition = Math.max(currentPosition + increment, targetPosition);
+        }
 
         // Set the arm's position.
         robotHardware.setArmPosition(currentPosition);
