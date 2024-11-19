@@ -552,22 +552,6 @@ public class RobotHardware {
 
     }
 
-    // Moves the lift to the ascend position.
-    public void setLiftAscendPosition() {
-
-        // Move the lift to the ascend position.
-        lift.setAscendPosition();
-
-    }
-
-    // Moves the lift to the ascend down position.
-    public void setLiftAscendDownPosition() {
-
-        // Move the lift to the ascend down position.
-        lift.setAscendDownPosition();
-
-    }
-
     // Checks if the lift is busy.
     public boolean isLiftBusy() {
 
@@ -675,13 +659,6 @@ public class RobotHardware {
     private void progressivelyLowerArm() {
 
         // Construct a lower to ground action.
-//        Action action = new SequentialAction(
-//                new InstantAction(() -> arm.setAlmostGroundPosition()),
-//                new WaitForNotBusy(this, false),
-//                new WaitAndUpdate(this, GROUND_DELAY_MILLISECONDS, false),
-//                new InstantAction(() -> arm.setGroundPosition()),
-//                new InstantAction(() -> lowerWrist())
-//        );
         Action action = new SequentialAction(
                 new LowerArm(this),
                 new WaitForNotBusy(this, false),
@@ -798,12 +775,56 @@ public class RobotHardware {
 
     // Determines whether the slide is fully retracted.
     public boolean isSlideFullyRetracted() {
+
+        // Return indicating if the slide is fully retracted.
         return slide.isFullyRetracted();
+
     }
 
     // Determines whether the slide is fully extended.
     public boolean isSlideFullyExtended() {
+
+        // Return indicating if the slide is fully extended.
         return slide.isFullyExtended();
+
+    }
+
+    // Gets the lift's current position.
+    public int getCurrentLiftPosition() {
+
+        // Return the lift's current position.
+        return (int)lift.getPosition();
+
+    }
+
+    // Sets the lift's position.
+    public void setLiftPosition(int position) {
+
+        // Set the lift's position.
+        lift.setPosition(position);
+
+    }
+
+    // Ascends the robot.
+    public void ascend() {
+
+        // Construct an ascend action.
+        Action action = new Ascend(this);
+
+        // Run the action.
+        runningActions.add(action);
+
+    }
+
+    // Descends the robot.
+    public void descend() {
+
+        // Construct a descend action.
+        Action action = new Descend(this);
+
+        // Run the action.
+        runningActions.add(action);
+
     }
 
 }

@@ -211,22 +211,19 @@ public class TeleOpMain extends LinearOpMode {
                 // Clear any pending actions.
                 robotHardware.clearActions();
 
-                // Move the arm to the ascent position.
-                robotHardware.setArmAscentPosition();
-
                 // If we are ascending...
                 if (ascending) {
 
-                    // Descend.
-                    robotHardware.setLiftAscendDownPosition();
+                    // Ascend.
+                    robotHardware.ascend();
 
                 }
 
-                // Otherwise (if we are descending)...
+                // Otherwise (if we are not ascending)...
                 else {
 
-                    // Ascend.
-                    robotHardware.setLiftAscendPosition();
+                    // Descend.
+                    robotHardware.descend();
 
                 }
 

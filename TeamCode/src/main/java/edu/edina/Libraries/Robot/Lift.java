@@ -46,11 +46,11 @@ public class Lift {
     // High basket position
     public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
 
-    // Ascend position
-    public static int ASCEND_POSITION = 1100;
+    // Descend position
+    public static int DESCEND_POSITION = 1100;
 
-    // Ascend down position
-    public static int ASCEND_DOWN_POSITION = -400;
+    // Ascend position
+    public static int ASCEND_POSITION = -400;
 
     private static double INCHES_PER_POS = 14.835 / 1679.0;
 
@@ -306,22 +306,6 @@ public class Lift {
 
     }
 
-    // Moves the lift to the ascend position.
-    public void setAscendPosition() {
-
-        // Move the lift to the ascend position.
-        targetPosition = ASCEND_POSITION;
-
-    }
-
-    // Moves the lift to the ascend down position.
-    public void setAscendDownPosition() {
-
-        // Move the lift to the ascend down position.
-        targetPosition = ASCEND_DOWN_POSITION;
-
-    }
-
     // Determines whether the lift is raised.
     public boolean isRaised() {
 
@@ -359,6 +343,14 @@ public class Lift {
 
         // Return the result.
         return isInGroundPosition;
+
+    }
+
+    // Sets the lift's position.
+    public void setPosition(int targetPosition) {
+
+        // Set the target position.
+        this.targetPosition = targetPosition;
 
     }
 
