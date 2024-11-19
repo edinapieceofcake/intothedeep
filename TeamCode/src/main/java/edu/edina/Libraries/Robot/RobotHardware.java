@@ -1,5 +1,6 @@
 package edu.edina.Libraries.Robot;
 
+import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
 import static edu.edina.OpModes.Autonomous.AutoSpecimen.SCORE_DELAY;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -462,7 +463,7 @@ public class RobotHardware {
         // Construct an action to move the arm to the ground position.
         Action action = new SequentialAction(
                 new MoveArm(this, Arm.GROUND_POSITION),
-                new WaitForNotBusy(this, false),
+                new WaitForNotBusy(this, TIMEOUT_MILLISECONDS,  false),
                 new InstantAction(() -> lowerWrist())
         );
 

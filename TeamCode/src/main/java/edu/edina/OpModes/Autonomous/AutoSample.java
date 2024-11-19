@@ -27,8 +27,8 @@ public class AutoSample extends LinearOpMode {
     public static double START_HEADING = 0;
 
     // Basket pose
-    public static double BASKET_X = -50;
-    public static double BASKET_Y = -50;
+    public static double BASKET_X = -48;
+    public static double BASKET_Y = -48;
     public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
 
     // First spike mark pose
@@ -52,7 +52,10 @@ public class AutoSample extends LinearOpMode {
     public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
 
     // Duration in milliseconds to toggle the claw
-    public static int CLAW_DELAY = 500;
+    public static int CLAW_MILLISECONDS = 500;
+
+    // Timeout in milliseconds
+    public static int TIMEOUT_MILLISECONDS = 3000;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -168,7 +171,7 @@ public class AutoSample extends LinearOpMode {
                         // Score first spike mark sample.
                         driveFromBasketToFirstSpikeMark,
                         new CloseClaw(robotHardware),
-                        new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
+                        new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
                         driveFromFirstSpikeMarkToBasket,
                         score(),
 
@@ -176,16 +179,19 @@ public class AutoSample extends LinearOpMode {
                         driveFromBasketToFirstAndAHalfSpikeMark,
                         driveFromFirstAndAHalfToSecondSpikeMark,
                         new CloseClaw(robotHardware),
-                        new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
+                        new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
                         driveFromSecondSpikeMarkToBasket,
                         score(),
 
                         // Score second third mark sample.
                         driveFromBasketToThirdSpikeMark,
                         new CloseClaw(robotHardware),
-                        new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
+                        new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
                         driveFromThirdSpikeMarkToBasket,
-                        score()
+                        score(),
+
+                        // Wait for everything to finish.
+                        new WaitAndUpdate(robotHardware, TIMEOUT_MILLISECONDS, true)
 
                 )
 
@@ -197,11 +203,11 @@ public class AutoSample extends LinearOpMode {
     public Action score() {
         return new SequentialAction(
                 new MoveToHighBasket(robotHardware),
-                new WaitForNotBusy(robotHardware, true),
+                new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
                 new OpenClaw(robotHardware),
-                new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
+                new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
                 new MoveToGround(robotHardware),
-                new WaitForNotBusy(robotHardware, true)
+                new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true)
         );
     }
 

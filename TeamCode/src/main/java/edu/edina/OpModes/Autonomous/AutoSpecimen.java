@@ -1,6 +1,7 @@
 package edu.edina.OpModes.Autonomous;
 
 import static edu.edina.Libraries.Robot.RobotHardware.SCORE_SPECIMEN_BACKUP_INCHES;
+import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -242,7 +243,7 @@ public class AutoSpecimen extends LinearOpMode {
         public Action score() {
             return new SequentialAction(
                     new MoveToHighChamber(robotHardware),
-                    new WaitForNotBusy(robotHardware, true),
+                    new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
 					new WaitAndUpdate(robotHardware, 200, true),
                     new ParallelAction(
                             new MoveWristToHighChamberScore(robotHardware),
@@ -254,7 +255,7 @@ public class AutoSpecimen extends LinearOpMode {
                     ),
 					new WaitAndUpdate(robotHardware, 200, true),
                     new MoveToGround(robotHardware),
-                    new WaitForNotBusy(robotHardware, true)
+                    new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true)
             );
         }
 
