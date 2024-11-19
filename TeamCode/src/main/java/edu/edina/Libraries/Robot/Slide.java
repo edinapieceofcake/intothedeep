@@ -29,10 +29,10 @@ public class Slide {
     public static double LOW_VOLTAGE_DIVISOR = 4;
 
     // High basket extension
-    public static double HIGH_BASKET_EXTENSION = 9;
+    public static double HIGH_BASKET_EXTENSION = 10;
 
     // Maximum extension
-    public static double MAXIMUM_EXTENSION = 9;
+    public static double MAXIMUM_EXTENSION = 10;
 
     // Minimum extension
     public static double MINIMUM_EXTENSION = 0;
