@@ -47,7 +47,7 @@ public class Arm {
     public static int NEARLY_DOWN_POSITION = 100;
 
     // Proportional coefficient
-    public static double PROPORTIONAL = 0.001;
+    public static double PROPORTIONAL = 0.0008;
 
     // Position increment (ticks)
     public static int POSITION_INCREMENT = 275;
