@@ -501,17 +501,6 @@ public class RobotHardware {
 
     }
 
-    // Moves the arm to the high basket auto position.
-    public void setArmHighBasketAutoPosition() {
-
-        // Construct an action to move the arm to the high basket auto position.
-        Action action = new MoveArm(this, Arm.HIGH_BASKET_AUTO_POSITION);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
     // Moves the arm to the high chamber position.
     public void setArmHighChamberPosition() {
 

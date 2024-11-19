@@ -24,7 +24,7 @@ public class MoveToHighBasket implements Action {
     public boolean run(@NonNull TelemetryPacket packet) {
 
         // Move the arm to the high basket position.
-        robotHardware.setArmHighBasketAutoPosition();
+        robotHardware.setArmHighBasketPosition();
 
         // Move the lift to the high basket position
         robotHardware.setLiftHighBasketPosition();
