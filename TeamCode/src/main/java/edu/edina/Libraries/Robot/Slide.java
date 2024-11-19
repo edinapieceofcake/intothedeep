@@ -28,8 +28,11 @@ public class Slide {
     // Low voltage divisor
     public static double LOW_VOLTAGE_DIVISOR = 4;
 
-    // High basket extension
-    public static double HIGH_BASKET_EXTENSION = 10;
+    // Auto high basket extension
+    public static double AUTO_HIGH_BASKET_EXTENSION = 9;
+
+    // Tele op high basket extension
+    public static double TELE_OP_HIGH_BASKET_EXTENSION = 10;
 
     // Maximum extension
     public static double MAXIMUM_EXTENSION = 10;
@@ -278,11 +281,19 @@ public class Slide {
 
     }
 
-    // Sets the high basket extension.
-    public void setHighBasketExtension() {
+    // Sets the auto high basket extension.
+    public void setAutoHighBasketExtension() {
 
-        // Set the high basket extension.
-        targetExtension = HIGH_BASKET_EXTENSION;
+        // Set the auto high basket extension.
+        targetExtension = AUTO_HIGH_BASKET_EXTENSION;
+
+    }
+
+    // Sets the tele op basket extension.
+    public void setTeleOpHighBasketExtension() {
+
+        // Set the auto high basket extension.
+        targetExtension = TELE_OP_HIGH_BASKET_EXTENSION;
 
     }
 

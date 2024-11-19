@@ -86,7 +86,7 @@ public class TeleOpMain extends LinearOpMode {
                 robotHardware.setLiftHighBasketPosition();
 
                 // Use the high basket extension.
-                robotHardware.setHighBasketExtension();
+                robotHardware.setTeleOpHighBasketExtension();
 
             }
 

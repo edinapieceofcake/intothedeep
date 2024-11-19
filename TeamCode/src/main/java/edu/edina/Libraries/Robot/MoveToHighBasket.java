@@ -30,7 +30,7 @@ public class MoveToHighBasket implements Action {
         robotHardware.setLiftHighBasketPosition();
 
         // Use the high basket extension.
-        robotHardware.setHighBasketExtension();
+        robotHardware.setAutoHighBasketExtension();
 
         // Lower the wrist.
         robotHardware.lowerWrist();

@@ -409,11 +409,19 @@ public class RobotHardware {
 
     }
 
-    // Sets the high basket extension.
-    public void setHighBasketExtension() {
+    // Sets the auto high basket extension.
+    public void setAutoHighBasketExtension() {
 
-        // Set the high basket extension.
-        slide.setHighBasketExtension();
+        // Set the auto high basket extension.
+        slide.setAutoHighBasketExtension();
+
+    }
+
+    // Sets the tele op high basket extension.
+    public void setTeleOpHighBasketExtension() {
+
+        // Set the tele op high basket extension.
+        slide.setTeleOpHighBasketExtension();
 
     }
 
