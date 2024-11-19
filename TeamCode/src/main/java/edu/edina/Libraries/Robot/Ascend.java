@@ -36,9 +36,6 @@ public class Ascend implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
 
-        // Move the arm to the ascent position.
-        robotHardware.setArmAscentPosition();
-
         // If the lift is in the ascend position...
         if(currentPosition <= ASCEND_POSITION) {
 

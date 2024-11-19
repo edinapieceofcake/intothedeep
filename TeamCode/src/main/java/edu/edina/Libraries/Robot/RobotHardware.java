@@ -477,11 +477,8 @@ public class RobotHardware {
     // Moves the arm to the ascent position.
     public void setArmAscentPosition() {
 
-        // Construct an action to move the arm to the ascent position.
-        Action action = new MoveArm(this, Arm.ASCENT_POSITION);
-
-        // Run the action.
-        runningActions.add(action);
+        // Moves the arm to the ascent position.
+        arm.setAscentPosition();
 
     }
 
@@ -798,7 +795,10 @@ public class RobotHardware {
     public void ascend() {
 
         // Construct an ascend action.
-        Action action = new Ascend(this);
+        Action action = new SequentialAction(
+                new InstantAction(() -> setArmAscentPosition()),
+                new Ascend(this)
+        );
 
         // Run the action.
         runningActions.add(action);
@@ -809,7 +809,10 @@ public class RobotHardware {
     public void descend() {
 
         // Construct a descend action.
-        Action action = new Descend(this);
+        Action action = new SequentialAction(
+                new InstantAction(() -> setArmAscentPosition()),
+                new Descend(this)
+        );
 
         // Run the action.
         runningActions.add(action);

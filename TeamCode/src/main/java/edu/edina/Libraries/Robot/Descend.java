@@ -14,7 +14,7 @@ import com.acmerobotics.roadrunner.Action;
 public class Descend implements Action {
 
     // Increment
-    public static int INCREMENT = 50;
+    public static int INCREMENT = 100;
 
     // Current position
     private int currentPosition;
@@ -36,9 +36,6 @@ public class Descend implements Action {
     // Runs this.
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
-
-        // Move the arm to the ascent position.
-        robotHardware.setArmAscentPosition();
 
         // If the lift is in the descend position...
         if(currentPosition >= DESCEND_POSITION) {
