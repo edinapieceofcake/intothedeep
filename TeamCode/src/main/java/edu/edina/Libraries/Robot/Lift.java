@@ -47,7 +47,7 @@ public class Lift {
     public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
 
     // Descend position
-    public static int DESCEND_POSITION = 1100;
+    public static int DESCEND_POSITION = 1500;
 
     // Ascend position
     public static int ASCEND_POSITION = -400;
