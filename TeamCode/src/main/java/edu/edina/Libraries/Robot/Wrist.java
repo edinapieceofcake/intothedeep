@@ -14,7 +14,7 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.53;
 
-    public static double HIGH_CHAMBER_SCORE_POSITION = 0.30;
+    public static double HIGH_CHAMBER_SCORE_POSITION = 0.1;
 
     public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
@@ -22,7 +22,7 @@ public class Wrist {
     public static double UP_POSITION = 0.3;
 
     // Init position
-    public static double INITIALIZE_POSITION = 0.33;
+    public static double INITIALIZE_POSITION = 0.15;
 
     // Servo
     private final TrackingServo servo;
