@@ -87,16 +87,16 @@ public class MeepMeepTesting {
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
                     //First Spike
-                    .strafeToLinearHeading(new Vector2d(37.5,-24.7),4.0/2*Math.PI)
+                            .splineTo(new Vector2d(48.4,-36),Math.toRadians(90))
                     .waitSeconds(0.5)
                     .setReversed(false)
                     //Human Player
-                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+                    .strafeTo(new Vector2d(47,-50))
                     .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
                     .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
                     //Second Spike
-                    .strafeToLinearHeading(new Vector2d(48,-25), 4.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(48,-25), 3.0/2*Math.PI)
                     .waitSeconds(0.5)
                     //Human Player
                     .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
