@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -29,7 +30,7 @@ public class AutoSpecimen extends LinearOpMode {
 		// Start pose
 		public static double START_X = 0;
 		public static double START_Y = -61.5;
-		public static double START_HEADING = 3.0/2*Math.PI;
+		public static double START_HEADING = Math.toRadians(270);
 
 		// Chamber Pose
 		public static double CHAMBER_X = 0;
@@ -37,9 +38,10 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double CHAMBER_HEADING = START_HEADING;
 
 		// First spike mark pose
-		public static double FIRST_SPIKE_MARK_X = 37.5;
-		public static double FIRST_SPIKE_MARK_Y = -24.7;
-		public static double SPIKE_MARK_HEADING = 4.0 / 2 * Math.PI;
+		public static double FIRST_SPIKE_MARK_X = 48.4;
+		public static double FIRST_SPIKE_MARK_Y = -36;
+		public static double FIRST_SPIKE_MARK_TANGENT = Math.toRadians(90);
+		public static double SPIKE_MARK_HEADING = Math.toRadians(0);
 
 		// Second spike mark pose
 		public static double SECOND_SPIKE_MARK_X = 48;
@@ -113,6 +115,7 @@ public class AutoSpecimen extends LinearOpMode {
 			Pose2d scorePose = new Pose2d(CHAMBER_X, SCORE_Y, CHAMBER_HEADING);
 
 			// Construct a first spike mark pose.
+			Vector2d firstSpikeMarkVector = new Vector2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y);
 			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, SPIKE_MARK_HEADING);
 			// Construct a constant pose.
 			Pose2d constantPose = new Pose2d(CONSTANT_X, CONSTANT_Y, CHAMBER_HEADING);
@@ -139,7 +142,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct an action for driving from the score to the first spike mark.
 			Action driveFromScoreToFirstSpikeMark = drive.actionBuilder(scorePose)
-					.strafeToLinearHeading(firstSpikeMarkPose.position, firstSpikeMarkPose.heading)
+					.splineTo(firstSpikeMarkVector,FIRST_SPIKE_MARK_TANGENT)
 					.build();
 
 			// Construct an action for driving from the first spike mark to human player.
@@ -243,10 +246,11 @@ public class AutoSpecimen extends LinearOpMode {
         public Action score() {
             return new SequentialAction(
                     new MoveToHighChamber(robotHardware),
-                    new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
-					new WaitAndUpdate(robotHardware, 200, true),
+                    //new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
+					new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
                     new ParallelAction(
                             new MoveWristToHighChamberScore(robotHardware),
+							new WaitForNotBusy(robotHardware, 300, true),
                             driveFromChamberToScore,
                             new SequentialAction(
                                     new WaitAndUpdate(robotHardware, SCORE_DELAY, true),

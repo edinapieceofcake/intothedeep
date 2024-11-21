@@ -60,7 +60,7 @@ public class RobotHardware {
     */
 
     // Inches to back up when scoring a specimen
-    public static int SCORE_SPECIMEN_BACKUP_INCHES = 5;
+    public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
     // Delay before going from the nearly ground position to the ground position
     public static int GROUND_DELAY_MILLISECONDS = 200;
