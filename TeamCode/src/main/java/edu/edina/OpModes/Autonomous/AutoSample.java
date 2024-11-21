@@ -27,8 +27,8 @@ public class AutoSample extends LinearOpMode {
     public static double START_HEADING = 0;
 
     // Basket pose
-    public static double BASKET_X = -48;
-    public static double BASKET_Y = -48;
+    public static double BASKET_X = -49;
+    public static double BASKET_Y = -49;
     public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
 
     // First spike mark pose
@@ -37,7 +37,7 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_SPIKE_MARK_HEADING = 1.0 / 2 * Math.PI;
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = -61;
+    public static double SECOND_SPIKE_MARK_X = -60;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
