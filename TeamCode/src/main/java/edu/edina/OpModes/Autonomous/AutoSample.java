@@ -225,6 +225,7 @@ public class AutoSample extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
                         )
                 ),
+                new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
                 scoreSample(robotHardware)
         );
 
