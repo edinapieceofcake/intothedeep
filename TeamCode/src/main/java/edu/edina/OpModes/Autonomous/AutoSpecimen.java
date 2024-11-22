@@ -254,7 +254,7 @@ public class AutoSpecimen extends LinearOpMode {
         public Action score() {
             return new SequentialAction(
 					new InstantAction(() -> robotHardware.lowerWrist()),
-					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false),
+					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
 					new WaitForTime(500),
                     new ParallelAction(
 							new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
@@ -265,7 +265,7 @@ public class AutoSpecimen extends LinearOpMode {
                             )
                     ),
 					new WaitForTime(500),
-					new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
+					new MoveArm(robotHardware, Arm.GROUND_POSITION, true),
                     new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
 					new InstantAction(() -> robotHardware.lowerWrist())
             );

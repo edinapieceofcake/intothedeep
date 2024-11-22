@@ -506,7 +506,7 @@ public class RobotHardware {
     public void setArmHighChamberPosition() {
 
         // Construct an action to move the arm to the high chamber position.
-        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, false);
+        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -517,7 +517,7 @@ public class RobotHardware {
     public void setArmLowChamberPosition() {
 
         // Construct an action to move the arm to the low chamber position.
-        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, false);
+        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -528,7 +528,7 @@ public class RobotHardware {
     public void setArmSubmersiblePosition() {
 
         // Construct an action to move the arm to the submersible position.
-        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, false);
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
