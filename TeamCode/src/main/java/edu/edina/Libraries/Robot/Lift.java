@@ -55,7 +55,7 @@ public class Lift {
     private static double INCHES_PER_POS = 14.835 / 1679.0;
 
     // Rezeroing power
-    public static double REZEROING_POWER = -0.5;
+    public static double REZEROING_POWER = -0.3;
 
     // Controller
     private PIDController controller;

@@ -50,7 +50,7 @@ public class Arm {
     public static int POSITION_INCREMENT = 275;
 
     // Rezeroing power
-    public static double REZEROING_POWER = -0.5;
+    public static double REZEROING_POWER = -0.3;
 
     // Submersible position
     public static int SUBMERSIBLE_POSITION = 4700;

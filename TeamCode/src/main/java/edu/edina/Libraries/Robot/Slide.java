@@ -57,7 +57,7 @@ public class Slide {
     private static final double ZERO_POWER_THRESHOLD = 0.0001;
 
     // Rezeroing power
-    public static double REZEROING_POWER = -0.5;
+    public static double REZEROING_POWER = 0.2;
 
     // Encoder
     private final AnalogInput encoder;
