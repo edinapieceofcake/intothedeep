@@ -40,15 +40,17 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// First spike mark pose
 		public static double FIRST_SPIKE_MARK_A_X = 49;
-		public static double FIRST_SPIKE_MARK_A_Y = -45;
+		public static double FIRST_SPIKE_MARK_A_Y = -47;
 		public static double FIRST_SPIKE_MARK_B_X = FIRST_SPIKE_MARK_A_X;
 		public static double FIRST_SPIKE_MARK_B_Y = -41;
-		public static double SPIKE_MARK_HEADING = Math.toRadians(90);
+		public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(90);
 
 		// Second spike mark pose
-		public static double SECOND_SPIKE_MARK_X = 48;
-		public static double SECOND_SPIKE_MARK_Y = -25;
-
+		public static double SECOND_SPIKE_MARK_A_X = 59;
+		public static double SECOND_SPIKE_MARK_A_Y = FIRST_SPIKE_MARK_A_Y;
+		public static double SECOND_SPIKE_MARK_B_X = SECOND_SPIKE_MARK_A_X;
+		public static double SECOND_SPIKE_MARK_B_Y = FIRST_SPIKE_MARK_B_Y;
+		public static double SECOND_SPIKE_MARK_HEADING = Math.toRadians(90);
 
 		// Third Spike Mark pose
 		public static double THIRD_SPIKE_MARK_X = 58;
@@ -118,16 +120,20 @@ public class AutoSpecimen extends LinearOpMode {
 			// Construct a first spike mark pose.
 			Vector2d firstSpikeMarkAVector = new Vector2d(FIRST_SPIKE_MARK_A_X, FIRST_SPIKE_MARK_A_Y);
 			Vector2d firstSpikeMarkBVector = new Vector2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y);
-			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y, SPIKE_MARK_HEADING);
+			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y, FIRST_SPIKE_MARK_HEADING);
+
+			// Construct a second spike mark pose.
+			Vector2d secondSpikeMarkAVector = new Vector2d(SECOND_SPIKE_MARK_A_X, SECOND_SPIKE_MARK_A_Y);
+			Vector2d secondSpikeMarkBVector = new Vector2d(SECOND_SPIKE_MARK_B_X, SECOND_SPIKE_MARK_B_Y);
+			Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_B_X, SECOND_SPIKE_MARK_B_Y, SECOND_SPIKE_MARK_HEADING);
+
 			// Construct a constant pose.
 			Pose2d constantPose = new Pose2d(CONSTANT_X, CONSTANT_Y, CHAMBER_HEADING);
 			// Construct a human player 2 pose.
 			Pose2d humanPlayer2Pose = new Pose2d(HUMAN_PAYER_2_X, HUMAN_PAYER_2_Y, HUMAN_PLAYER_HEADING);
 
-			// Construct a second spike mark pose.
-			Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, SPIKE_MARK_HEADING);
 			// Construct a third spike mark pose.
-			Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, SPIKE_MARK_HEADING);
+			Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
 			// Construct a human player pose.
 			Pose2d humanPlayerPose = new Pose2d(HUMAN_PLAYER_X, HUMAN_PLAYER_Y, HUMAN_PLAYER_HEADING);
 
@@ -144,9 +150,16 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct an action for driving from the score to the first spike mark.
 			Action driveFromScoreToFirstSpikeMark = drive.actionBuilder(scorePose)
-					.strafeToLinearHeading(firstSpikeMarkAVector, SPIKE_MARK_HEADING)
+					.strafeToLinearHeading(firstSpikeMarkAVector, FIRST_SPIKE_MARK_HEADING)
 					.strafeTo(firstSpikeMarkBVector)
 					.build();
+
+			// Construct an action for driving from the first spike mark to the second spike mark.
+			Action driveFromFirstSpikeMarkToSecondSpikeMark = drive.actionBuilder(firstSpikeMarkPose)
+					.strafeToLinearHeading(secondSpikeMarkAVector, SECOND_SPIKE_MARK_HEADING)
+					.strafeTo(secondSpikeMarkBVector)
+					.build();
+
 
 			// Construct an action for driving from the first spike mark to human player.
 			Action driveFirstSpikeMarkToHumanPlayer = drive.actionBuilder(firstSpikeMarkPose)
@@ -199,10 +212,22 @@ public class AutoSpecimen extends LinearOpMode {
 					driveFromStartToChamber,
 					scoreSpecimenAndLower(),
 
-					// Pick up first spike mark sample.
+					// Grab first spike mark sample.
 					driveFromScoreToFirstSpikeMark,
 					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY)
+					new WaitForTime(CLAW_DELAY),
+
+					// Deliver first spike mark sample.
+					deliverSampleToHumanPlayer(),
+
+					// Grab second spike mark sample.
+					driveFromFirstSpikeMarkToSecondSpikeMark,
+					new InstantAction(() -> robotHardware.closeClaw()),
+					new WaitForTime(CLAW_DELAY),
+
+					// Deliver second spike mark sample.
+					deliverSampleToHumanPlayer()
+
 //							//deliver sample to human player
 //							driveFirstSpikeMarkToHumanPlayer,
 //							new OpenClaw(),
@@ -287,6 +312,24 @@ public class AutoSpecimen extends LinearOpMode {
 							new WaitForTime(SCORE_DELAY),
 							new InstantAction(() -> robotHardware.openClaw())
 					)
+			);
+
+			// Return the action.
+			return action;
+
+		}
+
+		// Delivers a sample to a human player.
+		public Action deliverSampleToHumanPlayer() {
+
+			// Construct an action.
+			Action action = new SequentialAction(
+					new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, false),
+					new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
+					new InstantAction(() -> robotHardware.openClaw()),
+					new WaitForTime(CLAW_DELAY),
+					new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
+					new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
 			);
 
 			// Return the action.
