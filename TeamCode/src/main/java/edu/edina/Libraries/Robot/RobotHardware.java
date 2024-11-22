@@ -85,12 +85,11 @@ public class RobotHardware {
 
         // Remember the op mode.
         this.opMode = opMode;
-        HardwareMap hardwareMap = opMode.hardwareMap;
-
-        sampleSensor = new SampleSensor(hardwareMap);
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
+
+        sampleSensor = new SampleSensor(hardwareMap);
 
         // Get an FTC dashboard instance.
         dashboard = FtcDashboard.getInstance();
