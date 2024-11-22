@@ -29,16 +29,21 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double START_Y = -61.5;
 		public static double START_HEADING = Math.toRadians(270);
 
-		// Chamber Pose
+		// Chamber pose
 		public static double CHAMBER_X = 0;
 		public static double CHAMBER_Y = -35;
 		public static double CHAMBER_HEADING = START_HEADING;
 
+		// Score pose
+		public static double SCORE_X = CHAMBER_X;
+		public static double SCORE_Y = CHAMBER_Y - SCORE_SPECIMEN_BACKUP_INCHES;
+
 		// First spike mark pose
-		public static double FIRST_SPIKE_MARK_X = 48.4;
-		public static double FIRST_SPIKE_MARK_Y = -36;
-		public static double FIRST_SPIKE_MARK_TANGENT = Math.toRadians(90);
-		public static double SPIKE_MARK_HEADING = Math.toRadians(0);
+		public static double FIRST_SPIKE_MARK_A_X = 49;
+		public static double FIRST_SPIKE_MARK_A_Y = -45;
+		public static double FIRST_SPIKE_MARK_B_X = FIRST_SPIKE_MARK_A_X;
+		public static double FIRST_SPIKE_MARK_B_Y = -41;
+		public static double SPIKE_MARK_HEADING = Math.toRadians(90);
 
 		// Second spike mark pose
 		public static double SECOND_SPIKE_MARK_X = 48;
@@ -54,7 +59,6 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double CONSTANT_X = 47;
 		public static double HUMAN_PAYER_2_Y = -50;
 		public static double HUMAN_PAYER_2_X = 44;
-		public static double SCORE_Y = CHAMBER_Y - SCORE_SPECIMEN_BACKUP_INCHES;
 		public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
 		// Duration in milliseconds to toggle the claw
 		public static int CLAW_DELAY = 500;
@@ -109,11 +113,12 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct a chamber pose.
 			Pose2d chamberPose = new Pose2d(CHAMBER_X, CHAMBER_Y, CHAMBER_HEADING);
-			Pose2d scorePose = new Pose2d(CHAMBER_X, SCORE_Y, CHAMBER_HEADING);
+			Pose2d scorePose = new Pose2d(SCORE_X, SCORE_Y, CHAMBER_HEADING);
 
 			// Construct a first spike mark pose.
-			Vector2d firstSpikeMarkVector = new Vector2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y);
-			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, SPIKE_MARK_HEADING);
+			Vector2d firstSpikeMarkAVector = new Vector2d(FIRST_SPIKE_MARK_A_X, FIRST_SPIKE_MARK_A_Y);
+			Vector2d firstSpikeMarkBVector = new Vector2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y);
+			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y, SPIKE_MARK_HEADING);
 			// Construct a constant pose.
 			Pose2d constantPose = new Pose2d(CONSTANT_X, CONSTANT_Y, CHAMBER_HEADING);
 			// Construct a human player 2 pose.
@@ -139,7 +144,8 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct an action for driving from the score to the first spike mark.
 			Action driveFromScoreToFirstSpikeMark = drive.actionBuilder(scorePose)
-					.splineTo(firstSpikeMarkVector,FIRST_SPIKE_MARK_TANGENT)
+					.strafeToLinearHeading(firstSpikeMarkAVector, SPIKE_MARK_HEADING)
+					.strafeTo(firstSpikeMarkBVector)
 					.build();
 
 			// Construct an action for driving from the first spike mark to human player.
@@ -256,11 +262,11 @@ public class AutoSpecimen extends LinearOpMode {
 			// Construct an action.
             Action action = new SequentialAction(
 					new InstantAction(() -> robotHardware.lowerWrist()),
-					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
+					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false),
 					new WaitForTime(500),
 					scoreSpecimen(driveFromChamberToScore, robotHardware),
 					new WaitForTime(500),
-					new MoveArm(robotHardware, Arm.GROUND_POSITION, true),
+					new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
                     new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
 					new InstantAction(() -> robotHardware.lowerWrist())
             );
