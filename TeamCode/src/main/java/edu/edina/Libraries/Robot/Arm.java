@@ -55,6 +55,9 @@ public class Arm {
     // Submersible position
     public static int SUBMERSIBLE_POSITION = 4700;
 
+    // Submersible position threshold
+    public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;
+
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
 
@@ -393,6 +396,18 @@ public class Arm {
         return isInSubmersiblePosition;
 
     }
+
+    // Determines whether the arm is near the submersible position.
+    public boolean isNearSubmersiblePosition() {
+
+        // Determine whether the arm is near the submersible position.
+        boolean isNearSubmersiblePosition = Math.abs(targetPosition - SUBMERSIBLE_POSITION) <= SUBMERSIBLE_POSITION_THRESHOLD;
+
+        // Return the result.
+        return isNearSubmersiblePosition;
+
+    }
+
 
     // Determines whether the arm is in the ground position.
     public boolean isInGroundPosition() {

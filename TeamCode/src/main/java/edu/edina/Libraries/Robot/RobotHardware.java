@@ -454,9 +454,12 @@ public class RobotHardware {
     // Moves the arm to the ground position.
     public void setArmGroundPosition() {
 
+        // Determine whether to move fast.
+        boolean fast = arm.isNearSubmersiblePosition();
+
         // Construct an action to move the arm to the ground position.
         Action action = new SequentialAction(
-                new MoveArm(this, Arm.GROUND_POSITION, false),
+                new MoveArm(this, Arm.GROUND_POSITION, fast),
                 new WaitForHardware(this, TIMEOUT_MILLISECONDS),
                 new InstantAction(() -> lowerWrist())
         );
