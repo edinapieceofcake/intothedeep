@@ -77,16 +77,21 @@ public class RobotHardware {
     private final Lift lift;
     private final Slide slide;
     private final BoundingBoxFailsafe failsafe;
+    private Light light;
+    private SampleSensor sampleSensor;
     private boolean turtleMode;
-    //private Light light;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
+
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
         // Remember the op mode.
         this.opMode = opMode;
+        HardwareMap hardwareMap = opMode.hardwareMap;
+
+        sampleSensor = new SampleSensor(hardwareMap);
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -140,7 +145,7 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
-        //light = new Light(hardwareMap);
+        light = new Light(hardwareMap, sampleSensor);
     }
 
     // Waits for the user to lower the lift.
@@ -639,10 +644,6 @@ public class RobotHardware {
         return failsafe;
     }
 
-    public void setColor(SampleColor sampleColor) {
-        //light.setSampleColor(sampleColor);
-    }
-
     // Beeps
     public void beep() {
 
@@ -651,7 +652,6 @@ public class RobotHardware {
 
         // Play the beep sound.
         SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, beepSoundId);
-
     }
 
     // Scores a specimen.
@@ -816,5 +816,4 @@ public class RobotHardware {
         runningActions.add(action);
 
     }
-
 }

@@ -13,7 +13,7 @@ public class LightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        light = new Light(hardwareMap);
+        light = new Light(hardwareMap, null);
 
         waitForStart();
 
@@ -32,6 +32,6 @@ public class LightTest extends LinearOpMode {
     }
 
     public void setColor(SampleColor sampleColor) {
-        light.setSampleColor(sampleColor);
+        light.setSampleColor();
     }
 }

@@ -25,7 +25,7 @@ public class ColorSensorLightTest extends LinearOpMode {
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
-        light = new Light(hardwareMap);
+        light = new Light(hardwareMap, null);
 
         try {
             runSample();
@@ -106,6 +106,6 @@ public class ColorSensorLightTest extends LinearOpMode {
     }
 
     public void setColor(SampleColor sampleColor) {
-        light.setSampleColor(sampleColor);
+        light.setSampleColor();
     }
 }

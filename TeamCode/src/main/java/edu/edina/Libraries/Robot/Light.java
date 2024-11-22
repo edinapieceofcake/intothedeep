@@ -9,16 +9,18 @@ public class Light {
     private NeoPixelDriverDevice neoPixel;
     private ElapsedTime t;
     private SampleColor sampleColor;
+    private SampleSensor sampleSensor;
 
-
-    public Light(HardwareMap hardwareMap) {
+    public Light(HardwareMap hardwareMap, SampleSensor sampleSensor) {
         neoPixel = hardwareMap.get(NeoPixelDriverDevice.class, "neopixel_driver");
         numPixel = NeoPixelDriverDevice.NUM_PIXELS;
         pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
         t = new ElapsedTime();
+        this.sampleSensor = sampleSensor;
     }
 
     public void update() {
+        setSampleColor();
         updateWaveEffect();
         showSample();
         neoPixel.showColors(pixArray);
@@ -53,8 +55,8 @@ public class Light {
         }
     }
 
-    public void setSampleColor(SampleColor sample) {
-        sampleColor = sample;
+    public void setSampleColor() {
+        sampleColor = sampleSensor.detectSampleColor();
     }
 
     public void showSample() {
