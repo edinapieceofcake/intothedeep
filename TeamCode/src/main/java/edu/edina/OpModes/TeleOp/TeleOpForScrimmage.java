@@ -1,6 +1,7 @@
 package edu.edina.OpModes.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -42,10 +43,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
     */
 
     // Maximum slide extension in submersible (so the robot stays within the expansion box)
-    public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 6;
-
-    // Rumble milliseconds
-    public static int RUMBLE_MILLISECONDS = 500;
+    public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 5;
 
     // Trigger threshold
     public static double TRIGGER_THRESHOLD = 0.5;
@@ -91,7 +89,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 //////////////////////////////////////////////////////////////////////
 
                 // If the user pressed dpad right...
-                if (currentGamepad.dpad_right) {
+                if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
                     // Determine whether the arm is nearly down.
                     boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
@@ -111,8 +109,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     // If slide extension is disallowed...
                     if (disallowSlideExtension) {
 
-                        // Rumble the gamepad.
-                        rumble();
+                        // Notify the user.
+                        robotHardware.beep();
 
                     }
 
@@ -127,7 +125,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 }
 
                 // If the user pressed dpad left...
-                if (currentGamepad.dpad_left) {
+                if (currentGamepad.dpad_left && !previousGamepad.dpad_left) {
 
                     // Retract the slide.
                     robotHardware.retractSlide();
@@ -241,8 +239,8 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     // If the submersible preset is disallowed...
                     if (disallowSubmersiblePreset) {
 
-                        // Rumble the gamepad.
-                        rumble();
+                        // Notify the user.
+                        robotHardware.beep();
 
                     }
 
@@ -278,7 +276,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.setLiftHighBasketPosition();
 
                     // Use the high basket extension.
-                    robotHardware.setHighBasketExtension();
+                    robotHardware.setTeleOpHighBasketExtension();
 
                 }
 
@@ -339,14 +337,6 @@ public class TeleOpForScrimmage extends LinearOpMode {
             telemetry.update();
 
         }
-
-    }
-
-    // Rumbles the gamepad.
-    private void rumble() {
-
-        // Rumble the gamepad.
-        currentGamepad.rumble(RUMBLE_MILLISECONDS);
 
     }
 

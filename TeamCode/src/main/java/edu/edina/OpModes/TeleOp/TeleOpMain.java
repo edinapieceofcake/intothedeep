@@ -1,12 +1,12 @@
 package edu.edina.OpModes.TeleOp;
 
+import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
+
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import edu.edina.Libraries.Robot.MiniAutoMode;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -17,29 +17,26 @@ public class TeleOpMain extends LinearOpMode {
 
     Robot Controls
 
-    Normal Mode
     - left stick = move robot
     - right stick = rotate robot
     - a = toggle claw
-    - y = toggle turtle mode
-    - x = wrist toggle
-    - right bumper = raise arm
-    - left bumper = lower arm
+    - x = chamber
+    - y = basket
+    - b = submersible
+    - right bumper = ground
+    - left trigger = hold for turtle
+    - back = toggle ascend
+    - dpad up = increment arm
+    - dpad down = decrement arm
+    - dpad right = extend slide
+    - dpad left = retract slide
 
-    Sample basket scoring (hold right trigger)
-    - x = low basket
-    - y = high basket
-    - a = ground
-
-    Submersible & rungs (hold left trigger) (driving reversed)
-    - dpad-up = high rung
-    - dpad-down = low rung
-    - dpad-right = submersible
-    - a = toggle claw
     */
 
     // Trigger threshold
     private static final double TRIGGER_THRESHOLD = 0.5;
+
+    private boolean ascending;
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
@@ -47,28 +44,17 @@ public class TeleOpMain extends LinearOpMode {
         // Get hardware.
         RobotHardware robotHardware = new RobotHardware(this);
 
-        /*// Wait for the user to lower the lift.
-        robotHardware.waitForLiftDown();
-
-        // Wait for the user to lower the arm.
-        robotHardware.waitForArmDown();
-
-        // Initialize the robot.
-        robotHardware.initializeRobot();*/
-
-        // If stop is requested...
-        if (isStopRequested()) {
-
-            // Exit the method.
-            return;
-
-        }
-
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 
         // Wait for the user to press start.
         waitForStart();
+
+        // Open the claw.
+        robotHardware.openClaw();
+
+        // Lowers the wrist.
+        robotHardware.lowerWrist();
 
         // Get current and previous gamepads.
         Gamepad currentGamepad = new Gamepad();
@@ -81,51 +67,48 @@ public class TeleOpMain extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            boolean subAndRungs = currentGamepad.left_trigger > TRIGGER_THRESHOLD;
+            // Reverse the robot if appropriate.
+            robotHardware.setReversed(!robotHardware.isArmAlmostGroundOrLower());
 
-            robotHardware.setReversed(subAndRungs);
+            // If the user pressed y...
+            if (currentGamepad.y && !previousGamepad.y) {
 
-            // If left trigger is down...
-            if (subAndRungs) {
+                // Clear any pending actions.
+                robotHardware.clearActions();
 
-                // Specimen and Submersible
-                //////////////////////////////////////////////////////////////////////
+                // Raise the wrist.
+                robotHardware.raiseWrist();
 
-                // If the user pressed dpad up...
-                if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-                    robotHardware.setTurtleMode(true);
+                // Move the arm to the high basket position.
+                robotHardware.setArmHighBasketPosition();
 
-                    // Move the arm to the high chamber position.
-                    robotHardware.setArmHighChamberPosition();
+                // Move the lift to the high basket position
+                robotHardware.setLiftHighBasketPosition();
 
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
+                // Use the high basket extension.
+                robotHardware.setTeleOpHighBasketExtension();
 
-                    // Use the high chamber extension.
-                    robotHardware.setMinimumExtension();
+            }
 
-                    robotHardware.lowerWrist();
+            // If the user pressed b...
+            if (currentGamepad.b && !previousGamepad.b) {
+
+                // Clear any pending actions.
+                robotHardware.clearActions();
+
+                // If the robot is in the high basket position...
+                if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+
+                    // Notify the user.
+                    robotHardware.beep();
+
                 }
 
-                // If the user pressed dpad down...
-                if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-                    robotHardware.setTurtleMode(true);
+                // Otherwise (if the robot is not in the high basket position)...
+                else {
 
-                    // Move the arm to the low chamber position.
-                    robotHardware.setArmLowChamberPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Use the low chamber extension.
-                    robotHardware.setMinimumExtension();
-
-                    robotHardware.lowerWrist();
-                }
-
-                // If the user pressed dpad right...
-                if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
-                    robotHardware.setTurtleMode(true);
+                    // Raise the wrist.
+                    robotHardware.raiseWrist();
 
                     // Move the arm to the submersible position.
                     robotHardware.setArmSubmersiblePosition();
@@ -138,168 +121,177 @@ public class TeleOpMain extends LinearOpMode {
 
                 }
 
-                if (currentGamepad.a) {
-                    robotHardware.toggleClaw();
-                }
-
-                if (currentGamepad.x) {
-                    specimenScoring(robotHardware);
-                }
             }
 
-            // Otherwise, if right trigger is down...
-            else if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            // If user pressed right bumper...
+            if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
 
-                // Sample mode
-                //////////////////////////////////////////////////////////////////////
+                // Clear any pending actions.
+                robotHardware.clearActions();
 
-                // If the user pressed a...
-                if (currentGamepad.a && !previousGamepad.a) {
+                // Raise the wrist.
+                robotHardware.raiseWrist();
 
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
+                // Move the arm to the ground position.
+                robotHardware.setArmGroundPosition();
 
-                    robotHardware.setTurtleMode(false);
+                // Move the lift to the ground position
+                robotHardware.setLiftGroundPosition();
 
-                    // Move the arm to the ground position.
-                    robotHardware.setArmGroundPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Fully retract the slide.
-                    robotHardware.setMinimumExtension();
-
-                }
-
-                // If the user pressed b...
-                if (currentGamepad.b && !previousGamepad.b) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
-                    robotHardware.setTurtleMode(false);
-
-                    // Move the arm to the ground position.
-                    robotHardware.setArmAlmostGroundPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Fully retract the slide.
-                    robotHardware.setMinimumExtension();
-
-                }
-
-                // low basket
-                if (currentGamepad.x && !previousGamepad.x) {
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
-                    robotHardware.setTurtleMode(true);
-
-                    // Move the arm to the low basket position.
-                    robotHardware.setArmLowBasketPosition();
-
-                    // Move the lift to the ground position
-                    robotHardware.setLiftGroundPosition();
-
-                    // Use the low basket extension.
-                    robotHardware.setLowBasketExtension();
-
-                }
-
-                // If the user pressed y...
-                if (currentGamepad.y && !previousGamepad.y) {
-
-                    // Raise the wrist.
-                    //robotHardware.raiseWrist();
-
-                    robotHardware.setTurtleMode(true);
-
-                    // Move the arm to the high basket position.
-                    robotHardware.setArmHighBasketPosition();
-
-                    // Move the lift to the high basket position
-                    robotHardware.setLiftHighBasketPosition();
-
-                    // Use the high basket extension.
-                    robotHardware.setHighBasketExtension();
-
-                }
+                // Fully retract the slide.
+                robotHardware.setMinimumExtension();
 
             }
 
-            // Otherwise (if both triggers are up)...
-            else {
+            // If the user pressed a...
+            if (currentGamepad.a && !previousGamepad.a) {
 
+                // If the robot is in the basket position...
+                if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
 
-                if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-                    robotHardware.setLiftHighBasketPosition();
+                    // Score the sample.
+                    robotHardware.scoreSample();
+
                 }
 
-                if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-                    robotHardware.setLiftGroundPosition();
+                // Otherwise, if the robot is in the chamber position...
+                else if (robotHardware.isArmInHighChamberPosition() && robotHardware.isLiftInGroundPosition()) {
+
+                    // Score the specimen.
+                    robotHardware.scoreSpecimen();
+
                 }
 
-                // Universal mode
-                //////////////////////////////////////////////////////////////////////
-
-                // If the user pressed a...
-                if (currentGamepad.a && !previousGamepad.a) {
+                // Otherwise...
+                else {
 
                     // Toggle the claw.
                     robotHardware.toggleClaw();
 
                 }
 
-                // If the user pressed y...
-                if (currentGamepad.y && !previousGamepad.y) {
-
-                    // Toggle turtle mode.
-                    robotHardware.toggleTurtleMode();
-
-                }
-
-                /*
-                // If the user pressed dpad left...
-                if (currentGamepad.dpad_left) {
-
-                    // Go to the previous arm position.
-                    robotHardware.previousArmPosition();
-
-                }
-
-                // If the user pressed dpad right...
-                if (currentGamepad.dpad_right) {
-
-                    // Go to the next arm position.
-                    robotHardware.nextArmPosition();
-
-                }
-                 */
-
             }
 
+            // If the user pressed x...
             if (currentGamepad.x && !previousGamepad.x) {
 
-                robotHardware.toggleWrist();
+                // Clear any pending actions.
+                robotHardware.clearActions();
+
+                // If the arm is in the submersible...
+                if (robotHardware.isArmInSubmersiblePosition()) {
+
+                    // Notify the user.
+                    robotHardware.beep();
+
+                }
+
+                // Otherwise (if the arm is not in the submersible)...
+                else {
+
+                    // Lower the wrist.
+                    robotHardware.lowerWrist();
+
+                    // Move the arm to the high chamber position.
+                    robotHardware.setArmHighChamberPosition();
+
+                    // Move the lift to the ground position.
+                    robotHardware.setLiftGroundPosition();
+
+                    // Use the high chamber extension.
+                    robotHardware.setMinimumExtension();
+
+                }
 
             }
 
-            // If the user tapped right bumper...
-            if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
+            // If the user pressed back...
+            if (currentGamepad.back && !previousGamepad.back) {
+
+                // Clear any pending actions.
+                robotHardware.clearActions();
+
+                // If we are ascending...
+                if (ascending) {
+
+                    // Ascend.
+                    robotHardware.ascend();
+
+                }
+
+                // Otherwise (if we are not ascending)...
+                else {
+
+                    // Descend.
+                    robotHardware.descend();
+
+                }
+
+                // Toggle the ascending value.
+                ascending = !ascending;
+
+            }
+
+            // Set turtle mode.
+            robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
+
+            // If the user tapped dpad up...
+            if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+
+                // Decrement the arm position.
+                robotHardware.decrementArmPosition();
+
+            }
+
+            // If the user tapped dpad down...
+            if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
 
                 // Increment the arm position.
                 robotHardware.incrementArmPosition();
 
             }
 
-            // If the user tapped left bumper...
-            if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+            // If the user tapped dpad right...
+            if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
-                // Increment the arm position.
-                robotHardware.decrementArmPosition();
+                // Determine whether the arm is nearly down.
+                boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
+
+                // Determine whether the arm is in the submersible position.
+                boolean isArmInSubmersiblePosition = robotHardware.isArmInSubmersiblePosition();
+
+                // Get the current slide extension.
+                double currentSlideExtension = robotHardware.getCurrentSlideExtension();
+
+                // Determine whether the slide is maximally extended in the submersible.
+                boolean isSlideMaximallyExtendedInSubmersible = isArmInSubmersiblePosition && currentSlideExtension >= MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
+
+                // Determine whether to disallow slide extension (so the robot stays within the expansion box).
+                boolean disallowSlideExtension = isArmNearlyDown || isSlideMaximallyExtendedInSubmersible;
+
+                // If slide extension is disallowed...
+                if (disallowSlideExtension) {
+
+                    // Notify the user.
+                    robotHardware.beep();
+
+                }
+
+                // Otherwise (if slide extension is allowed)...
+                else {
+
+                    // Extend the slide.
+                    robotHardware.extendSlide();
+
+                }
+
+            }
+
+            // If the user tapped dpad left...
+            if (currentGamepad.dpad_left && !previousGamepad.dpad_left) {
+
+                // Retract the slide.
+                robotHardware.retractSlide();
 
             }
 
@@ -312,19 +304,4 @@ public class TeleOpMain extends LinearOpMode {
         }
     }
 
-    public void specimenScoring(RobotHardware hw) {
-        hw.startMiniAutoMode();
-
-        while (opModeIsActive()) {
-            if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gamepad1.x) {
-                boolean stillScoring = hw.update(MiniAutoMode.SCORE);
-                if (!stillScoring) {
-                    hw.raiseWrist();
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-    }
 }

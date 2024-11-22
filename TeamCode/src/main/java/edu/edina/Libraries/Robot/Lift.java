@@ -46,6 +46,12 @@ public class Lift {
     // High basket position
     public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
 
+    // Descend position
+    public static int DESCEND_POSITION = 1500;
+
+    // Ascend position
+    public static int ASCEND_POSITION = -400;
+
     private static double INCHES_PER_POS = 14.835 / 1679.0;
 
     // Controller
@@ -227,16 +233,38 @@ public class Lift {
     // Raises the lift.
     public void raise() {
 
+        // If the lift is fully raised...
+        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Raise the lift.
-        targetPosition = Math.min(targetPosition + POSITION_INCREMENT, MAXIMUM_POSITION);
+        targetPosition += POSITION_INCREMENT;
 
     }
 
     // Lowers the lift.
     public void lower() {
 
+        // If the lift is fully lowered...
+        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Lower the lift.
-        targetPosition = Math.max(targetPosition - POSITION_INCREMENT, MINIMUM_POSITION);
+        targetPosition -= POSITION_INCREMENT;
 
     }
 
@@ -295,4 +323,35 @@ public class Lift {
     public boolean targetingScoringPos() {
         return targetPosition > MINIMUM_POSITION;
     }
+
+    // Determines whether the lift is in the high basket position.
+    public boolean isInHighBasketPosition() {
+
+        // Determine whether the lift is in the high basket position.
+        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
+
+        // Return the result.
+        return isInHighBasketPosition;
+
+    }
+
+    // Determines whether the lift is in the ground position.
+    public boolean isInGroundPosition() {
+
+        // Determine whether the lift is in the ground position.
+        boolean isInGroundPosition = targetPosition == MINIMUM_POSITION;
+
+        // Return the result.
+        return isInGroundPosition;
+
+    }
+
+    // Sets the lift's position.
+    public void setPosition(int targetPosition) {
+
+        // Set the target position.
+        this.targetPosition = targetPosition;
+
+    }
+
 }

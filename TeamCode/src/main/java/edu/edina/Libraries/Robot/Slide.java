@@ -13,14 +13,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Slide {
 
-    // Epsilon
-    private static final double EPSILON = 0.0001;
-
     // Extension error threshold
     public static double EXTENSION_ERROR_THRESHOLD = 0.5;
 
     // Extension increment.
-    public static double EXTENSION_INCREMENT = 0.1;
+    public static double EXTENSION_INCREMENT = 1;
 
     // Inches per volt
     public static double INCHES_PER_VOLT = 6.375 / 4.4;
@@ -28,23 +25,38 @@ public class Slide {
     // Low basket extension
     public static double LOW_BASKET_EXTENSION = 5;
 
-    // High basket extension
-    public static double HIGH_BASKET_EXTENSION = 9;
+    // Low voltage divisor
+    public static double LOW_VOLTAGE_DIVISOR = 4;
+
+    // Auto high basket extension
+    public static double AUTO_HIGH_BASKET_EXTENSION = 9;
+
+    // Tele op high basket extension
+    public static double TELE_OP_HIGH_BASKET_EXTENSION = 10;
 
     // Maximum extension
-    public static double MAXIMUM_EXTENSION = 9;
+    public static double MAXIMUM_EXTENSION = 10;
 
     // Minimum extension
     public static double MINIMUM_EXTENSION = 0;
 
-    // Maximum voltage difference
-    public static double MAXIMUM_VOLTAGE_DIFFERENCE = 0.5;
+    // Maximum power
+    public static double MAXIMUM_POWER = 1;
 
-    // Power
-    public static double POWER = 1;
+    // Maximum voltage difference
+    public static double MAXIMUM_VOLTAGE_DIFFERENCE = 1;
+
+    // Proportional coefficient
+    public static double PROPORTIONAL = 0.5;
 
     // Uninitialized value
     private static final double UNINITIALIZED = -1;
+
+    // Valid voltage threshold
+    private static final double VALID_VOLTAGE_THRESHOLD = 0.1;
+
+    // Zero power threshold
+    private static final double ZERO_POWER_THRESHOLD = 0.0001;
 
     // Encoder
     private final AnalogInput encoder;
@@ -89,14 +101,24 @@ public class Slide {
 
     // return true if a reading was made
     public boolean updateVoltage() {
+
         // Get the current voltage.
         double currentVoltage = encoder.getVoltage();
 
         // Get the maximum voltage.
         double maximumVoltage = encoder.getMaxVoltage();
 
+        // Get the op mode.
+        LinearOpMode opMode = robotHardware.getOpMode();
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
+
         // If the current voltage is invalid...
-        if (currentVoltage < 0 || currentVoltage > maximumVoltage) {
+        if (currentVoltage < -VALID_VOLTAGE_THRESHOLD || currentVoltage > maximumVoltage + VALID_VOLTAGE_THRESHOLD) {
+
+            // Display an error message.
+            telemetry.addData("Slide Error", "Voltage " + currentVoltage + " is invalid.  Max voltage is " + maximumVoltage + ".");
 
             // Exit the method.
             return false;
@@ -107,10 +129,18 @@ public class Slide {
         if (lastVoltage == UNINITIALIZED) {
 
             // If we have a current voltage...
-            if (currentVoltage > EPSILON) {
+            if (currentVoltage > ZERO_POWER_THRESHOLD) {
 
                 // Initialize the last voltage.
                 lastVoltage = currentVoltage;
+
+            }
+
+            // Otherwise (if we do not have a current voltage)...
+            else {
+
+                // Display an error message.
+                telemetry.addData("Slide Error", "Voltage " + currentVoltage + " is less than epsilon.");
 
             }
 
@@ -120,7 +150,7 @@ public class Slide {
         }
 
         // Get a low voltage threshold.
-        double lowVoltage = maximumVoltage / 4;
+        double lowVoltage = maximumVoltage / LOW_VOLTAGE_DIVISOR;
 
         // Get a high voltage threshold.
         double highVoltage = maximumVoltage - lowVoltage;
@@ -150,6 +180,9 @@ public class Slide {
         // If the offset voltage difference is too high...
         if (offsetVoltageDifference > MAXIMUM_VOLTAGE_DIFFERENCE) {
 
+            // Display an error message.
+            telemetry.addData("Slide Error", "Offset voltage difference " + offsetVoltageDifference + " is too large.");
+
             // Exit the method.
             return false;
 
@@ -166,8 +199,14 @@ public class Slide {
 
     // Updates this.
     public void update() {
-        if (!updateVoltage())
+
+        // If updating the voltage failed...
+        if (!updateVoltage()) {
+
+            // Exit the method.
             return;
+
+        }
 
         // Get the current extension.
         double currentExtension = getCurrentExtension();
@@ -176,12 +215,7 @@ public class Slide {
         double extensionError = currentExtension - targetExtension;
 
         // Get a power.
-        double inputPower;
-        if (Math.abs(extensionError) < EXTENSION_ERROR_THRESHOLD) {
-            inputPower = 0;
-        } else {
-            inputPower = extensionError > 0 ? POWER : -POWER;
-        }
+        double inputPower = clamp(extensionError * PROPORTIONAL, -MAXIMUM_POWER, MAXIMUM_POWER);
 
         // Set the power.
         servo.setPower(inputPower);
@@ -247,27 +281,57 @@ public class Slide {
 
     }
 
-    // Sets the high basket extension.
-    public void setHighBasketExtension() {
+    // Sets the auto high basket extension.
+    public void setAutoHighBasketExtension() {
 
-        // Set the high basket extension.
-        targetExtension = HIGH_BASKET_EXTENSION;
+        // Set the auto high basket extension.
+        targetExtension = AUTO_HIGH_BASKET_EXTENSION;
+
+    }
+
+    // Sets the tele op basket extension.
+    public void setTeleOpHighBasketExtension() {
+
+        // Set the auto high basket extension.
+        targetExtension = TELE_OP_HIGH_BASKET_EXTENSION;
 
     }
 
     // Extends this.
     public void extend() {
 
+        // If the slide is fully extended...
+        if(targetExtension + EXTENSION_INCREMENT > MAXIMUM_EXTENSION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Extend this.
-        targetExtension = Math.min(targetExtension + EXTENSION_INCREMENT, MAXIMUM_EXTENSION);
+        targetExtension += EXTENSION_INCREMENT;
 
     }
 
     // Retracts this.
     public void retract() {
 
+        // If the slide is fully retracted...
+        if(targetExtension - EXTENSION_INCREMENT < MINIMUM_EXTENSION) {
+
+            // Notify the user.
+            robotHardware.beep();
+
+            // Exit the method.
+            return;
+
+        }
+
         // Retract this.
-        targetExtension = Math.max(targetExtension - EXTENSION_INCREMENT, MINIMUM_EXTENSION);
+        targetExtension -= EXTENSION_INCREMENT;
 
     }
 
@@ -291,6 +355,21 @@ public class Slide {
         // Return the current extension.
         return INCHES_PER_VOLT * offsetVoltage;
 
+    }
+
+    // Clamps a value.
+    public static double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
+    // Determines whether this is fully extended.
+    public boolean isFullyExtended() {
+        return targetExtension == MAXIMUM_EXTENSION;
+    }
+
+    // Determines whether this is fully retracted.
+    public boolean isFullyRetracted() {
+        return targetExtension == MINIMUM_EXTENSION;
     }
 
 }
