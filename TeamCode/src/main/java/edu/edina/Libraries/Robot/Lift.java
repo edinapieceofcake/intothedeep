@@ -388,6 +388,14 @@ public class Lift {
     // Stops rezeroing.
     public void stopRezeroing() {
 
+        // If we are not rezeroing...
+        if(!rezeroing) {
+
+            // Exit the method.
+            return;
+
+        }
+
         // Reset this.
         reset();
 

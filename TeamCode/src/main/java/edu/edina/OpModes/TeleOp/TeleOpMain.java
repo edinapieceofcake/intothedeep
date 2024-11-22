@@ -118,7 +118,7 @@ public class TeleOpMain extends LinearOpMode {
     // Handles debug mode.
     private void handleDebugMode() {
 
-        // Handle arm rezeroing.
+        // Arm rezeroing
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
@@ -137,7 +137,7 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // Handle slide rezeroing.
+        // Slide rezeroing
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
@@ -156,7 +156,7 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // Handle lift rezeroing.
+        // Lift rezeroing
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed b...
@@ -180,6 +180,17 @@ public class TeleOpMain extends LinearOpMode {
     // Handles normal mode.
     private void handleNormalMode() {
 
+        // Stop rezeroing.
+        //////////////////////////////////////////////////////////////////////
+
+        // Stop rezeroing.
+        robotHardware.stopArmRezeroing();
+        robotHardware.stopLiftRezeroing();
+        robotHardware.stopSlideRezeroing();
+
+        // High basket
+        //////////////////////////////////////////////////////////////////////
+
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
 
@@ -199,6 +210,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.setTeleOpHighBasketExtension();
 
         }
+
+        // Submersible
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed b...
         if (currentGamepad.b && !previousGamepad.b) {
@@ -233,6 +247,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Ground
+        //////////////////////////////////////////////////////////////////////
+
         // If user pressed right bumper...
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
 
@@ -252,6 +269,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.setMinimumExtension();
 
         }
+
+        // Claw
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
         if (currentGamepad.a && !previousGamepad.a) {
@@ -281,6 +301,9 @@ public class TeleOpMain extends LinearOpMode {
             }
 
         }
+
+        // High chamber
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
         if (currentGamepad.x && !previousGamepad.x) {
@@ -315,6 +338,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Ascend
+        //////////////////////////////////////////////////////////////////////
+
         // If the user pressed back...
         if (currentGamepad.back && !previousGamepad.back) {
 
@@ -342,8 +368,14 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Turtle mode
+        //////////////////////////////////////////////////////////////////////
+
         // Set turtle mode.
         robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
+
+        // Decrement arm
+        //////////////////////////////////////////////////////////////////////
 
         // If the user tapped dpad up...
         if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
@@ -353,6 +385,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Increment arm
+        //////////////////////////////////////////////////////////////////////
+
         // If the user tapped dpad down...
         if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
 
@@ -360,6 +395,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.incrementArmPosition();
 
         }
+
+        // Extend slide
+        //////////////////////////////////////////////////////////////////////
 
         // If the user tapped dpad right...
         if (currentGamepad.dpad_right && !previousGamepad.dpad_right) {
@@ -396,6 +434,9 @@ public class TeleOpMain extends LinearOpMode {
             }
 
         }
+
+        // Retract slide
+        //////////////////////////////////////////////////////////////////////
 
         // If the user tapped dpad left...
         if (currentGamepad.dpad_left && !previousGamepad.dpad_left) {
