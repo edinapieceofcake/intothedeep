@@ -28,8 +28,11 @@ public class MoveArm implements Action {
     // Target position
     private int targetPosition;
 
+    // Update
+    private boolean update;
+
     // Initializes this.
-    public MoveArm(RobotHardware robotHardware, int targetPosition) {
+    public MoveArm(RobotHardware robotHardware, int targetPosition, boolean fast, boolean update) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
@@ -37,16 +40,14 @@ public class MoveArm implements Action {
         // Get the target position.
         this.targetPosition = targetPosition;
 
+        // Remember the update value.
+        this.update = update;
+
         // Get the arm's current position.
         currentPosition = robotHardware.getCurrentArmPosition();
 
         // Get an appropriate increment.
-        if(robotHardware.isLiftInGroundPosition() && robotHardware.isSlideFullyRetracted()) {
-            increment = FAST_INCREMENT;
-        }
-        else {
-            increment = SLOW_INCREMENT;
-        }
+        increment = fast ? FAST_INCREMENT : SLOW_INCREMENT;
 
         // If we are lowering the arm...
         if(currentPosition > targetPosition) {
@@ -61,6 +62,14 @@ public class MoveArm implements Action {
     // Runs this.
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
+
+        // If we are updating...
+        if(update) {
+
+            // Update the robot hardware.
+            robotHardware.update();
+
+        }
 
         // Determine whether the arm is in position.
         boolean inPosition =

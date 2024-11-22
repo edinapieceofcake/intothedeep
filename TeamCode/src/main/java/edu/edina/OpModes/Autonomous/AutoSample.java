@@ -2,6 +2,8 @@ package edu.edina.OpModes.Autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -9,9 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
+import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.CloseClaw;
-import edu.edina.Libraries.Robot.MoveToGround;
-import edu.edina.Libraries.Robot.MoveToHighBasket;
+import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.OpenClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitAndUpdate;
@@ -202,12 +204,24 @@ public class AutoSample extends LinearOpMode {
     // Scores a sample.
     public Action score() {
         return new SequentialAction(
-                new MoveToHighBasket(robotHardware),
+                new ParallelAction(
+                        new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false, true),
+                        new InstantAction(() -> robotHardware.setAutoHighBasketExtension()),
+                        new SequentialAction(
+                                new WaitAndUpdate(robotHardware, 500, true),
+                                new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                        )
+                ),
                 new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
                 new OpenClaw(robotHardware),
                 new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
-                new MoveToGround(robotHardware),
-                new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true)
+                new ParallelAction(
+                        new MoveArm(robotHardware, Arm.GROUND_POSITION, false, true),
+                        new InstantAction(() -> robotHardware.setMinimumExtension()),
+                        new InstantAction(() -> robotHardware.setLiftGroundPosition())
+                ),
+                new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
+                new InstantAction(() -> robotHardware.lowerWrist())
         );
     }
 

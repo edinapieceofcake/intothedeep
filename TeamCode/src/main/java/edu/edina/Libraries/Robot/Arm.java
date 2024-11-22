@@ -49,6 +49,9 @@ public class Arm {
     // Position increment (ticks)
     public static int POSITION_INCREMENT = 275;
 
+    // Rezeroing power
+    public static double REZEROING_POWER = -0.5;
+
     // Submersible position
     public static int SUBMERSIBLE_POSITION = 4700;
 
@@ -64,9 +67,6 @@ public class Arm {
     // Low Chamber Position
     public static int LOW_CHAMBER_POSITION = 4150;
 
-    // Almost Ground Position
-    public static int ALMOST_GROUND_POSITION = 800;
-
     // Ascent position
     public static int ASCENT_POSITION = 700;
 
@@ -81,6 +81,9 @@ public class Arm {
 
     // Motor
     private final DcMotorEx motor;
+
+    // Rezeroing
+    private boolean rezeroing;
 
     // Robot hardware
     private final RobotHardware robotHardware;
@@ -139,8 +142,24 @@ public class Arm {
         double feedForward = Math.cos(currentRadians) * FEEDFORWARD;
         double power = pid + feedForward;
 
-        // Set the arm's power.
-        motor.setPower(power);
+        // Set the motor power.
+        //////////////////////////////////////////////////////////////////////
+
+        // If we are rezeroing...
+        if(rezeroing) {
+
+            // Use the rezeroing power.
+            motor.setPower(REZEROING_POWER);
+
+        }
+
+        // Otherwise (if we are not rezeroing)...
+        else {
+
+            // Use the controller's power.
+            motor.setPower(power);
+
+        }
 
         // Reset the arm if appropriate
         //////////////////////////////////////////////////////////////////////
@@ -331,14 +350,6 @@ public class Arm {
 
     }
 
-    // Moves the arm to the almost ground position.
-    public void setAlmostGroundPosition() {
-
-        // Move the arm to the almost ground position.
-        targetPosition = ALMOST_GROUND_POSITION;
-
-    }
-
     // Moves the arm to the ascent position.
     public void setAscentPosition() {
 
@@ -358,20 +369,6 @@ public class Arm {
 
     }
 
-    public boolean armWillCrossWristLimit() {
-        int currentPosition = motor.getCurrentPosition();
-
-        return (currentPosition <= ALMOST_GROUND_POSITION && targetPosition >= ALMOST_GROUND_POSITION) ||
-                (targetPosition <= WRIST_EXTENSION_LIMIT_THRESHOLD && currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD);
-    }
-
-    public boolean targetingScoringPos() {
-        int currentPosition = motor.getCurrentPosition();
-
-        return targetPosition >= LOW_BASKET_POSITION && targetPosition <= HIGH_BASKET_POSITION &&
-                currentPosition >= WRIST_EXTENSION_LIMIT_THRESHOLD ;
-    }
-
     // Determines whether the arm is busy.
     public boolean isBusy() {
 
@@ -383,20 +380,6 @@ public class Arm {
 
         // Return indicating if the arm is busy.
         return difference >= BUSY_THRESHOLD;
-
-    }
-
-    // Determines whether the arm is raised.
-    public boolean isRaised() {
-
-        // Get the arm's current position.
-        int currentPosition = motor.getCurrentPosition();
-
-        // Determine whether the arm is raised.
-        boolean isRaised = currentPosition > Arm.ALMOST_GROUND_POSITION + BUSY_THRESHOLD;
-
-        // Return the result.
-        return isRaised;
 
     }
 
@@ -419,17 +402,6 @@ public class Arm {
 
         // Return the result.
         return isInGroundPosition;
-
-    }
-
-    // Determines whether the arm is in the almost ground position.
-    public boolean isInAlmostGroundPosition() {
-
-        // Determine whether the arm is in the almost ground position.
-        boolean isInAlmostGroundPosition = targetPosition == ALMOST_GROUND_POSITION;
-
-        // Return the result.
-        return isInAlmostGroundPosition;
 
     }
 
@@ -474,11 +446,23 @@ public class Arm {
         return targetPosition == HIGH_CHAMBER_POSITION;
     }
 
-    // Returns indicating if the arm's target position is almost ground or lower.
-    public boolean isAlmostGroundOrLower() {
+    // Starts rezeroing.
+    public void startRezeroing() {
 
-        // Return indicating if the arm's target position is almost ground or lower.
-        return targetPosition <= ALMOST_GROUND_POSITION;
+        // Start rezeroing.
+        rezeroing = true;
 
     }
+
+    // Stops rezeroing.
+    public void stopRezeroing() {
+
+        // Reset this.
+        reset();
+
+        // Stop rezeroing.
+        rezeroing = false;
+
+    }
+
 }

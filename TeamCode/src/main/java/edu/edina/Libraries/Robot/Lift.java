@@ -54,11 +54,17 @@ public class Lift {
 
     private static double INCHES_PER_POS = 14.835 / 1679.0;
 
+    // Rezeroing power
+    public static double REZEROING_POWER = -0.5;
+
     // Controller
     private PIDController controller;
 
     // Left motor
     private final DcMotorEx leftMotor;
+
+    // Rezeroing
+    private boolean rezeroing;
 
     // Right motor
     private final DcMotorEx rightMotor;
@@ -122,9 +128,26 @@ public class Lift {
         double pid = controller.calculate(currentPosition, targetPosition);
         double power = pid + FEEDFORWARD;
 
-        // Set the lift's power.
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
+        // Set the motor power.
+        //////////////////////////////////////////////////////////////////////
+
+        // If we are rezeroing...
+        if(rezeroing) {
+
+            // Use the rezeroing power.
+            leftMotor.setPower(REZEROING_POWER);
+            rightMotor.setPower(REZEROING_POWER);
+
+        }
+
+        // Otherwise (if we are not rezeroing)...
+        else {
+
+            // Use the controller's power.
+            leftMotor.setPower(power);
+            rightMotor.setPower(power);
+
+        }
 
         // Reset the lift if appropriate
         //////////////////////////////////////////////////////////////////////
@@ -351,6 +374,25 @@ public class Lift {
 
         // Set the target position.
         this.targetPosition = targetPosition;
+
+    }
+
+    // Starts rezeroing.
+    public void startRezeroing() {
+
+        // Start rezeroing.
+        rezeroing = true;
+
+    }
+
+    // Stops rezeroing.
+    public void stopRezeroing() {
+
+        // Reset this.
+        reset();
+
+        // Stop rezeroing.
+        rezeroing = false;
 
     }
 

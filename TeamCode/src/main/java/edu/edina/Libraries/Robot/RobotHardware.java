@@ -62,9 +62,6 @@ public class RobotHardware {
     // Inches to back up when scoring a specimen
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
-    // Delay before going from the nearly ground position to the ground position
-    public static int GROUND_DELAY_MILLISECONDS = 200;
-
     private final LinearOpMode opMode;
     public final IMU imu;
     public ThreeDeadWheelLocalizer odometry;
@@ -462,7 +459,7 @@ public class RobotHardware {
 
         // Construct an action to move the arm to the ground position.
         Action action = new SequentialAction(
-                new MoveArm(this, Arm.GROUND_POSITION),
+                new MoveArm(this, Arm.GROUND_POSITION, false, false),
                 new WaitForNotBusy(this, TIMEOUT_MILLISECONDS,  false),
                 new InstantAction(() -> lowerWrist())
         );
@@ -476,7 +473,7 @@ public class RobotHardware {
     public void setArmLowBasketPosition() {
 
         // Construct an action to move the arm to the low basket position.
-        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION);
+        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION, false, false);
 
         // Run the action.
         runningActions.add(action);
@@ -495,7 +492,7 @@ public class RobotHardware {
     public void setArmHighBasketPosition() {
 
         // Construct an action to move the arm to the high basket position.
-        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION);
+        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, false, false);
 
         // Run the action.
         runningActions.add(action);
@@ -506,7 +503,7 @@ public class RobotHardware {
     public void setArmHighChamberPosition() {
 
         // Construct an action to move the arm to the high chamber position.
-        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION);
+        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, false, false);
 
         // Run the action.
         runningActions.add(action);
@@ -517,7 +514,7 @@ public class RobotHardware {
     public void setArmLowChamberPosition() {
 
         // Construct an action to move the arm to the low chamber position.
-        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION);
+        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, false, false);
 
         // Run the action.
         runningActions.add(action);
@@ -528,7 +525,7 @@ public class RobotHardware {
     public void setArmSubmersiblePosition() {
 
         // Construct an action to move the arm to the submersible position.
-        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION);
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, false, false);
 
         // Run the action.
         runningActions.add(action);
@@ -607,14 +604,6 @@ public class RobotHardware {
 
     }
 
-    // Determines whether the arm is in the almost ground position.
-    public boolean isArmInAlmostGroundPosition() {
-
-        // Return indicating if the arm is in the almost ground position.
-        return arm.isInAlmostGroundPosition();
-
-    }
-
     // Determines whether the arm is in the high chamber position.
     public boolean isArmInHighChamberPosition() {
 
@@ -676,7 +665,7 @@ public class RobotHardware {
 
         // Construct a score specimen action.
         Action action = new ParallelAction(
-                new MoveWristToHighChamberScore(this),
+                new InstantAction(() -> moveWristToHighChamberScore()),
                 backup,
                 new SequentialAction(
                         new WaitAndUpdate(this, SCORE_DELAY, false),
@@ -696,11 +685,12 @@ public class RobotHardware {
         Action action = new SequentialAction(
                 new OpenClaw(this),
                 new WaitAndUpdate(this, 300, false),
-                new InstantAction(() -> arm.setAlmostGroundPosition()),
-                new InstantAction(() -> lift.setGroundPosition()),
-                new InstantAction(() -> slide.setMinimumExtension()),
-                new WaitAndUpdate(this, 500, false),
-                new InstantAction(() -> arm.setGroundPosition()),
+                new ParallelAction(
+                        new MoveArm(this, Arm.GROUND_POSITION, false, false),
+                        new InstantAction(() -> lift.setGroundPosition()),
+                        new InstantAction(() -> slide.setMinimumExtension())
+                ),
+                new WaitForNotBusy(this, TIMEOUT_MILLISECONDS,  false),
                 new InstantAction(() -> wrist.lower())
         );
 
@@ -746,14 +736,6 @@ public class RobotHardware {
 
         // Set the arm's position.
         arm.setPosition(position);
-
-    }
-
-    // Determines whether the arm's target position is almost ground or lower.
-    public boolean isArmAlmostGroundOrLower() {
-
-        // Return indicating whether the arm's target position is almost ground or lower.
-        return arm.isAlmostGroundOrLower();
 
     }
 
@@ -814,6 +796,54 @@ public class RobotHardware {
 
         // Run the action.
         runningActions.add(action);
+
+    }
+
+    // Starts arm rezeroing.
+    public void startArmRezeroing() {
+
+        // Start arm rezeroing.
+        arm.startRezeroing();
+
+    }
+
+    // Stops arm rezeroing.
+    public void stopArmRezeroing() {
+
+        // Stop arm rezeroing.
+        arm.stopRezeroing();
+
+    }
+
+    // Starts lift rezeroing.
+    public void startLiftRezeroing() {
+
+        // Start lift rezeroing.
+        lift.startRezeroing();
+
+    }
+
+    // Stops lift rezeroing.
+    public void stopLiftRezeroing() {
+
+        // Stop lift rezeroing.
+        lift.stopRezeroing();
+
+    }
+
+    // Starts slide rezeroing.
+    public void startSlideRezeroing() {
+
+        // Start slide rezeroing.
+        slide.startRezeroing();
+
+    }
+
+    // Stops slide rezeroing.
+    public void stopSlideRezeroing() {
+
+        // Stop slide rezeroing.
+        slide.stopRezeroing();
 
     }
 

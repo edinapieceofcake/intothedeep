@@ -5,6 +5,7 @@ import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -14,10 +15,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
+import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.CloseClaw;
-import edu.edina.Libraries.Robot.MoveWristToHighChamberScore;
-import edu.edina.Libraries.Robot.MoveToGround;
-import edu.edina.Libraries.Robot.MoveToHighChamber;
+import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.OpenClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitAndUpdate;
@@ -189,8 +189,6 @@ public class AutoSpecimen extends LinearOpMode {
 					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
 					.build();
 
-
-
 			// Run the actions.
 			Actions.runBlocking(
 					new SequentialAction(
@@ -245,21 +243,21 @@ public class AutoSpecimen extends LinearOpMode {
 		// Scores a specimen.
         public Action score() {
             return new SequentialAction(
-                    new MoveToHighChamber(robotHardware),
-                    //new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
-					new WaitAndUpdate(robotHardware, CLAW_DELAY, true),
+					new InstantAction(() -> robotHardware.lowerWrist()),
+					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false, true),
+					new WaitAndUpdate(robotHardware, 500, true),
                     new ParallelAction(
-                            new MoveWristToHighChamberScore(robotHardware),
-							new WaitForNotBusy(robotHardware, 300, true),
+							new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
                             driveFromChamberToScore,
                             new SequentialAction(
                                     new WaitAndUpdate(robotHardware, SCORE_DELAY, true),
                                     new OpenClaw(robotHardware)
                             )
                     ),
-					new WaitAndUpdate(robotHardware, 200, true),
-                    new MoveToGround(robotHardware),
-                    new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true)
+					new WaitAndUpdate(robotHardware, 500, true),
+					new MoveArm(robotHardware, Arm.GROUND_POSITION, false, true),
+                    new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
+					new InstantAction(() -> robotHardware.lowerWrist())
             );
         }
 

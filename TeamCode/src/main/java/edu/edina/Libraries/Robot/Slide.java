@@ -1,7 +1,5 @@
 package edu.edina.Libraries.Robot;
 
-import androidx.annotation.Nullable;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -58,6 +56,9 @@ public class Slide {
     // Zero power threshold
     private static final double ZERO_POWER_THRESHOLD = 0.0001;
 
+    // Rezeroing power
+    public static double REZEROING_POWER = -0.5;
+
     // Encoder
     private final AnalogInput encoder;
 
@@ -69,6 +70,9 @@ public class Slide {
 
     // Offset voltage
     private double offsetVoltage = 0;
+
+    // Rezeroing
+    private boolean rezeroing;
 
     // Robot hardware
     private final RobotHardware robotHardware;
@@ -217,8 +221,20 @@ public class Slide {
         // Get a power.
         double inputPower = clamp(extensionError * PROPORTIONAL, -MAXIMUM_POWER, MAXIMUM_POWER);
 
-        // Set the power.
-        servo.setPower(inputPower);
+        // If we are rezeroing...
+        if(rezeroing) {
+
+            // Use the rezeroing power.
+            servo.setPower(REZEROING_POWER);
+
+        }
+
+        else {
+
+            // Use the input power.
+            servo.setPower(inputPower);
+
+        }
 
         // Get the servo's power.
         double outputPower = servo.getPower();
@@ -370,6 +386,25 @@ public class Slide {
     // Determines whether this is fully retracted.
     public boolean isFullyRetracted() {
         return targetExtension == MINIMUM_EXTENSION;
+    }
+
+    // Starts rezeroing.
+    public void startRezeroing() {
+
+        // Start rezeroing.
+        rezeroing = true;
+
+    }
+
+    // Stops rezeroing.
+    public void stopRezeroing() {
+
+        // Reset this.
+        offsetVoltage = 0;
+
+        // Stop rezeroing.
+        rezeroing = false;
+
     }
 
 }
