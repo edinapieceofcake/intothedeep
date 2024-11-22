@@ -26,6 +26,7 @@ import java.util.List;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.OpModes.Autonomous.AutoSample;
+import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
 public class RobotHardware {
@@ -656,14 +657,7 @@ public class RobotHardware {
                 .build();
 
         // Construct a score specimen action.
-        Action action = new ParallelAction(
-                new InstantAction(() -> moveWristToHighChamberScore()),
-                backup,
-                new SequentialAction(
-                        new WaitForTime(SCORE_DELAY),
-                        new InstantAction(() -> openClaw())
-                )
-        );
+        Action action = AutoSpecimen.scoreSpecimen(backup,this);
 
         // Run the action.
         runningActions.add(action);

@@ -191,7 +191,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 					// Score preloaded specimen.
 					driveFromStartToChamber,
-					score(),
+					scoreSpecimenAndLower(),
 
 					// Pick up first spike mark sample.
 					driveFromScoreToFirstSpikeMark,
@@ -250,25 +250,42 @@ public class AutoSpecimen extends LinearOpMode {
 
 		}
 
-		// Scores a specimen.
-        public Action score() {
-            return new SequentialAction(
+		// Scores a specimen and then lowers the arm.
+        public Action scoreSpecimenAndLower() {
+
+			// Construct an action.
+            Action action = new SequentialAction(
 					new InstantAction(() -> robotHardware.lowerWrist()),
 					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
 					new WaitForTime(500),
-                    new ParallelAction(
-							new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
-                            driveFromChamberToScore,
-                            new SequentialAction(
-                                    new WaitForTime(SCORE_DELAY),
-									new InstantAction(() -> robotHardware.openClaw())
-                            )
-                    ),
+					scoreSpecimen(driveFromChamberToScore, robotHardware),
 					new WaitForTime(500),
 					new MoveArm(robotHardware, Arm.GROUND_POSITION, true),
                     new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
 					new InstantAction(() -> robotHardware.lowerWrist())
             );
+
+			// Return the action.
+			return action;
+
         }
+
+		// Scores a specimen.
+		public static Action scoreSpecimen(Action backup, RobotHardware robotHardware) {
+
+			// Construct a score specimen action.
+			Action action = new ParallelAction(
+					new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
+					backup,
+					new SequentialAction(
+							new WaitForTime(SCORE_DELAY),
+							new InstantAction(() -> robotHardware.openClaw())
+					)
+			);
+
+			// Return the action.
+			return action;
+
+		}
 
 	}
