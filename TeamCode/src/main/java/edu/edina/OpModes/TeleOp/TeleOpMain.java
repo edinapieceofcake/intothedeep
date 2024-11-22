@@ -68,6 +68,9 @@ public class TeleOpMain extends LinearOpMode {
         // Wait for the user to press start.
         waitForStart();
 
+        // Lower the arm.
+        robotHardware.setArmGroundPosition();
+
         // Open the claw.
         robotHardware.openClaw();
 
