@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // Waits for the robot hardware to finish moving.
-public class WaitForNotBusy implements Action {
+public class WaitForHardware implements Action {
 
     // Initialized value
     private boolean initialized;
@@ -21,20 +21,14 @@ public class WaitForNotBusy implements Action {
     // Timer
     private ElapsedTime timer;
 
-    // Update value
-    private boolean update;
-
     // Initializes this.
-    public WaitForNotBusy(RobotHardware robotHardware, double milliseconds, boolean update) {
+    public WaitForHardware(RobotHardware robotHardware, double milliseconds) {
 
         // Remember the duration in milliseconds.
         this.milliseconds = milliseconds;
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
-
-        // Remember the update value.
-        this.update = update;
 
     }
 
@@ -50,14 +44,6 @@ public class WaitForNotBusy implements Action {
 
             // Remember that this is initialized.
             initialized = true;
-
-        }
-
-        // If we are updating...
-        if(update) {
-
-            // Update the robot hardware.
-            robotHardware.update();
 
         }
 

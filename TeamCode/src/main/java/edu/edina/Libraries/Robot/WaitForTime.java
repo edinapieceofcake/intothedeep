@@ -6,8 +6,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-// Waits for a specified duration.
-public class WaitAndUpdate implements Action {
+// Waits for a specified time.
+public class WaitForTime implements Action {
 
     // Initialized value
     private boolean initialized;
@@ -15,27 +15,15 @@ public class WaitAndUpdate implements Action {
     // Duration in milliseconds
     private double milliseconds;
 
-    // Robot hardware
-    private RobotHardware robotHardware;
-
     // Timer
     private ElapsedTime timer;
 
-    // Update
-    private boolean update;
-
-    // Initialzies this.
-    public WaitAndUpdate(RobotHardware robotHardware, double milliseconds, boolean update)
+    // Initializes this.
+    public WaitForTime(double milliseconds)
     {
 
         // Remember the duration in milliseconds.
         this.milliseconds = milliseconds;
-
-        // Remember the robot hardware.
-        this.robotHardware = robotHardware;
-
-        // Remember the update value.
-        this.update = update;
 
     }
 
@@ -51,14 +39,6 @@ public class WaitAndUpdate implements Action {
 
             // Remember that this is initialized.
             initialized = true;
-
-        }
-
-        // If we are updating...
-        if(update) {
-
-            // Update the robot hardware.
-            robotHardware.update();
 
         }
 

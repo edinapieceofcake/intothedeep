@@ -6,18 +6,15 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
-import edu.edina.Libraries.Robot.CloseClaw;
 import edu.edina.Libraries.Robot.MoveArm;
-import edu.edina.Libraries.Robot.OpenClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.WaitAndUpdate;
-import edu.edina.Libraries.Robot.WaitForNotBusy;
+import edu.edina.Libraries.Robot.WaitForTime;
+import edu.edina.Libraries.Robot.WaitForHardware;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
@@ -162,42 +159,56 @@ public class AutoSample extends LinearOpMode {
                 .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
-        // Run the actions.
-        Actions.runBlocking(
-                new SequentialAction(
+        // Construct a main action.
+        Action mainAction = new SequentialAction(
 
-                        // Score preloaded sample.
-                        driveFromStartToBasket,
-                        score(),
+                // Lower the wrist.
+                new InstantAction(() -> robotHardware.lowerWrist()),
 
-                        // Score first spike mark sample.
-                        driveFromBasketToFirstSpikeMark,
-                        new CloseClaw(robotHardware),
-                        new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
-                        driveFromFirstSpikeMarkToBasket,
-                        score(),
+                // Score preloaded sample.
+                driveFromStartToBasket,
+                score(),
 
-                        // Score second spike mark sample.
-                        driveFromBasketToFirstAndAHalfSpikeMark,
-                        driveFromFirstAndAHalfToSecondSpikeMark,
-                        new CloseClaw(robotHardware),
-                        new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
-                        driveFromSecondSpikeMarkToBasket,
-                        score(),
+                // Score first spike mark sample.
+                driveFromBasketToFirstSpikeMark,
+                new InstantAction(() -> robotHardware.closeClaw()),
+                new WaitForTime(CLAW_MILLISECONDS),
+                driveFromFirstSpikeMarkToBasket,
+                score(),
 
-                        // Score second third mark sample.
-                        driveFromBasketToThirdSpikeMark,
-                        new CloseClaw(robotHardware),
-                        new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
-                        driveFromThirdSpikeMarkToBasket,
-                        score(),
+                // Score second spike mark sample.
+                driveFromBasketToFirstAndAHalfSpikeMark,
+                driveFromFirstAndAHalfToSecondSpikeMark,
+                new InstantAction(() -> robotHardware.closeClaw()),
+                new WaitForTime(CLAW_MILLISECONDS),
+                driveFromSecondSpikeMarkToBasket,
+                score(),
 
-                        // Wait for everything to finish.
-                        new WaitAndUpdate(robotHardware, TIMEOUT_MILLISECONDS, true)
+                // Score second third mark sample.
+                driveFromBasketToThirdSpikeMark,
+                new InstantAction(() -> robotHardware.closeClaw()),
+                new WaitForTime(CLAW_MILLISECONDS),
+                driveFromThirdSpikeMarkToBasket,
+                score(),
 
-                )
+                // Wait for everything to finish.
+                new WaitForTime(TIMEOUT_MILLISECONDS)
 
         );
+
+        // Add the action to the robot hardware.
+        robotHardware.addAction(mainAction);
+
+        // While the op mode is active...
+        while (opModeIsActive()) {
+
+            // Update the robot hardware.
+            robotHardware.update();
+
+            // Update the telemetry.
+            telemetry.update();
+
+        }
 
     }
 
@@ -205,22 +216,22 @@ public class AutoSample extends LinearOpMode {
     public Action score() {
         return new SequentialAction(
                 new ParallelAction(
-                        new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false, true),
+                        new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
                         new InstantAction(() -> robotHardware.setAutoHighBasketExtension()),
                         new SequentialAction(
-                                new WaitAndUpdate(robotHardware, 500, true),
+                                new WaitForTime(500),
                                 new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
                         )
                 ),
-                new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
-                new OpenClaw(robotHardware),
-                new WaitAndUpdate(robotHardware, CLAW_MILLISECONDS, true),
+                new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
+                new InstantAction(() -> robotHardware.openClaw()),
+                new WaitForTime(CLAW_MILLISECONDS),
                 new ParallelAction(
-                        new MoveArm(robotHardware, Arm.GROUND_POSITION, false, true),
+                        new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                         new InstantAction(() -> robotHardware.setLiftGroundPosition())
                 ),
-                new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
+                new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
                 new InstantAction(() -> robotHardware.lowerWrist())
         );
     }

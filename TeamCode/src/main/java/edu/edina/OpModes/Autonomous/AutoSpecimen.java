@@ -10,18 +10,15 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
-import edu.edina.Libraries.Robot.CloseClaw;
 import edu.edina.Libraries.Robot.MoveArm;
-import edu.edina.Libraries.Robot.OpenClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.WaitAndUpdate;
-import edu.edina.Libraries.Robot.WaitForNotBusy;
+import edu.edina.Libraries.Robot.WaitForTime;
+import edu.edina.Libraries.Robot.WaitForHardware;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
@@ -189,16 +186,17 @@ public class AutoSpecimen extends LinearOpMode {
 					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
 					.build();
 
-			// Run the actions.
-			Actions.runBlocking(
-					new SequentialAction(
-                            // score preloaded specimen
-                            driveFromStartToChamber,
-							score(),
-							//pick up sample on first spike mark
-							driveFromScoreToFirstSpikeMark,
-							new CloseClaw(robotHardware),
-							new WaitAndUpdate(robotHardware, CLAW_DELAY, true)
+			// Construct a main action.
+			Action mainAction = new SequentialAction(
+
+					// Score preloaded specimen.
+					driveFromStartToChamber,
+					score(),
+
+					// Pick up first spike mark sample.
+					driveFromScoreToFirstSpikeMark,
+					new InstantAction(() -> robotHardware.closeClaw()),
+					new WaitForTime(CLAW_DELAY)
 //							//deliver sample to human player
 //							driveFirstSpikeMarkToHumanPlayer,
 //							new OpenClaw(),
@@ -234,9 +232,21 @@ public class AutoSpecimen extends LinearOpMode {
 //							// score the specimen
 //							driveFromHumanPlayerToChamber,
 //							score()
-					)
-
 			);
+
+			// Add the action to the robot hardware.
+			robotHardware.addAction(mainAction);
+
+			// While the op mode is active...
+			while (opModeIsActive()) {
+
+				// Update the robot hardware.
+				robotHardware.update();
+
+				// Update the telemetry.
+				telemetry.update();
+
+			}
 
 		}
 
@@ -244,19 +254,19 @@ public class AutoSpecimen extends LinearOpMode {
         public Action score() {
             return new SequentialAction(
 					new InstantAction(() -> robotHardware.lowerWrist()),
-					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false, true),
-					new WaitAndUpdate(robotHardware, 500, true),
+					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false),
+					new WaitForTime(500),
                     new ParallelAction(
 							new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
                             driveFromChamberToScore,
                             new SequentialAction(
-                                    new WaitAndUpdate(robotHardware, SCORE_DELAY, true),
-                                    new OpenClaw(robotHardware)
+                                    new WaitForTime(SCORE_DELAY),
+									new InstantAction(() -> robotHardware.openClaw())
                             )
                     ),
-					new WaitAndUpdate(robotHardware, 500, true),
-					new MoveArm(robotHardware, Arm.GROUND_POSITION, false, true),
-                    new WaitForNotBusy(robotHardware, TIMEOUT_MILLISECONDS, true),
+					new WaitForTime(500),
+					new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
+                    new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
 					new InstantAction(() -> robotHardware.lowerWrist())
             );
         }

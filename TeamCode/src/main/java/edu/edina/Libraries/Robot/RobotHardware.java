@@ -74,8 +74,8 @@ public class RobotHardware {
     private final Lift lift;
     private final Slide slide;
     private final BoundingBoxFailsafe failsafe;
-    private Light light;
-    private SampleSensor sampleSensor;
+    //private Light light;
+    //private SampleSensor sampleSensor;
     private boolean turtleMode;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
@@ -89,7 +89,7 @@ public class RobotHardware {
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        sampleSensor = new SampleSensor(hardwareMap);
+        //sampleSensor = new SampleSensor(hardwareMap);
 
         // Get an FTC dashboard instance.
         dashboard = FtcDashboard.getInstance();
@@ -140,7 +140,7 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
-        light = new Light(hardwareMap, sampleSensor);
+        //light = new Light(hardwareMap, sampleSensor);
     }
 
     // Waits for the user to lower the lift.
@@ -462,8 +462,8 @@ public class RobotHardware {
 
         // Construct an action to move the arm to the ground position.
         Action action = new SequentialAction(
-                new MoveArm(this, Arm.GROUND_POSITION, false, false),
-                new WaitForNotBusy(this, TIMEOUT_MILLISECONDS,  false),
+                new MoveArm(this, Arm.GROUND_POSITION, false),
+                new WaitForHardware(this, TIMEOUT_MILLISECONDS),
                 new InstantAction(() -> lowerWrist())
         );
 
@@ -476,7 +476,7 @@ public class RobotHardware {
     public void setArmLowBasketPosition() {
 
         // Construct an action to move the arm to the low basket position.
-        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION, false, false);
+        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION, false);
 
         // Run the action.
         runningActions.add(action);
@@ -495,7 +495,7 @@ public class RobotHardware {
     public void setArmHighBasketPosition() {
 
         // Construct an action to move the arm to the high basket position.
-        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, false, false);
+        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, false);
 
         // Run the action.
         runningActions.add(action);
@@ -506,7 +506,7 @@ public class RobotHardware {
     public void setArmHighChamberPosition() {
 
         // Construct an action to move the arm to the high chamber position.
-        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, false, false);
+        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, false);
 
         // Run the action.
         runningActions.add(action);
@@ -517,7 +517,7 @@ public class RobotHardware {
     public void setArmLowChamberPosition() {
 
         // Construct an action to move the arm to the low chamber position.
-        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, false, false);
+        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, false);
 
         // Run the action.
         runningActions.add(action);
@@ -528,7 +528,7 @@ public class RobotHardware {
     public void setArmSubmersiblePosition() {
 
         // Construct an action to move the arm to the submersible position.
-        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, false, false);
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, false);
 
         // Run the action.
         runningActions.add(action);
@@ -667,8 +667,8 @@ public class RobotHardware {
                 new InstantAction(() -> moveWristToHighChamberScore()),
                 backup,
                 new SequentialAction(
-                        new WaitAndUpdate(this, SCORE_DELAY, false),
-                        new OpenClaw(this)
+                        new WaitForTime(SCORE_DELAY),
+                        new InstantAction(() -> openClaw())
                 )
         );
 
@@ -682,14 +682,14 @@ public class RobotHardware {
 
         // Construct a score sample action.
         Action action = new SequentialAction(
-                new OpenClaw(this),
-                new WaitAndUpdate(this, 300, false),
+                new InstantAction(() -> openClaw()),
+                new WaitForTime(300),
                 new ParallelAction(
-                        new MoveArm(this, Arm.GROUND_POSITION, false, false),
+                        new MoveArm(this, Arm.GROUND_POSITION, false),
                         new InstantAction(() -> lift.setGroundPosition()),
                         new InstantAction(() -> slide.setMinimumExtension())
                 ),
-                new WaitForNotBusy(this, TIMEOUT_MILLISECONDS,  false),
+                new WaitForHardware(this, TIMEOUT_MILLISECONDS),
                 new InstantAction(() -> wrist.lower())
         );
 
@@ -843,6 +843,14 @@ public class RobotHardware {
 
         // Stop slide rezeroing.
         slide.stopRezeroing();
+
+    }
+
+    // Adds an action to this.
+    public void addAction(Action action) {
+
+        // Add the action to this.
+        runningActions.add(action);
 
     }
 

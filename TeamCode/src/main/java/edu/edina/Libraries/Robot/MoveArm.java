@@ -22,17 +22,17 @@ public class MoveArm implements Action {
     // Increment
     private int increment;
 
+    // Initialized value
+    private boolean initialized;
+
     // Robot hardware
     private RobotHardware robotHardware;
 
     // Target position
     private int targetPosition;
 
-    // Update
-    private boolean update;
-
     // Initializes this.
-    public MoveArm(RobotHardware robotHardware, int targetPosition, boolean fast, boolean update) {
+    public MoveArm(RobotHardware robotHardware, int targetPosition, boolean fast) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
@@ -40,22 +40,8 @@ public class MoveArm implements Action {
         // Get the target position.
         this.targetPosition = targetPosition;
 
-        // Remember the update value.
-        this.update = update;
-
-        // Get the arm's current position.
-        currentPosition = robotHardware.getCurrentArmPosition();
-
         // Get an appropriate increment.
         increment = fast ? FAST_INCREMENT : SLOW_INCREMENT;
-
-        // If we are lowering the arm...
-        if(currentPosition > targetPosition) {
-
-            // Negate the increment.
-            increment = -increment;
-
-        }
 
     }
 
@@ -63,11 +49,22 @@ public class MoveArm implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
 
-        // If we are updating...
-        if(update) {
+        // If this is not initialized...
+        if (!initialized) {
 
-            // Update the robot hardware.
-            robotHardware.update();
+            // Get the arm's current position.
+            currentPosition = robotHardware.getCurrentArmPosition();
+
+            // If we are lowering the arm...
+            if(currentPosition > targetPosition) {
+
+                // Negate the increment.
+                increment = -increment;
+
+            }
+
+            // Remember that this is initialized.
+            initialized = true;
 
         }
 
