@@ -22,7 +22,7 @@ public class AutoSample extends LinearOpMode {
 
     // Start pose
     public static double START_X = -38;
-    public static double START_Y = -62;
+    public static double START_Y = -61;
     public static double START_HEADING = 0;
 
     // Basket pose
@@ -46,7 +46,7 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_AND_A_HALF_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -58;
+    public static double THIRD_SPIKE_MARK_X = -57;
     public static double THIRD_SPIKE_MARK_Y = -28;
     public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
 
@@ -227,6 +227,10 @@ public class AutoSample extends LinearOpMode {
                 new InstantAction(() -> robotHardware.openClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 new ParallelAction(
+                        new SequentialAction(
+                                new WaitForTime(500),
+                                new InstantAction(() -> robotHardware.raiseWrist())
+                        ),
                         new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                         new InstantAction(() -> robotHardware.setLiftGroundPosition())
