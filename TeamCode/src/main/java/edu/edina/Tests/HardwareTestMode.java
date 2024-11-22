@@ -21,7 +21,6 @@ import edu.edina.Libraries.Robot.GamePadClick;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
-@Disabled
 public class HardwareTestMode extends LinearOpMode {
     // construct the tests
     ITestMode[] tests = new ITestMode[]{
