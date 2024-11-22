@@ -25,6 +25,7 @@ import java.util.List;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
+import edu.edina.OpModes.Autonomous.AutoSample;
 
 @Config
 public class RobotHardware {
@@ -410,19 +411,11 @@ public class RobotHardware {
 
     }
 
-    // Sets the auto high basket extension.
-    public void setAutoHighBasketExtension() {
+    // Sets the high basket extension.
+    public void setHighBasketExtension() {
 
-        // Set the auto high basket extension.
-        slide.setAutoHighBasketExtension();
-
-    }
-
-    // Sets the tele op high basket extension.
-    public void setTeleOpHighBasketExtension() {
-
-        // Set the tele op high basket extension.
-        slide.setTeleOpHighBasketExtension();
+        // Set the high basket extension.
+        slide.setHighBasketExtension();
 
     }
 
@@ -681,17 +674,7 @@ public class RobotHardware {
     public void scoreSample() {
 
         // Construct a score sample action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> openClaw()),
-                new WaitForTime(300),
-                new ParallelAction(
-                        new MoveArm(this, Arm.GROUND_POSITION, false),
-                        new InstantAction(() -> lift.setGroundPosition()),
-                        new InstantAction(() -> slide.setMinimumExtension())
-                ),
-                new WaitForHardware(this, TIMEOUT_MILLISECONDS),
-                new InstantAction(() -> wrist.lower())
-        );
+        Action action = AutoSample.scoreSample(this);
 
         // Run the action.
         runningActions.add(action);

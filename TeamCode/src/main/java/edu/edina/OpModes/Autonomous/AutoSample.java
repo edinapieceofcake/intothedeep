@@ -167,14 +167,14 @@ public class AutoSample extends LinearOpMode {
 
                 // Score preloaded sample.
                 driveFromStartToBasket,
-                score(),
+                raiseAndScoreSample(),
 
                 // Score first spike mark sample.
                 driveFromBasketToFirstSpikeMark,
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 driveFromFirstSpikeMarkToBasket,
-                score(),
+                raiseAndScoreSample(),
 
                 // Score second spike mark sample.
                 driveFromBasketToFirstAndAHalfSpikeMark,
@@ -182,14 +182,14 @@ public class AutoSample extends LinearOpMode {
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 driveFromSecondSpikeMarkToBasket,
-                score(),
+                raiseAndScoreSample(),
 
                 // Score second third mark sample.
                 driveFromBasketToThirdSpikeMark,
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 driveFromThirdSpikeMarkToBasket,
-                score(),
+                raiseAndScoreSample(),
 
                 // Wait for everything to finish.
                 new WaitForTime(TIMEOUT_MILLISECONDS)
@@ -212,18 +212,32 @@ public class AutoSample extends LinearOpMode {
 
     }
 
-    // Scores a sample.
-    public Action score() {
-        return new SequentialAction(
+    // Raises and scores a sample.
+    public Action raiseAndScoreSample() {
+
+        // Construct a raise and score sample action.
+        Action action = new SequentialAction(
                 new ParallelAction(
                         new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
-                        new InstantAction(() -> robotHardware.setAutoHighBasketExtension()),
+                        new InstantAction(() -> robotHardware.setHighBasketExtension()),
                         new SequentialAction(
                                 new WaitForTime(500),
                                 new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
                         )
                 ),
-                new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
+                scoreSample(robotHardware)
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Scores a sample.
+    public static Action scoreSample(RobotHardware robotHardware) {
+
+        // Construct a score sample action.
+        Action action = new SequentialAction(
                 new InstantAction(() -> robotHardware.openClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 new ParallelAction(
@@ -238,6 +252,10 @@ public class AutoSample extends LinearOpMode {
                 new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
                 new InstantAction(() -> robotHardware.lowerWrist())
         );
+
+        // Return the action.
+        return action;
+
     }
 
 }

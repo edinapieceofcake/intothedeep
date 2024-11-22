@@ -200,8 +200,8 @@ public class TeleOpMain extends LinearOpMode {
             // Clear any pending actions.
             robotHardware.clearActions();
 
-            // Raise the wrist.
-            robotHardware.raiseWrist();
+            // Lower the wrist.
+            robotHardware.lowerWrist();
 
             // Move the arm to the high basket position.
             robotHardware.setArmHighBasketPosition();
@@ -210,7 +210,7 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.setLiftHighBasketPosition();
 
             // Use the high basket extension.
-            robotHardware.setTeleOpHighBasketExtension();
+            robotHardware.setHighBasketExtension();
 
         }
 
