@@ -19,7 +19,7 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     private static final byte NEOPIXEL_MODULE_BASE = 0xe, PIN = 0xf;
     public static final short NUM_PIXELS = 18, NUM_BYTES = 3 * NUM_PIXELS;
     private static final int MAX_PIXEL_BYTE_BATCH = 24;
-    private static final int WRITE_DELAY_MS = 50;
+    private static final int WRITE_DELAY_MS = 10;
     private final BufferExchange bufExch;
 
     public NeoPixelDriverDevice(I2cDeviceSynch deviceClient, boolean deviceClientIsOwned) {
@@ -53,7 +53,7 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         RobotLog.ii(LogTag, "set NeoPixel buffer length to %d", NUM_BYTES);
 
         Timer t = new Timer();
-        t.schedule(new FlushTask(), 0, 1);
+        t.schedule(new FlushTask(), 0, 80);
 
         return true;
     }
@@ -75,6 +75,9 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
 
     private void flushColors() {
         byte[] pixArray = bufExch.viewBuffer();
+
+        attemptToResynchWithDevice();
+
         if (pixArray != null) {
             int max = Math.min(pixArray.length, NUM_BYTES);
 
@@ -92,8 +95,8 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
             }
         }
 
-        byte[] showCmd = new byte[0];
-        write(NeoPixelSubModule.SHOW, showCmd);
+        byte[] empty = new byte[0];
+        write(NeoPixelSubModule.SHOW, empty);
     }
 
     private void write(NeoPixelSubModule sub, byte[] cmd) {
@@ -113,11 +116,17 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
                 fullCmd[i + 2] = cmd[i];
             }
 
-            deviceClient.write(fullCmd, I2cWaitControl.ATOMIC);
+            deviceClient.write(fullCmd, I2cWaitControl.WRITTEN);
         } catch (RuntimeException x) {
             RobotLog.ee(LogTag, "could not write to NeoPixel driver %s", x);
             throw x;
         }
+    }
+
+    private void attemptToResynchWithDevice() {
+        byte[] empty = new byte[0];
+        for (int i = 0; i < 8; i++)
+            deviceClient.write(empty, I2cWaitControl.WRITTEN);
     }
 
     private static class BufferExchange {
@@ -135,7 +144,6 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     private class FlushTask extends TimerTask {
         @Override
         public void run() {
-            RobotLog.ii(LogTag, "flushing");
             flushColors();
         }
     }
