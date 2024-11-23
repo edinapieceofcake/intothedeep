@@ -67,6 +67,7 @@ public class AutoSpecimen extends LinearOpMode {
 		public static int CLAW_DELAY = 500;
 		public static int ARM_DELAY = 500;
 		public static int SCORE_DELAY = 400;
+		public static double TEST_HUMAN_PLAYER_Y = -46.5;
 
 
 		// Robot hardware
@@ -148,11 +149,11 @@ public class AutoSpecimen extends LinearOpMode {
 			double testSubToSpikeMarkTangent = 15.0/8*Math.PI;
 			Pose2d testFirstSpikeMarkPose = new Pose2d(47,-35,Math.toRadians(89));
 			double testFirstSpikeMarkTangent = Math.toRadians(89);
-			Vector2d testDropFirstSpikeMarkSampleVector = new Vector2d(53, -44);
+			Vector2d testDropFirstSpikeMarkSampleVector = new Vector2d(53, TEST_HUMAN_PLAYER_Y);
 			double testDropFirstSpikeMarkSampleHeading = 3.0/2*Math.PI;
-			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, -44);
+			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, TEST_HUMAN_PLAYER_Y);
 			double testGrabFirstSpecimenFromHumanPlayerHeading = 3.0/2*Math.PI;
-
+			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, TEST_HUMAN_PLAYER_Y, Math.toRadians(270));
 			// Construct a drive interface.
 			MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -248,6 +249,9 @@ public class AutoSpecimen extends LinearOpMode {
 			driveFromChamberToScore2 = drive.actionBuilder(chamberPose2)
 					.strafeToLinearHeading(scorePose2.position, scorePose2.heading)
 					.build();
+			Action testDriveFromScoreToHumanPlayer = drive.actionBuilder(scorePose2)
+					.strafeToLinearHeading(testFromScoreToHumanPlayerPose.position, testFromScoreToHumanPlayerPose.heading)
+					.build();
 
 			// Construct a main action.
 			Action mainAction = new SequentialAction(
@@ -285,7 +289,12 @@ public class AutoSpecimen extends LinearOpMode {
 					new InstantAction(() -> robotHardware.closeClaw()),
 					new WaitForTime(CLAW_DELAY),
 					testDriveToChamberFromHumanPlayer1,
-					scoreSpecimenAndLower(driveFromChamberToScore2)
+					scoreSpecimenAndLower(driveFromChamberToScore2),
+					testDriveFromScoreToHumanPlayer,
+					new InstantAction(() -> robotHardware.closeClaw()),
+					new WaitForTime(CLAW_DELAY)
+
+
 
 					/*
 					// Grab first spike mark sample.
