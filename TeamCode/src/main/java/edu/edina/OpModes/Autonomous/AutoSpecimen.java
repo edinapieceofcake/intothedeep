@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -67,13 +68,14 @@ public class AutoSpecimen extends LinearOpMode {
 		public static int CLAW_DELAY = 500;
 		public static int ARM_DELAY = 500;
 		public static int SCORE_DELAY = 400;
-		public static double TEST_HUMAN_PLAYER_Y = -46.5;
+		public static double TEST_HUMAN_PLAYER_Y = -46;
 
 
 		// Robot hardware
 		private RobotHardware robotHardware;
 		private Action driveFromChamberToScore;
 		private Action driveFromChamberToScore2;
+		private Action driveFromChamberToScore3;
 
 		// Runs the op mode.
 		@Override
@@ -124,6 +126,8 @@ public class AutoSpecimen extends LinearOpMode {
 			// Construct a chamber pose.
 			Pose2d chamberPose2 = new Pose2d(CHAMBER_X + CHAMBER_X_INCREMENT, CHAMBER_Y, CHAMBER_HEADING);
 			Pose2d scorePose2 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT, SCORE_Y, CHAMBER_HEADING);
+			Pose2d chamberPose3 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT + 3,CHAMBER_Y,CHAMBER_HEADING);
+			Pose2d scorePose3 = new Pose2d(SCORE_X+ CHAMBER_X_INCREMENT + 3,SCORE_Y,CHAMBER_HEADING);
 
 			// Construct a first spike mark pose.
 			Vector2d firstSpikeMarkAVector = new Vector2d(FIRST_SPIKE_MARK_A_X, FIRST_SPIKE_MARK_A_Y);
@@ -252,7 +256,14 @@ public class AutoSpecimen extends LinearOpMode {
 					.build();
 			Action testDriveFromScoreToHumanPlayer = drive.actionBuilder(scorePose2)
 					.strafeToLinearHeading(testFromScoreToHumanPlayerPose.position, testFromScoreToHumanPlayerPose.heading)
-					.strafeToLinearHeading(testFromScoreToHumanPlayerPose2.position, testFromScoreToHumanPlayerPose2.heading)
+
+					.strafeToLinearHeading(testFromScoreToHumanPlayerPose2.position, testFromScoreToHumanPlayerPose2.heading, new TranslationalVelConstraint(10.0))
+					.build();
+			Action testDriveFromHumanPlayerToChamberPose3 = drive.actionBuilder(humanPlayer2Pose)
+					.strafeToLinearHeading(chamberPose3.position, chamberPose3.heading)
+					.build();
+			driveFromChamberToScore3 = drive.actionBuilder(chamberPose3)
+					.strafeToLinearHeading(scorePose3.position, scorePose3.heading)
 					.build();
 
 			// Construct a main action.
@@ -294,7 +305,10 @@ public class AutoSpecimen extends LinearOpMode {
 					scoreSpecimenAndLower(driveFromChamberToScore2),
 					testDriveFromScoreToHumanPlayer,
 					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY)
+					new WaitForTime(CLAW_DELAY),
+					testDriveFromHumanPlayerToChamberPose3,
+					scoreSpecimenAndLower(driveFromChamberToScore3)
+
 
 
 
