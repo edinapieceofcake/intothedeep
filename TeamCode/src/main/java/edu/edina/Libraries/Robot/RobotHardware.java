@@ -693,7 +693,7 @@ public class RobotHardware {
     public void raiseSample() {
 
         // Construct a raise sample action.
-        Action action = AutoSample.raiseSample(this);
+        Action action = AutoSample.raiseSampleTeleOp(this);
 
         // Run the action.
         runningActions.add(action);
