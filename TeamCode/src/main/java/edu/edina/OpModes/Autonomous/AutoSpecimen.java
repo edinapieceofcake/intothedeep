@@ -153,7 +153,8 @@ public class AutoSpecimen extends LinearOpMode {
 			double testDropFirstSpikeMarkSampleHeading = 3.0/2*Math.PI;
 			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, TEST_HUMAN_PLAYER_Y);
 			double testGrabFirstSpecimenFromHumanPlayerHeading = 3.0/2*Math.PI;
-			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, TEST_HUMAN_PLAYER_Y, Math.toRadians(270));
+			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, -42, Math.toRadians(270));
+			Pose2d testFromScoreToHumanPlayerPose2 = new Pose2d(47, TEST_HUMAN_PLAYER_Y, Math.toRadians(270));
 			// Construct a drive interface.
 			MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -251,6 +252,7 @@ public class AutoSpecimen extends LinearOpMode {
 					.build();
 			Action testDriveFromScoreToHumanPlayer = drive.actionBuilder(scorePose2)
 					.strafeToLinearHeading(testFromScoreToHumanPlayerPose.position, testFromScoreToHumanPlayerPose.heading)
+					.strafeToLinearHeading(testFromScoreToHumanPlayerPose2.position, testFromScoreToHumanPlayerPose2.heading)
 					.build();
 
 			// Construct a main action.
