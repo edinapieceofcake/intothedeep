@@ -31,6 +31,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Chamber pose
 		public static double CHAMBER_X = 0;
+		public static double CHAMBER_X_INCREMENT = 3;
 		public static double CHAMBER_Y = -35;
 		public static double CHAMBER_HEADING = START_HEADING;
 
@@ -64,12 +65,14 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
 		// Duration in milliseconds to toggle the claw
 		public static int CLAW_DELAY = 500;
+		public static int ARM_DELAY = 500;
 		public static int SCORE_DELAY = 400;
 
 
 		// Robot hardware
 		private RobotHardware robotHardware;
 		private Action driveFromChamberToScore;
+		private Action driveFromChamberToScore2;
 
 		// Runs the op mode.
 		@Override
@@ -117,6 +120,10 @@ public class AutoSpecimen extends LinearOpMode {
 			Pose2d chamberPose = new Pose2d(CHAMBER_X, CHAMBER_Y, CHAMBER_HEADING);
 			Pose2d scorePose = new Pose2d(SCORE_X, SCORE_Y, CHAMBER_HEADING);
 
+			// Construct a chamber pose.
+			Pose2d chamberPose2 = new Pose2d(CHAMBER_X + CHAMBER_X_INCREMENT, CHAMBER_Y, CHAMBER_HEADING);
+			Pose2d scorePose2 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT, SCORE_Y, CHAMBER_HEADING);
+
 			// Construct a first spike mark pose.
 			Vector2d firstSpikeMarkAVector = new Vector2d(FIRST_SPIKE_MARK_A_X, FIRST_SPIKE_MARK_A_Y);
 			Vector2d firstSpikeMarkBVector = new Vector2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y);
@@ -136,6 +143,15 @@ public class AutoSpecimen extends LinearOpMode {
 			Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
 			// Construct a human player pose.
 			Pose2d humanPlayerPose = new Pose2d(HUMAN_PLAYER_X, HUMAN_PLAYER_Y, HUMAN_PLAYER_HEADING);
+
+			// Testing
+			double testSubToSpikeMarkTangent = 15.0/8*Math.PI;
+			Pose2d testFirstSpikeMarkPose = new Pose2d(47,-35,Math.toRadians(89));
+			double testFirstSpikeMarkTangent = Math.toRadians(89);
+			Vector2d testDropFirstSpikeMarkSampleVector = new Vector2d(53, -44);
+			double testDropFirstSpikeMarkSampleHeading = 3.0/2*Math.PI;
+			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, -44);
+			double testGrabFirstSpecimenFromHumanPlayerHeading = 3.0/2*Math.PI;
 
 			// Construct a drive interface.
 			MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
@@ -205,13 +221,73 @@ public class AutoSpecimen extends LinearOpMode {
 					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
 					.build();
 
+			// Testing
+			Action testSetTangentForDrivingFromSubToSpikeMark = drive.actionBuilder(scorePose)
+					.setTangent(testSubToSpikeMarkTangent)
+					.build();
+
+			Action testDriveFromSubToFirstSpikeMark = drive.actionBuilder(new Pose2d(scorePose.position, testSubToSpikeMarkTangent))
+					.splineToLinearHeading(testFirstSpikeMarkPose, testFirstSpikeMarkTangent)
+					.build();
+
+			Action testSetTangentToNormal = drive.actionBuilder(scorePose)
+					.setTangent(testSubToSpikeMarkTangent)
+					.build();
+
+			Action testDriveFromFirstSpikeMarkToHumanPlayer = drive.actionBuilder(testFirstSpikeMarkPose)
+					.strafeToLinearHeading(testDropFirstSpikeMarkSampleVector, testDropFirstSpikeMarkSampleHeading)
+					.build();
+
+			Action testDriveToFirstHumanPlayerSpecimen = drive.actionBuilder(new Pose2d(testDropFirstSpikeMarkSampleVector, testDropFirstSpikeMarkSampleHeading))
+					.strafeToLinearHeading(testGrabFirstSpecimenFromHumanPlayerVector, testGrabFirstSpecimenFromHumanPlayerHeading)
+					.build();
+
+			Action testDriveToChamberFromHumanPlayer1 = drive.actionBuilder(new Pose2d(testGrabFirstSpecimenFromHumanPlayerVector, testGrabFirstSpecimenFromHumanPlayerHeading))
+					.strafeToLinearHeading(chamberPose2.position, chamberPose2.heading)
+					.build();
+			driveFromChamberToScore2 = drive.actionBuilder(chamberPose2)
+					.strafeToLinearHeading(scorePose2.position, scorePose2.heading)
+					.build();
+
 			// Construct a main action.
 			Action mainAction = new SequentialAction(
 
 					// Score preloaded specimen.
 					driveFromStartToChamber,
-					scoreSpecimenAndLower(),
+					scoreSpecimenAndLower(driveFromChamberToScore),
 
+					// Test
+					testSetTangentForDrivingFromSubToSpikeMark,
+					testDriveFromSubToFirstSpikeMark,
+					testSetTangentToNormal,
+					new InstantAction(() -> robotHardware.closeClaw()),
+					new WaitForTime(CLAW_DELAY),
+					new InstantAction(() -> robotHardware.incrementArmPosition()),
+					new InstantAction(() -> robotHardware.incrementArmPosition()),
+					new InstantAction(() -> robotHardware.incrementArmPosition()),
+					new WaitForTime(ARM_DELAY),
+					testDriveFromFirstSpikeMarkToHumanPlayer,
+					new InstantAction(() -> robotHardware.decrementArmPosition()),
+					new InstantAction(() -> robotHardware.decrementArmPosition()),
+					new InstantAction(() -> robotHardware.decrementArmPosition()),
+					new WaitForTime(ARM_DELAY),
+					new InstantAction(() -> robotHardware.openClaw()),
+					new WaitForTime(CLAW_DELAY),
+					new InstantAction(() -> robotHardware.incrementArmPosition()),
+					new InstantAction(() -> robotHardware.incrementArmPosition()),
+					new InstantAction(() -> robotHardware.incrementArmPosition()),
+					new WaitForTime(ARM_DELAY),
+					testDriveToFirstHumanPlayerSpecimen,
+					new InstantAction(() -> robotHardware.decrementArmPosition()),
+					new InstantAction(() -> robotHardware.decrementArmPosition()),
+					new InstantAction(() -> robotHardware.decrementArmPosition()),
+					new WaitForTime(ARM_DELAY),
+					new InstantAction(() -> robotHardware.closeClaw()),
+					new WaitForTime(CLAW_DELAY),
+					testDriveToChamberFromHumanPlayer1,
+					scoreSpecimenAndLower(driveFromChamberToScore2)
+
+					/*
 					// Grab first spike mark sample.
 					driveFromScoreToFirstSpikeMark,
 					new InstantAction(() -> robotHardware.closeClaw()),
@@ -227,6 +303,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 					// Deliver second spike mark sample.
 					deliverSampleToHumanPlayer()
+					 */
 
 //							//deliver sample to human player
 //							driveFirstSpikeMarkToHumanPlayer,
@@ -282,7 +359,7 @@ public class AutoSpecimen extends LinearOpMode {
 		}
 
 		// Scores a specimen and then lowers the arm.
-        public Action scoreSpecimenAndLower() {
+        public Action scoreSpecimenAndLower(Action driveFromChamberToScore) {
 
 			// Construct an action.
             Action action = new SequentialAction(

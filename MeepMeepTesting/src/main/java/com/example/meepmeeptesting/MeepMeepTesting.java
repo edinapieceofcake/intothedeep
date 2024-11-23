@@ -34,6 +34,8 @@ public class MeepMeepTesting {
                     .strafeToLinearHeading(new Vector2d(-57.5, -38), 1.0 / 2 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-57, -25), Math.PI)
+
+
                     //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
 
                     /*
@@ -86,46 +88,56 @@ public class MeepMeepTesting {
                     // High Rung Position
                     .strafeTo(new Vector2d(0,-35))
                     .waitSeconds(1)
-                    //First Spike
-                            .splineTo(new Vector2d(48.4,-36),Math.toRadians(90))
-                    .waitSeconds(0.5)
-                    .setReversed(false)
-                    //Human Player
-                    .strafeTo(new Vector2d(47,-50))
-                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
-                    .waitSeconds(0.5)
-                    //Second Spike
-                    .strafeToLinearHeading(new Vector2d(48,-25), 3.0/2*Math.PI)
-                    .waitSeconds(0.5)
-                    //Human Player
-                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
-                    .waitSeconds(0.5)
-                    //High Rung Position
-                    .strafeTo(new Vector2d(0,-35))
-                    .waitSeconds(1)
-                    .setReversed(false)
-                    //Third Spike
-                    .splineTo(new Vector2d(58,-25), 0)
-                    .waitSeconds(0.5)
-                    //Human Player
-                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
-                    .waitSeconds(0.5)
-                    //High Rung
-                    .strafeTo(new Vector2d(0,-35))
-                    .waitSeconds(1)
-                    //Human Player
-                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
-                    .waitSeconds(0.5)
-                    //High Rung
-                    .strafeTo(new Vector2d(0,-35))
-                    .waitSeconds(1)
+
+                    .setTangent(15.0/8*Math.PI)
+                    .splineToLinearHeading(new Pose2d(47,-37,Math.toRadians(89)), Math.toRadians(89))
+                    .strafeToLinearHeading(new Vector2d(52, -45), 7.0/4*Math.PI)
+                    .turnTo(3.0/2*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(0, -35), Math.toRadians(270))
+
+//                    .splineTo(new Vector2d(20, -35), 1.0/4*Math.PI)
+//                    .splineTo(new Vector2d(35, -25), 0)
+
+//                    //First Spike
+//                            .splineTo(new Vector2d(48.4,-36),Math.toRadians(90))
+//                    .waitSeconds(0.5)
+//                    .setReversed(false)
+//                    //Human Player
+//                    .strafeTo(new Vector2d(47,-50))
+//                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
+//                    .waitSeconds(0.5)
+//                    //Second Spike
+//                    .strafeToLinearHeading(new Vector2d(48,-25), 3.0/2*Math.PI)
+//                    .waitSeconds(0.5)
+//                    //Human Player
+//                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
+//                    .waitSeconds(0.5)
+//                    //High Rung Position
+//                    .strafeTo(new Vector2d(0,-35))
+//                    .waitSeconds(1)
+//                    .setReversed(false)
+//                    //Third Spike
+//                    .splineTo(new Vector2d(58,-25), 0)
+//                    .waitSeconds(0.5)
+//                    //Human Player
+//                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
+//                    .waitSeconds(0.5)
+//                    //High Rung
+//                    .strafeTo(new Vector2d(0,-35))
+//                    .waitSeconds(1)
+//                    //Human Player
+//                    .strafeToLinearHeading(new Vector2d(47,-50), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(47,-46.5), 3.0/2*Math.PI)
+//                    .strafeToLinearHeading(new Vector2d(44,-50), 3.0/2*Math.PI)
+//                    .waitSeconds(0.5)
+//                    //High Rung
+//                    .strafeTo(new Vector2d(0,-35))
+//                    .waitSeconds(1)
                     // STOP COPYING
 
 
