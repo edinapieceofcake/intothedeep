@@ -12,7 +12,7 @@ public class Wrist {
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
     // Down position
-    public static double DOWN_POSITION = 0.51;
+    public static double DOWN_POSITION = 0.505;
 
     public static double HIGH_CHAMBER_SCORE_POSITION = 0.1;
 
