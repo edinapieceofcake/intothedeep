@@ -3,10 +3,14 @@ package edu.edina.OpModes.TeleOp;
 import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import edu.edina.Libraries.Robot.Arm;
+import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
@@ -200,17 +204,8 @@ public class TeleOpMain extends LinearOpMode {
             // Clear any pending actions.
             robotHardware.clearActions();
 
-            // Lower the wrist.
-            robotHardware.lowerWrist();
-
-            // Move the arm to the high basket position.
-            robotHardware.setArmHighBasketPosition();
-
-            // Move the lift to the high basket position
-            robotHardware.setLiftHighBasketPosition();
-
-            // Use the high basket extension.
-            robotHardware.setHighBasketExtension();
+            // Raise the sample.
+            robotHardware.raiseSample();
 
         }
 

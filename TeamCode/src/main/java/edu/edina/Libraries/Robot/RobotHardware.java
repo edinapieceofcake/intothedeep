@@ -689,6 +689,17 @@ public class RobotHardware {
 
     }
 
+    // Raises a sample.
+    public void raiseSample() {
+
+        // Construct a raise sample action.
+        Action action = AutoSample.raiseSample(this);
+
+        // Run the action.
+        runningActions.add(action);
+
+    }
+
     // Determines whether the lift is in the high basket position.
     public boolean isLiftInHighBasketPosition() {
 
