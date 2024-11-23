@@ -722,6 +722,9 @@ public class RobotHardware {
         // Clear any pending actions.
         runningActions.clear();
 
+        // Enable manual driving.
+        enableManualDriving();
+
     }
 
     // Gets the arm's current position.
