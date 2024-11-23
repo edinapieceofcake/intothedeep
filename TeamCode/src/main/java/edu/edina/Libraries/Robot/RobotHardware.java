@@ -1,14 +1,12 @@
 package edu.edina.Libraries.Robot;
 
 import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
-import static edu.edina.OpModes.Autonomous.AutoSpecimen.SCORE_DELAY;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.ftccommon.SoundPlayer;
@@ -82,6 +80,7 @@ public class RobotHardware {
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
+    private boolean allowManualDriving = true;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -249,11 +248,8 @@ public class RobotHardware {
         // Update the claw.
         claw.update();
 
-        // Count the actions.
-        int actionCount = runningActions.size();
-
-        // If there are no actions...
-        if(actionCount == 0) {
+        // If manual driving is allowed...
+        if(allowManualDriving) {
 
             // Update the drivetrain.
             drivetrain.update();
@@ -660,7 +656,11 @@ public class RobotHardware {
                 .build();
 
         // Construct a score specimen action.
-        Action action = AutoSpecimen.scoreSpecimen(backup,this);
+        Action action = new SequentialAction(
+                new InstantAction(() -> disableManualDriving()),
+                AutoSpecimen.scoreSpecimen(backup,this),
+                new InstantAction(() -> enableManualDriving())
+        );
 
         // Run the action.
         runningActions.add(action);
@@ -831,6 +831,25 @@ public class RobotHardware {
 
         // Add the action to this.
         runningActions.add(action);
+
+    }
+
+    // Disables manual driving.
+    public void disableManualDriving() {
+
+        // Disable manual driving.
+        allowManualDriving = false;
+
+        // Stop the robot.
+        drivetrain.stop();
+
+    }
+
+    // Enables manual driving.
+    public void enableManualDriving() {
+
+        // Enable manual driving.
+        allowManualDriving = true;
 
     }
 

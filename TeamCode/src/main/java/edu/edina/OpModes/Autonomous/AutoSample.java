@@ -196,6 +196,9 @@ public class AutoSample extends LinearOpMode {
 
         );
 
+        // Disable manual driving.
+        robotHardware.disableManualDriving();
+
         // Add the action to the robot hardware.
         robotHardware.addAction(mainAction);
 

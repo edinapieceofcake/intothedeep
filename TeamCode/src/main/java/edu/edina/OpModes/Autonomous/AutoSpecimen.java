@@ -342,6 +342,9 @@ public class AutoSpecimen extends LinearOpMode {
 //							score()
 			);
 
+			// Disable manual driving.
+			robotHardware.disableManualDriving();
+
 			// Add the action to the robot hardware.
 			robotHardware.addAction(mainAction);
 

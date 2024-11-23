@@ -121,29 +121,6 @@ public class Drivetrain {
         telemetry.addData("- Turtle Mode", turtleMode);
     }
 
-    public void updateForScore() {
-        double power = TURTLE_MULTIPLIER + 0.2;
-
-        leftFront.setPower(power);
-        rightFront.setPower(power);
-        leftBack.setPower(power);
-        rightBack.setPower(power);
-
-        Telemetry telemetry = opMode.telemetry;
-
-        // Display arm telemetry.
-        telemetry.addData("Drivetrain", "====================");
-        telemetry.addData("- Scoring Mode", true);
-    }
-
-    // Toggles turtle mode.
-    public void toggleTurtleMode() {
-
-        // Toggle turtle mode.
-        turtleMode = !turtleMode;
-
-    }
-
     // Sets the turtle mode value.
     public void setTurtleMode(boolean turtleMode) {
 
@@ -170,4 +147,16 @@ public class Drivetrain {
         else
             return 1;
     }
+
+    // Stops the robot.
+    public void stop() {
+
+        // Stop the robot.
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+
+    }
+
 }
