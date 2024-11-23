@@ -409,13 +409,13 @@ public class TeleOpMain extends LinearOpMode {
             boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
 
             // Determine whether the arm is in the submersible position.
-            boolean isArmInSubmersiblePosition = robotHardware.isArmInSubmersiblePosition();
+            boolean isArmNearSubmersiblePosition = robotHardware.isArmNearSubmersiblePosition();
 
             // Get the current slide extension.
             double currentSlideExtension = robotHardware.getCurrentSlideExtension();
 
             // Determine whether the slide is maximally extended in the submersible.
-            boolean isSlideMaximallyExtendedInSubmersible = isArmInSubmersiblePosition && currentSlideExtension >= MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
+            boolean isSlideMaximallyExtendedInSubmersible = isArmNearSubmersiblePosition && currentSlideExtension >= MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
 
             // Determine whether to disallow slide extension (so the robot stays within the expansion box).
             boolean disallowSlideExtension = isArmNearlyDown || isSlideMaximallyExtendedInSubmersible;

@@ -447,6 +447,17 @@ public class RobotHardware {
 
     }
 
+    // Determines whether the arm is near the submersible position.
+    public boolean isArmNearSubmersiblePosition() {
+
+        // Determine whether the arm is near the submersible position.
+        boolean isArmNearSubmersiblePosition = arm.isNearSubmersiblePosition();
+
+        // Return the result.
+        return isArmNearSubmersiblePosition;
+
+    }
+
     // Moves the arm to the ground position.
     public void setArmGroundPosition() {
 
