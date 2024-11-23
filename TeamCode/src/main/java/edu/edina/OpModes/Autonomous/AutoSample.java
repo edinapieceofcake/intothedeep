@@ -215,7 +215,25 @@ public class AutoSample extends LinearOpMode {
 
     }
 
-    public static Action raiseSample(RobotHardware robotHardware) {
+    public static Action raiseSampleTeleOp(RobotHardware robotHardware) {
+
+        // Construct a raise and score sample action.
+        Action action = new ParallelAction(
+                new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                new InstantAction(() -> robotHardware.raiseWrist()),
+                new SequentialAction(
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.lowerWrist()),
+                        new InstantAction(() -> robotHardware.setHighBasketExtension()),
+                        new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                )
+        );
+
+        return action;
+
+    }
+
+    public static Action raiseSampleAuto(RobotHardware robotHardware) {
 
         // Construct a raise and score sample action.
         Action action = new ParallelAction(
@@ -236,7 +254,7 @@ public class AutoSample extends LinearOpMode {
 
         // Construct a raise and score sample action.
         Action action = new SequentialAction(
-                raiseSample(robotHardware),
+                raiseSampleAuto(robotHardware),
                 new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
                 scoreSample(robotHardware)
         );

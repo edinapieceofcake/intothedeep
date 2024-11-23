@@ -43,7 +43,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
     */
 
     // Maximum slide extension in submersible (so the robot stays within the expansion box)
-    public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 5;
+    public static double MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE = 7;
 
     // Trigger threshold
     public static double TRIGGER_THRESHOLD = 0.5;
