@@ -27,7 +27,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Start pose
 		public static double START_X = 0;
-		public static double START_Y = -64.5;
+		public static double START_Y = -62.5;
 		public static double START_HEADING = Math.toRadians(180);
 
 		// Chamber pose
@@ -68,7 +68,7 @@ public class AutoSpecimen extends LinearOpMode {
 		public static int CLAW_DELAY = 500;
 		public static int ARM_DELAY = 500;
 		public static int SCORE_DELAY = 400;
-		public static double TEST_HUMAN_PLAYER_Y = -46;
+		public static double TEST_HUMAN_PLAYER_Y = -43;
 
 
 		// Robot hardware
@@ -124,9 +124,9 @@ public class AutoSpecimen extends LinearOpMode {
 			Pose2d scorePose = new Pose2d(SCORE_X, SCORE_Y, CHAMBER_HEADING);
 
 			// Construct a chamber pose.
-			Pose2d chamberPose2 = new Pose2d(CHAMBER_X + CHAMBER_X_INCREMENT, CHAMBER_Y, CHAMBER_HEADING);
+			Pose2d chamberPose2 = new Pose2d(CHAMBER_X + CHAMBER_X_INCREMENT, CHAMBER_Y + 2, CHAMBER_HEADING);
 			Pose2d scorePose2 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT, SCORE_Y, CHAMBER_HEADING);
-			Pose2d chamberPose3 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT + 3,CHAMBER_Y,CHAMBER_HEADING);
+			Pose2d chamberPose3 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT + 3,CHAMBER_Y + 2,CHAMBER_HEADING);
 			Pose2d scorePose3 = new Pose2d(SCORE_X+ CHAMBER_X_INCREMENT + 3,SCORE_Y,CHAMBER_HEADING);
 
 			// Construct a first spike mark pose.
@@ -151,13 +151,13 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Testing
 			double testSubToSpikeMarkTangent = 15.0/8*Math.PI;
-			Pose2d testFirstSpikeMarkPose = new Pose2d(47,-35,Math.toRadians(89));
+			Pose2d testFirstSpikeMarkPose = new Pose2d(45,-34,Math.toRadians(89));
 			double testFirstSpikeMarkTangent = Math.toRadians(89);
 			Vector2d testDropFirstSpikeMarkSampleVector = new Vector2d(53, TEST_HUMAN_PLAYER_Y);
 			double testDropFirstSpikeMarkSampleHeading = 3.0/2*Math.PI;
 			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, TEST_HUMAN_PLAYER_Y);
 			double testGrabFirstSpecimenFromHumanPlayerHeading = 3.0/2*Math.PI;
-			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, -42, Math.toRadians(270));
+			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, -40, Math.toRadians(270));
 			Pose2d testFromScoreToHumanPlayerPose2 = new Pose2d(47, TEST_HUMAN_PLAYER_Y, Math.toRadians(270));
 			// Construct a drive interface.
 			MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
