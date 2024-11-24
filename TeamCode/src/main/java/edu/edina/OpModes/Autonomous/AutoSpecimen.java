@@ -27,14 +27,14 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Start pose
 		public static double START_X = 0;
-		public static double START_Y = -61.5;
-		public static double START_HEADING = Math.toRadians(270);
+		public static double START_Y = -64.5;
+		public static double START_HEADING = Math.toRadians(180);
 
 		// Chamber pose
 		public static double CHAMBER_X = 0;
 		public static double CHAMBER_X_INCREMENT = 3;
 		public static double CHAMBER_Y = -35;
-		public static double CHAMBER_HEADING = START_HEADING;
+		public static double CHAMBER_HEADING = Math.toRadians(270);
 
 		// Score pose
 		public static double SCORE_X = CHAMBER_X;

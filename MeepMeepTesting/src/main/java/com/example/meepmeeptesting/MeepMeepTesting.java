@@ -79,14 +79,14 @@ public class MeepMeepTesting {
             // *****SPECIMENS*****
 
             // START COPYING
-            Pose2d beginPose = new Pose2d(0, -61.5, 3.0/2*Math.PI);
+            Pose2d beginPose = new Pose2d(0, -61.5, Math.toRadians(180));
             // STOP COPYING
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
                     // COPY HERE
                     // High Rung Position
-                    .strafeTo(new Vector2d(0,-35))
+                    .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
                     .waitSeconds(1)
 
                     .setTangent(15.0/8*Math.PI)

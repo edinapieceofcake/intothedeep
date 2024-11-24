@@ -54,7 +54,7 @@ public class AutoSample extends LinearOpMode {
     public static int CLAW_MILLISECONDS = 500;
 
     // Timeout in milliseconds
-    public static int TIMEOUT_MILLISECONDS = 3000;
+    public static int TIMEOUT_MILLISECONDS = 3500;
 
     // Robot hardware
     private RobotHardware robotHardware;
