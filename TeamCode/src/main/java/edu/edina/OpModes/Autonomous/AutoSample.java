@@ -256,6 +256,7 @@ public class AutoSample extends LinearOpMode {
         Action action = new SequentialAction(
                 raiseSampleAuto(robotHardware),
                 new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
+                new WaitForTime(500),
                 scoreSample(robotHardware)
         );
 
