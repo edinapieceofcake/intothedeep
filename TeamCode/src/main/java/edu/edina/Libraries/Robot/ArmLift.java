@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+
 public class ArmLift implements ILinearMechanism {
     private HardwareMap hardwareMap;
     private DcMotorEx left, right;

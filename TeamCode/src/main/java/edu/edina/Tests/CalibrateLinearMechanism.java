@@ -11,10 +11,10 @@ import java.util.List;
 import edu.edina.Libraries.Robot.ArmLift;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.Robot.GamePadClick;
-import edu.edina.Libraries.Robot.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
-import edu.edina.Libraries.Robot.LinearMechanismSettings;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 

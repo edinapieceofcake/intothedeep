@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import kotlin.NotImplementedError;
+import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 
 public class LinearDrive implements ILinearMechanism {
     private HardwareMap hw;

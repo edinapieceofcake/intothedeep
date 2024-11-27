@@ -64,10 +64,10 @@ public class RobotHardware {
 
     private final LinearOpMode opMode;
     public final IMU imu;
-    public ThreeDeadWheelLocalizer odometry;
+    public final ThreeDeadWheelLocalizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
-    private Drivetrain drivetrain;
+    public final Drivetrain drivetrain;
     private final Wrist wrist;
     private final Arm arm;
     private final Claw claw;

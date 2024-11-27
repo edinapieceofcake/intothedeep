@@ -1,4 +1,4 @@
-package edu.edina.Libraries.Robot;
+package edu.edina.Libraries.LinearMotion;
 
 public class LinearMotionController {
     private final LinearMechanismSettings s;
