@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import edu.edina.Libraries.Robot.GamePadClick;
 import edu.edina.Libraries.Robot.RobotHardware;
 
+@Disabled
 @TeleOp
 public class BoundingBoxTest extends LinearOpMode {
     @Override

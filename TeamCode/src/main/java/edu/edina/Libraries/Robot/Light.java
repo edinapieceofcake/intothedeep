@@ -59,6 +59,10 @@ public class Light {
         sampleColor = sampleSensor.detectSampleColor();
     }
 
+    public void setSampleColor(SampleColor sampleColor) {
+        this.sampleColor=sampleColor;
+    }
+
     public void showSample() {
         byte r, g, b;
         if (sampleColor == SampleColor.RED) {

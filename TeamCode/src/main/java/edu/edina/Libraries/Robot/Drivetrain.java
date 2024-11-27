@@ -80,6 +80,10 @@ public class Drivetrain {
         double lateral = currentGamepad.left_stick_x * m;
         double yaw = currentGamepad.right_stick_x;
 
+        update(axial, lateral, yaw);
+    }
+
+    public void update(double axial, double lateral, double yaw) {
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
         double leftFrontPower = axial + lateral + yaw;
