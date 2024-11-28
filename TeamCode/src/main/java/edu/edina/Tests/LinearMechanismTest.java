@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
-import edu.edina.Libraries.Robot.LinearDrive;
+import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
@@ -21,6 +21,7 @@ public class LinearMechanismTest extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         double accel = 0;
+        double dist = 0;
 
         linearMech = new AxialDriveMechanism(new RobotHardware(this));
         settings = linearMech.getSettings();
@@ -34,20 +35,31 @@ public class LinearMechanismTest extends LinearOpMode {
             else if (gamepad1.dpad_down)
                 accel -= 0.001;
 
+            if (gamepad1.dpad_left)
+                dist -= 0.01;
+            else if (gamepad1.dpad_right)
+                dist += 0.01;
+
             if (accel > accelMax)
                 accel = accelMax;
             if (accel < -accelMax)
                 accel = -accelMax;
 
-            telemetry.addData("acceleration to test", accel);
+            telemetry.addData("acceleration to test (a button)", accel);
+            telemetry.addData("distance to test (b button)", dist);
             telemetry.update();
 
             if (gamepad1.a)
-                runTest(accel);
+                runAccelTest(accel);
+
+            if (gamepad1.b)
+                runDistTest(dist);
+
+            linearMech.setPower(0);
         }
     }
 
-    public void runTest(double accel) {
+    public void runAccelTest(double accel) {
         ArrayList<Double> positions = new ArrayList<>();
         ElapsedTime et = new ElapsedTime();
 
@@ -80,10 +92,40 @@ public class LinearMechanismTest extends LinearOpMode {
         double lastPos = positions.get(positions.size() - 1);
         double t = et.seconds();
 
-        telemetry.addData("time", et);
-        telemetry.addData("distance traveled", lastPos - firstPos);
-        telemetry.addData("theoretical distance", 0.5 * accel * t * t);
-        telemetry.update();
-        sleep(5000);
+        while (opModeIsActive()) {
+            telemetry.addData("time", et);
+            telemetry.addData("distance traveled", lastPos - firstPos);
+            telemetry.addData("theoretical distance", 0.5 * accel * t * t);
+            telemetry.update();
+        }
+    }
+
+    public void runDistTest(double targetDist) {
+        LinearMotionController con = new LinearMotionController(linearMech);
+
+        double startX = linearMech.getPosition(false);
+        con.setTarget(startX + targetDist);
+
+        boolean done = false;
+        double actualDist = 0;
+
+        while (opModeIsActive()) {
+            if (gamepad1.b)
+                done = con.run();
+            else
+                linearMech.setPower(0);
+
+            DualNum<Time> u = con.lastPositionAndVelocity();
+            actualDist = u.get(0) - startX;
+
+            telemetry.addData("targetDist", "%.2f", targetDist);
+            telemetry.addData("actualDist", "%.2f", actualDist);
+            telemetry.addData("velocity", "%.2f", u.get(1));
+            telemetry.addData("nominal accel", "%.2f", settings.nominalAccel);
+            if (done)
+                telemetry.addLine("done");
+
+            telemetry.update();
+        }
     }
 }

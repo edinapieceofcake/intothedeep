@@ -1,17 +1,59 @@
 package edu.edina.Libraries.LinearMotion;
 
-public class LinearMotionController {
-    private final LinearMechanismSettings s;
-    private double target, tPrev;
+import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Time;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
-    public LinearMotionController(LinearMechanismSettings settings) {
-        this.s = settings;
+public class LinearMotionController {
+    private final ILinearMechanism linearMech;
+    private final IAmbientForce ambForce;
+    private final LinearMechanismSettings s;
+    private final ElapsedTime et;
+    private final String tag;
+    private double target, tPrev;
+    private DualNum<Time> u;
+
+    public LinearMotionController(ILinearMechanism linearMech) {
+        this(linearMech, null);
+    }
+
+    public LinearMotionController(ILinearMechanism linearMech, IAmbientForce ambForce) {
+        this.ambForce = ambForce;
+        this.linearMech = linearMech;
+        this.s = linearMech.getSettings();
+        this.tag = String.format("LMC %s", s.name).trim();
+
+        et = new ElapsedTime();
     }
 
     public void setTarget(double target) {
         this.target = target;
+        RobotLog.ii(tag, "set linear motion target to %.2f", target);
+        RobotLog.ii(tag, "settings %s", s);
     }
 
+    public DualNum<Time> lastPositionAndVelocity() {
+        return u;
+    }
+
+    public boolean run() {
+        double t = et.seconds();
+
+        u = linearMech.getPositionAndVelocity(false);
+        double x = u.get(0);
+        double v = u.get(1);
+        double a = ambForce != null ? ambForce.getAcceleration() : 0;
+        double p = power(t, x, v, a);
+        linearMech.setPower(p);
+
+        return stopped(v) && Math.abs(x - target) < s.stopXTol;
+    }
+
+    // t: current time
+    // x: current position
+    // v: current velocity, assumed from back emf, will be countered up to power limit
+    // a: ambient acceleration, will be countered up to power limit
     public double power(double t, double x, double v, double a) {
         double dt = t - tPrev;
         double dist = target - x;
@@ -24,29 +66,37 @@ public class LinearMotionController {
                 && coast.t - t < s.stopTTol;
         boolean deccelToStop = between(target, xStop0, xStop1);
 
+        RobotLog.ii(tag, "x=%.2f target=%.2f xStop0=%.2f xStop1=%.2f coast=%.2f", x, target, xStop0, xStop1, coast.x);
+
+        double counterAccel = -a;
+
         double nextAccel;
-        boolean clip;
-        if (coastToStop) {
-            nextAccel = 0;
-            clip = false;
-        } else if (deccelToStop) {
+        if (deccelToStop) {
             nextAccel = -v * v / (2 * dist);
-            clip = true;
+            RobotLog.ii(tag, "decelerating, nominal deccel=%.2f", nextAccel);
         } else {
             nextAccel = sign(dist) * s.nominalAccel;
-            clip = true;
+            RobotLog.ii(tag, "accelerating, nominal accel=%.2f", nextAccel);
         }
 
-        if (clip) {
+        double power;
+        if (!coastToStop) {
             double maxChangeAccel = s.maxJerk * dt;
             if (nextAccel < a - maxChangeAccel)
                 nextAccel = a - maxChangeAccel;
             if (nextAccel > a + maxChangeAccel)
                 nextAccel = a + maxChangeAccel;
-        }
 
-        double sg = !stopped(v) ? sign(v) : sign(dist);
-        double power = s.ka * nextAccel + s.kv * v + s.ks * sg;
+            double sg = !stopped(v) ? sign(v) : sign(dist);
+
+            power = s.ka * (nextAccel + counterAccel) + s.kv * v + s.ks * sg;
+
+            RobotLog.ii(tag, "a=%.2f v=%.2f sg=%.2f", nextAccel + counterAccel, v, sg);
+            RobotLog.ii(tag, "power=%.2f", power);
+        } else {
+            power = 0;
+            RobotLog.ii(tag, "coasting to a stop");
+        }
 
         tPrev = t;
 
