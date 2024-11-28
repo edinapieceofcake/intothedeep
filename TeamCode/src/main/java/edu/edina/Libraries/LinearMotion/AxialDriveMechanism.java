@@ -18,7 +18,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
     private Pose2d pose;
 
     public static final LinearMechanismSettings SETTINGS = new LinearMechanismSettings(
-            6.6229e-2, 1.5638e-2, 3.35995e-3, 20);
+            6.6229e-2, 1.5638e-2, 3.4678e-3, 20);
 
     public AxialDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;

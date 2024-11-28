@@ -26,14 +26,29 @@ public class FuncInverter {
             p0 = p;
         } else if (p1 == null) {
             p1 = p;
+            if (cmpObj(p0.y) == cmpObj(p1.y))
+                throw new RuntimeException("error bracketing zero");
         } else {
-            if (sign(y - yObjective) != sign(p0.y - yObjective))
+            if (cmpObj(y) != cmpObj(p0.y))
                 p1 = p;
-            else if (sign(y - yObjective) != sign(p1.y - yObjective))
+            else if (cmpObj(y) != cmpObj(p1.y))
                 p0 = p;
             else
                 throw new RuntimeException("error bracketing zero");
         }
+    }
+
+    @Override
+    public String toString() {
+        String s = "FuncInverter";
+        if (p0 != null) {
+            s += String.format(" (%f, %f)[%d]", p0.x, p0.y, cmpObj(p0.y));
+        }
+        if (p1 != null) {
+            s += String.format(" (%f, %f)[%d]", p1.x, p1.y, cmpObj(p1.y));
+        }
+
+        return s;
     }
 
     public boolean hasResult() {
@@ -51,10 +66,11 @@ public class FuncInverter {
             throw new RuntimeException("need to evaluate 2 starting endpoints");
     }
 
-    private static int sign(double x) {
-        if (x < 0)
+    private int cmpObj(double y) {
+        double d = y - yObjective;
+        if (d < 0)
             return -1;
-        else if (x > 0)
+        else if (d > 0)
             return 1;
         else
             return 0;
