@@ -1,5 +1,7 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,6 +10,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import kotlin.NotImplementedError;
 
 public class LinearDrive implements ILinearMechanism {
     private HardwareMap hw;
@@ -60,6 +63,11 @@ public class LinearDrive implements ILinearMechanism {
         } else {
             return dcMotors[0].getCurrentPosition() * inchesPerPos;
         }
+    }
+
+    @Override
+    public DualNum<Time> getPositionAndVelocity(boolean raw) {
+        throw new NotImplementedError();
     }
 
     @Override

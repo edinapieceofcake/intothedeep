@@ -1,8 +1,12 @@
 package edu.edina.Libraries.LinearMotion;
 
+import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Time;
+
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
+import kotlin.NotImplementedError;
 
 public class DriveMechanisms {
     private ThreeDeadWheelLocalizer odometry;
@@ -48,6 +52,12 @@ public class DriveMechanisms {
             return 0;
         }
 
+
+        @Override
+        public DualNum<Time> getPositionAndVelocity(boolean raw) {
+            throw new NotImplementedError();
+        }
+
         @Override
         public LinearMechanismSettings getSettings() {
             return null;
@@ -70,6 +80,11 @@ public class DriveMechanisms {
         }
 
         @Override
+        public DualNum<Time> getPositionAndVelocity(boolean raw) {
+            throw new NotImplementedError();
+        }
+
+        @Override
         public LinearMechanismSettings getSettings() {
             return null;
         }
@@ -88,6 +103,11 @@ public class DriveMechanisms {
         @Override
         public double getPosition(boolean raw) {
             return 0;
+        }
+
+        @Override
+        public DualNum<Time> getPositionAndVelocity(boolean raw) {
+            throw new NotImplementedError();
         }
 
         @Override

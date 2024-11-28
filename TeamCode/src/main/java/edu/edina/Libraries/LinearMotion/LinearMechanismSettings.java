@@ -7,18 +7,18 @@ public class LinearMechanismSettings {
     public final double maxSpeed, maxJerk;
 
     // used during calibration
-    public final double accelCalibrationTarget;
+    public final double accelCalibrationDist;
 
     public LinearMechanismSettings(double ks, double kv, double ka,
-                                   double accelCalibrationTarget) {
-        this(ks, kv, ka, accelCalibrationTarget, 1 / (2 * ka), 0.2,
+                                   double accelCalibrationDist) {
+        this(ks, kv, ka, accelCalibrationDist, 1 / (2 * ka), 0.2,
                 0.25,
                 0.25 * mv(ks, kv),
                 0.1 * Math.pow(mv(ks, kv), 3));
     }
 
     private LinearMechanismSettings(double ks, double kv, double ka,
-                                    double accelCalibrationTarget,
+                                    double accelCalibrationDist,
                                     double nominalAccel,
                                     double stopAccelDelta,
                                     double stopTTol,
@@ -27,7 +27,7 @@ public class LinearMechanismSettings {
         this.ks = ks;
         this.kv = kv;
         this.ka = ka;
-        this.accelCalibrationTarget = accelCalibrationTarget;
+        this.accelCalibrationDist = accelCalibrationDist;
         this.nominalAccel = nominalAccel;
         this.stopAccel0 = nominalAccel * (1 + stopAccelDelta);
         this.stopAccel1 = nominalAccel / (1 + stopAccelDelta);
