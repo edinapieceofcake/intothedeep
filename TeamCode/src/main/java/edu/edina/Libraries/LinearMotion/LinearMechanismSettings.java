@@ -7,9 +7,11 @@ public class LinearMechanismSettings {
     public final String name, units;
 
     // basic power settings
-    public final double ks, kv, ka, nominalAccel, stopAccel0, stopAccel1;
+    public final double ks, kv, ka; // use CalibrateLinearMechanism op mode to help find these
+    public final double nominalAccel, stopAccel0, stopAccel1;
     public final double stopTTol, stopXTol, stopVTol;
-    public final double maxSpeed, maxJerk;
+    public final double maxSpeed; // calculated
+    public final double maxJerk; // maximum rate of change of the acceleration
 
     // used during calibration
     public final double accelCalibrationDist;
