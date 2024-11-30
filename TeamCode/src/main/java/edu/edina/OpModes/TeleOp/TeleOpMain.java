@@ -16,7 +16,6 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 @TeleOp
-@Disabled
 public class TeleOpMain extends LinearOpMode {
 
     /*
