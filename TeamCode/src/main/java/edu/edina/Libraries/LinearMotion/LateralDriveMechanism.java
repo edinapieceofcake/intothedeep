@@ -13,7 +13,7 @@ import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
-public class AxialDriveMechanism implements ILinearMechanism {
+public class LateralDriveMechanism implements ILinearMechanism {
     private ThreeDeadWheelLocalizer odometry;
     private Drivetrain drivetrain;
     private VoltageSensor vs;
@@ -37,7 +37,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
             STOP_X_TOL,
             MAX_JERK);
 
-    public AxialDriveMechanism(RobotHardware hw) {
+    public LateralDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;
         odometry = hw.odometry;
         pose = new Pose2d(new Vector2d(0, 0), 0);
@@ -48,22 +48,22 @@ public class AxialDriveMechanism implements ILinearMechanism {
     @Override
     public void setPower(double power) {
         double actualPower = power * 12 / vs.getVoltage();
-        drivetrain.update(actualPower, 0, 0);
+        drivetrain.update(0, actualPower, 0);
     }
 
     @Override
     public double getPosition(boolean raw) {
         Twist2dDual<Time> t = odometry.update();
         pose = pose.plus(t.value());
-        return pose.position.x;
+        return pose.position.y;
     }
 
     @Override
     public DualNum<Time> getPositionAndVelocity(boolean raw) {
         Twist2dDual<Time> t = odometry.update();
         pose = pose.plus(t.value());
-        double v = t.velocity().linearVel.x.value();
-        return new DualNum<Time>(new double[]{pose.position.x, v});
+        double v = t.velocity().linearVel.y.value();
+        return new DualNum<Time>(new double[]{pose.position.y, v});
     }
 
     @Override

@@ -8,7 +8,7 @@ public class LinearMechanismSettings {
 
     // basic power settings
     public final double ks, kv, ka; // use CalibrateLinearMechanism op mode to help find these
-    public final double nominalAccel, stopAccel0, stopAccel1;
+    public final double nominalAccel, stopAccel;
     public final double stopTTol, stopXTol, stopVTol;
     public final double maxSpeed; // calculated
     public final double maxJerk; // maximum rate of change of the acceleration
@@ -34,7 +34,7 @@ public class LinearMechanismSettings {
                                     double ks, double kv, double ka,
                                     double accelCalibrationDist,
                                     double nominalAccel,
-                                    double stopAccelDelta,
+                                    double stopAccelMult,
                                     double stopTTol,
                                     double stopXTol,
                                     double maxJerk) {
@@ -45,8 +45,7 @@ public class LinearMechanismSettings {
         this.ka = ka;
         this.accelCalibrationDist = accelCalibrationDist;
         this.nominalAccel = nominalAccel;
-        this.stopAccel0 = nominalAccel * (1 + stopAccelDelta);
-        this.stopAccel1 = nominalAccel / (1 + stopAccelDelta);
+        this.stopAccel = nominalAccel * stopAccelMult;
         this.stopTTol = stopTTol;
         this.stopXTol = stopXTol;
         this.stopVTol = stopTTol * stopXTol;
@@ -62,10 +61,10 @@ public class LinearMechanismSettings {
     @Override
     public String toString() {
         return String.format("LinearMechanismSettings(%s, %s, ks=%.2e, kv=%.2e, ka=%.2e, " +
-                        "d=%.2f, a=%.2e, stopAccel=(lo=%.2e, hi=%.2e), stopTol=(t=%.2f, x=%.2f, v=%.2e), " +
+                        "d=%.2f, a=%.2e, stopAccel=%.2e, stopTol=(t=%.2f, x=%.2f, v=%.2e), " +
                         "maxJerk=%.2e, maxSpeed=%.2e)",
                 name, units, ks, kv, ka,
-                accelCalibrationDist, nominalAccel, stopAccel0, stopAccel1,
+                accelCalibrationDist, nominalAccel, stopAccel,
                 stopTTol, stopXTol, stopVTol,
                 maxJerk, maxSpeed
         );

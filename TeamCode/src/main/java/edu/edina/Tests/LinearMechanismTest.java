@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.Robot.RobotHardware;
@@ -22,7 +23,7 @@ public class LinearMechanismTest extends LinearOpMode {
     private static double dist = 0;
 
     public void runOpMode() throws InterruptedException {
-        linearMech = new AxialDriveMechanism(new RobotHardware(this));
+        linearMech = new LateralDriveMechanism(new RobotHardware(this));
         settings = linearMech.getSettings();
         double accelMax = 1.0 / settings.ka;
 
@@ -102,8 +103,8 @@ public class LinearMechanismTest extends LinearOpMode {
     public void runDistTest(double targetDist) {
         LinearMotionController con = new LinearMotionController(linearMech);
 
-        double startX = linearMech.getPosition(false);
-        con.setTarget(startX + targetDist);
+        double startPos = linearMech.getPosition(false);
+        con.setTarget(startPos + targetDist);
 
         boolean done = false;
         double actualDist = 0;
@@ -115,7 +116,7 @@ public class LinearMechanismTest extends LinearOpMode {
                 linearMech.setPower(0);
 
             DualNum<Time> u = con.lastPositionAndVelocity();
-            actualDist = u.get(0) - startX;
+            actualDist = u.get(0) - startPos;
 
             telemetry.addData("targetDist", "%.2f", targetDist);
             telemetry.addData("actualDist", "%.2f", actualDist);

@@ -58,15 +58,14 @@ public class LinearMotionController {
         double dt = t - tPrev;
         double dist = target - x;
 
-        double xStop0 = estConstDeccelStoppingPoint(x, v, s.stopAccel0);
-        double xStop1 = estConstDeccelStoppingPoint(x, v, s.stopAccel1);
+        double xStop1 = estConstDeccelStoppingPoint(x, v, s.stopAccel);
 
         TimePoint coast = estConstPowerStoppingPoint(t, x, v, 0);
         boolean coastToStop = Math.abs(coast.x - target) < s.stopXTol
                 && coast.t - t < s.stopTTol;
-        boolean deccelToStop = between(target, xStop0, xStop1);
+        boolean deccelToStop = between(target, xStop1, x);
 
-        RobotLog.ii(tag, "x=%.2f target=%.2f xStop0=%.2f xStop1=%.2f coast=%.2f", x, target, xStop0, xStop1, coast.x);
+        RobotLog.ii(tag, "x=%.2f target=%.2f xStop1=%.2f coast=%.2f", x, target, xStop1, coast.x);
 
         double counterAccel = -a;
 
