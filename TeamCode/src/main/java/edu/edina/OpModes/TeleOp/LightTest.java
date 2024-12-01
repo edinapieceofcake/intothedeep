@@ -3,6 +3,7 @@ package edu.edina.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.RobotHardware;
@@ -21,8 +22,12 @@ public class LightTest extends LinearOpMode {
 
         waitForStart();
 
+        ElapsedTime t = new ElapsedTime();
         while (opModeIsActive()) {
             light.update();
+
+            telemetry.addData("time", "%.3fs", t.seconds());
+            telemetry.update();
         }
     }
 }
