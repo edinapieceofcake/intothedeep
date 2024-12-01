@@ -1,5 +1,7 @@
 package edu.edina.Libraries.LinearMotion;
 
+import static edu.edina.Libraries.LinearMotion.LinearMechanismSettings.mv;
+
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
@@ -19,7 +21,12 @@ public class AxialDriveMechanism implements ILinearMechanism {
 
     public static final LinearMechanismSettings SETTINGS = new LinearMechanismSettings(
             "axial drive", "inches",
-            6.6229e-2, 1.5638e-2, 3.4678e-3, 20);
+            6.6229e-2, 1.5638e-2, 3.4678e-3, 20,
+            1 / (2 * 3.4678e-3),
+            0.2,
+            0.25,
+            0.3,
+            4.26e+4);
 
     public AxialDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;

@@ -30,7 +30,7 @@ public class LinearMechanismSettings {
                 0.1 * Math.pow(mv(ks, kv), 3));
     }
 
-    private LinearMechanismSettings(String name, String units,
+    public LinearMechanismSettings(String name, String units,
                                     double ks, double kv, double ka,
                                     double accelCalibrationDist,
                                     double nominalAccel,
@@ -54,7 +54,7 @@ public class LinearMechanismSettings {
         this.maxSpeed = mv(ks, kv);
     }
 
-    private static double mv(double ks, double kv) {
+    public static double mv(double ks, double kv) {
         return (1 - ks) / kv;
     }
 

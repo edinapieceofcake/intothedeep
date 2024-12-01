@@ -18,11 +18,10 @@ import edu.edina.Libraries.Robot.RobotHardware;
 public class LinearMechanismTest extends LinearOpMode {
     private ILinearMechanism linearMech;
     private LinearMechanismSettings settings;
+    private static double accel = 0;
+    private static double dist = 0;
 
     public void runOpMode() throws InterruptedException {
-        double accel = 0;
-        double dist = 0;
-
         linearMech = new AxialDriveMechanism(new RobotHardware(this));
         settings = linearMech.getSettings();
         double accelMax = 1.0 / settings.ka;
