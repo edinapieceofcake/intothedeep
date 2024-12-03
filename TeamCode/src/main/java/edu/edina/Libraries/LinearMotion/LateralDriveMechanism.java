@@ -19,9 +19,9 @@ public class LateralDriveMechanism implements ILinearMechanism {
     private VoltageSensor vs;
     private Pose2d pose;
 
-    public static double KS = 0.066229;
-    public static double KV = 0.015638;
-    public static double KA = 0.0025;
+    public static double KS = 1.0889e-1;
+    public static double KV = 1.8708e-2;
+    public static double KA = 5.2542e-3;
     public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
     public static double STOP_ACCEL_MULT = 0.3;
     public static double STOP_T_TOL = 0.45;
@@ -48,7 +48,7 @@ public class LateralDriveMechanism implements ILinearMechanism {
     @Override
     public void setPower(double power) {
         double actualPower = power * 12 / vs.getVoltage();
-        drivetrain.update(0, actualPower, 0);
+        drivetrain.update(0, -actualPower, 0);
     }
 
     @Override

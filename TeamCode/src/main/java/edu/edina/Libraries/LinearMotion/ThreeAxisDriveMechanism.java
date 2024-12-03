@@ -1,22 +1,20 @@
 package edu.edina.Libraries.LinearMotion;
 
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Twist2dDual;
 
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
 import kotlin.NotImplementedError;
 
-public class DriveMechanisms {
+public class ThreeAxisDriveMechanism {
     private ThreeDeadWheelLocalizer odometry;
     private Drivetrain drivetrain;
-
-    private static final LinearMechanismSettings AXIAL_SETTINGS = new LinearMechanismSettings(
-            0,
-            0,
-            0,
-            0);
+    private Pose2d pose;
+    
     private static final LinearMechanismSettings LATERAL_SETTINGS = new LinearMechanismSettings(
             0,
             0,
@@ -28,13 +26,13 @@ public class DriveMechanisms {
             0,
             0);
 
-    public DriveMechanisms(RobotHardware hw) {
+    public ThreeAxisDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;
         odometry = hw.odometry;
     }
 
-    public void update(){
-
+    public void update() {
+        Twist2dDual<Time> t;
     }
 
     public class AxialMechanism implements ILinearMechanism {
@@ -60,7 +58,7 @@ public class DriveMechanisms {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return null;
+            return AxialDriveMechanism.defaultSettings();
         }
     }
 

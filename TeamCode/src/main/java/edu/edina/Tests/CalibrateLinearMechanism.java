@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
+import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
@@ -19,7 +20,6 @@ import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
-//@Disabled
 public class CalibrateLinearMechanism extends LinearOpMode {
     double powerStep = 0.02;
     double speedThres = 1;
@@ -28,7 +28,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new AxialDriveMechanism(new RobotHardware(this));
+        linearMech = new LateralDriveMechanism(new RobotHardware(this));
 
         waitForStart();
 
@@ -158,7 +158,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
         double kaOneSecond = (1 - settings.ks) / (2 * settings.accelCalibrationDist) - settings.kv;
         double ka0 = 0.3 * kaOneSecond;
-        double ka1 = 1.1 * kaOneSecond;
+        double ka1 = 1.8 * kaOneSecond;
 
         fi.eval(ka0, testKaAccelRatio(ka0));
         fi.eval(ka1, testKaAccelRatio(ka1));

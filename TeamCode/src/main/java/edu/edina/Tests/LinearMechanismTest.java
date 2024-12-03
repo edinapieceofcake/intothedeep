@@ -23,17 +23,30 @@ public class LinearMechanismTest extends LinearOpMode {
     private static double dist = 0;
 
     public void runOpMode() throws InterruptedException {
-        linearMech = new LateralDriveMechanism(new RobotHardware(this));
-        settings = linearMech.getSettings();
-        double accelMax = 1.0 / settings.ka;
+        double accelMax = 0;
+
+        while (opModeInInit()) {
+            telemetry.addLine("hold x for lateral");
+            telemetry.addLine("otherwise axial");
+            telemetry.update();
+
+            if (gamepad1.x)
+                linearMech = new LateralDriveMechanism(new RobotHardware(this));
+            else
+                linearMech = new AxialDriveMechanism(new RobotHardware(this));
+
+            settings = linearMech.getSettings();
+            accelMax = 1.0 / settings.ka;
+        }
 
         waitForStart();
 
+
         while (opModeIsActive()) {
             if (gamepad1.dpad_up)
-                accel += 0.001;
+                accel += 0.01;
             else if (gamepad1.dpad_down)
-                accel -= 0.001;
+                accel -= 0.01;
 
             if (gamepad1.dpad_left)
                 dist -= 0.01;
