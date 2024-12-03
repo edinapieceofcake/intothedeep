@@ -19,14 +19,14 @@ public class LateralDriveMechanism implements ILinearMechanism {
     private VoltageSensor vs;
     private Pose2d pose;
 
-    public static double KS = 1.0889e-1;
-    public static double KV = 1.8708e-2;
-    public static double KA = 5.2542e-3;
+    public static double KS = 0.12338;
+    public static double KV = 0.017618;
+    public static double KA = 0.0042431;
     public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
-    public static double STOP_ACCEL_MULT = 0.3;
-    public static double STOP_T_TOL = 0.45;
-    public static double STOP_X_TOL = 0.3;
-    public static double MAX_JERK = 60000;
+    public static double STOP_ACCEL_MULT = 0.6;
+    public static double STOP_T_TOL = 0.6;
+    public static double STOP_X_TOL = 0.32;
+    public static double MAX_JERK = 70000;
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
