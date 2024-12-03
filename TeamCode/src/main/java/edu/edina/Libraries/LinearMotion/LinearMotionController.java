@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 public class LinearMotionController {
+    private static final boolean LOG = false;
+
     private final ILinearMechanism linearMech;
     private final IAmbientForce ambForce;
     private final LinearMechanismSettings s;
@@ -29,8 +31,11 @@ public class LinearMotionController {
 
     public void setTarget(double target) {
         this.target = target;
-        RobotLog.ii(tag, "set linear motion target to %.2f", target);
-        RobotLog.ii(tag, "settings %s", s);
+
+        if (LOG) {
+            RobotLog.ii(tag, "set linear motion target to %.2f", target);
+            RobotLog.ii(tag, "settings %s", s);
+        }
     }
 
     public DualNum<Time> lastPositionAndVelocity() {
@@ -65,17 +70,22 @@ public class LinearMotionController {
                 && coast.t - t < s.stopTTol;
         boolean deccelToStop = between(target, xStop1, x);
 
-        RobotLog.ii(tag, "x=%.2f target=%.2f xStop1=%.2f coast=%.2f", x, target, xStop1, coast.x);
+        if (LOG)
+            RobotLog.ii(tag, "x=%.2f target=%.2f xStop1=%.2f coast=%.2f", x, target, xStop1, coast.x);
 
         double counterAccel = -a;
 
         double nextAccel;
         if (deccelToStop) {
             nextAccel = -v * v / (2 * dist);
-            RobotLog.ii(tag, "decelerating, nominal deccel=%.2f", nextAccel);
+
+            if (LOG)
+                RobotLog.ii(tag, "decelerating, nominal deccel=%.2f", nextAccel);
         } else {
             nextAccel = sign(dist) * s.nominalAccel;
-            RobotLog.ii(tag, "accelerating, nominal accel=%.2f", nextAccel);
+
+            if (LOG)
+                RobotLog.ii(tag, "accelerating, nominal accel=%.2f", nextAccel);
         }
 
         double power;
@@ -90,11 +100,15 @@ public class LinearMotionController {
 
             power = s.ka * (nextAccel + counterAccel) + s.kv * v + s.ks * sg;
 
-            RobotLog.ii(tag, "a=%.2f v=%.2f sg=%.2f", nextAccel + counterAccel, v, sg);
-            RobotLog.ii(tag, "power=%.2f", power);
+            if (LOG) {
+                RobotLog.ii(tag, "a=%.2f v=%.2f sg=%.2f", nextAccel + counterAccel, v, sg);
+                RobotLog.ii(tag, "power=%.2f", power);
+            }
         } else {
             power = 0;
-            RobotLog.ii(tag, "coasting to a stop");
+
+            if (LOG)
+                RobotLog.ii(tag, "coasting to a stop");
         }
 
         tPrev = t;

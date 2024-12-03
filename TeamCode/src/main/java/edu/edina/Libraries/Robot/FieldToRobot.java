@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 public class FieldToRobot {
-    public Vector2d toRobotRel(Pose2d pose, Vector2d v) {
+    public static Vector2d toRobotRel(Pose2d pose, Vector2d v) {
         double dx = getDx(pose);
         double dy = getDy(pose);
         double tx = v.x - pose.position.x;
@@ -20,11 +20,11 @@ public class FieldToRobot {
 //        return new Vector2d(pose.position.x + tx, pose.position. + ty, a);
 //    }
 
-    private double getDx(Pose2d pose) {
+    private static double getDx(Pose2d pose) {
         return -Math.sin(pose.heading.toDouble());
     }
 
-    private double getDy(Pose2d pose) {
+    private static double getDy(Pose2d pose) {
         return Math.cos(pose.heading.toDouble());
     }
 }

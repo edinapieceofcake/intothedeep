@@ -54,8 +54,6 @@ public class TeleOpPurePursuit extends LinearOpMode {
                 },
                 true);
 
-        FieldToRobot robotRel = new FieldToRobot();
-
         waitForStart();
 
         runtime.reset();
@@ -70,12 +68,12 @@ public class TeleOpPurePursuit extends LinearOpMode {
                 pp.nextPursuitPoint(pose.position, 3);
                 purePursuitX = pp.getPursuitPoint().x;
                 purePursuitY = pp.getPursuitPoint().y;
-                rv = robotRel.toRobotRel(pose, pp.getPursuitPoint());
+                rv = FieldToRobot.toRobotRel(pose, pp.getPursuitPoint());
             } else if (gamepad1.x) {
                 pp2.nextPursuitPoint(pose.position, 3);
                 purePursuitX = pp2.getPursuitPoint().x;
                 purePursuitY = pp2.getPursuitPoint().y;
-                rv = robotRel.toRobotRel(pose, pp2.getPursuitPoint());
+                rv = FieldToRobot.toRobotRel(pose, pp2.getPursuitPoint());
             }
 
             telemetry.addData("pursuit point", "%f, %f", purePursuitX, purePursuitY);

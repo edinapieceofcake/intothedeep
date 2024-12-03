@@ -28,7 +28,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
     public static double STOP_X_TOL = 0.3;
     public static double MAX_JERK = 60000;
 
-    public static LinearMechanismSettings defaultSettings() {
+    public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
                 "axial drive", "inches",
                 KS, KV, KA, 20,
@@ -70,6 +70,6 @@ public class AxialDriveMechanism implements ILinearMechanism {
 
     @Override
     public LinearMechanismSettings getSettings() {
-        return defaultSettings();
+        return getStaticSettings();
     }
 }
