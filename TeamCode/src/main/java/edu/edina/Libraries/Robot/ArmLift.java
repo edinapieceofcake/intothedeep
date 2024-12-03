@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.LinearMotion.Units;
 import kotlin.NotImplementedError;
 
 public class ArmLift implements ILinearMechanism {
@@ -22,6 +23,8 @@ public class ArmLift implements ILinearMechanism {
     private double avgPos = 0.0;
 
     private static final LinearMechanismSettings settings = new LinearMechanismSettings(
+            "arm",
+            Units.INCHES,
             0,
             0,
             0,

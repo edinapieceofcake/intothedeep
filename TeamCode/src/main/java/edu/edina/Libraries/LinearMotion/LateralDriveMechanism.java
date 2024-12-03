@@ -28,14 +28,16 @@ public class LateralDriveMechanism implements ILinearMechanism {
     public static double STOP_X_TOL = 0.3;
     public static double MAX_JERK = 60000;
 
-    public LinearMechanismSettings settings = new LinearMechanismSettings(
-            "axial drive", "inches",
-            KS, KV, KA, 20,
-            NOMINAL_ACCEL,
-            STOP_ACCEL_MULT,
-            STOP_T_TOL,
-            STOP_X_TOL,
-            MAX_JERK);
+    public static LinearMechanismSettings getStaticSettings() {
+        return new LinearMechanismSettings(
+                "lateral drive", Units.INCHES,
+                KS, KV, KA, 20,
+                NOMINAL_ACCEL,
+                STOP_ACCEL_MULT,
+                STOP_T_TOL,
+                STOP_X_TOL,
+                MAX_JERK);
+    }
 
     public LateralDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;
@@ -68,6 +70,6 @@ public class LateralDriveMechanism implements ILinearMechanism {
 
     @Override
     public LinearMechanismSettings getSettings() {
-        return settings;
+        return getStaticSettings();
     }
 }

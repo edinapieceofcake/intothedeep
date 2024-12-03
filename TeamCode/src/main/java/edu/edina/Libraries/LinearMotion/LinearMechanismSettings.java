@@ -2,9 +2,12 @@ package edu.edina.Libraries.LinearMotion;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
+
 public class LinearMechanismSettings {
     // info
-    public final String name, units;
+    public final String name;
+    public final Units units;
 
     // basic power settings
     public final double ks, kv, ka; // use CalibrateLinearMechanism op mode to help find these
@@ -21,7 +24,7 @@ public class LinearMechanismSettings {
         this(null, null, ks, kv, ka, accelCalibrationDist);
     }
 
-    public LinearMechanismSettings(String name, String units,
+    public LinearMechanismSettings(String name, Units units,
                                    double ks, double kv, double ka,
                                    double accelCalibrationDist) {
         this(name, units, ks, kv, ka, accelCalibrationDist, 1 / (2 * ka), 0.2,
@@ -30,14 +33,14 @@ public class LinearMechanismSettings {
                 0.1 * Math.pow(mv(ks, kv), 3));
     }
 
-    public LinearMechanismSettings(String name, String units,
-                                    double ks, double kv, double ka,
-                                    double accelCalibrationDist,
-                                    double nominalAccel,
-                                    double stopAccelMult,
-                                    double stopTTol,
-                                    double stopXTol,
-                                    double maxJerk) {
+    public LinearMechanismSettings(String name, Units units,
+                                   double ks, double kv, double ka,
+                                   double accelCalibrationDist,
+                                   double nominalAccel,
+                                   double stopAccelMult,
+                                   double stopTTol,
+                                   double stopXTol,
+                                   double maxJerk) {
         this.name = name;
         this.units = units;
         this.ks = ks;
@@ -57,6 +60,7 @@ public class LinearMechanismSettings {
         return (1 - ks) / kv;
     }
 
+    @NonNull
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {

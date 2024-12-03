@@ -61,7 +61,7 @@ public class LinearMotionController {
     // a: ambient acceleration, will be countered up to power limit
     public double power(double t, double x, double v, double a) {
         double dt = t - tPrev;
-        double dist = target - x;
+        double dist = getDist(x);
 
         double xStop1 = estConstDeccelStoppingPoint(x, v, s.stopAccel);
 
@@ -114,6 +114,22 @@ public class LinearMotionController {
         tPrev = t;
 
         return power;
+    }
+
+    private double getDist(double x) {
+        double dist = target - x;
+
+        if (s.units == Units.DEGREES) {
+            while (Math.abs(dist) > 180) {
+                if (dist > 0)
+                    dist -= 360;
+
+                if (dist < 0)
+                    dist += 360;
+            }
+        }
+
+        return dist;
     }
 
     private double estConstDeccelStoppingPoint(double x, double v, double aMag) {

@@ -30,7 +30,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
-                "axial drive", "inches",
+                "axial drive", Units.INCHES,
                 KS, KV, KA, 20,
                 NOMINAL_ACCEL,
                 STOP_ACCEL_MULT,

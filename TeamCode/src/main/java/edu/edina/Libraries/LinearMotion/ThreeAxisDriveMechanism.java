@@ -26,7 +26,7 @@ public class ThreeAxisDriveMechanism {
     private Vector2d robotRelVel;
     private PurePursuit purePursuit;
     private AxialMechanism axial;
-    private LinearMotionController axialCon;
+    private LinearMotionController axialCon, lateralCon, rotCon;
 
     public ThreeAxisDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;
@@ -112,31 +112,29 @@ public class ThreeAxisDriveMechanism {
     }
 
     public class LateralMechanism implements ILinearMechanism {
-        public LateralMechanism() {
-
-        }
+        public double power;
 
         @Override
         public void setPower(double power) {
-
+            this.power = power;
         }
 
         @Override
         public double getPosition(boolean raw) {
-            return 0;
-        }
-
-        @Override
-        public DualNum<Time> getPositionAndVelocity(boolean raw) {
             throw new NotImplementedError();
         }
 
         @Override
+        public DualNum<Time> getPositionAndVelocity(boolean raw) {
+            return new DualNum<Time>(new double[]{0, robotRelVel.y});
+        }
+
+        @Override
         public LinearMechanismSettings getSettings() {
-            return null;
+            return LateralDriveMechanism.getStaticSettings();
         }
     }
-2
+
     public class RotationalMechanism implements ILinearMechanism {
         public RotationalMechanism() {
 
