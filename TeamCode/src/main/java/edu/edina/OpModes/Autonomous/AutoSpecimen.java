@@ -18,6 +18,7 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SparkFunOTOS;
 import edu.edina.Libraries.Robot.WaitForTime;
 import edu.edina.Libraries.Robot.WaitForHardware;
 
@@ -129,16 +130,6 @@ public class AutoSpecimen extends LinearOpMode {
 			Pose2d chamberPose3 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT + 3,CHAMBER_Y + 2,CHAMBER_HEADING);
 			Pose2d scorePose3 = new Pose2d(SCORE_X+ CHAMBER_X_INCREMENT + 3,SCORE_Y,CHAMBER_HEADING);
 
-			// Construct a first spike mark pose.
-			Vector2d firstSpikeMarkAVector = new Vector2d(FIRST_SPIKE_MARK_A_X, FIRST_SPIKE_MARK_A_Y);
-			Vector2d firstSpikeMarkBVector = new Vector2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y);
-			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y, FIRST_SPIKE_MARK_HEADING);
-
-			// Construct a second spike mark pose.
-			Vector2d secondSpikeMarkAVector = new Vector2d(SECOND_SPIKE_MARK_A_X, SECOND_SPIKE_MARK_A_Y);
-			Vector2d secondSpikeMarkBVector = new Vector2d(SECOND_SPIKE_MARK_B_X, SECOND_SPIKE_MARK_B_Y);
-			Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_B_X, SECOND_SPIKE_MARK_B_Y, SECOND_SPIKE_MARK_HEADING);
-
 			// Construct a constant pose.
 			Pose2d constantPose = new Pose2d(CONSTANT_X, CONSTANT_Y, CHAMBER_HEADING);
 			// Construct a human player 2 pose.
@@ -149,16 +140,6 @@ public class AutoSpecimen extends LinearOpMode {
 			// Construct a human player pose.
 			Pose2d humanPlayerPose = new Pose2d(HUMAN_PLAYER_X, HUMAN_PLAYER_Y, HUMAN_PLAYER_HEADING);
 
-			// Testing
-			double testSubToSpikeMarkTangent = 15.0/8*Math.PI;
-			Pose2d testFirstSpikeMarkPose = new Pose2d(45,-34,Math.toRadians(89));
-			double testFirstSpikeMarkTangent = Math.toRadians(89);
-			Vector2d testDropFirstSpikeMarkSampleVector = new Vector2d(53, TEST_HUMAN_PLAYER_Y);
-			double testDropFirstSpikeMarkSampleHeading = 3.0/2*Math.PI;
-			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, TEST_HUMAN_PLAYER_Y);
-			double testGrabFirstSpecimenFromHumanPlayerHeading = 3.0/2*Math.PI;
-			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, -40, Math.toRadians(270));
-			Pose2d testFromScoreToHumanPlayerPose2 = new Pose2d(47, TEST_HUMAN_PLAYER_Y, Math.toRadians(270));
 			// Construct a drive interface.
 			MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -168,34 +149,6 @@ public class AutoSpecimen extends LinearOpMode {
 					.build();
 			driveFromChamberToScore = drive.actionBuilder(chamberPose)
 					.strafeToLinearHeading(scorePose.position, scorePose.heading)
-					.build();
-
-			// Construct an action for driving from the score to the first spike mark.
-			Action driveFromScoreToFirstSpikeMark = drive.actionBuilder(scorePose)
-					.strafeToLinearHeading(firstSpikeMarkAVector, FIRST_SPIKE_MARK_HEADING)
-					.strafeTo(firstSpikeMarkBVector)
-					.build();
-
-			// Construct an action for driving from the first spike mark to the second spike mark.
-			Action driveFromFirstSpikeMarkToSecondSpikeMark = drive.actionBuilder(firstSpikeMarkPose)
-					.strafeToLinearHeading(secondSpikeMarkAVector, SECOND_SPIKE_MARK_HEADING)
-					.strafeTo(secondSpikeMarkBVector)
-					.build();
-
-
-			// Construct an action for driving from the first spike mark to human player.
-			Action driveFirstSpikeMarkToHumanPlayer = drive.actionBuilder(firstSpikeMarkPose)
-					.strafeToLinearHeading(humanPlayerPose.position, humanPlayerPose.heading)
-					.build();
-
-			// Construct an action for driving from the human player to second spike mark.
-			Action driveFromHumanToSecondSpikeMark = drive.actionBuilder(humanPlayerPose)
-					.strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
-					.build();
-
-			// Construct an action for driving from the second spike mark to the human player.
-			Action driveFromSecondSpikeMarkToHumanPlayer = drive.actionBuilder(secondSpikeMarkPose)
-					.strafeToLinearHeading(humanPlayerPose.position, humanPlayerPose.heading)
 					.build();
 
 			// Construct an action for driving from the score to spike mark.
@@ -226,44 +179,51 @@ public class AutoSpecimen extends LinearOpMode {
 			Action driveFromHumanPlayer2ToChamber = drive.actionBuilder(humanPlayer2Pose)
 					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
 					.build();
-
-			// Testing
-			Action testSetTangentForDrivingFromSubToSpikeMark = drive.actionBuilder(scorePose)
-					.setTangent(testSubToSpikeMarkTangent)
-					.build();
-
-			Action testDriveFromSubToFirstSpikeMark = drive.actionBuilder(new Pose2d(scorePose.position, testSubToSpikeMarkTangent))
-					.splineToLinearHeading(testFirstSpikeMarkPose, testFirstSpikeMarkTangent)
-					.build();
-
-			Action testSetTangentToNormal = drive.actionBuilder(scorePose)
-					.setTangent(testSubToSpikeMarkTangent)
-					.build();
-
-			Action testDriveFromFirstSpikeMarkToHumanPlayer = drive.actionBuilder(testFirstSpikeMarkPose)
-					.strafeToLinearHeading(testDropFirstSpikeMarkSampleVector, testDropFirstSpikeMarkSampleHeading)
-					.build();
-
-			Action testDriveToFirstHumanPlayerSpecimen = drive.actionBuilder(new Pose2d(testDropFirstSpikeMarkSampleVector, testDropFirstSpikeMarkSampleHeading))
-					.strafeToLinearHeading(testGrabFirstSpecimenFromHumanPlayerVector, testGrabFirstSpecimenFromHumanPlayerHeading)
-					.build();
-
-			Action testDriveToChamberFromHumanPlayer1 = drive.actionBuilder(new Pose2d(testGrabFirstSpecimenFromHumanPlayerVector, testGrabFirstSpecimenFromHumanPlayerHeading))
-					.strafeToLinearHeading(chamberPose2.position, chamberPose2.heading)
-					.build();
-			driveFromChamberToScore2 = drive.actionBuilder(chamberPose2)
-					.strafeToLinearHeading(scorePose2.position, scorePose2.heading)
-					.build();
-			Action testDriveFromScoreToHumanPlayer = drive.actionBuilder(scorePose2)
-					.strafeToLinearHeading(testFromScoreToHumanPlayerPose.position, testFromScoreToHumanPlayerPose.heading)
-
-					.strafeToLinearHeading(testFromScoreToHumanPlayerPose2.position, testFromScoreToHumanPlayerPose2.heading, new TranslationalVelConstraint(10.0))
-					.build();
 			Action testDriveFromHumanPlayerToChamberPose3 = drive.actionBuilder(humanPlayer2Pose)
 					.strafeToLinearHeading(chamberPose3.position, chamberPose3.heading)
 					.build();
 			driveFromChamberToScore3 = drive.actionBuilder(chamberPose3)
 					.strafeToLinearHeading(scorePose3.position, scorePose3.heading)
+					.build();
+
+			Pose2d spikeMarkTransition1 = new Pose2d(36,-35, Math.toRadians(270));
+			Action driveToSpikeMarkTransition1 = drive.actionBuilder(scorePose)
+					.strafeToLinearHeading(spikeMarkTransition1.position, spikeMarkTransition1.heading)
+					.build();
+			Pose2d spikeMarkTransition2 = new Pose2d(36,-15, Math.toRadians(270));
+			Action driveToSpikeMarkTransition2 = drive.actionBuilder(spikeMarkTransition1)
+					.strafeToLinearHeading(spikeMarkTransition2.position, spikeMarkTransition2.heading)
+					.build();
+			Pose2d spikeMark1 = new Pose2d(46,-10, Math.toRadians(90));
+			Action driveToSpikeMark1A = drive.actionBuilder(spikeMarkTransition2)
+					.setTangent(Math.toRadians(90))
+					.splineToLinearHeading(spikeMark1, Math.toRadians(0))
+					.build();
+			Pose2d humanPlayer1 = new Pose2d(46,-55, Math.toRadians(90));
+			Action driveToHumanPlayer1 = drive.actionBuilder(spikeMark1)
+					.strafeToLinearHeading(humanPlayer1.position, humanPlayer1.heading)
+					.build();
+			Action driveToSpikeMark1B = drive.actionBuilder(humanPlayer1)
+					.strafeToLinearHeading(spikeMark1.position, spikeMark1.heading)
+					.build();
+			Pose2d spikeMark2 = new Pose2d(57, -10, Math.toRadians(90));
+			Action driveToSpikeMark2A = drive.actionBuilder(spikeMark1)
+					.strafeToLinearHeading(spikeMark2.position, spikeMark2.heading)
+					.build();
+			Pose2d humanPlayer2 = new Pose2d(57, -55, Math.toRadians(90));
+			Action driveToHumanPlayer2 = drive.actionBuilder(spikeMark2)
+					.strafeToLinearHeading(humanPlayer2.position, humanPlayer2.heading)
+					.build();
+			Action driveToSpikeMark2B = drive.actionBuilder(humanPlayer2)
+					.strafeToLinearHeading(spikeMark2.position, spikeMark2.heading)
+					.build();
+			Pose2d spikeMark3 = new Pose2d(61, -10, Math.toRadians(90));
+			Action driveToSpikeMark3A = drive.actionBuilder(spikeMark2)
+					.strafeToLinearHeading(spikeMark3.position, spikeMark3.heading)
+					.build();
+			Pose2d humanPlayer3 = new Pose2d(61, -55, Math.toRadians(90));
+			Action driveToHumanPlayer3 = drive.actionBuilder(spikeMark3)
+					.strafeToLinearHeading(humanPlayer3.position, humanPlayer3.heading)
 					.build();
 
 			// Construct a main action.
@@ -272,42 +232,25 @@ public class AutoSpecimen extends LinearOpMode {
 					// Score preloaded specimen.
 					driveFromStartToChamber,
 					scoreSpecimenAndLower(driveFromChamberToScore),
+					driveToSpikeMarkTransition1,
+					driveToSpikeMarkTransition2,
+					driveToSpikeMark1A,
+					driveToHumanPlayer1,
+					driveToSpikeMark1B,
+					driveToSpikeMark2A,
+					driveToHumanPlayer2,
+					driveToSpikeMark2B,
+					driveToSpikeMark3A,
+					driveToHumanPlayer3
 
-					// Test
-					testSetTangentForDrivingFromSubToSpikeMark,
-					testDriveFromSubToFirstSpikeMark,
-					testSetTangentToNormal,
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					testDriveFromFirstSpikeMarkToHumanPlayer,
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					new InstantAction(() -> robotHardware.openClaw()),
-					new WaitForTime(CLAW_DELAY),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					testDriveToFirstHumanPlayerSpecimen,
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-					testDriveToChamberFromHumanPlayer1,
+
+					/*testDriveToChamberFromHumanPlayer1,
 					scoreSpecimenAndLower(driveFromChamberToScore2),
 					testDriveFromScoreToHumanPlayer,
 					new InstantAction(() -> robotHardware.closeClaw()),
 					new WaitForTime(CLAW_DELAY),
 					testDriveFromHumanPlayerToChamberPose3,
-					scoreSpecimenAndLower(driveFromChamberToScore3)
+					scoreSpecimenAndLower(driveFromChamberToScore3)*/
 
 
 

@@ -6,6 +6,8 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+import java.util.Vector;
+
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
@@ -87,13 +89,23 @@ public class MeepMeepTesting {
                     // COPY HERE
                     // High Rung Position
                     .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
-                    .waitSeconds(1)
-
-                    .setTangent(15.0/8*Math.PI)
+                    .strafeToLinearHeading(new Vector2d(36,-35), Math.toRadians(270))
+                    .strafeToLinearHeading(new Vector2d(36,-15), Math.toRadians(270))
+                    .setTangent(Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(46,-10, Math.toRadians(90)), Math.toRadians(0))
+                    .strafeTo(new Vector2d(46,-55))
+                    .strafeTo(new Vector2d(46,-10))
+                    .strafeTo(new Vector2d(57,-10))
+                    .strafeTo(new Vector2d(57,-55))
+                    .strafeTo(new Vector2d(57,-10))
+                    .strafeTo(new Vector2d(61,-10))
+                    .strafeTo(new Vector2d(61,-55))
+                    //.splineToLinearHeading(new Pose2d(47,-10, Math.toRadians(90)), Math.toRadians(0))
+                    /*.setTangent(15.0/8*Math.PI)
                     .splineToLinearHeading(new Pose2d(47,-37,Math.toRadians(89)), Math.toRadians(89))
                     .strafeToLinearHeading(new Vector2d(52, -45), 7.0/4*Math.PI)
                     .turnTo(3.0/2*Math.PI)
-                    .strafeToLinearHeading(new Vector2d(0, -35), Math.toRadians(270))
+                    .strafeToLinearHeading(new Vector2d(0, -35), Math.toRadians(270))*/
 
 //                    .splineTo(new Vector2d(20, -35), 1.0/4*Math.PI)
 //                    .splineTo(new Vector2d(35, -25), 0)

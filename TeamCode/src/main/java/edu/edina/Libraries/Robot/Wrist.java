@@ -14,7 +14,7 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.8;
 
-    public static double HIGH_CHAMBER_SCORE_POSITION = 0.1; 
+    public static double HIGH_CHAMBER_SCORE_POSITION = 0.1;
 
     public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
