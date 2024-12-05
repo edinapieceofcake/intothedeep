@@ -3,6 +3,7 @@ package edu.edina.Libraries.LinearMotion;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -31,6 +32,7 @@ public class ThreeAxisDriveMechanism {
     private AxialMechanism axial;
     private LateralMechanism lateral;
     private LinearMotionController axialCon, lateralCon, rotCon;
+    private double pursuitRadius;
 
     public ThreeAxisDriveMechanism(RobotHardware hw) {
         drivetrain = hw.drivetrain;
@@ -43,6 +45,16 @@ public class ThreeAxisDriveMechanism {
         lateral = new LateralMechanism();
         axialCon = new LinearMotionController(axial);
         lateralCon = new LinearMotionController(lateral);
+
+        pursuitRadius = 6;
+    }
+
+    public void setPursuitRadius(double radius) {
+        pursuitRadius = radius;
+    }
+
+    public double getPursuitRadius() {
+        return pursuitRadius;
     }
 
     public void setPath(Vector2d[] path, boolean closed) {
@@ -61,10 +73,13 @@ public class ThreeAxisDriveMechanism {
 
         // set pursuit
 
-        purePursuit.nextPursuitPoint(pose.position, 5);
+//        Rotation2d.fromDouble()
+
+        purePursuit.nextPursuitPoint(pose.position, pursuitRadius);
 
         Vector2d pursuit = purePursuit.getPursuitPoint();
         Vector2d robotRelPursuitPoint = FieldToRobot.toRobotRel(pose, pursuit);
+
         axialCon.setTarget(robotRelPursuitPoint.x);
         lateralCon.setTarget(robotRelPursuitPoint.y);
         // yawCon.setTarget();
@@ -145,13 +160,15 @@ public class ThreeAxisDriveMechanism {
     }
 
     public class RotationalMechanism implements ILinearMechanism {
+        public double power;
+
         public RotationalMechanism() {
 
         }
 
         @Override
         public void setPower(double power) {
-
+            this.power = power;
         }
 
         @Override
@@ -166,7 +183,7 @@ public class ThreeAxisDriveMechanism {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return null;
+            return RotationalDriveMechanism.getStaticSettings();
         }
     }
 }

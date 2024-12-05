@@ -16,7 +16,11 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
 
         Vector2d[] path = new Vector2d[] {
                 new Vector2d(0, 0),
-                new Vector2d(20, 20),
+                new Vector2d(10, 20),
+                new Vector2d(20, 10)
+        };
+        Vector2d[] home = new Vector2d[] {
+                new Vector2d(0, 0)
         };
 
         driveMechanism.setPath(path, false);
@@ -24,6 +28,14 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            if (gamepad1.a) {
+                driveMechanism.setPath(home, false);
+                driveMechanism.setPursuitRadius(2);
+            } else if (gamepad1.b) {
+                driveMechanism.setPursuitRadius(5);
+            }
+
+
             driveMechanism.update();
         }
     }

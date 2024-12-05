@@ -2,9 +2,7 @@ package edu.edina.Tests.PurePursuit;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,11 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.Robot.FieldToRobot;
-import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.SparkFunOTOS;
-import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
-@Disabled
+//@Disabled
 @TeleOp
 public class PurePursuitOTOS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -26,8 +21,8 @@ public class PurePursuitOTOS extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotHardware hw = new RobotHardware(this);
-        myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sensor_otos");
+//        RobotHardware hw = new RobotHardware(this);
+        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
         myOtos.setLinearUnit(DistanceUnit.INCH);
         myOtos.setAngularUnit(AngleUnit.DEGREES);
@@ -80,8 +75,6 @@ public class PurePursuitOTOS extends LinearOpMode {
         while (opModeIsActive()) {
             pose = new Pose2d(-myOtos.getPosition().x, -myOtos.getPosition().y, myOtos.getPosition().h);
 
-            double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
             pp.nextPursuitPoint(pose.position, 5);
 
             purePursuitX = pp.getPursuitPoint().x;
@@ -96,7 +89,6 @@ public class PurePursuitOTOS extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
                     pose.position.x, pose.position.y, pose.heading.toDouble());
-            telemetry.addData("imu heading", yawIMU);
 
             // put rv into a MotorCommand, and print the powers it would use
             double axial = rv.x;
