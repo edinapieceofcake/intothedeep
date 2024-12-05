@@ -18,9 +18,9 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 public class LateralDriveMechanism implements ILinearMechanism {
-    private Odometry odometry;
-    private Drivetrain drivetrain;
-    private VoltageSensor vs;
+    private final Odometry odometry;
+    private final Drivetrain drivetrain;
+    private final VoltageSensor vs;
 
     public static double KS = 0.12338;
     public static double KV = 0.017618;

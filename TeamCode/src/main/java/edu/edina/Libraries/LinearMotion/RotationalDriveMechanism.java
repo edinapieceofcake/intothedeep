@@ -16,10 +16,9 @@ import edu.edina.Libraries.Robot.Odometry;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 public class RotationalDriveMechanism implements ILinearMechanism {
-    private Odometry odometry;
-    private Drivetrain drivetrain;
-    private VoltageSensor vs;
-    private Pose2d pose;
+    private final Odometry odometry;
+    private final Drivetrain drivetrain;
+    private final VoltageSensor vs;
 
     public static double KS = 0.05;
     public static double KV = 0.01;
@@ -44,7 +43,6 @@ public class RotationalDriveMechanism implements ILinearMechanism {
     public RotationalDriveMechanism(DrivingRobotHardware hw) {
         drivetrain = hw.getDrivetrain();
         odometry = hw.getOdometry();
-        pose = new Pose2d(new Vector2d(0, 0), 0);
         vs = hw.getVoltageSensor();
     }
 
