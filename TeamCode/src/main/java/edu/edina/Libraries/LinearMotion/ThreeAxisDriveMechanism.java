@@ -4,20 +4,16 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
-import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.Odometry;
-import edu.edina.Libraries.Robot.RobotHardware;
 import kotlin.NotImplementedError;
 
 @Config
@@ -26,14 +22,13 @@ public class ThreeAxisDriveMechanism {
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
 
-    private Odometry odometry;
-    private Drivetrain drivetrain;
-    private VoltageSensor vs;
+    private final Odometry odometry;
+    private final Drivetrain drivetrain;
+    private final VoltageSensor vs;
     private Vector2d robotRelVel;
     private PurePursuit purePursuit;
-    private AxialMechanism axial;
-    private LateralMechanism lateral;
-    private LinearMotionController axialCon, lateralCon, rotCon;
+    private final LinearMotionController axialCon, lateralCon /* yawCom */;
+    private double axialPower, lateralPower, rotationalPower;
     private double pursuitRadius;
 
     public ThreeAxisDriveMechanism(DrivingRobotHardware hw) {
@@ -41,8 +36,9 @@ public class ThreeAxisDriveMechanism {
         odometry = hw.getOdometry();
         vs = hw.getVoltageSensor();
 
-        axial = new AxialMechanism();
-        lateral = new LateralMechanism();
+        AxialMechanism axial = new AxialMechanism();
+        LateralMechanism lateral = new LateralMechanism();
+
         axialCon = new LinearMotionController(axial);
         lateralCon = new LinearMotionController(lateral);
 
@@ -91,7 +87,7 @@ public class ThreeAxisDriveMechanism {
         lateralCon.run();
         // yawCon.run();
 
-        drivetrain.update(axial.power, -lateral.power * LATERAL_MULT, 0);
+        drivetrain.update(axialPower, lateralPower, rotationalPower);
 
         if (LOG) {
             RobotLog.ii(TAG, "pursuit point=(%.1f, %.1f), robot rel=(%.1f, %.1f)",
@@ -103,16 +99,14 @@ public class ThreeAxisDriveMechanism {
                     robotRelVel.x, robotRelVel.y);
 
             RobotLog.ii(TAG, "drive power: axial=%.3f, lateral=%.3f, yaw=%.3f",
-                    axial.power, lateral.power, 0.0);
+                    axialPower, lateralPower, rotationalPower);
         }
     }
 
     public class AxialMechanism implements ILinearMechanism {
-        public double power;
-
         @Override
         public void setPower(double power) {
-            this.power = power;
+            axialPower = power;
         }
 
         @Override
@@ -132,11 +126,9 @@ public class ThreeAxisDriveMechanism {
     }
 
     public class LateralMechanism implements ILinearMechanism {
-        public double power;
-
         @Override
         public void setPower(double power) {
-            this.power = power;
+            lateralPower = -power * LATERAL_MULT;
         }
 
         @Override
@@ -156,15 +148,9 @@ public class ThreeAxisDriveMechanism {
     }
 
     public class RotationalMechanism implements ILinearMechanism {
-        public double power;
-
-        public RotationalMechanism() {
-
-        }
-
         @Override
         public void setPower(double power) {
-            this.power = power;
+            rotationalPower = power;
         }
 
         @Override
