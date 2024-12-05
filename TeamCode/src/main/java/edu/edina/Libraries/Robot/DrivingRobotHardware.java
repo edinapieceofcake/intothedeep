@@ -7,5 +7,6 @@ import edu.edina.Libraries.RoadRunner.Localizer;
 public interface DrivingRobotHardware {
     Drivetrain getDrivetrain();
     VoltageSensor getVoltageSensor();
-    Localizer getOdometry();
+    Odometry getOdometry();
 }
+

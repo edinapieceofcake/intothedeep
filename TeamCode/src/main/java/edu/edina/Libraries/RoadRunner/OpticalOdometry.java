@@ -1,26 +1,26 @@
 package edu.edina.Libraries.RoadRunner;
 
-import com.acmerobotics.roadrunner.DualNum;
-import com.acmerobotics.roadrunner.Rotation2d;
-import com.acmerobotics.roadrunner.Rotation2dDual;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
-import com.acmerobotics.roadrunner.Vector2dDual;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class OpticalLocalizer implements Localizer {
+import edu.edina.Libraries.Robot.Odometry;
+
+public class OpticalOdometry implements Odometry {
     public final SparkFunOTOS myOtos;
+    private SparkFunOTOS.Pose2D pos, vel, acc;
 
     public static boolean isMapped(HardwareMap hardwareMap) {
         SparkFunOTOS o = hardwareMap.tryGet(SparkFunOTOS.class, "sensor_otos");
         return o != null;
     }
 
-    public OpticalLocalizer(HardwareMap hardwareMap) {
+    public OpticalOdometry(HardwareMap hardwareMap) {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
         // Set the desired units for linear and angular measurements. Can be either
@@ -88,23 +88,28 @@ public class OpticalLocalizer implements Localizer {
         // the OTOS location to match and it will continue to track from there.
         SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
         myOtos.setPosition(currentPosition);
+
+        pos = new SparkFunOTOS.Pose2D();
+        vel = new SparkFunOTOS.Pose2D();
+        acc = new SparkFunOTOS.Pose2D();
     }
 
     @Override
-    public Twist2dDual<Time> update() {
-        SparkFunOTOS.Pose2D pos = new SparkFunOTOS.Pose2D();
-        SparkFunOTOS.Pose2D vel = new SparkFunOTOS.Pose2D();
-        SparkFunOTOS.Pose2D acc = new SparkFunOTOS.Pose2D();
+    public void update() {
         myOtos.getPosVelAcc(pos, vel, acc);
+    }
 
-        Twist2dDual<Time> twist = new Twist2dDual<>(
-                new Vector2dDual<>(
-                        new DualNum<Time>(new double[]{pos.x, vel.x, acc.x}),
-                        new DualNum<Time>(new double[]{pos.y, vel.y, acc.y})
-                ),
-                new DualNum<Time>(new double[]{Math.toRadians(pos.h), Math.toRadians(vel.h), Math.toRadians(acc.h)})
-        );
+    @Override
+    public Pose2d getPoseEstimate() {
+        return new Pose2d(
+                new Vector2d(pos.x, pos.y),
+                Math.toRadians(pos.h));
+    }
 
-        return twist;
+    @Override
+    public PoseVelocity2d getVelocityEstimate() {
+        return new PoseVelocity2d(
+                new Vector2d(vel.x, vel.y),
+                Math.toRadians(vel.h));
     }
 }

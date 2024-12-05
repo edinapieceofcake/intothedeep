@@ -3,6 +3,7 @@ package edu.edina.Libraries.LinearMotion;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -12,14 +13,14 @@ import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.DrivingRobotHardware;
+import edu.edina.Libraries.Robot.Odometry;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 public class AxialDriveMechanism implements ILinearMechanism {
-    private Localizer odometry;
+    private Odometry odometry;
     private Drivetrain drivetrain;
     private VoltageSensor vs;
-    private Pose2d pose;
 
     public static double KS = 0.066229;
     public static double KV = 0.015638;
@@ -44,8 +45,6 @@ public class AxialDriveMechanism implements ILinearMechanism {
     public AxialDriveMechanism(DrivingRobotHardware hw) {
         drivetrain = hw.getDrivetrain();
         odometry = hw.getOdometry();
-        pose = new Pose2d(new Vector2d(0, 0), 0);
-
         vs = hw.getVoltageSensor();
     }
 
@@ -57,17 +56,15 @@ public class AxialDriveMechanism implements ILinearMechanism {
 
     @Override
     public double getPosition(boolean raw) {
-        Twist2dDual<Time> t = odometry.update();
-        pose = pose.plus(t.value());
-        return pose.position.x;
+        return getPositionAndVelocity(raw).value();
     }
 
     @Override
     public DualNum<Time> getPositionAndVelocity(boolean raw) {
-        Twist2dDual<Time> t = odometry.update();
-        pose = pose.plus(t.value());
-        double v = t.velocity().linearVel.x.value();
-        return new DualNum<Time>(new double[]{pose.position.x, v});
+        odometry.update();
+        Pose2d p = odometry.getPoseEstimate();
+        PoseVelocity2d v = odometry.getVelocityEstimate();
+        return new DualNum<>(new double[]{p.position.x, v.linearVel.x});
     }
 
     @Override

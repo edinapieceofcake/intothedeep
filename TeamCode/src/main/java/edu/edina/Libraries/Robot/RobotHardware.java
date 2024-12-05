@@ -23,7 +23,6 @@ import java.util.List;
 
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
-import edu.edina.Libraries.RoadRunner.OpticalLocalizer;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.OpModes.Autonomous.AutoSample;
 import edu.edina.OpModes.Autonomous.AutoSpecimen;
@@ -881,8 +880,8 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     @Override
-    public Localizer getOdometry() {
-        return odometry;
+    public Odometry getOdometry() {
+        return new LocalizerOdometry(odometry);
     }
 
     @Override
@@ -891,7 +890,7 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     @Override
-    public VoltageSensor getVoltageSensor(){
+    public VoltageSensor getVoltageSensor() {
         return voltageSensor;
     }
 

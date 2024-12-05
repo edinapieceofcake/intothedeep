@@ -2,6 +2,7 @@ package edu.edina.Libraries.LinearMotion;
 
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -11,10 +12,11 @@ import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.DrivingRobotHardware;
+import edu.edina.Libraries.Robot.Odometry;
 import edu.edina.Libraries.Robot.RobotHardware;
 
-public class RotationalDriveMechanism implements ILinearMechanism{
-    private Localizer odometry;
+public class RotationalDriveMechanism implements ILinearMechanism {
+    private Odometry odometry;
     private Drivetrain drivetrain;
     private VoltageSensor vs;
     private Pose2d pose;
@@ -54,17 +56,15 @@ public class RotationalDriveMechanism implements ILinearMechanism{
 
     @Override
     public double getPosition(boolean raw) {
-        Twist2dDual<Time> t = odometry.update();
-        pose = pose.plus(t.value());
-        return pose.heading.toDouble();
+        return getPositionAndVelocity(raw).value();
     }
 
     @Override
     public DualNum<Time> getPositionAndVelocity(boolean raw) {
-        Twist2dDual<Time> t = odometry.update();
-        pose = pose.plus(t.value());
-        double v = t.velocity().angVel.value();
-        return new DualNum<Time>(new double[]{pose.heading.toDouble(), v});
+        odometry.update();
+        Pose2d p = odometry.getPoseEstimate();
+        PoseVelocity2d v = odometry.getVelocityEstimate();
+        return new DualNum<>(new double[]{Math.toDegrees(p.heading.toDouble()), Math.toDegrees(v.angVel)});
     }
 
     @Override
