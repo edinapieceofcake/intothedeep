@@ -15,6 +15,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class OpticalLocalizer implements Localizer {
     public final SparkFunOTOS myOtos;
 
+    public static boolean isMapped(HardwareMap hardwareMap) {
+        SparkFunOTOS o = hardwareMap.tryGet(SparkFunOTOS.class, "sensor_otos");
+        return o != null;
+    }
+
     public OpticalLocalizer(HardwareMap hardwareMap) {
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
@@ -94,10 +99,10 @@ public class OpticalLocalizer implements Localizer {
 
         Twist2dDual<Time> twist = new Twist2dDual<>(
                 new Vector2dDual<>(
-                        new DualNum<Time>(new double[]{vel.x, acc.x}),
-                        new DualNum<Time>(new double[]{vel.y, acc.y})
+                        new DualNum<Time>(new double[]{pos.x, vel.x, acc.x}),
+                        new DualNum<Time>(new double[]{pos.y, vel.y, acc.y})
                 ),
-                new DualNum<Time>(new double[]{Math.toRadians(vel.h), Math.toRadians(acc.h)})
+                new DualNum<Time>(new double[]{Math.toRadians(pos.h), Math.toRadians(vel.h), Math.toRadians(acc.h)})
         );
 
         return twist;

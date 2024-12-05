@@ -4,12 +4,16 @@ import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
 import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.FuncInverter;
@@ -28,11 +32,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new RotationalDriveMechanism(new TestRobotHardware(this));
-
-        for (I2cDevice dev : hardwareMap.i2cDevice)
-            telemetry.addData("i2c dev", dev.getDeviceName());
-        telemetry.update();
+        linearMech = new AxialDriveMechanism(new TestRobotHardware(this));
 
         waitForStart();
 
@@ -107,6 +107,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 if (s > maxSpeed)
                     maxSpeed = s;
 
+                telemetry.addData("position", u.get(0));
                 telemetry.addData("speed", s);
                 telemetry.addData("power", power);
                 if (ks != 0) {

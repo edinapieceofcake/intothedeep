@@ -1,5 +1,6 @@
 package edu.edina.Libraries.Robot;
 
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -20,14 +21,10 @@ public class TestRobotHardware implements DrivingRobotHardware {
         drivetrain = new Drivetrain(opMode);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        Localizer o;
-        try {
-            o = new OpticalLocalizer(hardwareMap);
-        } catch (Exception x) {
-            o = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
-        }
-
-        odometry=o;
+        if (OpticalLocalizer.isMapped(hardwareMap))
+            odometry = new OpticalLocalizer(hardwareMap);
+        else
+            odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
     }
 
     @Override
