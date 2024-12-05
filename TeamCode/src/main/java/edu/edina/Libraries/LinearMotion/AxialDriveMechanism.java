@@ -64,7 +64,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
         odometry.update();
         Pose2d p = odometry.getPoseEstimate();
         PoseVelocity2d v = odometry.getVelocityEstimate();
-        return new DualNum<>(new double[]{p.position.x, v.linearVel.x});
+        return new DualNum<>(new double[]{-p.position.y, -v.linearVel.y});
     }
 
     @Override

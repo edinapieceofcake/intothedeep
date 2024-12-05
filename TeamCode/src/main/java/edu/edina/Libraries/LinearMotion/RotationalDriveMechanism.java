@@ -50,7 +50,7 @@ public class RotationalDriveMechanism implements ILinearMechanism {
 
     @Override
     public void setPower(double power) {
-        double actualPower = power * 12 / vs.getVoltage();
+        double actualPower = -power * 12 / vs.getVoltage();
         drivetrain.update(0, 0, actualPower);
     }
 
