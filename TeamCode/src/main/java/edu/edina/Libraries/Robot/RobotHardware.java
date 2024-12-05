@@ -29,7 +29,7 @@ import edu.edina.OpModes.Autonomous.AutoSample;
 import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
-public class RobotHardware {
+public class RobotHardware implements DrivingRobotHardware {
     /*
     Control Hub Portal
         Control Hub
@@ -135,10 +135,7 @@ public class RobotHardware {
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-        if (hardwareMap.i2cDevice.contains("sensor_otos"))
-            odometry = new OpticalLocalizer(hardwareMap);
-        else
-            odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+        odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -881,6 +878,21 @@ public class RobotHardware {
         // Enable manual driving.
         allowManualDriving = true;
 
+    }
+
+    @Override
+    public Localizer getOdometry() {
+        return odometry;
+    }
+
+    @Override
+    public Drivetrain getDrivetrain() {
+        return drivetrain;
+    }
+
+    @Override
+    public VoltageSensor getVoltageSensor(){
+        return voltageSensor;
     }
 
 }

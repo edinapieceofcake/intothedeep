@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
+import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 public class RotationalDriveMechanism implements ILinearMechanism{
@@ -38,12 +39,11 @@ public class RotationalDriveMechanism implements ILinearMechanism{
                 MAX_JERK);
     }
 
-    public RotationalDriveMechanism(RobotHardware hw) {
-        drivetrain = hw.drivetrain;
-        odometry = hw.odometry;
+    public RotationalDriveMechanism(DrivingRobotHardware hw) {
+        drivetrain = hw.getDrivetrain();
+        odometry = hw.getOdometry();
         pose = new Pose2d(new Vector2d(0, 0), 0);
-
-        vs = hw.voltageSensor;
+        vs = hw.getVoltageSensor();
     }
 
     @Override

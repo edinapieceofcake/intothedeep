@@ -4,20 +4,20 @@ import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
-import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
+import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
-import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
 public class CalibrateLinearMechanism extends LinearOpMode {
@@ -28,7 +28,11 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new LateralDriveMechanism(new RobotHardware(this));
+        linearMech = new RotationalDriveMechanism(new TestRobotHardware(this));
+
+        for (I2cDevice dev : hardwareMap.i2cDevice)
+            telemetry.addData("i2c dev", dev.getDeviceName());
+        telemetry.update();
 
         waitForStart();
 
