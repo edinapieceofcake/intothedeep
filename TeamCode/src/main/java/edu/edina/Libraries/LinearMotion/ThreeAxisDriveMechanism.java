@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
-import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
+import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.RobotHardware;
@@ -23,7 +23,7 @@ public class ThreeAxisDriveMechanism {
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
 
-    private ThreeDeadWheelLocalizer odometry;
+    private Localizer odometry;
     private Drivetrain drivetrain;
     private VoltageSensor vs;
     private Pose2d pose;

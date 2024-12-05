@@ -21,7 +21,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
+import edu.edina.Libraries.RoadRunner.OpticalLocalizer;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.OpModes.Autonomous.AutoSample;
 import edu.edina.OpModes.Autonomous.AutoSpecimen;
@@ -64,7 +66,7 @@ public class RobotHardware {
 
     private final LinearOpMode opMode;
     public final IMU imu;
-    public final ThreeDeadWheelLocalizer odometry;
+    public final Localizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
     public final Drivetrain drivetrain;
@@ -133,7 +135,10 @@ public class RobotHardware {
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-        odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+        if (hardwareMap.i2cDevice.contains("sensor_otos"))
+            odometry = new OpticalLocalizer(hardwareMap);
+        else
+            odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -249,7 +254,7 @@ public class RobotHardware {
         claw.update();
 
         // If manual driving is allowed...
-        if(allowManualDriving) {
+        if (allowManualDriving) {
 
             // Update the drivetrain.
             drivetrain.update();
@@ -669,7 +674,7 @@ public class RobotHardware {
         // Construct a score specimen action.
         Action action = new SequentialAction(
                 new InstantAction(() -> disableManualDriving()),
-                AutoSpecimen.scoreSpecimen(backup,this),
+                AutoSpecimen.scoreSpecimen(backup, this),
                 new InstantAction(() -> enableManualDriving())
         );
 
@@ -763,7 +768,7 @@ public class RobotHardware {
     public int getCurrentLiftPosition() {
 
         // Return the lift's current position.
-        return (int)lift.getPosition();
+        return (int) lift.getPosition();
 
     }
 

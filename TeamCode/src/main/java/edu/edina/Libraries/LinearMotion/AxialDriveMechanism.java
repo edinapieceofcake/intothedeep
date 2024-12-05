@@ -8,13 +8,14 @@ import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 public class AxialDriveMechanism implements ILinearMechanism {
-    private ThreeDeadWheelLocalizer odometry;
+    private Localizer odometry;
     private Drivetrain drivetrain;
     private VoltageSensor vs;
     private Pose2d pose;
