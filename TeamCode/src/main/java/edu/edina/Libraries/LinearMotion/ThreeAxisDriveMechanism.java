@@ -3,6 +3,7 @@ package edu.edina.Libraries.LinearMotion;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -13,7 +14,9 @@ import com.qualcomm.robotcore.util.RobotLog;
 import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.Robot.Drivetrain;
+import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.FieldToRobot;
+import edu.edina.Libraries.Robot.Odometry;
 import edu.edina.Libraries.Robot.RobotHardware;
 import kotlin.NotImplementedError;
 
@@ -23,10 +26,9 @@ public class ThreeAxisDriveMechanism {
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
 
-    private Localizer odometry;
+    private Odometry odometry;
     private Drivetrain drivetrain;
     private VoltageSensor vs;
-    private Pose2d pose;
     private Vector2d robotRelVel;
     private PurePursuit purePursuit;
     private AxialMechanism axial;
@@ -34,12 +36,10 @@ public class ThreeAxisDriveMechanism {
     private LinearMotionController axialCon, lateralCon, rotCon;
     private double pursuitRadius;
 
-    public ThreeAxisDriveMechanism(RobotHardware hw) {
-        drivetrain = hw.drivetrain;
-        odometry = hw.odometry;
-        vs = hw.voltageSensor;
-
-        pose = new Pose2d(new Vector2d(0, 0), 0);
+    public ThreeAxisDriveMechanism(DrivingRobotHardware hw) {
+        drivetrain = hw.getDrivetrain();
+        odometry = hw.getOdometry();
+        vs = hw.getVoltageSensor();
 
         axial = new AxialMechanism();
         lateral = new LateralMechanism();
@@ -65,15 +65,13 @@ public class ThreeAxisDriveMechanism {
     }
 
     public void update() {
-        Twist2dDual<Time> twist = odometry.update();
-        pose = pose.plus(twist.value());
+        Pose2d pose = odometry.getPoseEstimate();
+        PoseVelocity2d vel = odometry.getVelocityEstimate();
 
         if (purePursuit == null)
             return;
 
         // set pursuit
-
-//        Rotation2d.fromDouble()
 
         purePursuit.nextPursuitPoint(pose.position, pursuitRadius);
 
@@ -85,9 +83,7 @@ public class ThreeAxisDriveMechanism {
         // yawCon.setTarget();
 
         // calculate velocities
-        Vector2d fieldVel = new Vector2d(
-                twist.velocity().linearVel.x.value(),
-                twist.velocity().linearVel.y.value());
+        Vector2d fieldVel = vel.linearVel;
         robotRelVel = FieldToRobot.toRobotRel(pose, fieldVel);
 
         // use the LinearMotionController to calculate powers

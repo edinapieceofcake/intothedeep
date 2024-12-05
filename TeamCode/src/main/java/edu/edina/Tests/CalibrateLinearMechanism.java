@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
+import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
 import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.FuncInverter;
@@ -32,7 +33,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new AxialDriveMechanism(new TestRobotHardware(this));
+        linearMech = new RotationalDriveMechanism(new TestRobotHardware(this));
 
         waitForStart();
 
