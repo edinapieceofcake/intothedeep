@@ -194,7 +194,7 @@ public class AutoSpecimen extends LinearOpMode {
 			Action driveToSpikeMarkTransition2 = drive.actionBuilder(spikeMarkTransition1)
 					.strafeToLinearHeading(spikeMarkTransition2.position, spikeMarkTransition2.heading)
 					.build();
-			Pose2d spikeMark1 = new Pose2d(46,-10, Math.toRadians(90));
+			Pose2d spikeMark1 = new Pose2d(46,-10, Math.toRadians(270));
 			Action driveToSpikeMark1A = drive.actionBuilder(spikeMarkTransition2)
 					.setTangent(Math.toRadians(90))
 					.splineToLinearHeading(spikeMark1, Math.toRadians(0))
@@ -225,6 +225,55 @@ public class AutoSpecimen extends LinearOpMode {
 			Action driveToHumanPlayer3 = drive.actionBuilder(spikeMark3)
 					.strafeToLinearHeading(humanPlayer3.position, humanPlayer3.heading)
 					.build();
+			Pose2d humanPlayerTransSition1 = new Pose2d(61,-50,Math.toRadians(90));
+			Action driveToTransition1 = drive.actionBuilder(humanPlayer3)
+					.strafeToLinearHeading(humanPlayerTransSition1.position, humanPlayerTransSition1.heading)
+					.build();
+			Pose2d humanPlayerTransSition2 = new Pose2d(55,-50,Math.toRadians(90));
+			Action driveToTransition2 = drive.actionBuilder(humanPlayerTransSition1)
+					.strafeToLinearHeading(humanPlayerTransSition2.position, humanPlayerTransSition2.heading)
+					.build();
+			Pose2d humanPlayerPickup = new Pose2d(55,-55,Math.toRadians(90));
+			Action driveTohumanPlayerPickup = drive.actionBuilder(humanPlayerTransSition2)
+					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
+					.build();
+			Pose2d firstScore = new Pose2d(0,-35,Math.toRadians(90));
+			Action driveTofirstScore = drive.actionBuilder(humanPlayerPickup)
+					.strafeToLinearHeading(firstScore.position, firstScore.heading)
+					.build();
+			Action driveFromFirstScoreToHumanPlayerPickup = drive.actionBuilder(firstScore)
+					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
+					.build();
+			Pose2d secondScore = new Pose2d(2,-35,Math.toRadians(90));
+			Action driveToSecondScore = drive.actionBuilder(humanPlayerPickup)
+					.strafeToLinearHeading(secondScore.position, secondScore.heading)
+					.build();
+			Action driveFromSecondScoreToHumanPlayerPickup = drive.actionBuilder(secondScore)
+					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
+					.build();
+			Pose2d thirdScore = new Pose2d(4,-35,Math.toRadians(90));
+			Action driveToThirdScore = drive.actionBuilder(humanPlayerPickup)
+					.strafeToLinearHeading(thirdScore.position, thirdScore.heading)
+					.build();
+			Action driveFromThirdScoreToHumanPlayerPickup = drive.actionBuilder(thirdScore)
+					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
+					.build();
+			Pose2d fourthScore = new Pose2d(6,-35,Math.toRadians(90));
+			Action driveToFourthScore = drive.actionBuilder(humanPlayerPickup)
+					.strafeToLinearHeading(fourthScore.position, fourthScore.heading)
+					.build();
+			Action driveFromFourthScoreToHumanPlayerPickup = drive.actionBuilder(fourthScore)
+					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
+					.build();
+			Pose2d fithScore = new Pose2d(8,-35,Math.toRadians(90));
+			Action driveToFithScore = drive.actionBuilder(humanPlayerPickup)
+					.strafeToLinearHeading(fithScore.position, fithScore.heading)
+					.build();
+			Action driveFromFithScoreToHumanPlayerPickup = drive.actionBuilder(fithScore)
+					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
+					.build();
+
+
 
 			// Construct a main action.
 			Action mainAction = new SequentialAction(
@@ -241,7 +290,22 @@ public class AutoSpecimen extends LinearOpMode {
 					driveToHumanPlayer2,
 					driveToSpikeMark2B,
 					driveToSpikeMark3A,
-					driveToHumanPlayer3
+					driveToHumanPlayer3,
+					driveToTransition1,
+					driveToTransition2,
+					driveTohumanPlayerPickup,
+					driveTofirstScore,
+					driveFromFirstScoreToHumanPlayerPickup,
+					driveToSecondScore,
+					driveToSecondScore,
+					driveFromSecondScoreToHumanPlayerPickup,
+					driveToThirdScore,
+					driveFromThirdScoreToHumanPlayerPickup,
+					driveToFourthScore,
+					driveFromFourthScoreToHumanPlayerPickup,
+					driveToFithScore,
+					driveFromFithScoreToHumanPlayerPickup
+
 
 
 					/*testDriveToChamberFromHumanPlayer1,
