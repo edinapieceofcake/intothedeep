@@ -18,7 +18,7 @@ import kotlin.NotImplementedError;
 
 @Config
 public class ThreeAxisDriveMechanism {
-    private static final boolean LOG = true;
+    private static final boolean LOG = false;
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
 
@@ -61,6 +61,7 @@ public class ThreeAxisDriveMechanism {
     }
 
     public void update() {
+        odometry.update();
         Pose2d pose = odometry.getPoseEstimate();
         PoseVelocity2d vel = odometry.getVelocityEstimate();
 
@@ -87,7 +88,7 @@ public class ThreeAxisDriveMechanism {
         lateralCon.run();
         // yawCon.run();
 
-        drivetrain.update(axialPower, lateralPower, rotationalPower);
+        drivetrain.update(axialPower, lateralPower, 0*rotationalPower);
 
         if (LOG) {
             RobotLog.ii(TAG, "pursuit point=(%.1f, %.1f), robot rel=(%.1f, %.1f)",
@@ -128,7 +129,7 @@ public class ThreeAxisDriveMechanism {
     public class LateralMechanism implements ILinearMechanism {
         @Override
         public void setPower(double power) {
-            lateralPower = power * LATERAL_MULT;
+            lateralPower = -power * LATERAL_MULT;
         }
 
         @Override
