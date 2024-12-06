@@ -24,6 +24,7 @@ public class TeleOpMain extends LinearOpMode {
     Normal Mode
 
     - left stick = move robot
+    - right stick button = toggle swivel
     - right stick = rotate robot
     - a = toggle claw
     - x = chamber
@@ -441,6 +442,17 @@ public class TeleOpMain extends LinearOpMode {
 
             // Retract the slide.
             robotHardware.retractSlide();
+
+        }
+
+        // Toggle swivel
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user tapped right stick...
+        if (currentGamepad.right_stick_button && !previousGamepad.right_stick_button) {
+
+            // Toggle the swivel.
+            robotHardware.toggleSwivel();
 
         }
 
