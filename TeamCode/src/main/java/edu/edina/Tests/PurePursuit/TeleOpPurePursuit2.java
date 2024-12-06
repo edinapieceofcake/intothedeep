@@ -5,13 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.LinearMotion.ThreeAxisDriveMechanism;
+import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
 public class TeleOpPurePursuit2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotHardware hw = new RobotHardware(this);
+        DrivingRobotHardware hw = new TestRobotHardware(this);
         ThreeAxisDriveMechanism driveMechanism = new ThreeAxisDriveMechanism(hw);
 
         Vector2d[] path = new Vector2d[] {

@@ -1,8 +1,6 @@
 package edu.edina.Libraries.RoadRunner;
 
 
-
-
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
@@ -11,6 +9,7 @@ import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -68,8 +67,8 @@ public class SparkFunOTOSDrive extends MecanumDrive {
 
     public SparkFunOTOSDrive(HardwareMap hardwareMap, Pose2d pose) {
         super(hardwareMap, pose);
-        FlightRecorder.write("OTOS_PARAMS",PARAMS);
-        otos = hardwareMap.get(SparkFunOTOS.class,"sensor_otos");
+        FlightRecorder.write("OTOS_PARAMS", PARAMS);
+        otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         // RR localizer note:
         // don't change the units, it will stop Dashboard field view from working properly
         // and might cause various other issues
@@ -126,13 +125,13 @@ public class SparkFunOTOSDrive extends MecanumDrive {
         SparkFunOTOS.Pose2D otosPose = new SparkFunOTOS.Pose2D();
         SparkFunOTOS.Pose2D otosVel = new SparkFunOTOS.Pose2D();
         SparkFunOTOS.Pose2D otosAcc = new SparkFunOTOS.Pose2D();
-        otos.getPosVelAcc(otosPose,otosVel,otosAcc);
+        otos.getPosVelAcc(otosPose, otosVel, otosAcc);
         pose = OTOSPoseToRRPose(otosPose);
         lastOtosPose = pose;
 
         // RR localizer note:
         // OTOS velocity units happen to be identical to Roadrunners, so we don't need any conversion!
-        return new PoseVelocity2d(new Vector2d(otosVel.x, otosVel.y),otosVel.h);
+        return new PoseVelocity2d(new Vector2d(otosVel.x, otosVel.y), otosVel.h);
     }
 
     private static Pose2d OTOSPoseToRRPose(SparkFunOTOS.Pose2D otosPose) {

@@ -128,7 +128,7 @@ public class ThreeAxisDriveMechanism {
     public class LateralMechanism implements ILinearMechanism {
         @Override
         public void setPower(double power) {
-            lateralPower = -power * LATERAL_MULT;
+            lateralPower = power * LATERAL_MULT;
         }
 
         @Override

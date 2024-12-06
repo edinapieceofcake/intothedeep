@@ -33,7 +33,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new RotationalDriveMechanism(new TestRobotHardware(this));
+        linearMech = new AxialDriveMechanism(new TestRobotHardware(this));
 
         waitForStart();
 

@@ -65,7 +65,7 @@ public class OpticalOdometry implements Odometry {
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
         myOtos.setLinearScalar(1.0);
-        myOtos.setAngularScalar(1.0);
+        myOtos.setAngularScalar(0.9942);
 
         // The IMU on the OTOS includes a gyroscope and accelerometer, which could
         // have an offset. Note that as of firmware version 1.0, the calibration
@@ -103,14 +103,14 @@ public class OpticalOdometry implements Odometry {
     @Override
     public Pose2d getPoseEstimate() {
         return new Pose2d(
-                new Vector2d(pos.x, pos.y),
+                new Vector2d(-pos.y, pos.x),
                 Math.toRadians(pos.h));
     }
 
     @Override
     public PoseVelocity2d getVelocityEstimate() {
         return new PoseVelocity2d(
-                new Vector2d(vel.x, vel.y),
+                new Vector2d(-vel.y, vel.x),
                 Math.toRadians(vel.h));
     }
 }
