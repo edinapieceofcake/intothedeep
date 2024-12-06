@@ -38,7 +38,8 @@ public class RobotHardware {
                 3 - GoBILDA 5201 series - left_front_drive (has left odometry encoder)
             Servos
                 0 - GoBILDA torque servo - wrist_left
-                1 - GoBILDA torque servo - claw_servo
+                1 - GoBILDA speed servo - claw_servo
+                2 - Axon MINI+ servo - swivel_servo
             Digital Devices
                 5 - REV Touch Sensor - arm_touch
                 7 - REV Touch Sensor - lift_touch
@@ -69,6 +70,7 @@ public class RobotHardware {
     public final VoltageSensor voltageSensor;
     private Drivetrain drivetrain;
     private final Wrist wrist;
+    private final Swivel swivel;
     private final Arm arm;
     private final Claw claw;
     private final Lift lift;
@@ -123,6 +125,9 @@ public class RobotHardware {
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
+
+        // Initialize the swivel.
+        swivel = new Swivel(hardwareMap, opMode.telemetry);
 
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
@@ -212,6 +217,38 @@ public class RobotHardware {
 
     }
 
+    // Sets the swivel to horizontal.
+    public void swivelSetHorizontal() {
+
+        // Sets the swivel to horizontal.
+        swivel.setHorizontal();
+
+    }
+
+    // Sets the swivel to vertical.
+    public void swivelSetVertical() {
+
+        // Sets the swivel to horizontal.
+        swivel.setHorizontal();
+
+    }
+
+    // Sets the swivel to clip.
+    public void swivelSetClip() {
+
+        // Sets the swivel to clip.
+        swivel.setClip();
+
+    }
+
+    // Toggles the swivel.
+    public void toggleSwivel() {
+
+        // Toggles the swivel.
+        swivel.toggle();
+
+    }
+
     public void updateHardwareInteractions() {
 
         // RM: I commented out the following code because it was causing unexpected behavior during
@@ -264,6 +301,9 @@ public class RobotHardware {
 
         // Update the wrist.
         wrist.update();
+
+        // Update the swivel.
+        swivel.update();
 
         // Update the light.
         //light.update();
