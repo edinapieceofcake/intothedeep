@@ -15,7 +15,7 @@ public class Claw {
     public static double CLOSED_POSITION = 0.85;
 
     // Open position
-    public static double OPEN_POSITION = 0.56;
+    public static double OPEN_POSITION = 0.5;
 
     // Open
     private boolean open;

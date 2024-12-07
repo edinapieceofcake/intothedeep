@@ -20,7 +20,7 @@ public class Arm {
     public static double FEEDFORWARD = 0.1;
 
     // High basket position
-    public static int HIGH_BASKET_POSITION = 3000;
+    public static int HIGH_BASKET_POSITION = 2500;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
@@ -53,7 +53,7 @@ public class Arm {
     public static double REZEROING_POWER = -0.3;
 
     // Submersible position
-    public static int SUBMERSIBLE_POSITION = 4400;
+    public static int SUBMERSIBLE_POSITION = 4200;
 
     // Submersible position threshold
     public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;

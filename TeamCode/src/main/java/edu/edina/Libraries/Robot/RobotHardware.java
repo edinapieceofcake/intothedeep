@@ -217,6 +217,14 @@ public class RobotHardware {
 
     }
 
+    // Sets the wrist to high basket position.
+    public void setWristHighBasketPosition() {
+
+        // Sets the wrist to high basket position.
+        wrist.setHighBasketPosition();
+
+    }
+
     // Lowers the wrist.
     public void lowerWrist() {
 

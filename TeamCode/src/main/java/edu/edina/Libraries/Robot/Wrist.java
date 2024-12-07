@@ -17,6 +17,8 @@ public class Wrist {
     public static double HIGH_CHAMBER_HOLD_POSITION = 0.49;
     public static double HIGH_CHAMBER_CLIP_POSITION = 0.7;
 
+    public static double HIGH_BASKET_POSITION = 0.5;
+
     public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
     // Up position
@@ -116,6 +118,16 @@ public class Wrist {
 
         // Sets the wrist to wall position.
         servo.setPosition(WALL_POSITION);
+
+        // Remember that the wrist is up.
+        up = true;
+    }
+
+    // Set the wrist to high basket position.
+    public void setHighBasketPosition() {
+
+        // Sets the wrist to high basket position.
+        servo.setPosition(HIGH_BASKET_POSITION);
 
         // Remember that the wrist is up.
         up = true;
