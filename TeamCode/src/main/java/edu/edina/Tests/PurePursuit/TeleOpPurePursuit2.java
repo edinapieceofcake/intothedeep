@@ -14,7 +14,7 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DrivingRobotHardware hw = new TestRobotHardware(this);
-        ThreeAxisDriveMechanism driveMechanism = new ThreeAxisDriveMechanism(hw);
+        ThreeAxisDriveMechanism driveMechanism = new ThreeAxisDriveMechanism(hw, null); //fix null destination
 
         Vector2d[] path = new Vector2d[] {
                 new Vector2d(0, 0),
@@ -25,16 +25,16 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
                 new Vector2d(0, 0)
         };
 
-        driveMechanism.setPath(path, false);
+        //driveMechanism.setPath(path, false);
 
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                driveMechanism.setPath(home, false);
-                driveMechanism.setPursuitRadius(2);
+                //driveMechanism.setPath(home, false);
+                //driveMechanism.setPursuitRadius(2);
             } else if (gamepad1.b) {
-                driveMechanism.setPursuitRadius(5);
+                //driveMechanism.setPursuitRadius(5);
             }
 
 

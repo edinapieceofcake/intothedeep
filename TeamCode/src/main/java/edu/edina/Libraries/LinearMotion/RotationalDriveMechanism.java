@@ -20,14 +20,14 @@ public class RotationalDriveMechanism implements ILinearMechanism {
     private final Drivetrain drivetrain;
     private final VoltageSensor vs;
 
-    public static double KS = 0.05;
-    public static double KV = 0.01;
-    public static double KA = 0.0025;
+    public static double KS = 0.03;
+    public static double KV = 0.03;
+    public static double KA = 0.001;
     public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
     public static double STOP_ACCEL_MULT = 0.3;
     public static double STOP_T_TOL = 0.45;
     public static double STOP_X_TOL = 0.3;
-    public static double MAX_JERK = 60000;
+    public static double MAX_JERK = 6000;
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
@@ -48,7 +48,7 @@ public class RotationalDriveMechanism implements ILinearMechanism {
 
     @Override
     public void setPower(double power) {
-        double actualPower = -power * 12 / vs.getVoltage();
+        double actualPower = power * 12 / vs.getVoltage();
         drivetrain.update(0, 0, actualPower);
     }
 

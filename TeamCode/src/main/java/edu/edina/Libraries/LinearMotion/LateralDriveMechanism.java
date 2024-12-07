@@ -22,6 +22,7 @@ public class LateralDriveMechanism implements ILinearMechanism {
     private final Drivetrain drivetrain;
     private final VoltageSensor vs;
 
+    /* real robot
     public static double KS = 0.12338;
     public static double KV = 0.017618;
     public static double KA = 0.0042431;
@@ -30,6 +31,16 @@ public class LateralDriveMechanism implements ILinearMechanism {
     public static double STOP_T_TOL = 0.6;
     public static double STOP_X_TOL = 0.32;
     public static double MAX_JERK = 70000;
+     */
+
+    public static double KS = 0.12338;
+    public static double KV = 0.017618;
+    public static double KA = 0.0042431;
+    public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
+    public static double STOP_ACCEL_MULT = 0.6;
+    public static double STOP_T_TOL = 0.6;
+    public static double STOP_X_TOL = 0.32;
+    public static double MAX_JERK = 7000;
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(

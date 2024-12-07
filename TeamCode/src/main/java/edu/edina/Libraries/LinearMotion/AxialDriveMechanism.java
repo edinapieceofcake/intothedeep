@@ -22,6 +22,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
     private final Drivetrain drivetrain;
     private final VoltageSensor vs;
 
+    /* real robot
     public static double KS = 0.066229;
     public static double KV = 0.015638;
     public static double KA = 0.0025;
@@ -30,6 +31,17 @@ public class AxialDriveMechanism implements ILinearMechanism {
     public static double STOP_T_TOL = 0.45;
     public static double STOP_X_TOL = 0.3;
     public static double MAX_JERK = 60000;
+     */
+
+    /* test robot */
+    public static double KS = 8.794e-2;
+    public static double KV = 1.6354e-2;
+    public static double KA = 3.3956e-3;
+    public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
+    public static double STOP_ACCEL_MULT = 0.3;
+    public static double STOP_T_TOL = 0.45;
+    public static double STOP_X_TOL = 0.3;
+    public static double MAX_JERK = 6000;
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(

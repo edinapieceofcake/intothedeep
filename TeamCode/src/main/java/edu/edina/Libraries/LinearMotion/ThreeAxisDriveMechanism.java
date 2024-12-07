@@ -10,7 +10,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.FieldToRobot;
@@ -19,9 +18,10 @@ import kotlin.NotImplementedError;
 
 @Config
 public class ThreeAxisDriveMechanism {
-    private static final boolean LOG = false;
+    private static final boolean LOG = true;
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
+    public static double ROTATIONAL_MULT = 0.7;
 
     private final Destination destination;
     private final Odometry odometry;
@@ -30,6 +30,7 @@ public class ThreeAxisDriveMechanism {
     private Pose2d robotRelVel;
     private final LinearMotionController axialCon, lateralCon, yawCon;
     private double axialPower, lateralPower, rotationalPower;
+    private Pose2d stopPose;
 
     public ThreeAxisDriveMechanism(DrivingRobotHardware hw, Destination destination) {
         drivetrain = hw.getDrivetrain();
@@ -45,12 +46,20 @@ public class ThreeAxisDriveMechanism {
         yawCon = new LinearMotionController(rotation);
 
         this.destination = destination;
+
+        stopPose = new Pose2d(new Vector2d(0, 0), 0);
+    }
+
+    public Pose2d getEstStopPose() {
+        return stopPose;
     }
 
     public void update() {
         odometry.update();
         Pose2d pose = odometry.getPoseEstimate();
         PoseVelocity2d vel = odometry.getVelocityEstimate();
+
+        updateStopPose(pose, vel);
 
         // set pursuit
 
@@ -85,6 +94,10 @@ public class ThreeAxisDriveMechanism {
             RobotLog.ii(TAG, "drive power: axial=%.3f, lateral=%.3f, yaw=%.3f",
                     axialPower, lateralPower, rotationalPower);
         }
+    }
+
+    private void updateStopPose(Pose2d pose, PoseVelocity2d vel) {
+        stopPose = pose;
     }
 
     public class AxialMechanism implements ILinearMechanism {
@@ -134,7 +147,7 @@ public class ThreeAxisDriveMechanism {
     public class RotationalMechanism implements ILinearMechanism {
         @Override
         public void setPower(double power) {
-            rotationalPower = power;
+            rotationalPower = -power * ROTATIONAL_MULT;
         }
 
         @Override
