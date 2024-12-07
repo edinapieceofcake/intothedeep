@@ -9,8 +9,6 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -18,7 +16,6 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.SparkFunOTOS;
 import edu.edina.Libraries.Robot.WaitForTime;
 import edu.edina.Libraries.Robot.WaitForHardware;
 
@@ -398,7 +395,8 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct an action.
             Action action = new SequentialAction(
-					new InstantAction(() -> robotHardware.lowerWrist()),
+					new InstantAction(() -> robotHardware.setWristHighChamberHoldPosition()),
+					new InstantAction(() -> robotHardware.swivelSetClip()),
 					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false),
 					new WaitForTime(500),
 					scoreSpecimen(driveFromChamberToScore, robotHardware),
@@ -418,8 +416,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct a score specimen action.
 			Action action = new ParallelAction(
-					new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
-					new InstantAction(() -> robotHardware.swivelSetClip()),
+					new InstantAction(() -> robotHardware.setWristHighChamberClipPosition()),
 					backup,
 					new SequentialAction(
 							new WaitForTime(SCORE_DELAY),

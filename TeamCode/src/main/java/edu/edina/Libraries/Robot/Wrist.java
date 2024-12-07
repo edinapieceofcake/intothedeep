@@ -14,7 +14,8 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.03;
 
-    public static double HIGH_CHAMBER_SCORE_POSITION = 0.1;
+    public static double HIGH_CHAMBER_HOLD_POSITION = 0.52;
+    public static double HIGH_CHAMBER_CLIP_POSITION = 0.5;
 
     public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
@@ -107,12 +108,11 @@ public class Wrist {
         up = true;
     }
 
-    public void scoreHighChamber() {
-        servo.setPosition(HIGH_CHAMBER_SCORE_POSITION);
+    public void setHighChamberHoldPosition() {
+        servo.setPosition(HIGH_CHAMBER_HOLD_POSITION);
     }
-
-    public void scoreLowChamber() {
-        servo.setPosition(LOW_CHAMBER_SCORE_POSITION);
+    public void setHighChamberClipPosition() {
+        servo.setPosition(HIGH_CHAMBER_CLIP_POSITION);
     }
 
 }

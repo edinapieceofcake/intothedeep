@@ -4,6 +4,7 @@ import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSIO
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -81,6 +82,9 @@ public class TeleOpMain extends LinearOpMode {
 
         // Lowers the wrist.
         robotHardware.lowerWrist();
+
+        // Resets the swivel.
+        robotHardware.swivelSetHorizontal();
 
         // Get current and previous gamepads.
         currentGamepad = new Gamepad();
@@ -258,6 +262,9 @@ public class TeleOpMain extends LinearOpMode {
             // Raise the wrist.
             robotHardware.raiseWrist();
 
+            // Resets the swivel.
+            robotHardware.swivelSetHorizontal();
+
             // Move the arm to the ground position.
             robotHardware.setArmGroundPosition();
 
@@ -321,8 +328,11 @@ public class TeleOpMain extends LinearOpMode {
             // Otherwise (if the arm is not in the submersible)...
             else {
 
-                // Lower the wrist.
-                robotHardware.lowerWrist();
+                // Set the wrist to high chamber hold position.
+                robotHardware.setWristHighChamberHoldPosition();
+
+                // Set the swivel to clip position.
+                robotHardware.swivelSetClip();
 
                 // Move the arm to the high chamber position.
                 robotHardware.setArmHighChamberPosition();

@@ -26,16 +26,16 @@ public class Arm {
     public static double INTEGRAL = 0;
 
     // Initial degrees below horizontal (determined experimentally)
-    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 26;
+    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 15;
 
     // Low basket position
     public static int LOW_BASKET_POSITION = 2700;
 
     // Maximum position
-    public static int MAXIMUM_POSITION = 6000;
+    public static int MAXIMUM_POSITION = 5000;
 
     // Minimum position
-    public static int MINIMUM_POSITION = -200;
+    public static int MINIMUM_POSITION = 0;
 
     // Ground position
     public static int GROUND_POSITION = MINIMUM_POSITION;
@@ -53,7 +53,7 @@ public class Arm {
     public static double REZEROING_POWER = -0.3;
 
     // Submersible position
-    public static int SUBMERSIBLE_POSITION = 4700;
+    public static int SUBMERSIBLE_POSITION = 4400;
 
     // Submersible position threshold
     public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;

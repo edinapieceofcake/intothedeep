@@ -667,8 +667,11 @@ public class RobotHardware {
 
     }
 
-    public void moveWristToHighChamberScore() {
-        wrist.scoreHighChamber();
+    public void setWristHighChamberHoldPosition() {
+        wrist.setHighChamberHoldPosition();
+    }
+    public void setWristHighChamberClipPosition() {
+        wrist.setHighChamberClipPosition();
     }
 
     public BoundingBoxFailsafe getFailsafe() {
