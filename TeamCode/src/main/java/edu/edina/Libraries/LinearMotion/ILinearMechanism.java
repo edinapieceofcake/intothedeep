@@ -14,4 +14,3 @@ public interface ILinearMechanism {
 
     LinearMechanismSettings getSettings();
 }
-

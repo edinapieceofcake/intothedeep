@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -22,42 +23,28 @@ public class ThreeAxisDriveMechanism {
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
 
+    private final Destination destination;
     private final Odometry odometry;
     private final Drivetrain drivetrain;
     private final VoltageSensor vs;
-    private Vector2d robotRelVel;
-    private PurePursuit purePursuit;
-    private final LinearMotionController axialCon, lateralCon /* yawCom */;
+    private Pose2d robotRelVel;
+    private final LinearMotionController axialCon, lateralCon, yawCon;
     private double axialPower, lateralPower, rotationalPower;
-    private double pursuitRadius;
 
-    public ThreeAxisDriveMechanism(DrivingRobotHardware hw) {
+    public ThreeAxisDriveMechanism(DrivingRobotHardware hw, Destination destination) {
         drivetrain = hw.getDrivetrain();
         odometry = hw.getOdometry();
         vs = hw.getVoltageSensor();
 
         AxialMechanism axial = new AxialMechanism();
         LateralMechanism lateral = new LateralMechanism();
+        RotationalMechanism rotation = new RotationalMechanism();
 
         axialCon = new LinearMotionController(axial);
         lateralCon = new LinearMotionController(lateral);
+        yawCon = new LinearMotionController(rotation);
 
-        pursuitRadius = 6;
-    }
-
-    public void setPursuitRadius(double radius) {
-        pursuitRadius = radius;
-    }
-
-    public double getPursuitRadius() {
-        return pursuitRadius;
-    }
-
-    public void setPath(Vector2d[] path, boolean closed) {
-        purePursuit = new PurePursuit(path, closed);
-
-        if (LOG)
-            RobotLog.ii(TAG, "setPath to %s", purePursuit);
+        this.destination = destination;
     }
 
     public void update() {
@@ -65,30 +52,26 @@ public class ThreeAxisDriveMechanism {
         Pose2d pose = odometry.getPoseEstimate();
         PoseVelocity2d vel = odometry.getVelocityEstimate();
 
-        if (purePursuit == null)
-            return;
-
         // set pursuit
 
-        purePursuit.nextPursuitPoint(pose.position, pursuitRadius);
-
-        Vector2d pursuit = purePursuit.getPursuitPoint();
+        Vector2d pursuit = destination.getDestination(pose);
         Vector2d robotRelPursuitPoint = FieldToRobot.toRobotRel(pose, pursuit);
+        Rotation2d pursuitHeading = destination.heading(pose);
 
         axialCon.setTarget(robotRelPursuitPoint.x);
         lateralCon.setTarget(robotRelPursuitPoint.y);
-        // yawCon.setTarget();
+        yawCon.setTarget(Math.toDegrees(pursuitHeading.toDouble()));
 
         // calculate velocities
         Vector2d fieldVel = vel.linearVel;
-        robotRelVel = FieldToRobot.toRobotRel(pose, fieldVel);
+        robotRelVel = new Pose2d(FieldToRobot.toRobotRel(pose, fieldVel), vel.angVel);
 
         // use the LinearMotionController to calculate powers
         axialCon.run();
         lateralCon.run();
-        // yawCon.run();
+        yawCon.run();
 
-        drivetrain.update(axialPower, lateralPower, 0*rotationalPower);
+        drivetrain.update(axialPower, lateralPower, rotationalPower);
 
         if (LOG) {
             RobotLog.ii(TAG, "pursuit point=(%.1f, %.1f), robot rel=(%.1f, %.1f)",
@@ -97,7 +80,7 @@ public class ThreeAxisDriveMechanism {
 
             RobotLog.ii(TAG, "linear velocity=(%.1f, %.1f), robot rel=(%.1f, %.1f)",
                     fieldVel.x, fieldVel.y,
-                    robotRelVel.x, robotRelVel.y);
+                    robotRelVel.position.x, robotRelVel.position.y);
 
             RobotLog.ii(TAG, "drive power: axial=%.3f, lateral=%.3f, yaw=%.3f",
                     axialPower, lateralPower, rotationalPower);
@@ -117,7 +100,7 @@ public class ThreeAxisDriveMechanism {
 
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
-            return new DualNum<Time>(new double[]{0, robotRelVel.x});
+            return new DualNum<Time>(new double[]{0, robotRelVel.position.x});
         }
 
         @Override
@@ -139,7 +122,7 @@ public class ThreeAxisDriveMechanism {
 
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
-            return new DualNum<Time>(new double[]{0, robotRelVel.y});
+            return new DualNum<Time>(new double[]{0, robotRelVel.position.y});
         }
 
         @Override
@@ -161,7 +144,7 @@ public class ThreeAxisDriveMechanism {
 
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
-            throw new NotImplementedError();
+            return new DualNum<Time>(new double[]{0, Math.toDegrees(robotRelVel.heading.toDouble())});
         }
 
         @Override
