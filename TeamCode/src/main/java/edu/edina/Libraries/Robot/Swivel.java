@@ -9,16 +9,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // This represents a wrist.
 @Config
 public class Swivel {
-    public static double SWIVEL_SERVO_TRAVEL_TIME = 2.5;
+    public static double SWIVEL_SERVO_TRAVEL_TIME = 1;
 
     // Horizontal (BASED ON CLAW DIRECTION) position
-    public static double HORIZONTAL_POSITION = 0;
+    public static double HORIZONTAL_POSITION = 0.42;
 
     // Vertical (BASED ON CLAW DIRECTION) position
-    public static double VERTICAL_POSITION = 0;
+    public static double VERTICAL_POSITION = 0.14;
 
     // Clip (BASED ON CLAW DIRECTION) position
-    public static double CLIP_POSITION = 0;
+    public static double CLIP_POSITION = 1;
 
     // Servo
     private final TrackingServo servo;
@@ -30,7 +30,7 @@ public class Swivel {
 
     // Initializes this.
     public Swivel(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.servo = new TrackingServo(hardwareMap.get(Servo.class, "wrist_left"),
+        this.servo = new TrackingServo(hardwareMap.get(Servo.class, "swivel"),
                 SWIVEL_SERVO_TRAVEL_TIME);
         this.telemetry = telemetry;
     }

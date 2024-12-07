@@ -12,14 +12,14 @@ public class Wrist {
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
     // Down position
-    public static double DOWN_POSITION = 0.8;
+    public static double DOWN_POSITION = 0.03;
 
     public static double HIGH_CHAMBER_SCORE_POSITION = 0.1;
 
     public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
     // Up position
-    public static double UP_POSITION = 0.615;
+    public static double UP_POSITION = 0.6;
 
     // Init position
     public static double INITIALIZE_POSITION = 0.47;
@@ -34,7 +34,7 @@ public class Wrist {
 
     // Initializes this.
     public Wrist(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.servo = new TrackingServo(hardwareMap.get(Servo.class, "wrist_left"),
+        this.servo = new TrackingServo(hardwareMap.get(Servo.class, "wrist"),
                 WRIST_SERVO_TRAVEL_TIME);
         this.telemetry = telemetry;
     }
