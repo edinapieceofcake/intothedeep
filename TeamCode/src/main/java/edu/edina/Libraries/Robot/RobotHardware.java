@@ -209,6 +209,14 @@ public class RobotHardware {
 
     }
 
+    // Sets the wrist to wall position.
+    public void setWristWallPosition() {
+
+        // Sets the wrist to wall position.
+        wrist.setWallPosition();
+
+    }
+
     // Lowers the wrist.
     public void lowerWrist() {
 
@@ -551,6 +559,17 @@ public class RobotHardware {
 
         // Construct an action to move the arm to the high chamber position.
         Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, true);
+
+        // Run the action.
+        runningActions.add(action);
+
+    }
+
+    // Moves the arm to the wall position.
+    public void setArmWallPosition() {
+
+        // Construct an action to move the arm to the wall position.
+        Action action = new MoveArm(this, Arm.WALL_POSITION, true);
 
         // Run the action.
         runningActions.add(action);

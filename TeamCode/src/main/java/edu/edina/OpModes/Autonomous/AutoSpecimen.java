@@ -420,8 +420,7 @@ public class AutoSpecimen extends LinearOpMode {
 					backup,
 					new SequentialAction(
 							new WaitForTime(SCORE_DELAY),
-							new InstantAction(() -> robotHardware.openClaw()),
-							new InstantAction(() -> robotHardware.swivelSetHorizontal())
+							new InstantAction(() -> robotHardware.openClaw())
 					)
 			);
 

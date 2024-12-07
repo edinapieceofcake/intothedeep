@@ -187,6 +187,29 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // If the user pressed y...
+        if (currentGamepad.y && !previousGamepad.y) {
+
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
+            // Set the wrist to wall position.
+            robotHardware.setWristWallPosition();
+
+            // Resets the swivel.
+            robotHardware.swivelSetHorizontal();
+
+            // Move the arm to the wall position.
+            robotHardware.setArmWallPosition();
+
+            // Move the lift to the ground position
+            robotHardware.setLiftGroundPosition();
+
+            // Fully retract the slide.
+            robotHardware.setMinimumExtension();
+
+        }
+
     }
 
     // Handles normal mode.

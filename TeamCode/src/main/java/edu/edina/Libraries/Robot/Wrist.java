@@ -14,8 +14,8 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.03;
 
-    public static double HIGH_CHAMBER_HOLD_POSITION = 0.52;
-    public static double HIGH_CHAMBER_CLIP_POSITION = 0.5;
+    public static double HIGH_CHAMBER_HOLD_POSITION = 0.49;
+    public static double HIGH_CHAMBER_CLIP_POSITION = 0.7;
 
     public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
@@ -24,6 +24,9 @@ public class Wrist {
 
     // Init position
     public static double INITIALIZE_POSITION = 0.47;
+
+    // Wall position
+    public static double WALL_POSITION = 0.3;
 
     // Servo
     private final TrackingServo servo;
@@ -103,6 +106,16 @@ public class Wrist {
 
         // Raise the wrist.
         servo.setPosition(INITIALIZE_POSITION);
+
+        // Remember that the wrist is up.
+        up = true;
+    }
+
+    // Set the wrist to wall position.
+    public void setWallPosition() {
+
+        // Sets the wrist to wall position.
+        servo.setPosition(WALL_POSITION);
 
         // Remember that the wrist is up.
         up = true;
