@@ -83,6 +83,9 @@ public class ThreeAxisDriveMechanism {
         drivetrain.update(axialPower, lateralPower, rotationalPower);
 
         if (LOG) {
+            RobotLog.ii(TAG, "pose=(%.1f, %.1f, %.1f)", pose.position.x, pose.position.y,
+                    Math.toDegrees(pose.heading.toDouble()));
+
             RobotLog.ii(TAG, "pursuit point=(%.1f, %.1f), robot rel=(%.1f, %.1f)",
                     pursuit.x, pursuit.y,
                     robotRelPursuitPoint.x, robotRelPursuitPoint.y);
@@ -147,7 +150,7 @@ public class ThreeAxisDriveMechanism {
     public class RotationalMechanism implements ILinearMechanism {
         @Override
         public void setPower(double power) {
-            rotationalPower = -power * ROTATIONAL_MULT;
+            rotationalPower = power * ROTATIONAL_MULT;
         }
 
         @Override

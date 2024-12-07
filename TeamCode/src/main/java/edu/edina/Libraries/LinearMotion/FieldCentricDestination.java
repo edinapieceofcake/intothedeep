@@ -14,7 +14,7 @@ public class FieldCentricDestination implements Destination {
     public static double
             Y_MULT = 5,
             X_MULT = 5,
-            H_MULT = 5;
+            H_MULT = 25;
 
     public FieldCentricDestination() {
         stopPose = new Pose2d(new Vector2d(0, 0), 0);
