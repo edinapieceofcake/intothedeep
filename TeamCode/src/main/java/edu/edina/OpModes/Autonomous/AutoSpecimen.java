@@ -281,27 +281,47 @@ public class AutoSpecimen extends LinearOpMode {
 					driveToSpikeMarkTransition1,
 					driveToSpikeMarkTransition2,
 					driveToSpikeMark1A,
+					// deliver at human player
 					driveToHumanPlayer1,
 					driveToSpikeMark1B,
 					driveToSpikeMark2A,
+					// deliver at human player
 					driveToHumanPlayer2,
 					driveToSpikeMark2B,
 					driveToSpikeMark3A,
+					// deliver at human player
 					driveToHumanPlayer3,
 					driveToTransition1,
 					driveToTransition2,
 					driveTohumanPlayerPickup,
+					// grab the specimen from wall
+					grabSpecimenFromWall(),
 					driveTofirstScore,
+					// score the 2nd specimen
+					scoreSpecimenAndLower(driveFromChamberToScore),
 					driveFromFirstScoreToHumanPlayerPickup,
+					// grab the specimen from wall
+					grabSpecimenFromWall(),
 					driveToSecondScore,
-					driveToSecondScore,
+				//	driveToSecondScore,
+					// score the 3rd specimen
+					scoreSpecimenAndLower(driveFromChamberToScore),
 					driveFromSecondScoreToHumanPlayerPickup,
+					// grab the specimen from wall
+					grabSpecimenFromWall(),
 					driveToThirdScore,
+					// score the 4th specimen
+					scoreSpecimenAndLower(driveFromChamberToScore),
 					driveFromThirdScoreToHumanPlayerPickup,
+					// grab the specimen from wall
+					grabSpecimenFromWall(),
 					driveToFourthScore,
-					driveFromFourthScoreToHumanPlayerPickup,
-					driveToFithScore,
-					driveFromFithScoreToHumanPlayerPickup
+					// score the 4th specimen
+					scoreSpecimenAndLower(driveFromChamberToScore),
+					// Park
+					driveFromFourthScoreToHumanPlayerPickup
+//					driveToFithScore,
+//					driveFromFithScoreToHumanPlayerPickup
 
 
 
@@ -428,6 +448,18 @@ public class AutoSpecimen extends LinearOpMode {
 			return action;
 
 		}
+		// Grab the Speciemn from the human player
+		public Action grabSpecimenFromWall() {
+			Action action = new ParallelAction(
+					new InstantAction(() -> robotHardware.clearActions()),
+					new InstantAction(() -> robotHardware.setWristWallPosition()),
+					new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+					new InstantAction(() -> robotHardware.setArmWallPosition()),
+					new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+					new InstantAction(() -> robotHardware.setMinimumExtension())
+			);
+			return action;
+	}
 
 		// Delivers a sample to a human player.
 		public Action deliverSampleToHumanPlayer() {
