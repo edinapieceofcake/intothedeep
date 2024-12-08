@@ -234,6 +234,14 @@ public class RobotHardware {
 
     }
 
+    // Angles the wrist.
+    public void angleWrist() {
+
+        // Angles the wrist.
+        wrist.angle();
+
+    }
+
     // Sets the swivel to horizontal.
     public void swivelSetHorizontal() {
 

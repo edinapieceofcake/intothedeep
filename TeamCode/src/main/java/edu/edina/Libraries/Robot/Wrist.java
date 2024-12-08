@@ -24,6 +24,9 @@ public class Wrist {
     // Up position
     public static double UP_POSITION = 0.6;
 
+    // Angle position
+    public static double ANGLE_POSITION = 0.08;
+
     // Init position
     public static double INITIALIZE_POSITION = 0.47;
 
@@ -98,6 +101,16 @@ public class Wrist {
 
         // Raise the wrist.
         servo.setPosition(UP_POSITION);
+
+        // Remember that the wrist is up.
+        up = true;
+    }
+
+    // Angles the wrist.
+    public void angle() {
+
+        // Raise the wrist.
+        servo.setPosition(ANGLE_POSITION);
 
         // Remember that the wrist is up.
         up = true;

@@ -41,6 +41,7 @@ public class TeleOpMain extends LinearOpMode {
     - a = rezero arm
     - x = rezero slide
     - b = rezero lift
+    - y = toggle wrist
     - the robot is never forced into turtle mode
 
     Submersible Controls (in normal mode toggled with dpad up, in debug mode always enabled)
@@ -140,6 +141,14 @@ public class TeleOpMain extends LinearOpMode {
 
         // Handle the submersible controls.
         handleSubmersibleControls();
+
+        // If the user pressed y...
+        if (currentGamepad.y && !previousGamepad.y) {
+
+            // Toggle wrist.
+            robotHardware.toggleWrist();
+
+        }
 
         // Arm rezeroing
         //////////////////////////////////////////////////////////////////////

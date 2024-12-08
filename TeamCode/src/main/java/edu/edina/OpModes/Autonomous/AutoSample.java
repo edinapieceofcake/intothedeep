@@ -31,12 +31,12 @@ public class AutoSample extends LinearOpMode {
     public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
 
     // First spike mark pose
-    public static double FIRST_SPIKE_MARK_X = -49;
-    public static double FIRST_SPIKE_MARK_Y = -36.5;
+    public static double FIRST_SPIKE_MARK_X = -48;
+    public static double FIRST_SPIKE_MARK_Y = -33;
     public static double FIRST_SPIKE_MARK_HEADING = 1.0 / 2 * Math.PI;
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = -60;
+    public static double SECOND_SPIKE_MARK_X = -58.5;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
@@ -46,8 +46,8 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_AND_A_HALF_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -57;
-    public static double THIRD_SPIKE_MARK_Y = -28;
+    public static double THIRD_SPIKE_MARK_X = -58.5;
+    public static double THIRD_SPIKE_MARK_Y = -26;
     public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
 
     // Duration in milliseconds to toggle the claw
@@ -78,8 +78,8 @@ public class AutoSample extends LinearOpMode {
         // Close the claw.
         robotHardware.closeClaw();
 
-        // Raise the wrist.
-        robotHardware.initializeWrist();
+        // Lower the wrist.
+        robotHardware.lowerWrist();
 
         // If stop is requested...
         if (isStopRequested()) {
@@ -162,9 +162,6 @@ public class AutoSample extends LinearOpMode {
         // Construct a main action.
         Action mainAction = new SequentialAction(
 
-                // Lower the wrist.
-                new InstantAction(() -> robotHardware.lowerWrist()),
-
                 // Score preloaded sample.
                 driveFromStartToBasket,
                 raiseAndScoreSample(),
@@ -184,7 +181,9 @@ public class AutoSample extends LinearOpMode {
                 driveFromSecondSpikeMarkToBasket,
                 raiseAndScoreSample(),
 
-                // Score second third mark sample.
+                // Score third mark sample.
+                new InstantAction(() -> robotHardware.angleWrist()),
+                new InstantAction(() -> robotHardware.toggleSwivel()),
                 driveFromBasketToThirdSpikeMark,
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
@@ -236,14 +235,18 @@ public class AutoSample extends LinearOpMode {
     public static Action raiseSampleAuto(RobotHardware robotHardware) {
 
         // Construct a raise and score sample action.
-        Action action = new ParallelAction(
-                new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
-                new InstantAction(() -> robotHardware.setHighBasketExtension()),
-                new SequentialAction(
-                        new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
-                )
-        );
+        Action action =
+            new SequentialAction(
+                new ParallelAction(
+                    new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                    new InstantAction(() -> robotHardware.setHighBasketExtension()),
+                    new SequentialAction(
+                            new WaitForTime(500),
+                            new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                    )
+                ),
+                new InstantAction(() -> robotHardware.setWristHighBasketPosition())
+            );
 
         return action;
 
@@ -270,17 +273,20 @@ public class AutoSample extends LinearOpMode {
 
         // Construct a score sample action.
         Action action = new SequentialAction(
-                new InstantAction(() -> robotHardware.openClaw()),
-                new WaitForTime(CLAW_MILLISECONDS),
-                new InstantAction(() -> robotHardware.lowerWrist()),
-                new WaitForTime(200),
-                new ParallelAction(
-                        new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
-                        new InstantAction(() -> robotHardware.swivelSetHorizontal()),
-                        new InstantAction(() -> robotHardware.setMinimumExtension()),
-                        new InstantAction(() -> robotHardware.setLiftGroundPosition())
-                ),
-                new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
+            new InstantAction(() -> robotHardware.openClaw()),
+            new WaitForTime(CLAW_MILLISECONDS),
+            new ParallelAction(
+                    new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
+                    new SequentialAction(
+                            new WaitForTime(200),
+                            new InstantAction(() -> robotHardware.setMinimumExtension()),
+                            new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+                            new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                            new WaitForTime(500),
+                            new InstantAction(() -> robotHardware.lowerWrist())
+                    )
+            ),
+            new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
         );
 
         // Return the action.
