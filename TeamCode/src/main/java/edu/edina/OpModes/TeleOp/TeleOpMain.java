@@ -30,22 +30,25 @@ public class TeleOpMain extends LinearOpMode {
     - a = toggle claw
     - x = chamber
     - y = basket
-    - b = submersible
+    - b = wall
     - right bumper = ground
+    - left bumper = toggle swivel
     - left trigger = hold for turtle
     - back = toggle ascend
-    - dpad up = increment arm
-    - dpad down = decrement arm
-    - dpad right = extend slide
-    - dpad left = retract slide
 
     Debug Mode (hold right trigger)
 
-    - y = wall
     - a = rezero arm
     - x = rezero slide
     - b = rezero lift
     - the robot is never forced into turtle mode
+
+    Submersible Controls (in normal mode toggled with dpad up, in debug mode always enabled)
+
+    - dpad up = increment arm
+    - dpad down = decrement arm
+    - dpad right = extend slide
+    - dpad left = retract slide
 
     */
 
@@ -132,8 +135,11 @@ public class TeleOpMain extends LinearOpMode {
     // Handles debug mode.
     private void handleDebugMode() {
 
-        // Set debugging to true
+        // Set debugging to true.
         robotHardware.setDebugging(true);
+
+        // Handle the submersible controls.
+        handleSubmersibleControls();
 
         // Arm rezeroing
         //////////////////////////////////////////////////////////////////////
@@ -192,29 +198,6 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // If the user pressed y...
-        if (currentGamepad.y && !previousGamepad.y) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
-            // Set the wrist to wall position.
-            robotHardware.setWristWallPosition();
-
-            // Resets the swivel.
-            robotHardware.swivelSetHorizontal();
-
-            // Move the arm to the wall position.
-            robotHardware.setArmWallPosition();
-
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
-
-            // Fully retract the slide.
-            robotHardware.setMinimumExtension();
-
-        }
-
     }
 
     // Handles normal mode.
@@ -248,8 +231,14 @@ public class TeleOpMain extends LinearOpMode {
         // Submersible
         //////////////////////////////////////////////////////////////////////
 
-        // If the user pressed b...
-        if (currentGamepad.b && !previousGamepad.b) {
+        if (robotHardware.isArmNearSubmersiblePosition()) {
+
+            handleSubmersibleControls();
+
+        }
+
+        // If the user pressed dpad up...
+        else if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -378,6 +367,32 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Wall
+        //////////////////////////////////////////////////////////////////////
+
+        // If user pressed b...
+        if (currentGamepad.b && !previousGamepad.b) {
+
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
+            // Set the wrist to wall position.
+            robotHardware.setWristWallPosition();
+
+            // Resets the swivel.
+            robotHardware.swivelSetHorizontal();
+
+            // Move the arm to the wall position.
+            robotHardware.setArmWallPosition();
+
+            // Move the lift to the ground position
+            robotHardware.setLiftGroundPosition();
+
+            // Fully retract the slide.
+            robotHardware.setMinimumExtension();
+
+        }
+
         // Ascend
         //////////////////////////////////////////////////////////////////////
 
@@ -413,6 +428,21 @@ public class TeleOpMain extends LinearOpMode {
 
         // Set turtle mode.
         robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
+
+        // Toggle swivel
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user tapped left bumper...
+        if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+
+            // Toggle the swivel.
+            robotHardware.toggleSwivel();
+
+        }
+
+    }
+
+    private void handleSubmersibleControls() {
 
         // Decrement arm
         //////////////////////////////////////////////////////////////////////
@@ -483,17 +513,6 @@ public class TeleOpMain extends LinearOpMode {
 
             // Retract the slide.
             robotHardware.retractSlide();
-
-        }
-
-        // Toggle swivel
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user tapped right stick...
-        if (currentGamepad.right_stick_button && !previousGamepad.right_stick_button) {
-
-            // Toggle the swivel.
-            robotHardware.toggleSwivel();
 
         }
 
