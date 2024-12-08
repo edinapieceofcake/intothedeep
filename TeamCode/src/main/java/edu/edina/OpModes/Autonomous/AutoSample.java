@@ -276,6 +276,7 @@ public class AutoSample extends LinearOpMode {
                 new WaitForTime(200),
                 new ParallelAction(
                         new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
+                        new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                         new InstantAction(() -> robotHardware.setLiftGroundPosition())
                 ),
