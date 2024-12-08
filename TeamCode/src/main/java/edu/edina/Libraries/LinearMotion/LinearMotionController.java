@@ -1,5 +1,7 @@
 package edu.edina.Libraries.LinearMotion;
 
+import android.annotation.SuppressLint;
+
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,12 +17,15 @@ public class LinearMotionController {
     private final String tag;
     private double target, tPrev;
     private DualNum<Time> u;
+    private double maxVel;
 
     public LinearMotionController(ILinearMechanism linearMech) {
         this(linearMech, null);
     }
 
     public LinearMotionController(ILinearMechanism linearMech, IAmbientForce ambForce) {
+        maxVel = 1e99;
+
         this.ambForce = ambForce;
         this.linearMech = linearMech;
         this.s = linearMech.getSettings();
@@ -59,6 +64,7 @@ public class LinearMotionController {
     // x: current position
     // v: current velocity, assumed from back emf, will be countered up to power limit
     // a: ambient acceleration, will be countered up to power limit
+    @SuppressLint("DefaultLocale")
     public double power(double t, double x, double v, double a) {
         double dt = t - tPrev;
         double dist = getDist(x);
@@ -69,9 +75,12 @@ public class LinearMotionController {
         boolean coastToStop = Math.abs(coast.x - target) < s.stopXTol
                 && coast.t - t < s.stopTTol;
         boolean deccelToStop = between(target, xStop1, x);
+        boolean overMaxVel = (v > 0 && v > maxVel) || (v < 0 && v < maxVel);
 
+        String ls = "";
         if (LOG)
-            RobotLog.ii(tag, "x=%.2f target=%.2f xStop1=%.2f coast=%.2f", x, target, xStop1, coast.x);
+            ls += String.format("%s, x=%.2f target=%.2f xStop=%.2f coast=%.2f",
+                    s.name, x, target, xStop1, coast.x);
 
         double counterAccel = -a;
 
@@ -80,12 +89,19 @@ public class LinearMotionController {
             nextAccel = -v * v / (2 * dist);
 
             if (LOG)
-                RobotLog.ii(tag, "decelerating, nominal deccel=%.2f", nextAccel);
+                ls += String.format(" nominal deccel=%.2f", nextAccel);
         } else {
             nextAccel = sign(dist) * s.nominalAccel;
 
+            if (overMaxVel) {
+                nextAccel = 0;
+
+                if (LOG)
+                    ls += " max velocity";
+            }
+
             if (LOG)
-                RobotLog.ii(tag, "accelerating, nominal accel=%.2f", nextAccel);
+                ls += String.format(" nominal accel=%.2f", nextAccel);
         }
 
         double power;
@@ -101,19 +117,31 @@ public class LinearMotionController {
             power = s.ka * (nextAccel + counterAccel) + s.kv * v + s.ks * sg;
 
             if (LOG) {
-                RobotLog.ii(tag, "a=%.2f v=%.2f sg=%.2f", nextAccel + counterAccel, v, sg);
-                RobotLog.ii(tag, "power=%.2f", power);
+                ls += String.format(" a=%.2f v=%.2f sg=%.2f", nextAccel + counterAccel, v, sg);
             }
         } else {
             power = 0;
 
             if (LOG)
-                RobotLog.ii(tag, "coasting to a stop");
+                ls += String.format(" coasting to a stop");
+        }
+
+        if (LOG) {
+            ls += String.format(" power=%.2f", power);
+            RobotLog.ii(tag, ls);
         }
 
         tPrev = t;
 
         return power;
+    }
+
+    public double getMaxVelocity() {
+        return maxVel;
+    }
+
+    public void setMaxVelocity(double maxVelocity) {
+        maxVel = maxVelocity;
     }
 
     private double getDist(double x) {

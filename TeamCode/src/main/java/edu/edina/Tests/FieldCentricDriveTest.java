@@ -1,5 +1,6 @@
 package edu.edina.Tests;
 
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -27,13 +28,9 @@ public class FieldCentricDriveTest extends LinearOpMode {
             double x = -gamepad1.left_stick_y;
             double h = -gamepad1.right_stick_x;
 
-            if (Math.abs(y) > stickDeadzone || Math.abs(x) > stickDeadzone || Math.abs(h) > stickDeadzone) {
-                RobotLog.ii("FieldCentricDriveTest", "set rel dest");
-                destination.setRelDest(y, x, h);
-            } else if (!destination.isStopping()) {
-                RobotLog.ii("FieldCentricDriveTest", "stopping");
-                destination.setStopPose(driveMechanism.getEstStopPose());
-            }
+            RobotLog.ii("FieldCentricDriveTest", "set rel dest");
+            driveMechanism.setMaxVelVec(new Vector2d(x, y));
+            destination.setRelDest(y, x, h);
 
             driveMechanism.update();
         }
