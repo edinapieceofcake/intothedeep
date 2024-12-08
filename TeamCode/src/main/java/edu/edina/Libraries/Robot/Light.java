@@ -30,7 +30,7 @@ public class Light {
         double x;
 
         double blueTime = Math.sin(t.seconds() * 1.5);
-        double a = 1/40.0;
+        double a = 1 / 40.0;
         double greenTime = t.seconds() * 0.5;
         double greenFrequency = 1;
 
@@ -56,11 +56,12 @@ public class Light {
     }
 
     public void setSampleColor() {
-        sampleColor = sampleSensor.detectSampleColor();
+        if (sampleSensor != null)
+            sampleColor = sampleSensor.detectSampleColor();
     }
 
     public void setSampleColor(SampleColor sampleColor) {
-        this.sampleColor=sampleColor;
+        this.sampleColor = sampleColor;
     }
 
     public void showSample() {

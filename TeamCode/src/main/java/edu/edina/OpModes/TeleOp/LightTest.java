@@ -17,7 +17,7 @@ public class LightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleSensor sampleSensor = new SampleSensor(hardwareMap);
+        SampleSensor sampleSensor = null; // new SampleSensor(hardwareMap);
         light = new Light(hardwareMap, sampleSensor);
 
         waitForStart();
