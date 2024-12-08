@@ -450,7 +450,7 @@ public class AutoSpecimen extends LinearOpMode {
 		}
 		// Grab the Speciemn from the human player
 		public Action grabSpecimenFromWall() {
-			Action action = new ParallelAction(
+			Action action = new SequentialAction(
 					new InstantAction(() -> robotHardware.clearActions()),
 					new InstantAction(() -> robotHardware.setWristWallPosition()),
 					new InstantAction(() -> robotHardware.swivelSetHorizontal()),
