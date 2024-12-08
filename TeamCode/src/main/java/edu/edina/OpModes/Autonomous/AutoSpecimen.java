@@ -316,7 +316,7 @@ public class AutoSpecimen extends LinearOpMode {
 					// grab the specimen from wall
 					grabSpecimenFromWall(),
 					driveToFourthScore,
-					// score the 4th specimen
+					// score the 5th specimen
 					scoreSpecimenAndLower(driveFromChamberToScore),
 					// Park
 					driveFromFourthScoreToHumanPlayerPickup

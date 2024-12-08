@@ -83,6 +83,7 @@ public class RobotHardware {
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
     private boolean allowManualDriving = true;
+    private boolean debugging;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -278,7 +279,7 @@ public class RobotHardware {
             lowerWrist();
         */
 
-        drivetrain.setAutoTurtleMode(lift.isRaised());
+        drivetrain.setAutoTurtleMode(lift.isRaised() && !debugging);
 
     }
 
@@ -946,6 +947,11 @@ public class RobotHardware {
         // Enable manual driving.
         allowManualDriving = true;
 
+    }
+
+    // Sets debugging.
+    public void setDebugging(boolean debugging) {
+        this.debugging = debugging;
     }
 
 }

@@ -41,9 +41,11 @@ public class TeleOpMain extends LinearOpMode {
 
     Debug Mode (hold right trigger)
 
+    - y = wall
     - a = rezero arm
     - x = rezero slide
     - b = rezero lift
+    - the robot is never forced into turtle mode
 
     */
 
@@ -130,6 +132,9 @@ public class TeleOpMain extends LinearOpMode {
     // Handles debug mode.
     private void handleDebugMode() {
 
+        // Set debugging to true
+        robotHardware.setDebugging(true);
+
         // Arm rezeroing
         //////////////////////////////////////////////////////////////////////
 
@@ -214,6 +219,9 @@ public class TeleOpMain extends LinearOpMode {
 
     // Handles normal mode.
     private void handleNormalMode() {
+
+        // Set debugging to false
+        robotHardware.setDebugging(false);
 
         // Stop rezeroing.
         //////////////////////////////////////////////////////////////////////
