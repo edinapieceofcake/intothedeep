@@ -15,7 +15,7 @@ public class Wrist {
     public static double DOWN_POSITION = 0.03;
 
     public static double HIGH_CHAMBER_HOLD_POSITION = 0.58;
-    public static double HIGH_CHAMBER_CLIP_POSITION = 0.7;
+    public static double HIGH_CHAMBER_CLIP_POSITION = 0.85;
 
     public static double HIGH_BASKET_POSITION = 0.5;
 
