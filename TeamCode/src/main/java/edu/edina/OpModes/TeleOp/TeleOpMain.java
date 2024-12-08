@@ -92,15 +92,15 @@ public class TeleOpMain extends LinearOpMode {
         currentGamepad = new Gamepad();
         previousGamepad = new Gamepad();
 
+        // Reverse the robot.
+        robotHardware.setReversed(true);
+
         // While the op mode is active...
         while (opModeIsActive()) {
 
             // Update the gamepads.
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
-
-            // Reverse the robot if appropriate.
-            robotHardware.setReversed(!robotHardware.isArmInGroundPosition());
 
             // If the right trigger is down...
             if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
