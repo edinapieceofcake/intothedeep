@@ -14,7 +14,7 @@ public class MoveArm implements Action {
     public static int FAST_INCREMENT = 200;
 
     // Slow increment
-    public static int SLOW_INCREMENT = 50;
+    public static int SLOW_INCREMENT = 75;
 
     // Current position
     private int currentPosition;
