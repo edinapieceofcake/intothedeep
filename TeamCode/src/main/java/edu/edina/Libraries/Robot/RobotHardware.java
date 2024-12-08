@@ -253,8 +253,14 @@ public class RobotHardware {
     // Sets the swivel to clip.
     public void swivelSetClip() {
 
-        // Sets the swivel to clip.
-        swivel.setClip();
+        // Construct an action to set swivel to clip position after a delay.
+        Action action = new SequentialAction(
+            new WaitForTime(100),
+            new InstantAction(() -> swivel.setClip())
+        );
+
+        // Run the action.
+        runningActions.add(action);
 
     }
 

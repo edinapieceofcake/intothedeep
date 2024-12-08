@@ -65,7 +65,7 @@ public class Arm {
     public static int WALL_POSITION = 600;
 
     // High Chamber Position
-    public static int HIGH_CHAMBER_POSITION = 2500;
+    public static int HIGH_CHAMBER_POSITION = 2300;
 
     // Low Chamber Position
     public static int LOW_CHAMBER_POSITION = 4150;
