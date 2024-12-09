@@ -41,9 +41,11 @@ public class TeleOpMain extends LinearOpMode {
     - x = rezero slide
     - b = rezero lift
     - y = toggle wrist
-    - the robot is never forced into turtle mode
+    - robot is always fast in debug mode
 
-    Submersible Controls (in normal mode toggled with dpad up, in debug mode always enabled)
+    Submersible Controls
+    (in normal mode, toggled with dpad up)
+    (in debug mode, always enabled)
 
     - dpad up = increment arm
     - dpad down = decrement arm
