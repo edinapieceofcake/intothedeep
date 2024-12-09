@@ -81,6 +81,9 @@ public class AutoSample extends LinearOpMode {
         // Lower the wrist.
         robotHardware.lowerWrist();
 
+        // Resets the swivel.
+        robotHardware.swivelSetHorizontal();
+
         // If stop is requested...
         if (isStopRequested()) {
 

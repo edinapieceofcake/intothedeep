@@ -46,14 +46,14 @@ public class AutoSpecimen extends LinearOpMode {
 		public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(90);
 
 		// Second spike mark pose
-		public static double SECOND_SPIKE_MARK_A_X = 59;
+		public static double SECOND_SPIKE_MARK_A_X = 55;
 		public static double SECOND_SPIKE_MARK_A_Y = FIRST_SPIKE_MARK_A_Y;
 		public static double SECOND_SPIKE_MARK_B_X = SECOND_SPIKE_MARK_A_X;
 		public static double SECOND_SPIKE_MARK_B_Y = FIRST_SPIKE_MARK_B_Y;
 		public static double SECOND_SPIKE_MARK_HEADING = Math.toRadians(90);
 
 		// Third Spike Mark pose
-		public static double THIRD_SPIKE_MARK_X = 58;
+		public static double THIRD_SPIKE_MARK_X = 56.5;
 		public static double THIRD_SPIKE_MARK_Y = -25;
 		public static double HUMAN_PLAYER_X = 47;
 		public static double HUMAN_PLAYER_Y = -50;
@@ -95,7 +95,10 @@ public class AutoSpecimen extends LinearOpMode {
 			robotHardware.closeClaw();
 
 			// Raise the wrist.
-			robotHardware.initializeWrist();
+			robotHardware.raiseWrist();
+
+			// Resets the swivel.
+			robotHardware.swivelSetHorizontal();
 
 			// If stop is requested...
 			if (isStopRequested()) {
@@ -196,41 +199,41 @@ public class AutoSpecimen extends LinearOpMode {
 					.setTangent(Math.toRadians(90))
 					.splineToLinearHeading(spikeMark1, Math.toRadians(0))
 					.build();
-			Pose2d humanPlayer1 = new Pose2d(46,-55, Math.toRadians(90));
+			Pose2d humanPlayer1 = new Pose2d(46,-55, Math.toRadians(270));
 			Action driveToHumanPlayer1 = drive.actionBuilder(spikeMark1)
 					.strafeToLinearHeading(humanPlayer1.position, humanPlayer1.heading)
 					.build();
 			Action driveToSpikeMark1B = drive.actionBuilder(humanPlayer1)
 					.strafeToLinearHeading(spikeMark1.position, spikeMark1.heading)
 					.build();
-			Pose2d spikeMark2 = new Pose2d(57, -10, Math.toRadians(90));
+			Pose2d spikeMark2 = new Pose2d(57, -10, Math.toRadians(270));
 			Action driveToSpikeMark2A = drive.actionBuilder(spikeMark1)
 					.strafeToLinearHeading(spikeMark2.position, spikeMark2.heading)
 					.build();
-			Pose2d humanPlayer2 = new Pose2d(57, -55, Math.toRadians(90));
+			Pose2d humanPlayer2 = new Pose2d(57, -55, Math.toRadians(270));
 			Action driveToHumanPlayer2 = drive.actionBuilder(spikeMark2)
 					.strafeToLinearHeading(humanPlayer2.position, humanPlayer2.heading)
 					.build();
 			Action driveToSpikeMark2B = drive.actionBuilder(humanPlayer2)
 					.strafeToLinearHeading(spikeMark2.position, spikeMark2.heading)
 					.build();
-			Pose2d spikeMark3 = new Pose2d(61, -10, Math.toRadians(90));
+			Pose2d spikeMark3 = new Pose2d(61, -10, Math.toRadians(270));
 			Action driveToSpikeMark3A = drive.actionBuilder(spikeMark2)
 					.strafeToLinearHeading(spikeMark3.position, spikeMark3.heading)
 					.build();
-			Pose2d humanPlayer3 = new Pose2d(61, -55, Math.toRadians(90));
+			Pose2d humanPlayer3 = new Pose2d(61, -55, Math.toRadians(270));
 			Action driveToHumanPlayer3 = drive.actionBuilder(spikeMark3)
 					.strafeToLinearHeading(humanPlayer3.position, humanPlayer3.heading)
 					.build();
-			Pose2d humanPlayerTransSition1 = new Pose2d(61,-50,Math.toRadians(90));
+			Pose2d humanPlayerTransSition1 = new Pose2d(61,-50,Math.toRadians(270));
 			Action driveToTransition1 = drive.actionBuilder(humanPlayer3)
 					.strafeToLinearHeading(humanPlayerTransSition1.position, humanPlayerTransSition1.heading)
 					.build();
-			Pose2d humanPlayerTransSition2 = new Pose2d(55,-50,Math.toRadians(90));
+			Pose2d humanPlayerTransSition2 = new Pose2d(55,-50,Math.toRadians(270));
 			Action driveToTransition2 = drive.actionBuilder(humanPlayerTransSition1)
 					.strafeToLinearHeading(humanPlayerTransSition2.position, humanPlayerTransSition2.heading)
 					.build();
-			Pose2d humanPlayerPickup = new Pose2d(55,-55,Math.toRadians(90));
+			Pose2d humanPlayerPickup = new Pose2d(55,-55,Math.toRadians(270));
 			Action driveTohumanPlayerPickup = drive.actionBuilder(humanPlayerTransSition2)
 					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
 					.build();
