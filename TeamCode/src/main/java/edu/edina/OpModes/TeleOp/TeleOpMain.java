@@ -25,7 +25,6 @@ public class TeleOpMain extends LinearOpMode {
     Normal Mode
 
     - left stick = move robot
-    - right stick button = toggle swivel
     - right stick = rotate robot
     - a = toggle claw
     - x = chamber
