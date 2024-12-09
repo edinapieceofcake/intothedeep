@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 public class LinearMotionController {
-    private static final boolean LOG = false;
+    private static final boolean LOG = true;
 
     private final ILinearMechanism linearMech;
     private final IAmbientForce ambForce;
@@ -84,6 +84,11 @@ public class LinearMotionController {
 
         double counterAccel = -a;
 
+        if (overMaxVel) {
+            if (LOG)
+                ls += " max velocity";
+        }
+
         double nextAccel;
         if (deccelToStop) {
             nextAccel = -v * v / (2 * dist);
@@ -95,9 +100,6 @@ public class LinearMotionController {
 
             if (overMaxVel) {
                 nextAccel = 0;
-
-                if (LOG)
-                    ls += " max velocity";
             }
 
             if (LOG)

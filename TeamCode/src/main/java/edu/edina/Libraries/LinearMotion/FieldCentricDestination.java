@@ -17,6 +17,7 @@ public class FieldCentricDestination implements Destination {
             H_MULT = 25;
 
     public FieldCentricDestination() {
+        relDest = new Pose2d(new Vector2d(0, 0), 0);
         stopPose = new Pose2d(new Vector2d(0, 0), 0);
     }
 
@@ -26,18 +27,18 @@ public class FieldCentricDestination implements Destination {
 
     @Override
     public Vector2d getDestination(Pose2d pose2d) {
-        if (!stopping)
-            return new Vector2d(pose2d.position.x + relDest.position.x, pose2d.position.y + relDest.position.y);
-        else
-            return stopPose.position;
+//        if (!stopping)
+        return new Vector2d(pose2d.position.x + relDest.position.x, pose2d.position.y + relDest.position.y);
+//        else
+//            return stopPose.position;
     }
 
     @Override
     public Rotation2d heading(Pose2d pose2d) {
-        if (!stopping)
-            return Rotation2d.fromDouble(pose2d.heading.toDouble() + relDest.heading.toDouble());
-        else
-            return stopPose.heading;
+//        if (!stopping)
+        return Rotation2d.fromDouble(pose2d.heading.toDouble() + relDest.heading.toDouble());
+//        else
+//        return stopPose.heading;
     }
 
     public void setRelDest(double y, double x, double h) {

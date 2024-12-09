@@ -18,7 +18,7 @@ import kotlin.NotImplementedError;
 
 @Config
 public class ThreeAxisDriveMechanism {
-    private static final boolean LOG = true;
+    private static final boolean LOG = false;
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
     public static double ROTATIONAL_MULT = 0.7;

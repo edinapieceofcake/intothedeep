@@ -15,8 +15,6 @@ import edu.edina.Libraries.Robot.TestRobotHardware;
 public class FieldCentricDriveTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        double stickDeadzone = 0.02;
-
         DrivingRobotHardware hw = new TestRobotHardware(this);
         FieldCentricDestination destination = new FieldCentricDestination();
         ThreeAxisDriveMechanism driveMechanism = new ThreeAxisDriveMechanism(hw, destination);
@@ -30,7 +28,9 @@ public class FieldCentricDriveTest extends LinearOpMode {
 
             RobotLog.ii("FieldCentricDriveTest", "set rel dest");
             driveMechanism.setMaxVelVec(new Vector2d(x, y));
-            destination.setRelDest(y, x, h);
+
+            if (gamepad1.a)
+                destination.setRelDest(y, x, h);
 
             driveMechanism.update();
         }
