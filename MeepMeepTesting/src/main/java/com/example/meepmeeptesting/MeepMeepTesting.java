@@ -89,16 +89,28 @@ public class MeepMeepTesting {
                     // COPY HERE
                     // High Rung Position
                     .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
+                    //.strafeToLinearHeading(new Vector2d(35,-35), Math.toRadians(270))
+                    //.strafeToLinearHeading(new Vector2d(35,-35), Math.toRadians(270))
                     .setTangent(Math.toRadians(0))
-                    .splineToLinearHeading(new Pose2d(37,-24,Math.toRadians(270)), Math.toRadians(90))
-                    .setTangent(Math.toRadians(90))
-                    .splineToLinearHeading(new Pose2d(42,-12,Math.toRadians(270)), Math.toRadians(270))
+
+                    //.splineToLinearHeading(new Pose2d(37,-24,Math.toRadians(270)), Math.toRadians(90))
+                    //.splineTo(new Vector2d(37,-24), Math.toRadians(90))//, Math.toRadians(90))
+                    .splineToConstantHeading(new Vector2d(36,-24), Math.toRadians(90))//, Math.toRadians(90))
+
+                    //.setTangent(Math.toRadians(90))
+
+                    //.splineToLinearHeading(new Pose2d(42,-12,Math.toRadians(270)), Math.toRadians(270))
+                    .splineToConstantHeading(new Vector2d(42,-16), Math.toRadians(0)) //, Math.toRadians(270))
+
                     //.strafeToLinearHeading(new Vector2d(36,-35), Math.toRadians(270))
                     //.strafeToLinearHeading(new Vector2d(36,-15), Math.toRadians(270))
                     //.setTangent(Math.toRadians(90))
                     //.splineToLinearHeading(new Pose2d(46,-10, Math.toRadians(270)), Math.toRadians(0))
-                    .setTangent(Math.toRadians(270))
-                    .splineToLinearHeading(new Pose2d(48,-55,Math.toRadians(270)), Math.toRadians(270))
+                    //.setTangent(Math.toRadians(270))
+
+                    //.splineToLinearHeading(new Pose2d(48,-55,Math.toRadians(270)), Math.toRadians(270))
+                    .splineToConstantHeading(new Vector2d(48,-43), Math.toRadians(270))
+
                     //.strafeTo(new Vector2d(46,-55))
                     /*.strafeTo(new Vector2d(48,-10))
                     .strafeTo(new Vector2d(57,-10))
