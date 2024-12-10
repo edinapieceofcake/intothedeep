@@ -9,7 +9,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -202,30 +202,27 @@ public class AutoSpecimen extends LinearOpMode {
 					.strafeToLinearHeading(scorePose3.position, scorePose3.heading)
 					.build();*/
 
-			Vector2d spikeMark1AVector = new Vector2d(36, -24);
-			double spikeMark1ATangent = Math.toRadians(90);
+			Pose2d plowA = new Pose2d(36, -24, Math.toRadians(90));
+			Pose2d plowB = new Pose2d(42, -16, Math.toRadians(0));
+			Pose2d plowC = new Pose2d(48,-49, Math.toRadians(270));
+			Pose2d plowD = new Pose2d(48, -13, Math.toRadians(0));
+			Pose2d plowE = new Pose2d(50, -13, Math.toRadians(0));
+			Pose2d plowF = new Pose2d(54,-49, Math.toRadians(270));
 
-			Vector2d spikeMark1BVector = new Vector2d(42, -16);
-			double spikeMark1BTangent = Math.toRadians(0);
+			TranslationalVelConstraint velocityConstraint = new TranslationalVelConstraint(30);
 
-			Vector2d humanPlayerDropoff1Vector = new Vector2d(48,-43);
-			double humanPlayerDropoff1Tangent = Math.toRadians(270);
-
-			//Pose2d spikeMarkTransition1 = new Pose2d(37,-24,Math.toRadians(270));
-			//double spikeMarkTransition1Tangent = Math.toRadians(90);
-			//Pose2d spikeMarkTransition2 = new Pose2d(42,-12,Math.toRadians(272));
-			//double spikeMarkTransition2Tangent = Math.toRadians(270);
 			Action plowFirstSample = drive.actionBuilder(scorePose)
-					//.setTangent(Math.toRadians(0))
-					//.splineToLinearHeading((spikeMarkTransition1), spikeMarkTransition1Tangent)
 					.setTangent(Math.toRadians(0))
-					.splineToConstantHeading(spikeMark1AVector, spikeMark1ATangent)
-					.splineToConstantHeading(spikeMark1BVector, spikeMark1BTangent)
-					.splineToConstantHeading(humanPlayerDropoff1Vector, humanPlayerDropoff1Tangent)
-					//.splineTo(spikeMark1A.position, spikeMark1A.heading)
-					//.setTangent(Math.toRadians(90))
-					//.splineToLinearHeading((spikeMarkTransition2), spikeMarkTransition2Tangent)
-					//.splineTo(spikeMark1B.position, spikeMark1B.heading)
+					.splineToConstantHeading(plowA.position, plowA.heading, velocityConstraint)
+					.splineToConstantHeading(plowB.position, plowB.heading, velocityConstraint)
+					.splineToConstantHeading(plowC.position, plowC.heading, velocityConstraint)
+					.build();
+
+			Action plowSecondSample = drive.actionBuilder(plowC)
+					.setTangent(Math.toRadians(90))
+					.splineToConstantHeading(plowD.position, plowD.heading, velocityConstraint)
+					.splineToConstantHeading(plowE.position, plowE.heading, velocityConstraint)
+					.splineToConstantHeading(plowF.position, plowF.heading, velocityConstraint)
 					.build();
 
 			//Pose2d spikeMark1 = new Pose2d(46,-12, Math.toRadians(272));
@@ -314,7 +311,8 @@ public class AutoSpecimen extends LinearOpMode {
 					// Score preloaded specimen.
 					driveFromStartToChamber,
 					scoreSpecimenAndLower(driveFromChamberToScore),
-					plowFirstSample
+					plowFirstSample,
+					plowSecondSample
 					//driveToSpikeMark1,
 					// deliver at human player
 					/*driveToHumanPlayer1,
