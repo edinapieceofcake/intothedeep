@@ -95,10 +95,10 @@ public class AutoSpecimen extends LinearOpMode {
 			// Close the claw.
 			robotHardware.closeClaw();
 
-			// Raise the wrist.
-			robotHardware.raiseWrist();
+			// Initialize the wrist.
+			robotHardware.initializeWrist();
 
-			// Resets the swivel.
+			// Reset the swivel.
 			robotHardware.swivelSetHorizontal();
 
 			// If stop is requested...
