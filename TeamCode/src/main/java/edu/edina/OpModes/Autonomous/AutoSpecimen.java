@@ -1,6 +1,5 @@
 package edu.edina.OpModes.Autonomous;
 
-import static edu.edina.Libraries.Robot.RobotHardware.SCORE_SPECIMEN_BACKUP_INCHES;
 import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -26,58 +25,8 @@ import edu.edina.Libraries.Robot.WaitForHardware;
 @Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSpecimen extends LinearOpMode {
 
-	// Start pose
-	public static double START_X = 0;
-	public static double START_Y = -62.5;
-	public static double START_HEADING = Math.toRadians(180);
-
-	// Chamber pose
-	public static double CHAMBER_X = 0;
-	public static double CHAMBER_X_INCREMENT = 3;
-	public static double CHAMBER_Y = -35;
-	public static double CHAMBER_HEADING = Math.toRadians(270);
-
-	// Score pose
-	public static double SCORE_X = CHAMBER_X;
-	public static double SCORE_Y = CHAMBER_Y - SCORE_SPECIMEN_BACKUP_INCHES;
-
-	// First spike mark pose
-	public static double FIRST_SPIKE_MARK_A_X = 49;
-	public static double FIRST_SPIKE_MARK_A_Y = -47;
-	public static double FIRST_SPIKE_MARK_B_X = FIRST_SPIKE_MARK_A_X;
-	public static double FIRST_SPIKE_MARK_B_Y = -41;
-	public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(90);
-
-	// Second spike mark pose
-	public static double SECOND_SPIKE_MARK_A_X = 54.5;
-	public static double SECOND_SPIKE_MARK_A_Y = FIRST_SPIKE_MARK_A_Y;
-	public static double SECOND_SPIKE_MARK_B_X = SECOND_SPIKE_MARK_A_X;
-	public static double SECOND_SPIKE_MARK_B_Y = FIRST_SPIKE_MARK_B_Y;
-	public static double SECOND_SPIKE_MARK_HEADING = Math.toRadians(90);
-
-	// Third Spike Mark pose
-	public static double THIRD_SPIKE_MARK_X = 55.5;
-	public static double THIRD_SPIKE_MARK_Y = -25;
-	public static double HUMAN_PLAYER_X = 47;
-	public static double HUMAN_PLAYER_Y = -50;
-	public static double CONSTANT_Y = -46.5;
-	public static double CONSTANT_X = 47;
-	public static double HUMAN_PAYER_2_Y = -50;
-	public static double HUMAN_PAYER_2_X = 44;
-	public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
-	// Duration in milliseconds to toggle the claw
-	public static int CLAW_DELAY = 500;
-	public static int ARM_DELAY = 500;
-	public static int SCORE_DELAY = 400;
-	public static double TEST_HUMAN_PLAYER_Y = -43;
-
-
 	// Robot hardware
 	private RobotHardware robotHardware;
-	private Action driveFromChamberToScore;
-	private Action driveFromChamberToScore2;
-	private Action driveFromChamberToScore3;
-	private Action driveFromChamberToScore4;
 
 	// Runs the op mode.
 	@Override
@@ -120,14 +69,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Indicate that this is running.
 		robotHardware.log("Running...");
-
-		// Construct a start pose.
-		Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
-
-		// Construct a chamber pose.
-		Pose2d chamberPose = new Pose2d(CHAMBER_X, CHAMBER_Y, CHAMBER_HEADING);
-		Pose2d scorePose = new Pose2d(SCORE_X, SCORE_Y, CHAMBER_HEADING);
-
+/*
 		// Construct a chamber pose.
 		Pose2d chamberPose2 = new Pose2d(CHAMBER_X + CHAMBER_X_INCREMENT * 2, CHAMBER_Y, CHAMBER_HEADING);
 		Pose2d scorePose2 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT * 2, SCORE_Y, CHAMBER_HEADING);
@@ -145,18 +87,24 @@ public class AutoSpecimen extends LinearOpMode {
 		Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
 		// Construct a human player pose.
 		Pose2d humanPlayerPose = new Pose2d(HUMAN_PLAYER_X, HUMAN_PLAYER_Y, HUMAN_PLAYER_HEADING);
+*/
+		// Construct a start pose.
+		Pose2d startPose = new Pose2d(0, -62.5, Math.toRadians(180));
 
 		// Construct a drive interface.
 		MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
-		// Construct an action for driving from the start to the chamber.
-		Action driveFromStartToChamber = drive.actionBuilder(startPose)
-				.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
-				.build();
-		driveFromChamberToScore = drive.actionBuilder(chamberPose)
-				.strafeToLinearHeading(scorePose.position, scorePose.heading)
-				.build();
+		// Construct an action for driving from the start to the chamber position.
+		TrajectoryActionBuilder driveFromStartToChamberBuilder = drive.actionBuilder(startPose)
+				.strafeToLinearHeading(new Vector2d(0, -35), Math.toRadians(270));
+		Action driveFromStartToChamber = driveFromStartToChamberBuilder.build();
 
+		// Construct an action for driving from the chamber to the score position.
+		TrajectoryActionBuilder driveFromChamberToScoreBuilder = driveFromStartToChamberBuilder.endTrajectory().fresh()
+				.strafeToLinearHeading(new Vector2d(0, -42), Math.toRadians(270));
+		Action driveFromChamberToScore = driveFromChamberToScoreBuilder.build();
+
+/*
 		driveFromChamberToScore2 = drive.actionBuilder(chamberPose2)
 				.strafeToLinearHeading(scorePose2.position, scorePose2.heading)
 				.build();
@@ -197,6 +145,7 @@ public class AutoSpecimen extends LinearOpMode {
 		Action driveFromHumanPlayer2ToChamber = drive.actionBuilder(humanPlayer2Pose)
 				.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
 				.build();
+		*/
 			/*Action testDriveFromHumanPlayerToChamberPose3 = drive.actionBuilder(humanPlayer2Pose)
 					.strafeToLinearHeading(chamberPose3.position, chamberPose3.heading)
 					.build();*/
@@ -208,7 +157,7 @@ public class AutoSpecimen extends LinearOpMode {
 		TranslationalVelConstraint velocityConstraint = new TranslationalVelConstraint(30);
 
 		// Construct plow first sample action.
-		TrajectoryActionBuilder plowFirstSampleBuilder = drive.actionBuilder(scorePose)
+		TrajectoryActionBuilder plowFirstSampleBuilder = driveFromChamberToScoreBuilder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(0))
 				.splineToConstantHeading(new Vector2d(36, -24), Math.toRadians(90), velocityConstraint)
 				.splineToConstantHeading(new Vector2d(42, -16), Math.toRadians(0), velocityConstraint)
@@ -224,8 +173,8 @@ public class AutoSpecimen extends LinearOpMode {
 		Action plowSecondSample = plowSecondSampleBuilder.build();
 
 		//Pose2d spikeMark1 = new Pose2d(46,-12, Math.toRadians(272));
-		Pose2d humanPlayer1 = new Pose2d(48, -55, Math.toRadians(272));
-		double humanPlayer1Tangent = Math.toRadians(270);
+		//Pose2d humanPlayer1 = new Pose2d(48, -55, Math.toRadians(272));
+		//double humanPlayer1Tangent = Math.toRadians(270);
 			/*
 			Action driveToHumanPlayer1 = drive.actionBuilder(spikeMark1B)
 					.setTangent(Math.toRadians(270))
@@ -475,7 +424,7 @@ public class AutoSpecimen extends LinearOpMode {
 				new InstantAction(() -> robotHardware.setWristHighChamberClipPosition()),
 				backup,
 				new SequentialAction(
-						new WaitForTime(SCORE_DELAY),
+						new WaitForTime(400),
 						new InstantAction(() -> robotHardware.openClaw())
 				)
 		);
