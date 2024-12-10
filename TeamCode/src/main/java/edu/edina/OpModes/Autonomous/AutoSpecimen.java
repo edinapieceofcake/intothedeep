@@ -172,6 +172,12 @@ public class AutoSpecimen extends LinearOpMode {
 				.splineToConstantHeading(new Vector2d(54, -49), Math.toRadians(270), velocityConstraint);
 		Action plowSecondSample = plowSecondSampleBuilder.build();
 
+		// Construct a drive to first wall specimen action.
+		TrajectoryActionBuilder driveToFirstWallSpecimenBuilder = plowSecondSampleBuilder.endTrajectory().fresh()
+				.setTangent(Math.toRadians(90))
+				.lineToY(-54);
+		Action driveToFirstWallSpecimen = driveToFirstWallSpecimenBuilder.build();
+
 		//Pose2d spikeMark1 = new Pose2d(46,-12, Math.toRadians(272));
 		//Pose2d humanPlayer1 = new Pose2d(48, -55, Math.toRadians(272));
 		//double humanPlayer1Tangent = Math.toRadians(270);
@@ -259,7 +265,9 @@ public class AutoSpecimen extends LinearOpMode {
 				driveFromStartToChamber,
 				scoreSpecimenAndLower(driveFromChamberToScore),
 				plowFirstSample,
-				plowSecondSample
+				plowSecondSample,
+				driveToFirstWallSpecimen,
+				new InstantAction(() -> robotHardware.closeClaw())
 				//driveToSpikeMark1,
 				// deliver at human player
 					/*driveToHumanPlayer1,
