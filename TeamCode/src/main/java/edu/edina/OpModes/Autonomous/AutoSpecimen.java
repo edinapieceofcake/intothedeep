@@ -475,10 +475,10 @@ public class AutoSpecimen extends LinearOpMode {
 		// Grab the Speciemn from the human player
 		public Action goToWallPosition() {
 			// ONLY USE THIS FOR AUTO, IT DOES NOT CLEAR ACTIONS
-			Action action = new SequentialAction(
+			Action action = new ParallelAction(
+					new MoveArm(robotHardware, Arm.WALL_POSITION, true),
 					new InstantAction(() -> robotHardware.setWristWallPosition()),
 					new InstantAction(() -> robotHardware.swivelSetHorizontal()),
-					new InstantAction(() -> robotHardware.setArmWallPosition()),
 					new InstantAction(() -> robotHardware.setLiftGroundPosition()),
 					new InstantAction(() -> robotHardware.setMinimumExtension())
 			);
