@@ -414,7 +414,7 @@ public class AutoSpecimen extends LinearOpMode {
 				new WaitForTime(500),
 				scoreSpecimen(driveFromChamberToScore, robotHardware),
 				new WaitForTime(500),
-				new MoveArm(robotHardware, Arm.AUTO_WALL_POSITION, false),
+				new MoveArm(robotHardware, Arm.WALL_POSITION, false),
 				new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
 				new InstantAction(() -> robotHardware.setWristWallPosition())
 		);
