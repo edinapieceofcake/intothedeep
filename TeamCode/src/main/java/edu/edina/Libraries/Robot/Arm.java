@@ -62,7 +62,8 @@ public class Arm {
     public static double TICKS_PER_DEGREE = 23.3;
 
     // Wall position
-    public static int WALL_POSITION = 600;
+    public static int TELE_OP_WALL_POSITION = 600;
+    public static int AUTO_WALL_POSITION = 500;
 
     // High Chamber Position
     public static int HIGH_CHAMBER_POSITION = 2300;

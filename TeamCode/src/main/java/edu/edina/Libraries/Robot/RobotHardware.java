@@ -592,7 +592,7 @@ public class RobotHardware {
     public void setArmWallPosition() {
 
         // Construct an action to move the arm to the wall position.
-        Action action = new MoveArm(this, Arm.WALL_POSITION, true);
+        Action action = new MoveArm(this, Arm.TELE_OP_WALL_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
