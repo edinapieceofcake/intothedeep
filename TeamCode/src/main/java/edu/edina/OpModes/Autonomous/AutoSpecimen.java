@@ -186,7 +186,7 @@ public class AutoSpecimen extends LinearOpMode {
 					.strafeToLinearHeading(scorePose3.position, scorePose3.heading)
 					.build();
 
-			Pose2d spikeMarkTransition1 = new Pose2d(36,-35, Math.toRadians(270));
+			Pose2d spikeMarkTransition1 = new Pose2d(36,-42, Math.toRadians(270));
 			Action driveToSpikeMarkTransition1 = drive.actionBuilder(scorePose)
 					.strafeToLinearHeading(spikeMarkTransition1.position, spikeMarkTransition1.heading)
 					.build();
@@ -277,7 +277,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 			// Construct a main action.
 			Action mainAction = new SequentialAction(
-
+					new InstantAction(() -> robotHardware.raiseWrist()),
 					// Score preloaded specimen.
 					driveFromStartToChamber,
 					scoreSpecimenAndLower(driveFromChamberToScore),
@@ -296,9 +296,9 @@ public class AutoSpecimen extends LinearOpMode {
 					driveToHumanPlayer3,
 					driveToTransition1,
 					driveToTransition2,
-					driveTohumanPlayerPickup,
 					// grab the specimen from wall
 					grabSpecimenFromWall(),
+					driveTohumanPlayerPickup,
 					driveTofirstScore,
 					// score the 2nd specimen
 					scoreSpecimenAndLower(driveFromChamberToScore),
