@@ -41,7 +41,7 @@ public class FieldCentricDestination implements Destination {
 //        return stopPose.heading;
     }
 
-    public void setRelDest(double y, double x, double h) {
+    public void setRelDest(double x, double y, double h) {
         stopping = false;
 
         x *= X_MULT;

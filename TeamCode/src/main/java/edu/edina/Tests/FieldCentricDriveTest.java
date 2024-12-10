@@ -22,15 +22,14 @@ public class FieldCentricDriveTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_x;
-            double x = -gamepad1.left_stick_y;
-            double h = -gamepad1.right_stick_x;
+            double x = 10 * gamepad1.left_stick_x;
+            double y = -10 * gamepad1.left_stick_y;
+            double h = 0 * -gamepad1.right_stick_x;
 
             RobotLog.ii("FieldCentricDriveTest", "set rel dest");
             driveMechanism.setMaxVelVec(new Vector2d(x, y));
 
-            if (gamepad1.a)
-                destination.setRelDest(y, x, h);
+            destination.setRelDest(x, y, h);
 
             driveMechanism.update();
         }

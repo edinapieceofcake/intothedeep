@@ -36,11 +36,6 @@ public class LinearMotionController {
 
     public void setTarget(double target) {
         this.target = target;
-
-        if (LOG) {
-            RobotLog.ii(tag, "set linear motion target to %.2f", target);
-            RobotLog.ii(tag, "settings %s", s);
-        }
     }
 
     public DualNum<Time> lastPositionAndVelocity() {
@@ -69,45 +64,46 @@ public class LinearMotionController {
         double dt = t - tPrev;
         double dist = getDist(x);
 
-        double xStop1 = estConstDeccelStoppingPoint(x, v, s.stopAccel);
+        double xStop = estConstDeccelStoppingPoint(x, v, s.stopAccel);
 
         TimePoint coast = estConstPowerStoppingPoint(t, x, v, 0);
         boolean coastToStop = Math.abs(coast.x - target) < s.stopXTol
                 && coast.t - t < s.stopTTol;
-        boolean deccelToStop = between(target, xStop1, x);
-        boolean overMaxVel = (v > 0 && v > maxVel) || (v < 0 && v < maxVel);
+        boolean deccelToStop = between(target, xStop, x);
+        boolean overMaxVel = (v > maxVel) || (v < -maxVel);
 
         String ls = "";
         if (LOG)
-            ls += String.format("%s, x=%.2f target=%.2f xStop=%.2f coast=%.2f",
-                    s.name, x, target, xStop1, coast.x);
+            ls += String.format("run %s, target=%.2f x=%.2f v=%.2f xStop=%.2f coast=%.2f",
+                    s.name, target, x, v, xStop, coast.x);
 
         double counterAccel = -a;
 
         if (overMaxVel) {
             if (LOG)
-                ls += " max velocity";
-        }
-
-        double nextAccel;
-        if (deccelToStop) {
-            nextAccel = -v * v / (2 * dist);
-
-            if (LOG)
-                ls += String.format(" nominal deccel=%.2f", nextAccel);
-        } else {
-            nextAccel = sign(dist) * s.nominalAccel;
-
-            if (overMaxVel) {
-                nextAccel = 0;
-            }
-
-            if (LOG)
-                ls += String.format(" nominal accel=%.2f", nextAccel);
+                ls += String.format(" over max velocity of %.2f", maxVel);
         }
 
         double power;
         if (!coastToStop) {
+            double nextAccel;
+            if (deccelToStop) {
+                nextAccel = -v * v / (2 * dist);
+
+                if (LOG)
+                    ls += String.format(" nominal deccel=%.2f", nextAccel);
+            } else if (overMaxVel) {
+                nextAccel = -sign(v) * (Math.abs(v) - maxVel) / s.stopTTol;
+
+                if (LOG)
+                    ls += String.format(" nominal accel=%.2f", nextAccel);
+            } else {
+                nextAccel = sign(dist) * s.nominalAccel;
+
+                if (LOG)
+                    ls += String.format(" nominal accel=%.2f", nextAccel);
+            }
+
             double maxChangeAccel = s.maxJerk * dt;
             if (nextAccel < a - maxChangeAccel)
                 nextAccel = a - maxChangeAccel;
@@ -119,7 +115,7 @@ public class LinearMotionController {
             power = s.ka * (nextAccel + counterAccel) + s.kv * v + s.ks * sg;
 
             if (LOG) {
-                ls += String.format(" a=%.2f v=%.2f sg=%.2f", nextAccel + counterAccel, v, sg);
+                ls += String.format(" a=%.2f", nextAccel + counterAccel);
             }
         } else {
             power = 0;

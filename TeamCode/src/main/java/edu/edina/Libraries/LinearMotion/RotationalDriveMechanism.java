@@ -31,7 +31,7 @@ public class RotationalDriveMechanism implements ILinearMechanism {
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
-                "axial drive", Units.DEGREES,
+                "rotational drive", Units.DEGREES,
                 KS, KV, KA, 20,
                 NOMINAL_ACCEL,
                 STOP_ACCEL_MULT,

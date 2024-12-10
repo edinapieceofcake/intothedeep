@@ -18,7 +18,7 @@ import kotlin.NotImplementedError;
 
 @Config
 public class ThreeAxisDriveMechanism {
-    private static final boolean LOG = false;
+    private static final boolean LOG = true;
     private static final String TAG = "3-axis-drive";
     public static double LATERAL_MULT = 0.82;
     public static double ROTATIONAL_MULT = 0.7;
@@ -62,6 +62,8 @@ public class ThreeAxisDriveMechanism {
         Pose2d pose = odometry.getPoseEstimate();
         PoseVelocity2d vel = odometry.getVelocityEstimate();
 
+        Pose2d headingOnlyPose = new Pose2d(new Vector2d(0, 0), pose.heading);
+
         updateStopPose(pose, vel);
 
         Vector2d pursuit = destination.getDestination(pose);
@@ -76,7 +78,7 @@ public class ThreeAxisDriveMechanism {
 
         // calculate velocities
         Vector2d fieldVel = vel.linearVel;
-        robotRelVel = new Pose2d(FieldToRobot.toRobotRel(pose, fieldVel), vel.angVel);
+        robotRelVel = new Pose2d(FieldToRobot.toRobotRel(headingOnlyPose, fieldVel), vel.angVel);
 
         // use the LinearMotionController to calculate powers
         axialCon.setMaxVelocity(rrMaxVel.x);
@@ -91,11 +93,10 @@ public class ThreeAxisDriveMechanism {
 
         if (LOG) {
             RobotLog.ii(TAG, "pose=(%.1f, %.1f, %.1f)", pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()));
-
-            RobotLog.ii(TAG, "pursuit point=(%.1f, %.1f), robot rel=(%.1f, %.1f)", pursuit.x, pursuit.y, robotRelPursuitPoint.x, robotRelPursuitPoint.y);
-
-            RobotLog.ii(TAG, "linear velocity=(%.1f, %.1f), robot rel=(%.1f, %.1f)", fieldVel.x, fieldVel.y, robotRelVel.position.x, robotRelVel.position.y);
-
+            RobotLog.ii(TAG, "pursuit=(%.1f, %.1f, %.1f), robot rel=(%.1f, %.1f, %.1f)",
+                    pursuit.x, pursuit.y, Math.toDegrees(pursuitHeading.toDouble()),
+                    robotRelPursuitPoint.x, robotRelPursuitPoint.y, Math.toDegrees(pursuitHeading.toDouble()));
+            RobotLog.ii(TAG, "velocity=(%.1f, %.1f), robot rel=(%.1f, %.1f)", fieldVel.x, fieldVel.y, robotRelVel.position.x, robotRelVel.position.y);
             RobotLog.ii(TAG, "drive power: axial=%.3f, lateral=%.3f, yaw=%.3f", axialPower, lateralPower, rotationalPower);
         }
     }
