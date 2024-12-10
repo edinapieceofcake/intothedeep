@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -201,30 +202,45 @@ public class AutoSpecimen extends LinearOpMode {
 					.strafeToLinearHeading(scorePose3.position, scorePose3.heading)
 					.build();*/
 
-			Pose2d spikeMarkTransition1 = new Pose2d(37,-24,Math.toRadians(270));
-			double spikeMarkTransition1Tangent = Math.toRadians(90);
-			Action driveToSpikeMarkTransition1 = drive.actionBuilder(scorePose)
+			Vector2d spikeMark1AVector = new Vector2d(36, -24);
+			double spikeMark1ATangent = Math.toRadians(90);
+
+			Vector2d spikeMark1BVector = new Vector2d(42, -16);
+			double spikeMark1BTangent = Math.toRadians(0);
+
+			Vector2d humanPlayerDropoff1Vector = new Vector2d(48,-43);
+			double humanPlayerDropoff1Tangent = Math.toRadians(270);
+
+			//Pose2d spikeMarkTransition1 = new Pose2d(37,-24,Math.toRadians(270));
+			//double spikeMarkTransition1Tangent = Math.toRadians(90);
+			//Pose2d spikeMarkTransition2 = new Pose2d(42,-12,Math.toRadians(272));
+			//double spikeMarkTransition2Tangent = Math.toRadians(270);
+			Action plowFirstSample = drive.actionBuilder(scorePose)
+					//.setTangent(Math.toRadians(0))
+					//.splineToLinearHeading((spikeMarkTransition1), spikeMarkTransition1Tangent)
 					.setTangent(Math.toRadians(0))
-					.splineToLinearHeading((spikeMarkTransition1), spikeMarkTransition1Tangent)
+					.splineToConstantHeading(spikeMark1AVector, spikeMark1ATangent)
+					.splineToConstantHeading(spikeMark1BVector, spikeMark1BTangent)
+					.splineToConstantHeading(humanPlayerDropoff1Vector, humanPlayerDropoff1Tangent)
+					//.splineTo(spikeMark1A.position, spikeMark1A.heading)
+					//.setTangent(Math.toRadians(90))
+					//.splineToLinearHeading((spikeMarkTransition2), spikeMarkTransition2Tangent)
+					//.splineTo(spikeMark1B.position, spikeMark1B.heading)
 					.build();
-			Pose2d spikeMarkTransition2 = new Pose2d(42,-12,Math.toRadians(272));
-			double spikeMarkTransition2Tangent = Math.toRadians(270);
-			Action driveToSpikeMarkTransition2 = drive.actionBuilder(spikeMarkTransition1)
-					.setTangent(Math.toRadians(90))
-					.splineToLinearHeading((spikeMarkTransition2), spikeMarkTransition2Tangent)
-					.build();
-			Pose2d spikeMark1 = new Pose2d(46,-12, Math.toRadians(272));
+
+			//Pose2d spikeMark1 = new Pose2d(46,-12, Math.toRadians(272));
 			Pose2d humanPlayer1 = new Pose2d(48,-55,Math.toRadians(272));
 			double humanPlayer1Tangent = Math.toRadians(270);
-			Action driveToHumanPlayer1 = drive.actionBuilder(spikeMark1)
+			/*
+			Action driveToHumanPlayer1 = drive.actionBuilder(spikeMark1B)
 					.setTangent(Math.toRadians(270))
 					.splineToLinearHeading((humanPlayer1), humanPlayer1Tangent)
 					.build();
 			Action driveToSpikeMark1B = drive.actionBuilder(humanPlayer1)
-					.strafeToLinearHeading(spikeMark1.position, spikeMark1.heading)
+					.strafeToLinearHeading(spikeMark1B.position, spikeMark1B.heading)
 					.build();
 			Pose2d spikeMark2 = new Pose2d(57, -10, Math.toRadians(272));
-			Action driveToSpikeMark2A = drive.actionBuilder(spikeMark1)
+			Action driveToSpikeMark2A = drive.actionBuilder(spikeMark1B)
 					.strafeToLinearHeading(spikeMark2.position, spikeMark2.heading)
 					.build();
 			Pose2d humanPlayer2 = new Pose2d(57, -55, Math.toRadians(272));
@@ -289,7 +305,7 @@ public class AutoSpecimen extends LinearOpMode {
 			Action driveFromFithScoreToHumanPlayerPickup = drive.actionBuilder(fithScore)
 					.strafeToLinearHeading(humanPlayerPickup.position, humanPlayerPickup.heading)
 					.build();
-
+			*/
 
 
 			// Construct a main action.
@@ -298,15 +314,15 @@ public class AutoSpecimen extends LinearOpMode {
 					// Score preloaded specimen.
 					driveFromStartToChamber,
 					scoreSpecimenAndLower(driveFromChamberToScore),
-					driveToSpikeMarkTransition1,
-					driveToSpikeMarkTransition2,
+					plowFirstSample
+					//driveToSpikeMark1,
 					// deliver at human player
-					driveToHumanPlayer1,
+					/*driveToHumanPlayer1,
 					driveToSpikeMark1B,
 					driveToSpikeMark2A,
 					// deliver at human player
 					goToWallPosition(),
-					driveToHumanPlayer2,
+					driveToHumanPlayer2,*/
 					/*driveToSpikeMark2B,
 					driveToSpikeMark3A,
 					// deliver at human player
@@ -314,7 +330,7 @@ public class AutoSpecimen extends LinearOpMode {
 					driveToTransition1,
 					driveToTransition2,*/
 					// grab the specimen from wall
-					driveTohumanPlayerPickup,
+					/*driveTohumanPlayerPickup,
 					new InstantAction(() -> robotHardware.closeClaw()),
 					driveTofirstScore,
 					// score the 2nd specimen
@@ -345,7 +361,7 @@ public class AutoSpecimen extends LinearOpMode {
 					// Park
 					driveFromFourthScoreToHumanPlayerPickup*/
 //					driveToFithScore,
-//					driveFromFithScoreToHumanPlayerPickup
+//					driveFromFithScoreToHumanPlayerPickup*/
 
 
 
