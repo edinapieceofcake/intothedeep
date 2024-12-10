@@ -73,9 +73,6 @@ public class Arm {
     // Ascent position
     public static int ASCENT_POSITION = 700;
 
-    // Wrist extension limit threshold
-    public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
-
     // Busy threshold
     public static int BUSY_THRESHOLD = 600;
 
@@ -301,58 +298,6 @@ public class Arm {
 
     }
 
-    public boolean isHighRung() {
-        return targetPosition == HIGH_CHAMBER_POSITION;
-    }
-
-    // Moves the arm to the ground position.
-    public void setGroundPosition() {
-
-        // Move the arm to the ground position.
-        targetPosition = GROUND_POSITION;
-
-    }
-
-    // Moves the arm to the low basket position.
-    public void setLowBasketPosition() {
-
-        // Move the arm to the low basket position.
-        targetPosition = LOW_BASKET_POSITION;
-
-    }
-
-    // Moves the arm to the high basket position.
-    public void setHighBasketPosition() {
-
-        // Move the arm to the high basket position.
-        targetPosition = HIGH_BASKET_POSITION;
-
-    }
-
-    // Moves the arm to the high chamber position.
-    public void setHighChamberPosition() {
-
-        // Move the arm to the high chamber position.
-        targetPosition = HIGH_CHAMBER_POSITION;
-
-    }
-
-    // Moves the arm to the low chamber position.
-    public void setLowChamberPosition() {
-
-        // Move the arm to the low chamber position.
-        targetPosition = LOW_CHAMBER_POSITION;
-
-    }
-
-    // Moves the arm to the submersible position.
-    public void setSubmersiblePosition() {
-
-        // Move the arm to the submersible position.
-        targetPosition = SUBMERSIBLE_POSITION;
-
-    }
-
     // Moves the arm to the ascent position.
     public void setAscentPosition() {
 
@@ -451,14 +396,6 @@ public class Arm {
         // Return the result.
         return isInHighChamberPosition;
 
-    }
-
-    public boolean isInLowBar() {
-        return targetPosition == LOW_CHAMBER_POSITION;
-    }
-
-    public boolean isInHighBar() {
-        return targetPosition == HIGH_CHAMBER_POSITION;
     }
 
     // Starts rezeroing.
