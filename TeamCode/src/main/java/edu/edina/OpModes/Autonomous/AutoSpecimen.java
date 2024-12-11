@@ -299,21 +299,21 @@ public class AutoSpecimen extends LinearOpMode {
 				new InstantAction(() -> robotHardware.raiseWrist()),
 				// Score preloaded specimen.
 				driveFromStartToChamber,
-				scoreSpecimenAndLower(driveFromChamberToScore),
+				scoreSpecimenAndLower(driveFromChamberToScore, true),
 				plowFirstSample,
 				plowSecondSample,
 				driveToFirstWallSpecimen,
 				new InstantAction(() -> robotHardware.closeClaw()),
 				driveToSecondChamber,
-				scoreSpecimenAndLower(driveFromChamberToScore2),
+				scoreSpecimenAndLower(driveFromChamberToScore2, true),
 				driveToSecondWallSpecimen,
 				new InstantAction(() -> robotHardware.closeClaw()),
 				driveToThirdChamber,
-				scoreSpecimenAndLower(driveFromChamberToScore3),
+				scoreSpecimenAndLower(driveFromChamberToScore3, true),
 				driveToThirdWallSpecimen,
 				new InstantAction(() -> robotHardware.closeClaw()),
 				driveToFourthChamber,
-				scoreSpecimenAndLower(driveFromChamberToScore4)
+				scoreSpecimenAndLower(driveFromChamberToScore4, false)
 
 				//driveToSpikeMark1,
 
@@ -452,7 +452,7 @@ public class AutoSpecimen extends LinearOpMode {
 	}
 
 	// Scores a specimen and then lowers the arm.
-	private Action scoreSpecimenAndLower(Action driveFromChamberToScore) {
+	private Action scoreSpecimenAndLower(Action driveFromChamberToScore, boolean endAtWall) {
 
 		// Construct an action.
 		Action action = new SequentialAction(
@@ -462,9 +462,9 @@ public class AutoSpecimen extends LinearOpMode {
 				new WaitForTime(500),
 				scoreSpecimen(driveFromChamberToScore, robotHardware),
 				new WaitForTime(500),
-				new MoveArm(robotHardware, Arm.WALL_POSITION, false),
+				new MoveArm(robotHardware, endAtWall ? Arm.WALL_POSITION : Arm.GROUND_POSITION, false),
 				new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
-				new InstantAction(() -> robotHardware.setWristWallPosition())
+				new InstantAction(endAtWall ? () -> robotHardware.setWristWallPosition() : () -> robotHardware.lowerWrist())
 		);
 
 		// Return the action.
