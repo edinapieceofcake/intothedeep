@@ -105,7 +105,7 @@ public class LinearMotionController {
 
             double sg = !stopped(v) ? sign(v) : sign(dist);
 
-            power = s.ka * (nextAccel + counterAccel) + s.kv * v + s.ks * sg;
+            power = (s.ka * (nextAccel + counterAccel) + s.kv * v) * maxPower + s.ks * sg;
 
             if (LOG) {
                 ls += String.format(" a=%.2f", nextAccel + counterAccel);
@@ -114,7 +114,7 @@ public class LinearMotionController {
             power = 0;
 
             if (LOG)
-                ls += String.format(" coasting to a stop");
+                ls += " coasting to a stop";
         }
 
         if (LOG) {
@@ -124,7 +124,7 @@ public class LinearMotionController {
 
         tPrev = t;
 
-        return power * maxPower;
+        return power;
     }
 
     private double getDist(double x) {

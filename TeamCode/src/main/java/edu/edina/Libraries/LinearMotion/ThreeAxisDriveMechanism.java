@@ -80,13 +80,11 @@ public class ThreeAxisDriveMechanism {
         Vector2d fieldVel = vel.linearVel;
         robotRelVel = new Pose2d(FieldToRobot.toRobotRel(headingOnlyPose, fieldVel), vel.angVel);
 
+        // 
+
         // use the LinearMotionController to calculate powers
-        axialCon.setMaxVelocity(rrMaxVel.x);
         axialCon.run();
-
-        lateralCon.setMaxVelocity(rrMaxVel.y);
         lateralCon.run();
-
         yawCon.run();
 
         drivetrain.update(axialPower, lateralPower, rotationalPower);
