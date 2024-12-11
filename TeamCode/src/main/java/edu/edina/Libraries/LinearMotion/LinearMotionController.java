@@ -17,21 +17,25 @@ public class LinearMotionController {
     private final String tag;
     private double target, tPrev;
     private DualNum<Time> u;
-    private double maxVel;
+    private double maxPower;
 
     public LinearMotionController(ILinearMechanism linearMech) {
         this(linearMech, null);
     }
 
     public LinearMotionController(ILinearMechanism linearMech, IAmbientForce ambForce) {
-        maxVel = 1e99;
-
         this.ambForce = ambForce;
         this.linearMech = linearMech;
         this.s = linearMech.getSettings();
         this.tag = String.format("LMC %s", s.name).trim();
 
         et = new ElapsedTime();
+
+        maxPower = 1;
+    }
+
+    public void setMaxPower(double power) {
+        maxPower = power;
     }
 
     public void setTarget(double target) {
@@ -70,7 +74,6 @@ public class LinearMotionController {
         boolean coastToStop = Math.abs(coast.x - target) < s.stopXTol
                 && coast.t - t < s.stopTTol;
         boolean deccelToStop = between(target, xStop, x);
-        boolean overMaxVel = (v > maxVel) || (v < -maxVel);
 
         String ls = "";
         if (LOG)
@@ -78,11 +81,6 @@ public class LinearMotionController {
                     s.name, target, x, v, xStop, coast.x);
 
         double counterAccel = -a;
-
-        if (overMaxVel) {
-            if (LOG)
-                ls += String.format(" over max velocity of %.2f", maxVel);
-        }
 
         double power;
         if (!coastToStop) {
@@ -92,11 +90,6 @@ public class LinearMotionController {
 
                 if (LOG)
                     ls += String.format(" nominal deccel=%.2f", nextAccel);
-            } else if (overMaxVel) {
-                nextAccel = -sign(v) * (Math.abs(v) - maxVel) / s.stopTTol;
-
-                if (LOG)
-                    ls += String.format(" nominal accel=%.2f", nextAccel);
             } else {
                 nextAccel = sign(dist) * s.nominalAccel;
 
@@ -131,15 +124,7 @@ public class LinearMotionController {
 
         tPrev = t;
 
-        return power;
-    }
-
-    public double getMaxVelocity() {
-        return maxVel;
-    }
-
-    public void setMaxVelocity(double maxVelocity) {
-        maxVel = maxVelocity;
+        return power * maxPower;
     }
 
     private double getDist(double x) {
