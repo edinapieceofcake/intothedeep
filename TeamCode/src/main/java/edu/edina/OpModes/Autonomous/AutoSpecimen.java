@@ -104,6 +104,8 @@ public class AutoSpecimen extends LinearOpMode {
 				.strafeToLinearHeading(new Vector2d(0, -42), Math.toRadians(270));
 		Action driveFromChamberToScore = driveFromChamberToScoreBuilder.build();
 
+
+
 /*
 		driveFromChamberToScore2 = drive.actionBuilder(chamberPose2)
 				.strafeToLinearHeading(scorePose2.position, scorePose2.heading)
@@ -174,9 +176,43 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a drive to first wall specimen action.
 		TrajectoryActionBuilder driveToFirstWallSpecimenBuilder = plowSecondSampleBuilder.endTrajectory().fresh()
-				.setTangent(Math.toRadians(90))
+			//	.setTangent(Math.toRadians(90))
 				.lineToY(-54);
 		Action driveToFirstWallSpecimen = driveToFirstWallSpecimenBuilder.build();
+
+		TrajectoryActionBuilder driveToSecondChamberBuilder = driveToFirstWallSpecimenBuilder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(3, -35));
+		Action driveToSecondChamber = driveToSecondChamberBuilder.build();
+		TrajectoryActionBuilder driveFromChamberToScore2Builder = driveToSecondChamberBuilder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(3, -42));
+		Action driveFromChamberToScore2 = driveFromChamberToScore2Builder.build();
+
+		TrajectoryActionBuilder driveToSecondWallSpecimenBuilder = driveFromChamberToScore2Builder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(54, -54));
+		Action driveToSecondWallSpecimen = driveToSecondWallSpecimenBuilder.build();
+
+		TrajectoryActionBuilder driveToThirdChamberBuilder = driveToSecondWallSpecimenBuilder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(6, -35));
+		Action driveToThirdChamber = driveToThirdChamberBuilder.build();
+		TrajectoryActionBuilder driveFromChamberToScore3Builder = driveToThirdChamberBuilder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(6, -42));
+		Action driveFromChamberToScore3 = driveFromChamberToScore3Builder.build();
+
+		TrajectoryActionBuilder driveToThirdWallSpecimenBuilder = driveFromChamberToScore3Builder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(54, -54));
+		Action driveToThirdWallSpecimen = driveToThirdWallSpecimenBuilder.build();
+
+		TrajectoryActionBuilder driveToFourthChamberBuilder = driveToThirdWallSpecimenBuilder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(9, -35));
+		Action driveToFourthChamber = driveToFourthChamberBuilder.build();
+		TrajectoryActionBuilder driveFromChamberToScore4Builder = driveToFourthChamberBuilder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(9, -42));
+		Action driveFromChamberToScore4 = driveFromChamberToScore4Builder.build();
+
+
+
+
+
 
 		//Pose2d spikeMark1 = new Pose2d(46,-12, Math.toRadians(272));
 		//Pose2d humanPlayer1 = new Pose2d(48, -55, Math.toRadians(272));
@@ -267,8 +303,20 @@ public class AutoSpecimen extends LinearOpMode {
 				plowFirstSample,
 				plowSecondSample,
 				driveToFirstWallSpecimen,
-				new InstantAction(() -> robotHardware.closeClaw())
+				new InstantAction(() -> robotHardware.closeClaw()),
+				driveToSecondChamber,
+				scoreSpecimenAndLower(driveFromChamberToScore2),
+				driveToSecondWallSpecimen,
+				new InstantAction(() -> robotHardware.closeClaw()),
+				driveToThirdChamber,
+				scoreSpecimenAndLower(driveFromChamberToScore3),
+				driveToThirdWallSpecimen,
+				new InstantAction(() -> robotHardware.closeClaw()),
+				driveToFourthChamber,
+				scoreSpecimenAndLower(driveFromChamberToScore4)
+
 				//driveToSpikeMark1,
+
 				// deliver at human player
 					/*driveToHumanPlayer1,
 					driveToSpikeMark1B,
