@@ -12,26 +12,26 @@ public class Wrist {
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
     // Down position
-    public static double DOWN_POSITION = 0.03;
+    public static double DOWN_POSITION = 0.2;
 
-    public static double HIGH_CHAMBER_HOLD_POSITION = 0.58;
-    public static double HIGH_CHAMBER_CLIP_POSITION = 0.85;
+    public static double HIGH_CHAMBER_HOLD_POSITION = 0.75;
+    public static double HIGH_CHAMBER_CLIP_POSITION = 1;
 
-    public static double HIGH_BASKET_POSITION = 0.5;
+    public static double HIGH_BASKET_POSITION = 0.67;
 
-    public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
+    //public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
     // Up position
-    public static double UP_POSITION = 0.6;
+    public static double UP_POSITION = 0.79;
 
     // Angle position
-    public static double ANGLE_POSITION = 0.08;
+    //public static double ANGLE_POSITION = 0.08;
 
     // Init position
-    public static double INITIALIZE_POSITION = 0.85;
+    public static double INITIALIZE_POSITION = 0.88;
 
     // Wall position
-    public static double WALL_POSITION = 0.3;
+    public static double WALL_POSITION = 0.47;
 
     // Servo
     private final TrackingServo servo;
@@ -107,14 +107,14 @@ public class Wrist {
     }
 
     // Angles the wrist.
-    public void angle() {
-
-        // Raise the wrist.
-        servo.setPosition(ANGLE_POSITION);
-
-        // Remember that the wrist is up.
-        up = true;
-    }
+//    public void angle() {
+//
+//        // Raise the wrist.
+//        servo.setPosition(ANGLE_POSITION);
+//
+//        // Remember that the wrist is up.
+//        up = true;
+//    }
 
     // Raises the wrist.
     public void initialize() {
