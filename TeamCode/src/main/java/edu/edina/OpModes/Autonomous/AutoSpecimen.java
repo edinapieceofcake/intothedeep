@@ -159,7 +159,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a second drive to second wall action.
 		TrajectoryActionBuilder driveToWall2Builder = driveToScore2Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(54, -52));
+				.strafeTo(new Vector2d(54, -54));
 		Action driveToWall2 = driveToWall2Builder.build();
 
 		// Construct a third drive to chamber action.
@@ -174,7 +174,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a third drive to wall action.
 		TrajectoryActionBuilder driveToWall3Builder = driveToScore3Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(54, -52));
+				.strafeTo(new Vector2d(54, -54));
 		Action driveToWall3 = driveToWall3Builder.build();
 
 		// Construct a fourth drive to chamber action.
@@ -189,7 +189,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a drive to park action.
 		TrajectoryActionBuilder driveToParkBuilder = driveToScore4Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(54, -52));
+				.strafeTo(new Vector2d(54, -54));
 		Action driveToPark = driveToParkBuilder.build();
 
 		// Construct a main action.
