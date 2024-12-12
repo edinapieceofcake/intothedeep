@@ -121,13 +121,8 @@ public class AutoSpecimen extends LinearOpMode {
 				.strafeToLinearHeading(new Vector2d(0, -35), Math.toRadians(270));
 		Action driveToChamber1 = driveToChamber1Builder.build();
 
-		// Construct a first drive to score action.
-		TrajectoryActionBuilder driveToScore1Builder = driveToChamber1Builder.endTrajectory().fresh()
-				.strafeToLinearHeading(new Vector2d(0, -42), Math.toRadians(270));
-		Action driveToScore1 = driveToScore1Builder.build();
-
 		// Construct first plow action.
-		TrajectoryActionBuilder plow1Builder = driveToScore1Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder plow1Builder = driveToChamber1Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(0))
 				.splineToConstantHeading(new Vector2d(36, -24), Math.toRadians(90), velocityConstraint)
 				.splineToConstantHeading(new Vector2d(42, -16), Math.toRadians(0), velocityConstraint)
@@ -207,13 +202,13 @@ public class AutoSpecimen extends LinearOpMode {
 						raiseArmToChamber()
 				),
 
-				// Score the preloaded specimen.
-				scoreSpecimen(driveToScore1, robotHardware),
-
-				// Plow the first sample while lowering the arm.
+				// Score the preloaded specimen, begin plowing, and lower the arm.
 				new ParallelAction(
-						plow1,
+					scoreSpecimen(plow1, robotHardware),
+					new SequentialAction(
+						new WaitForTime(1000),
 						lowerArmFromChamber(true)
+					)
 				),
 
 				// Plow the second sample.
