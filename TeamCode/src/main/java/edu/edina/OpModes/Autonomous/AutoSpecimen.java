@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
@@ -50,9 +51,6 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Wait for the user to lower the arm.
 		robotHardware.waitForArmDown();
-
-		// Move the arm to the ground position.
-		robotHardware.setArmGroundPosition();
 
 		// Close the claw.
 		robotHardware.closeClaw();
@@ -120,14 +118,20 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a wall velocity constraint.
 		VelConstraint wallVelocityConstraint = (robotPose, _path, _disp) -> {
 
-			// If the robot is close to the chamber...
-			if (robotPose.position.x.value() > 28 && robotPose.position.y.value() < -45) {
+			// Determine whether the robot is close to the chamber.
+			boolean closeToChamber = isCloseToChamber(robotPose);
+
+			// Determine whether the robot is close to the wall.
+			boolean closeToWall = isCloseToWall(robotPose);
+
+			// If the robot is close to the chamber or wall...
+			if (closeToChamber || closeToWall) {
 
 				// Go slow.
 				return SLOW_VELOCITY;
 			}
 
-			// Otherwise (if the robot is far from the chamber)...
+			// Otherwise (if the robot is far from the chamber and wall)...
 			else {
 
 				// Go fast.
@@ -140,15 +144,18 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a chamber velocity constraint.
 		VelConstraint chamberVelocityConstraint = (robotPose, _path, _disp) -> {
 
-			// If the robot is close to the wall...
-			if (robotPose.position.x.value() < 15 && robotPose.position.y.value() > -45) {
+			// Determine whether the robot is close to the chamber.
+			boolean closeToChamber = isCloseToChamber(robotPose);
+
+			// If the robot is close to the chamber...
+			if (closeToChamber) {
 
 				// Go slow.
 				return SLOW_VELOCITY;
 
 			}
 
-			// Otherwise (if the robot is far from the wall)...
+			// Otherwise (if the robot is far from the chamber)...
 			else {
 
 				// Go fast.
@@ -199,13 +206,8 @@ public class AutoSpecimen extends LinearOpMode {
 				.splineToConstantHeading(new Vector2d(6, -35), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber2 = driveToChamber2Builder.build();
 
-		// Construct a second drive to score action.
-		TrajectoryActionBuilder driveToScore2Builder = driveToChamber2Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(6, -42));
-		Action driveToScore2 = driveToScore2Builder.build();
-
 		// Construct a second drive to second wall action.
-		TrajectoryActionBuilder driveToWall2Builder = driveToScore2Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToWall2Builder = driveToChamber2Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(270))
 				.splineToConstantHeading(new Vector2d(36, -54), Math.toRadians(270), wallVelocityConstraint);
 		Action driveToWall2 = driveToWall2Builder.build();
@@ -216,13 +218,8 @@ public class AutoSpecimen extends LinearOpMode {
 				.splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber3 = driveToChamber3Builder.build();
 
-		// Construct a third drive to score action.
-		TrajectoryActionBuilder driveToScore3Builder = driveToChamber3Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(3, -42));
-		Action driveToScore3 = driveToScore3Builder.build();
-
 		// Construct a third drive to wall action.
-		TrajectoryActionBuilder driveToWall3Builder = driveToScore3Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToWall3Builder = driveToChamber3Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(270))
 				.splineToConstantHeading(new Vector2d(36, -54), Math.toRadians(270), wallVelocityConstraint);
 		Action driveToWall3 = driveToWall3Builder.build();
@@ -249,22 +246,22 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a main action.
 		Action mainAction = new SequentialAction(
 
-				// Raise the wrist.
-				new InstantAction(() -> robotHardware.raiseWrist()),
-
 				// Drive to the chamber while raising the arm.
 				new ParallelAction(
 						driveToChamber1,
 						raiseArmToChamber()
 				),
 
-				// Score the preloaded specimen, begin plowing, and lower the arm.
+				// Wait for the arm to settle.
+				new WaitForTime(500),
+
+				// Score the preloaded specimen.
 				new ParallelAction(
-					scoreSpecimen(plow1, robotHardware),
-					new SequentialAction(
-						new WaitForTime(1000),
-						lowerArmFromChamber(true)
-					)
+						scoreSpecimen(plow1, robotHardware),
+						new SequentialAction(
+								new WaitForTime(1000),
+								lowerArmFromChamber(true)
+						)
 				),
 
 				// Plow the second sample.
@@ -284,12 +281,16 @@ public class AutoSpecimen extends LinearOpMode {
 				),
 
 				// Score the first wall specimen.
-				scoreSpecimen(driveToScore2, robotHardware),
-
-				// Drive to the wall while lowering the arm.
 				new ParallelAction(
-						driveToWall2,
-						lowerArmFromChamber(true)
+						scoreSpecimen(driveToWall2, robotHardware),
+						new SequentialAction(
+								new WaitForTime(200),
+								lowerArmFromChamber(true)
+						),
+						new SequentialAction(
+								new WaitForTime(800),
+								new InstantAction(() -> robotHardware.setWristWallPosition())
+						)
 				),
 
 				// Close the claw.
@@ -303,12 +304,16 @@ public class AutoSpecimen extends LinearOpMode {
 				),
 
 				// Score the second wall specimen.
-				scoreSpecimen(driveToScore3, robotHardware),
-
-				// Drive to the wall while lowering the arm.
 				new ParallelAction(
-						driveToWall3,
-						lowerArmFromChamber(true)
+						scoreSpecimen(driveToWall3, robotHardware),
+						new SequentialAction(
+								new WaitForTime(200),
+								lowerArmFromChamber(true)
+						),
+						new SequentialAction(
+								new WaitForTime(800),
+								new InstantAction(() -> robotHardware.setWristWallPosition())
+						)
 				),
 
 				// Close the claw.
@@ -390,6 +395,16 @@ public class AutoSpecimen extends LinearOpMode {
 		// Return the action.
 		return action;
 
+	}
+
+	// Determines whether the robot is close to the chamber.
+	private static boolean isCloseToChamber(Pose2dDual robotPose) {
+		return robotPose.position.x.value() < 15 && robotPose.position.y.value() > -45;
+	}
+
+	// Determines whether the robot is close to the wall.
+	private static boolean isCloseToWall(Pose2dDual robotPose) {
+		return robotPose.position.x.value() > 28 && robotPose.position.y.value() < -45;
 	}
 
 }
