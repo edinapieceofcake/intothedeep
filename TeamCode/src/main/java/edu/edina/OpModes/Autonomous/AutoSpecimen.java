@@ -149,12 +149,12 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a second drive to chamber action.
 		TrajectoryActionBuilder driveToChamber2Builder = driveToWall1Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(2, -35));
+				.strafeTo(new Vector2d(-6, -35));
 		Action driveToChamber2 = driveToChamber2Builder.build();
 
 		// Construct a second drive to score action.
 		TrajectoryActionBuilder driveToScore2Builder = driveToChamber2Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(2, -42));
+				.strafeTo(new Vector2d(-6, -42));
 		Action driveToScore2 = driveToScore2Builder.build();
 
 		// Construct a second drive to second wall action.
@@ -164,12 +164,12 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a third drive to chamber action.
 		TrajectoryActionBuilder driveToChamber3Builder = driveToWall2Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(4, -35));
+				.strafeTo(new Vector2d(-4, -35));
 		Action driveToChamber3 = driveToChamber3Builder.build();
 
 		// Construct a third drive to score action.
 		TrajectoryActionBuilder driveToScore3Builder = driveToChamber3Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(4, -42));
+				.strafeTo(new Vector2d(-4, -42));
 		Action driveToScore3 = driveToScore3Builder.build();
 
 		// Construct a third drive to wall action.
@@ -179,12 +179,12 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a fourth drive to chamber action.
 		TrajectoryActionBuilder driveToChamber4Builder = driveToWall3Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(6, -35));
+				.strafeTo(new Vector2d(-2, -35));
 		Action driveToChamber4 = driveToChamber4Builder.build();
 
 		// Construct a fourth drive to score action.
 		TrajectoryActionBuilder driveToScore4Builder = driveToChamber4Builder.endTrajectory().fresh()
-				.strafeTo(new Vector2d(6, -42));
+				.strafeTo(new Vector2d(-2, -42));
 		Action driveToScore4 = driveToScore4Builder.build();
 
 		// Construct a drive to park action.
@@ -291,7 +291,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct an action.
 		Action action = new ParallelAction(
-				new InstantAction(() -> robotHardware.setWristHighChamberHoldPosition()),00
+				new InstantAction(() -> robotHardware.setWristHighChamberHoldPosition()),
 				new SequentialAction(
 						new WaitForTime(100),
 						new InstantAction(() -> robotHardware.swivelSetClipNoDelay())
