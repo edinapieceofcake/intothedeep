@@ -30,6 +30,9 @@ public class AutoSpecimen extends LinearOpMode {
 	// Slow velocity
 	public static double SLOW_VELOCITY = 15;
 
+	// Medium velocity
+	public static double MEDIUM_VELOCITY = 27;
+
 	// Fast velocity
 	public static double FAST_VELOCITY = 30;
 
@@ -113,7 +116,7 @@ public class AutoSpecimen extends LinearOpMode {
 		//////////////////////////////////////////////////////////////////////
 
 		// Construct a plow velocity constraint.
-		TranslationalVelConstraint plowVelocityConstraint = new TranslationalVelConstraint(30);
+		TranslationalVelConstraint plowVelocityConstraint = new TranslationalVelConstraint(MEDIUM_VELOCITY);
 
 		// Construct a wall velocity constraint.
 		VelConstraint wallVelocityConstraint = (robotPose, _path, _disp) -> {
