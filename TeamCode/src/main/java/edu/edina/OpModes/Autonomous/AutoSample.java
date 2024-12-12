@@ -63,6 +63,9 @@ public class AutoSample extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        // Initialize the robot.
+        //////////////////////////////////////////////////////////////////////
+
         // Get hardware.
         robotHardware = new RobotHardware(this);
 
@@ -92,14 +95,48 @@ public class AutoSample extends LinearOpMode {
 
         }
 
+        // Wait for start.
+        //////////////////////////////////////////////////////////////////////
+
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 
         // Wait for the user to press start.
         waitForStart();
 
+        // Run the op mode.
+        //////////////////////////////////////////////////////////////////////
+
         // Indicate that this is running.
         robotHardware.log("Running...");
+
+        // Disable manual driving.
+        robotHardware.disableManualDriving();
+
+        // Get the main action.
+        Action mainAction = getMainAction();
+
+        // Add the action to the robot hardware.
+        robotHardware.addAction(mainAction);
+
+        // While the op mode is active...
+        while (opModeIsActive()) {
+
+            // Update the robot hardware.
+            robotHardware.update();
+
+            // Update the telemetry.
+            telemetry.update();
+
+        }
+
+    }
+
+    // Gets a main action.
+    private Action getMainAction() {
+
+        // Construct trajectories.
+        //////////////////////////////////////////////////////////////////////
 
         // Construct a start pose.
         Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
@@ -163,6 +200,9 @@ public class AutoSample extends LinearOpMode {
                 .build();
 
         // Construct a main action.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a main action.
         Action mainAction = new SequentialAction(
 
                 // Score preloaded sample.
@@ -184,7 +224,7 @@ public class AutoSample extends LinearOpMode {
                 driveFromSecondSpikeMarkToBasket,
                 raiseAndScoreSample(),
 
-                // Score third mark sample.
+                // Score third spike mark sample.
                 new InstantAction(() -> robotHardware.toggleSwivel()),
                 driveFromBasketToThirdSpikeMark,
                 new InstantAction(() -> robotHardware.closeClaw()),
@@ -197,25 +237,12 @@ public class AutoSample extends LinearOpMode {
 
         );
 
-        // Disable manual driving.
-        robotHardware.disableManualDriving();
-
-        // Add the action to the robot hardware.
-        robotHardware.addAction(mainAction);
-
-        // While the op mode is active...
-        while (opModeIsActive()) {
-
-            // Update the robot hardware.
-            robotHardware.update();
-
-            // Update the telemetry.
-            telemetry.update();
-
-        }
+        // Return the main action.
+        return mainAction;
 
     }
 
+    // Raises a sample in tele op.
     public static Action raiseSampleTeleOp(RobotHardware robotHardware) {
 
         // Construct a raise and score sample action.
@@ -234,6 +261,7 @@ public class AutoSample extends LinearOpMode {
 
     }
 
+    // Raises a sample in auto.
     public static Action raiseSampleAuto(RobotHardware robotHardware) {
 
         // Construct a raise and score sample action.
