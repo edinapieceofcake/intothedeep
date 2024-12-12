@@ -63,8 +63,6 @@ public class TeleOpPurePursuit extends LinearOpMode {
             Twist2dDual<Time> t = hw.odometry.update();
             pose = pose.plus(t.value());
 
-            double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
             if (gamepad1.a) {
                 pp.nextPursuitPoint(pose.position, 3);
                 purePursuitX = pp.getPursuitPoint().x;
@@ -84,7 +82,6 @@ public class TeleOpPurePursuit extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
                     pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()));
-            telemetry.addData("imu heading", yawIMU);
 
             // put rv into a MotorCommand, and print the powers it would use
             double axial = rv.x;

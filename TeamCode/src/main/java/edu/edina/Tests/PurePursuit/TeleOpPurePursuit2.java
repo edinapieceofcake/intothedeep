@@ -58,8 +58,6 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
             Twist2dDual<Time> twist = hw.odometry.update();
             pose = pose.plus(twist.value());
 
-            double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
             pp.nextPursuitPoint(pose.position, 4);
 
             purePursuitX = pp.getPursuitPoint().x;
@@ -74,7 +72,6 @@ public class TeleOpPurePursuit2 extends LinearOpMode {
 
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
                     pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()));
-            telemetry.addData("imu heading", yawIMU);
 
             // put rv into a MotorCommand, and print the powers it would use
             PoseVelocity2d robotVelRobot = twist.velocity().value();

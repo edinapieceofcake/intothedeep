@@ -80,8 +80,6 @@ public class PurePursuitOTOS extends LinearOpMode {
         while (opModeIsActive()) {
             pose = new Pose2d(-myOtos.getPosition().x, -myOtos.getPosition().y, myOtos.getPosition().h);
 
-            double yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
             pp.nextPursuitPoint(pose.position, 5);
 
             purePursuitX = pp.getPursuitPoint().x;
@@ -96,7 +94,6 @@ public class PurePursuitOTOS extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("x,    y,    h", "%.4f, %.4f, %.4f",
                     pose.position.x, pose.position.y, pose.heading.toDouble());
-            telemetry.addData("imu heading", yawIMU);
 
             // put rv into a MotorCommand, and print the powers it would use
             double axial = rv.x;

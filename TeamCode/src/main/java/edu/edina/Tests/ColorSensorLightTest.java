@@ -93,7 +93,7 @@ public class ColorSensorLightTest extends LinearOpMode {
 //            else
 //                setColor(SampleColor.NOTHING);
 
-            light.update();
+            light.update(false, true);
 
             telemetry.update();
 

@@ -19,39 +19,49 @@ public class Light {
         this.sampleSensor = sampleSensor;
     }
 
-    public void update() {
+    public void update(boolean wave, boolean sample) {
         setSampleColor();
-        updateWaveEffect();
-        showSample();
+        updateWaveEffect(wave);
+        showSample(sample);
+        lowPowerTest();
         neoPixel.showColors(pixArray);
     }
 
-    private void updateWaveEffect() {
-        double x;
-
-        double blueTime = Math.sin(t.seconds() * 1.5);
-        double a = 1/40.0;
-        double greenTime = t.seconds() * 0.5;
-        double greenFrequency = 1;
-
+    private void lowPowerTest() {
         for (int n = 0; n < numPixel; n++) {
-            int blueByte = n * 3 + 2;
-            x = n * a;
-            pixArray[blueByte] = toByte(Math.sin(blueTime + x), -1, 1, 10, 200);
+            int redByte = n * 3 + 1;
+            pixArray[redByte] = 127;
         }
+    }
 
-        for (int n = 0; n < numPixel; n++) {
-            int greenByte = n * 3;
-            x = greenFrequency * n;
-            pixArray[greenByte] = toByte(Math.sin(blueTime + x), -1, 1, 0, 150);
-        }
+    private void updateWaveEffect(boolean on) {
+        if (on) {
+            double x;
 
-        //pixel before and after white
-        int firstPixel = numPixel / 2;
+            double blueTime = Math.sin(t.seconds() * 1.5);
+            double a = 1 / 40.0;
+            double greenTime = t.seconds() * 0.5;
+            double greenFrequency = 1;
 
-        for (int n = 0; n < 3; n++) {
-            pixArray[(byte) ((firstPixel - 3) * 3 + n)] = (byte) 255;
-            pixArray[(byte) ((firstPixel + 2) * 3 + n)] = (byte) 255;
+            for (int n = 0; n < numPixel; n++) {
+                int blueByte = n * 3 + 2;
+                x = n * a;
+                pixArray[blueByte] = toByte(Math.sin(blueTime + x), -1, 1, 10, 200);
+            }
+
+            for (int n = 0; n < numPixel; n++) {
+                int greenByte = n * 3;
+                x = greenFrequency * n;
+                pixArray[greenByte] = toByte(Math.sin(blueTime + x), -1, 1, 0, 150);
+            }
+
+            //pixel before and after white
+            int firstPixel = numPixel / 2;
+
+            for (int n = 0; n < 3; n++) {
+                pixArray[(byte) ((firstPixel - 3) * 3 + n)] = (byte) 255;
+                pixArray[(byte) ((firstPixel + 2) * 3 + n)] = (byte) 255;
+            }
         }
     }
 
@@ -59,36 +69,38 @@ public class Light {
         sampleColor = sampleSensor.detectSampleColor();
     }
 
-    public void showSample() {
-        byte r, g, b;
-        if (sampleColor == SampleColor.RED) {
-            r = (byte) 255;
-            g = (byte) 0;
-            b = (byte) 0;
-        } else if (sampleColor == SampleColor.BLUE) {
-            r = (byte) 0;
-            g = (byte) 0;
-            b = (byte) 255;
-        } else if (sampleColor == SampleColor.YELLOW) {
-            r = (byte) 255;
-            g = (byte) 255;
-            b = (byte) 0;
-        } else {
-            r = (byte) 255;
-            g = (byte) 255;
-            b = (byte) 255;
-        }
+    public void showSample(boolean on) {
+        if (on) {
+            byte r, g, b;
+            if (sampleColor == SampleColor.RED) {
+                r = (byte) 255;
+                g = (byte) 0;
+                b = (byte) 0;
+            } else if (sampleColor == SampleColor.BLUE) {
+                r = (byte) 0;
+                g = (byte) 0;
+                b = (byte) 255;
+            } else if (sampleColor == SampleColor.YELLOW) {
+                r = (byte) 255;
+                g = (byte) 255;
+                b = (byte) 0;
+            } else {
+                r = (byte) 255;
+                g = (byte) 255;
+                b = (byte) 255;
+            }
 
-        int firstPixel = numPixel / 2 - 2;
+            int firstPixel = numPixel / 2 - 2;
 
-        for (int n = firstPixel; n < firstPixel + 4; n++) {
-            int greenByte = n * 3;
-            int redByte = n * 3 + 1;
-            int blueByte = n * 3 + 2;
+            for (int n = firstPixel; n < firstPixel + 4; n++) {
+                int greenByte = n * 3;
+                int redByte = n * 3 + 1;
+                int blueByte = n * 3 + 2;
 
-            pixArray[greenByte] = g;
-            pixArray[redByte] = r;
-            pixArray[blueByte] = b;
+                pixArray[greenByte] = g;
+                pixArray[redByte] = r;
+                pixArray[blueByte] = b;
+            }
         }
     }
 

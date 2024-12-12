@@ -16,7 +16,6 @@ import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.SparkFunOTOS;
 import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
 
-
 @TeleOp
 @Disabled
 public class OdometryMultiTest extends LinearOpMode {
@@ -116,8 +115,6 @@ public class OdometryMultiTest extends LinearOpMode {
             */
             Twist2dDual<Time> t = hw.odometry.update();
             pos3DW = pos3DW.plus(t.value());
-
-            yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             telemetry.addData("imu heading", "", yawIMU);
             telemetry.addData("3DW x, y, heading", "%.2f, %.2f, %.2f", pos3DW.position.x, pos3DW.position.y, Math.toDegrees(pos3DW.heading.toDouble()));
