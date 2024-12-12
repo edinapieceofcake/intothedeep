@@ -200,7 +200,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a first drive to wall action.
 		TrajectoryActionBuilder driveToWall1Builder = plow2Builder.endTrajectory().fresh()
-				.lineToY(-54, wallVelocityConstraint);
+				.lineToY(-55, wallVelocityConstraint);
 		Action driveToWall1 = driveToWall1Builder.build();
 
 		// Construct a second drive to chamber action.
