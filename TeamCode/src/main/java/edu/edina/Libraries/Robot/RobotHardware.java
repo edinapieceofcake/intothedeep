@@ -272,6 +272,13 @@ public class RobotHardware {
 
     }
 
+    // Sets the swivel to clip without a delay.
+    public void swivelSetClipNoDelay() {
+
+        swivel.setClip();
+
+    }
+
     // Toggles the swivel.
     public void toggleSwivel() {
 
