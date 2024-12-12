@@ -144,7 +144,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct a first drive to wall action.
 		TrajectoryActionBuilder driveToWall1Builder = plow2Builder.endTrajectory().fresh()
-				.lineToY(-52);
+				.lineToY(-54, velocityConstraint);
 		Action driveToWall1 = driveToWall1Builder.build();
 
 		// Construct a second drive to chamber action.
@@ -273,11 +273,13 @@ public class AutoSpecimen extends LinearOpMode {
 				// Score the third wall specimen.
 				scoreSpecimen(driveToScore4, robotHardware),
 
+				lowerArmFromChamber(false)
+
 				// Drive to park while lowering the arm.
-				new ParallelAction(
-						driveToPark,
-						lowerArmFromChamber(false)
-				)
+//				new ParallelAction(
+//						driveToPark,
+//						lowerArmFromChamber(false)
+//				)
 
 		);
 
