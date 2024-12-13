@@ -11,27 +11,22 @@ public class Light {
     private SampleColor sampleColor;
     private SampleSensor sampleSensor;
 
+    private final double LIGHT_MULT;
+
     public Light(HardwareMap hardwareMap, SampleSensor sampleSensor) {
         neoPixel = hardwareMap.get(NeoPixelDriverDevice.class, "neopixel_driver");
         numPixel = NeoPixelDriverDevice.NUM_PIXELS;
         pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
         t = new ElapsedTime();
         this.sampleSensor = sampleSensor;
+        LIGHT_MULT = 0.2;
     }
 
     public void update(boolean wave, boolean sample) {
         setSampleColor();
         updateWaveEffect(wave);
         showSample(sample);
-        lowPowerTest();
         neoPixel.showColors(pixArray);
-    }
-
-    private void lowPowerTest() {
-        for (int n = 0; n < numPixel; n++) {
-            int redByte = n * 3 + 1;
-            pixArray[redByte] = 127;
-        }
     }
 
     private void updateWaveEffect(boolean on) {
@@ -59,8 +54,8 @@ public class Light {
             int firstPixel = numPixel / 2;
 
             for (int n = 0; n < 3; n++) {
-                pixArray[(byte) ((firstPixel - 3) * 3 + n)] = (byte) 255;
-                pixArray[(byte) ((firstPixel + 2) * 3 + n)] = (byte) 255;
+                pixArray[(byte) ((firstPixel - 3) * 3 + n)] = (byte) (255 * LIGHT_MULT);
+                pixArray[(byte) ((firstPixel + 2) * 3 + n)] = (byte) (255 * LIGHT_MULT);
             }
         }
     }
@@ -73,21 +68,21 @@ public class Light {
         if (on) {
             byte r, g, b;
             if (sampleColor == SampleColor.RED) {
-                r = (byte) 255;
+                r = (byte) 70;
                 g = (byte) 0;
                 b = (byte) 0;
             } else if (sampleColor == SampleColor.BLUE) {
                 r = (byte) 0;
                 g = (byte) 0;
-                b = (byte) 255;
+                b = (byte) 70;
             } else if (sampleColor == SampleColor.YELLOW) {
-                r = (byte) 255;
-                g = (byte) 255;
+                r = (byte) 70;
+                g = (byte) 70;
                 b = (byte) 0;
             } else {
-                r = (byte) 255;
-                g = (byte) 255;
-                b = (byte) 255;
+                r = (byte) 70;
+                g = (byte) 70;
+                b = (byte) 70;
             }
 
             int firstPixel = numPixel / 2 - 2;

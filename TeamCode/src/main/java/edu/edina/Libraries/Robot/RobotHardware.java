@@ -76,8 +76,8 @@ public class RobotHardware {
     private final Lift lift;
     private final Slide slide;
     private final BoundingBoxFailsafe failsafe;
-    //private Light light;
-    //private SampleSensor sampleSensor;
+    private Light light;
+    private SampleSensor sampleSensor;
     private boolean turtleMode;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
@@ -93,7 +93,7 @@ public class RobotHardware {
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        //sampleSensor = new SampleSensor(hardwareMap);
+        sampleSensor = new SampleSensor(hardwareMap);
 
         // Get an FTC dashboard instance.
         dashboard = FtcDashboard.getInstance();
@@ -147,7 +147,7 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
-        //light = new Light(hardwareMap, sampleSensor);
+        light = new Light(hardwareMap, sampleSensor);
     }
 
     // Waits for the user to lower the lift.
@@ -344,7 +344,7 @@ public class RobotHardware {
         swivel.update();
 
         // Update the light.
-        //light.update();
+        light.update(true, true);
 
         // Update actions.
         //////////////////////////////////////////////////////////////////////
@@ -379,7 +379,6 @@ public class RobotHardware {
 
         // Update the dashboard.
         dashboard.sendTelemetryPacket(packet);
-
     }
 
     // Decrements the arm position.
