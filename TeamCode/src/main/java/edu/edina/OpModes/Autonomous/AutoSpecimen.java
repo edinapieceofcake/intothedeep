@@ -208,8 +208,7 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct second plow action.
 		TrajectoryActionBuilder plow2Builder = plow1Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
-				.splineToConstantHeading(new Vector2d(48, -13), Math.toRadians(0), plowVelocityConstraint)
-				.splineToConstantHeading(new Vector2d(50, -13), Math.toRadians(0), plowVelocityConstraint)
+				.splineToConstantHeading(new Vector2d(52, -14), Math.toRadians(0), plowVelocityConstraint)
 				.splineToConstantHeading(new Vector2d(WALL_X, -49), Math.toRadians(270), plowVelocityConstraint)
 				.lineToY(WALL_Y, wallVelocityConstraint);
 		Action plow2 = plow2Builder.build();
@@ -262,7 +261,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 				// Drive to the chamber while raising the arm.
 				raiseArmToChamberAndDrive(driveToChamber1, false, true),
-				
+
 				// Score the preloaded specimen and plow the first sample.
 				new ParallelAction(
 						scoreSpecimen(plow1, robotHardware),
