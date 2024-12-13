@@ -181,7 +181,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct first plow action.
 		TrajectoryActionBuilder plow1Builder = driveToChamber1Builder.endTrajectory().fresh()
-				.setTangent(Math.toRadians(0))
+				.setTangent(Math.toRadians(270))
 				.splineToConstantHeading(new Vector2d(36, -24), Math.toRadians(90), plowVelocityConstraint)
 				.splineToConstantHeading(new Vector2d(42, -14), Math.toRadians(0), plowVelocityConstraint)
 				.splineToConstantHeading(new Vector2d(50, -49), Math.toRadians(270), plowVelocityConstraint);
