@@ -96,9 +96,8 @@ public class MeepMeepTesting {
                     .splineToConstantHeading(new Vector2d(48,-49), Math.toRadians(270))
 
                     // Plow second sample
-                    .setTangent(Math.toRadians(90))
-                    .splineToConstantHeading(new Vector2d(48,-13), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(50,-13), Math.toRadians(0))
+                    .setTangent(Math.toRadians(270))
+                    .splineToConstantHeading(new Vector2d(52,-13), Math.toRadians(0))
                     .splineToConstantHeading(new Vector2d(54,-49), Math.toRadians(270))
 
                     //.strafeTo(new Vector2d(46,-55))
@@ -107,10 +106,10 @@ public class MeepMeepTesting {
                     .strafeTo(new Vector2d(57,-55))
                     .strafeTo(new Vector2d(57,-10))
                     .strafeTo(new Vector2d(61,-10))
-                    .strafeTo(new Vector2d(61,-55))
+                    .strafeTo(new Vector2d(61,-55))*/
 //                                  end here
-                                    .strafeTo(new Vector2d(61,-50))
-                            .strafeTo(new Vector2d(55,-50))
+                                    //.strafeTo(new Vector2d(61,-50))
+                            //.strafeTo(new Vector2d(55,-50))
                                     .strafeTo(new Vector2d(55,-55))
                     .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
                     .strafeTo(new Vector2d(55,-55))
@@ -120,7 +119,7 @@ public class MeepMeepTesting {
                     .strafeTo(new Vector2d(55,-55))
                     .strafeToLinearHeading(new Vector2d(6,-35), Math.toRadians(270))
                     .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(8,-35), Math.toRadians(270))*/
+                    .strafeToLinearHeading(new Vector2d(8,-35), Math.toRadians(270))
 
 
 
