@@ -169,14 +169,14 @@ public class AutoSpecimen extends LinearOpMode {
 		//////////////////////////////////////////////////////////////////////
 
 		// Construct a start pose.
-		Pose2d startPose = new Pose2d(0, -62.5, Math.toRadians(180));
+		Pose2d startPose = new Pose2d(8, -60, Math.toRadians(270));
 
 		// Construct a drive interface.
 		MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
 		// Construct a first drive to chamber action.
 		TrajectoryActionBuilder driveToChamber1Builder = drive.actionBuilder(startPose)
-				.strafeToLinearHeading(new Vector2d(0, -35), Math.toRadians(270));
+				.strafeTo(new Vector2d(8, -34));
 		Action driveToChamber1 = driveToChamber1Builder.build();
 
 		// Construct first plow action.
@@ -199,7 +199,7 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a second drive to chamber action.
 		TrajectoryActionBuilder driveToChamber2Builder = plow2Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
-				.splineToConstantHeading(new Vector2d(6, -35), Math.toRadians(90), chamberVelocityConstraint);
+				.splineToConstantHeading(new Vector2d(6, -34), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber2 = driveToChamber2Builder.build();
 
 		// Construct a first drive to first wall action.
@@ -211,7 +211,7 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a third drive to chamber action.
 		TrajectoryActionBuilder driveToChamber3Builder = driveToWall1Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
-				.splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(90), chamberVelocityConstraint);
+				.splineToConstantHeading(new Vector2d(3, -34), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber3 = driveToChamber3Builder.build();
 
 		// Construct a second drive to wall action.
@@ -223,7 +223,7 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a fourth drive to chamber action.
 		TrajectoryActionBuilder driveToChamber4Builder = driveToWall2Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
-				.splineToConstantHeading(new Vector2d(0, -35), Math.toRadians(90), chamberVelocityConstraint);
+				.splineToConstantHeading(new Vector2d(0, -34), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber4 = driveToChamber4Builder.build();
 
 		// Construct a fourth drive to score action.
