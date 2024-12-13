@@ -5,7 +5,9 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -55,6 +57,12 @@ public class AutoSample extends LinearOpMode {
 
     // Timeout in milliseconds
     public static int TIMEOUT_MILLISECONDS = 3500;
+
+    // Fast velocity
+    public static double FAST_VELOCITY = 30;
+
+    // Slow velocity
+    public static double SLOW_VELOCITY = 15;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -135,6 +143,33 @@ public class AutoSample extends LinearOpMode {
     // Gets a main action.
     private Action getMainAction() {
 
+        // Construct velocity constraints.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a spike mark velocity constraint.
+        VelConstraint spikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
+
+            // Determine whether the robot is close to a spike mark.
+            boolean closeToSpikeMark = isCloseToSpikeMark(robotPose);
+
+            // If the robot is close to a spike mark...
+            if (closeToSpikeMark) {
+
+                // Go slow.
+                return SLOW_VELOCITY;
+
+            }
+
+            // Otherwise (if the robot is far from a spike mark)...
+            else {
+
+                // Go fast.
+                return FAST_VELOCITY;
+
+            }
+
+        };
+
         // Construct trajectories.
         //////////////////////////////////////////////////////////////////////
 
@@ -166,7 +201,7 @@ public class AutoSample extends LinearOpMode {
 
         // Construct an action for driving from the basket to the first spike mark.
         Action driveFromBasketToFirstSpikeMark = drive.actionBuilder(basketPose)
-                .strafeToLinearHeading(firstSpikeMarkPose.position, firstSpikeMarkPose.heading)
+                .strafeToLinearHeading(firstSpikeMarkPose.position, firstSpikeMarkPose.heading, spikeMarkVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the first spike mark to the basket.
@@ -181,7 +216,7 @@ public class AutoSample extends LinearOpMode {
 
         // Construct an action for driving from the first and a half spike mark to the second spike mark.
         Action driveFromFirstAndAHalfToSecondSpikeMark = drive.actionBuilder(firstAndAHalfSpikeMarkPose)
-                .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
+                .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading, spikeMarkVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the second spike mark to the basket.
@@ -191,7 +226,7 @@ public class AutoSample extends LinearOpMode {
 
         // Construct an action for driving from the basket to the third spike mark.
         Action driveFromBasketToThirdSpikeMark = drive.actionBuilder(basketPose)
-                .strafeToLinearHeading(thirdSpikeMarkPose.position, thirdSpikeMarkPose.heading)
+                .strafeToLinearHeading(thirdSpikeMarkPose.position, thirdSpikeMarkPose.heading, spikeMarkVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the third spike mark to the basket.
@@ -324,6 +359,11 @@ public class AutoSample extends LinearOpMode {
         // Return the action.
         return action;
 
+    }
+
+    // Determines whether the robot is close a spike mark.
+    private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
+        return robotPose.position.y.value() > -40;
     }
 
 }
