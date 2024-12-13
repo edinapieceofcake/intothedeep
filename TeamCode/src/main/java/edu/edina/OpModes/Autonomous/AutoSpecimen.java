@@ -243,15 +243,12 @@ public class AutoSpecimen extends LinearOpMode {
 		Action mainAction = new SequentialAction(
 
 				// Drive to the chamber while raising the arm.
-				new ParallelAction(
-						driveToChamber1,
-						raiseArmToChamber()
-				),
+				raiseArmToChamberAndDrive(driveToChamber1, false),
 
 				// Wait for the arm to settle.
 				new WaitForTime(500),
 
-				// Score the preloaded specimen.
+				// Score the preloaded specimen and plow the first sample.
 				new ParallelAction(
 						scoreSpecimen(plow1, robotHardware),
 						new SequentialAction(
@@ -263,61 +260,17 @@ public class AutoSpecimen extends LinearOpMode {
 				// Plow the second sample.
 				plow2,
 
-				// Close the claw.
-				new InstantAction(() -> robotHardware.closeClaw()),
-				new WaitForTime(200),
+				// Grab and score the first wall specimen.
+				grabAndScoreSpecimen(driveToChamber2, driveToWall1),
+
+				// Grab and score the second wall specimen.
+				grabAndScoreSpecimen(driveToChamber3, driveToWall2),
+
+				// Grab the third wall specimen.
+				grabSpecimen(),
 
 				// Drive to the chamber while raising the arm.
-				new ParallelAction(
-						driveToChamber2,
-						raiseArmToChamber()
-				),
-
-				// Score the first wall specimen.
-				new ParallelAction(
-						scoreSpecimen(driveToWall1, robotHardware),
-						new SequentialAction(
-								new WaitForTime(200),
-								lowerArmFromChamber(true)
-						),
-						new SequentialAction(
-								new WaitForTime(800),
-								new InstantAction(() -> robotHardware.setWristWallPosition())
-						)
-				),
-
-				// Close the claw.
-				new InstantAction(() -> robotHardware.closeClaw()),
-				new WaitForTime(200),
-
-				// Drive to the chamber while raising the arm.
-				new ParallelAction(
-						driveToChamber3,
-						raiseArmToChamber()
-				),
-
-				// Score the second wall specimen.
-				new ParallelAction(
-						scoreSpecimen(driveToWall2, robotHardware),
-						new SequentialAction(
-								new WaitForTime(200),
-								lowerArmFromChamber(true)
-						),
-						new SequentialAction(
-								new WaitForTime(800),
-								new InstantAction(() -> robotHardware.setWristWallPosition())
-						)
-				),
-
-				// Close the claw.
-				new InstantAction(() -> robotHardware.closeClaw()),
-				new WaitForTime(200),
-
-				// Drive to the chamber while raising the arm.
-				new ParallelAction(
-						driveToChamber4,
-						raiseArmToChamber()
-				),
+				raiseArmToChamberAndDrive(driveToChamber4, true),
 
 				// Score the third wall specimen.
 				scoreSpecimen(driveToScore4, robotHardware),
@@ -338,17 +291,26 @@ public class AutoSpecimen extends LinearOpMode {
 
 	}
 
-	// Raises arm to chamber.
-	private Action raiseArmToChamber() {
+	// Raises arm the arm to the chamber and drives.
+	private Action raiseArmToChamberAndDrive(Action drive, boolean delayDriving) {
+
+		// Get a drive delay.
+		int driveDelay = delayDriving ? 500 : 0;
 
 		// Construct an action.
 		Action action = new ParallelAction(
-				new InstantAction(() -> robotHardware.setWristHighChamberHoldPosition()),
-				new SequentialAction(
-						new WaitForTime(100),
-						new InstantAction(() -> robotHardware.swivelSetClipNoDelay())
+				new ParallelAction(
+						new InstantAction(() -> robotHardware.setWristHighChamberHoldPosition()),
+						new SequentialAction(
+								new WaitForTime(500),
+								new InstantAction(() -> robotHardware.swivelSetClipNoDelay())
+						),
+						new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false)
 				),
-				new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false)
+				new SequentialAction(
+						new WaitForTime(driveDelay),
+						drive
+				)
 		);
 
 		// Return the action.
@@ -402,6 +364,59 @@ public class AutoSpecimen extends LinearOpMode {
 	// Determines whether the robot is close to the wall.
 	private static boolean isCloseToWall(Pose2dDual robotPose) {
 		return robotPose.position.x.value() > 28 && robotPose.position.y.value() < -45;
+	}
+
+	// Grabs a speciment.
+	private Action grabSpecimen() {
+
+		// Construct an action.
+		Action action = new SequentialAction(
+				new InstantAction(() -> robotHardware.closeClaw()),
+				new WaitForTime(400)
+		);
+
+		// Return the action.
+		return action;
+
+	}
+
+	// Grabs and scores a specimen.
+	private Action grabAndScoreSpecimen(Action driveToChamber, Action driveToWall) {
+
+		// Construct an action.
+		Action action = new SequentialAction(
+
+			// Grab the specimen.
+			grabSpecimen(),
+
+			// Drive to the chamber while raising the arm.
+			raiseArmToChamberAndDrive(driveToChamber, true),
+
+			// Score the wall specimen.
+			new ParallelAction(
+
+					// Score the specimen and then drive to the wall.
+					scoreSpecimen(driveToWall, robotHardware),
+
+					// Lower the arm from the chamber.
+					new SequentialAction(
+							new WaitForTime(200),
+							lowerArmFromChamber(true)
+					),
+
+					// Set the wrist to the wall position.
+					new SequentialAction(
+							new WaitForTime(800),
+							new InstantAction(() -> robotHardware.setWristWallPosition())
+					)
+
+			)
+
+		);
+
+		// Return the action.
+		return action;
+
 	}
 
 }
