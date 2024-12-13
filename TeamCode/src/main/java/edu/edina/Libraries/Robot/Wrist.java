@@ -31,7 +31,7 @@ public class Wrist {
     public static double INITIALIZE_POSITION = 0.92;
 
     // Wall position
-    public static double WALL_POSITION = 0.5;
+    public static double WALL_POSITION = 0.47;
 
     // Servo
     private final TrackingServo servo;
