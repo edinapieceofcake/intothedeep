@@ -309,7 +309,7 @@ public class AutoSpecimen extends LinearOpMode {
 	private Action raiseArmToChamberAndDrive(Action drive, boolean delayDriving, boolean moveArmFast) {
 
 		// Get a drive delay.
-		int driveDelay = delayDriving ? 500 : 0;
+		int driveDelay = delayDriving ? 250 : 0;
 
 		// Construct an action.
 		Action action = new ParallelAction(
@@ -356,7 +356,7 @@ public class AutoSpecimen extends LinearOpMode {
 		Action action = new ParallelAction(
 				new InstantAction(() -> robotHardware.setWristHighChamberClipPosition()),
 				new SequentialAction(
-						new WaitForTime(200),
+						//new WaitForTime(200),
 						backup
 				),
 				new SequentialAction(
