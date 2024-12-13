@@ -243,7 +243,7 @@ public class AutoSpecimen extends LinearOpMode {
 		Action mainAction = new SequentialAction(
 
 				// Drive to the chamber while raising the arm.
-				raiseArmToChamberAndDrive(driveToChamber1, false),
+				raiseArmToChamberAndDrive(driveToChamber1, false, true),
 
 				// Wait for the arm to settle.
 				new WaitForTime(500),
@@ -270,7 +270,7 @@ public class AutoSpecimen extends LinearOpMode {
 				grabSpecimen(),
 
 				// Drive to the chamber while raising the arm.
-				raiseArmToChamberAndDrive(driveToChamber4, true),
+				raiseArmToChamberAndDrive(driveToChamber4, true, false),
 
 				// Score the third wall specimen.
 				scoreSpecimen(driveToScore4, robotHardware),
@@ -292,7 +292,7 @@ public class AutoSpecimen extends LinearOpMode {
 	}
 
 	// Raises arm the arm to the chamber and drives.
-	private Action raiseArmToChamberAndDrive(Action drive, boolean delayDriving) {
+	private Action raiseArmToChamberAndDrive(Action drive, boolean delayDriving, boolean moveArmFast) {
 
 		// Get a drive delay.
 		int driveDelay = delayDriving ? 500 : 0;
@@ -305,7 +305,7 @@ public class AutoSpecimen extends LinearOpMode {
 								new WaitForTime(500),
 								new InstantAction(() -> robotHardware.swivelSetClipNoDelay())
 						),
-						new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false)
+						new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, moveArmFast)
 				),
 				new SequentialAction(
 						new WaitForTime(driveDelay),
@@ -390,7 +390,7 @@ public class AutoSpecimen extends LinearOpMode {
 			grabSpecimen(),
 
 			// Drive to the chamber while raising the arm.
-			raiseArmToChamberAndDrive(driveToChamber, true),
+			raiseArmToChamberAndDrive(driveToChamber, true, false),
 
 			// Score the wall specimen.
 			new ParallelAction(
