@@ -388,7 +388,10 @@ public class AutoSpecimen extends LinearOpMode {
 		// Construct a score specimen action.
 		Action action = new ParallelAction(
 				new InstantAction(() -> robotHardware.setWristHighChamberClipPosition()),
-				backup,
+				new SequentialAction(
+						new WaitForTime(200),
+						backup
+				),
 				new SequentialAction(
 						new WaitForTime(400),
 						new InstantAction(() -> robotHardware.openClaw())
