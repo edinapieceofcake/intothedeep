@@ -28,7 +28,7 @@ public class Wrist {
     //public static double ANGLE_POSITION = 0.08;
 
     // Init position
-    public static double INITIALIZE_POSITION = 0.88;
+    public static double INITIALIZE_POSITION = 0.92;
 
     // Wall position
     public static double WALL_POSITION = 0.5;
