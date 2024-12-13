@@ -30,11 +30,8 @@ public class AutoSpecimen extends LinearOpMode {
 	// Slow velocity
 	public static double SLOW_VELOCITY = 15;
 
-	// Medium velocity
-	public static double MEDIUM_VELOCITY = 27;
-
 	// Fast velocity
-	public static double FAST_VELOCITY = 30;
+	public static double FAST_VELOCITY = 27;
 
 	// Robot hardware
 	private RobotHardware robotHardware;
@@ -116,7 +113,7 @@ public class AutoSpecimen extends LinearOpMode {
 		//////////////////////////////////////////////////////////////////////
 
 		// Construct a plow velocity constraint.
-		TranslationalVelConstraint plowVelocityConstraint = new TranslationalVelConstraint(MEDIUM_VELOCITY);
+		TranslationalVelConstraint plowVelocityConstraint = new TranslationalVelConstraint(FAST_VELOCITY);
 
 		// Construct a wall velocity constraint.
 		VelConstraint wallVelocityConstraint = (robotPose, _path, _disp) -> {
@@ -195,40 +192,36 @@ public class AutoSpecimen extends LinearOpMode {
 				.setTangent(Math.toRadians(90))
 				.splineToConstantHeading(new Vector2d(48, -13), Math.toRadians(0), plowVelocityConstraint)
 				.splineToConstantHeading(new Vector2d(50, -13), Math.toRadians(0), plowVelocityConstraint)
-				.splineToConstantHeading(new Vector2d(54, -49), Math.toRadians(270), plowVelocityConstraint);
+				.splineToConstantHeading(new Vector2d(54, -49), Math.toRadians(270), plowVelocityConstraint)
+				.lineToY(-55, wallVelocityConstraint);
 		Action plow2 = plow2Builder.build();
 
-		// Construct a first drive to wall action.
-		TrajectoryActionBuilder driveToWall1Builder = plow2Builder.endTrajectory().fresh()
-				.lineToY(-55, wallVelocityConstraint);
-		Action driveToWall1 = driveToWall1Builder.build();
-
 		// Construct a second drive to chamber action.
-		TrajectoryActionBuilder driveToChamber2Builder = driveToWall1Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToChamber2Builder = plow2Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
 				.splineToConstantHeading(new Vector2d(6, -35), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber2 = driveToChamber2Builder.build();
 
-		// Construct a second drive to second wall action.
-		TrajectoryActionBuilder driveToWall2Builder = driveToChamber2Builder.endTrajectory().fresh()
+		// Construct a first drive to first wall action.
+		TrajectoryActionBuilder driveToWall1Builder = driveToChamber2Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(270))
 				.splineToConstantHeading(new Vector2d(36, -54), Math.toRadians(270), wallVelocityConstraint);
-		Action driveToWall2 = driveToWall2Builder.build();
+		Action driveToWall1 = driveToWall1Builder.build();
 
 		// Construct a third drive to chamber action.
-		TrajectoryActionBuilder driveToChamber3Builder = driveToWall2Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToChamber3Builder = driveToWall1Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
 				.splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber3 = driveToChamber3Builder.build();
 
-		// Construct a third drive to wall action.
-		TrajectoryActionBuilder driveToWall3Builder = driveToChamber3Builder.endTrajectory().fresh()
+		// Construct a second drive to wall action.
+		TrajectoryActionBuilder driveToWall2Builder = driveToChamber3Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(270))
 				.splineToConstantHeading(new Vector2d(36, -54), Math.toRadians(270), wallVelocityConstraint);
-		Action driveToWall3 = driveToWall3Builder.build();
+		Action driveToWall2 = driveToWall2Builder.build();
 
 		// Construct a fourth drive to chamber action.
-		TrajectoryActionBuilder driveToChamber4Builder = driveToWall3Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToChamber4Builder = driveToWall2Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
 				.splineToConstantHeading(new Vector2d(0, -35), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber4 = driveToChamber4Builder.build();
@@ -270,9 +263,6 @@ public class AutoSpecimen extends LinearOpMode {
 				// Plow the second sample.
 				plow2,
 
-				// Drive to the wall.
-				driveToWall1,
-
 				// Close the claw.
 				new InstantAction(() -> robotHardware.closeClaw()),
 				new WaitForTime(200),
@@ -285,7 +275,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 				// Score the first wall specimen.
 				new ParallelAction(
-						scoreSpecimen(driveToWall2, robotHardware),
+						scoreSpecimen(driveToWall1, robotHardware),
 						new SequentialAction(
 								new WaitForTime(200),
 								lowerArmFromChamber(true)
@@ -308,7 +298,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 				// Score the second wall specimen.
 				new ParallelAction(
-						scoreSpecimen(driveToWall3, robotHardware),
+						scoreSpecimen(driveToWall2, robotHardware),
 						new SequentialAction(
 								new WaitForTime(200),
 								lowerArmFromChamber(true)
@@ -332,6 +322,7 @@ public class AutoSpecimen extends LinearOpMode {
 				// Score the third wall specimen.
 				scoreSpecimen(driveToScore4, robotHardware),
 
+				// Lower the arm.
 				lowerArmFromChamber(false)
 
 				// Drive to park while lowering the arm.
