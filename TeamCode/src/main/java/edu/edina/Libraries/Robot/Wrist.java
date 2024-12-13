@@ -12,26 +12,21 @@ public class Wrist {
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
     // Down position
-    public static double DOWN_POSITION = 0.22;
+    public static double DOWN_POSITION = 0.16;
 
-    public static double HIGH_CHAMBER_HOLD_POSITION = 0.77;
-    public static double HIGH_CHAMBER_CLIP_POSITION = 1;
+    public static double HIGH_CHAMBER_HOLD_POSITION = 0.69;
+    public static double HIGH_CHAMBER_CLIP_POSITION = 0.9;
 
     public static double HIGH_BASKET_POSITION = 0.67;
-
-    //public static double LOW_CHAMBER_SCORE_POSITION = 0.00;
 
     // Up position
     public static double UP_POSITION = 0.79;
 
-    // Angle position
-    //public static double ANGLE_POSITION = 0.08;
-
     // Init position
-    public static double INITIALIZE_POSITION = 0.92;
+    public static double INITIALIZE_POSITION = 0.84;
 
     // Wall position
-    public static double WALL_POSITION = 0.48;
+    public static double WALL_POSITION = 0.42;
 
     // Servo
     private final TrackingServo servo;
