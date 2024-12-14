@@ -93,8 +93,6 @@ public class RobotHardware {
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        sampleSensor = new SampleSensor(hardwareMap);
-
         // Get an FTC dashboard instance.
         dashboard = FtcDashboard.getInstance();
 
@@ -146,8 +144,11 @@ public class RobotHardware {
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
+    }
 
-        light = new Light(hardwareMap, sampleSensor);
+    public void initializeLights() {
+        sampleSensor = new SampleSensor(opMode.hardwareMap);
+        light = new Light(opMode.hardwareMap, sampleSensor);
     }
 
     // Waits for the user to lower the lift.
@@ -263,8 +264,8 @@ public class RobotHardware {
 
         // Construct an action to set swivel to clip position after a delay.
         Action action = new SequentialAction(
-            new WaitForTime(100),
-            new InstantAction(() -> swivel.setClip())
+                new WaitForTime(100),
+                new InstantAction(() -> swivel.setClip())
         );
 
         // Run the action.
@@ -324,7 +325,7 @@ public class RobotHardware {
         claw.update();
 
         // If manual driving is allowed...
-        if(allowManualDriving) {
+        if (allowManualDriving) {
 
             // Update the drivetrain.
             drivetrain.update();
@@ -344,7 +345,8 @@ public class RobotHardware {
         swivel.update();
 
         // Update the light.
-        light.update(true, true);
+        if (light != null)
+            light.update(true, true);
 
         // Update actions.
         //////////////////////////////////////////////////////////////////////
@@ -718,6 +720,7 @@ public class RobotHardware {
     public void setWristHighChamberHoldPosition() {
         wrist.setHighChamberHoldPosition();
     }
+
     public void setWristHighChamberClipPosition() {
         wrist.setHighChamberClipPosition();
     }
@@ -760,7 +763,7 @@ public class RobotHardware {
         // Construct a score specimen action.
         Action action = new SequentialAction(
                 new InstantAction(() -> disableManualDriving()),
-                AutoSpecimen.scoreSpecimen(backup,this),
+                AutoSpecimen.scoreSpecimen(backup, this),
                 new InstantAction(() -> enableManualDriving())
         );
 
@@ -854,7 +857,7 @@ public class RobotHardware {
     public int getCurrentLiftPosition() {
 
         // Return the lift's current position.
-        return (int)lift.getPosition();
+        return (int) lift.getPosition();
 
     }
 
