@@ -1,11 +1,13 @@
 package edu.edina.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import edu.edina.Libraries.Robot.INA219Device;
 
 @Autonomous
+@Disabled
 public class PowerMonitorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
