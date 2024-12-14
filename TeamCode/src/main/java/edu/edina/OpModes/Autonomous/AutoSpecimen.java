@@ -46,7 +46,7 @@ public class AutoSpecimen extends LinearOpMode {
 	public static double START_Y = -60;
 
 	// Wall x coordinate
-	public static double WALL_X = 36;
+	public static double WALL_X = 39;
 
 	// Wall y coordinate
 	public static double WALL_Y = -55;
@@ -372,15 +372,15 @@ public class AutoSpecimen extends LinearOpMode {
 
 	// Determines whether the robot is close to the chamber.
 	private static boolean isCloseToChamber(Pose2dDual robotPose) {
-		return robotPose.position.x.value() < 15 && robotPose.position.y.value() > -45;
+		return robotPose.position.y.value() > -40;
 	}
 
 	// Determines whether the robot is close to the wall.
 	private static boolean isCloseToWall(Pose2dDual robotPose) {
-		return robotPose.position.x.value() > 28 && robotPose.position.y.value() < -45;
+		return robotPose.position.y.value() < -48;
 	}
 
-	// Grabs a speciment.
+	// Grabs a specimen.
 	private Action grabSpecimen() {
 
 		// Construct an action.
