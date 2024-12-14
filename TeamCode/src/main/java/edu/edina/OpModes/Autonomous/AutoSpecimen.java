@@ -28,7 +28,7 @@ import edu.edina.Libraries.Robot.WaitForHardware;
 public class AutoSpecimen extends LinearOpMode {
 
 	// Chamber y coordinate
-	public static double CHAMBER_Y = -33;
+	public static double CHAMBER_Y = -34;
 
 	// Fast velocity
 	public static double FAST_VELOCITY = 27;
@@ -49,7 +49,7 @@ public class AutoSpecimen extends LinearOpMode {
 	public static double WALL_X = 39;
 
 	// Wall y coordinate
-	public static double WALL_Y = -55;
+	public static double WALL_Y = -56;
 
 	// Robot hardware
 	private RobotHardware robotHardware;
@@ -147,6 +147,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 				// Go slow.
 				return SLOW_VELOCITY;
+
 			}
 
 			// Otherwise (if the robot is far from the chamber and wall)...
@@ -202,7 +203,7 @@ public class AutoSpecimen extends LinearOpMode {
 				.setTangent(Math.toRadians(270))
 				.splineToConstantHeading(new Vector2d(36, -24), Math.toRadians(90), plowVelocityConstraint)
 				.splineToConstantHeading(new Vector2d(42, -14), Math.toRadians(0), plowVelocityConstraint)
-				.splineToConstantHeading(new Vector2d(50, -49), Math.toRadians(270), plowVelocityConstraint);
+				.splineToConstantHeading(new Vector2d(50, -51), Math.toRadians(270), plowVelocityConstraint);
 		Action plow1 = plow1Builder.build();
 
 		// Construct second plow action.
@@ -377,7 +378,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 	// Determines whether the robot is close to the wall.
 	private static boolean isCloseToWall(Pose2dDual robotPose) {
-		return robotPose.position.y.value() < -48;
+		return robotPose.position.y.value() < -46;
 	}
 
 	// Grabs a specimen.

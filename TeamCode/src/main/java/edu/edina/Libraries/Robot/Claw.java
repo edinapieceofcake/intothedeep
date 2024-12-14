@@ -12,10 +12,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Claw {
 
     // Closed position
-    public static double CLOSED_POSITION = 0.85;
+    public static double CLOSED_POSITION = 0.48;
 
     // Open position
-    public static double OPEN_POSITION = 0.5;
+    public static double OPEN_POSITION = 0.05;
 
     // Open
     private boolean open;
