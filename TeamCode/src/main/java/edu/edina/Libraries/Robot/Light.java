@@ -19,7 +19,7 @@ public class Light {
         pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
         t = new ElapsedTime();
         this.sampleSensor = sampleSensor;
-        LIGHT_MULT = 0.2;
+        LIGHT_MULT = 0.07;
     }
 
     public void update(boolean wave, boolean sample) {
@@ -68,26 +68,24 @@ public class Light {
         if (on) {
             byte r, g, b;
             if (sampleColor == SampleColor.RED) {
-                r = (byte) 70;
+                r = (byte) 30;
                 g = (byte) 0;
                 b = (byte) 0;
             } else if (sampleColor == SampleColor.BLUE) {
                 r = (byte) 0;
                 g = (byte) 0;
-                b = (byte) 70;
+                b = (byte) 30;
             } else if (sampleColor == SampleColor.YELLOW) {
-                r = (byte) 70;
-                g = (byte) 70;
+                r = (byte) 30;
+                g = (byte) 30;
                 b = (byte) 0;
             } else {
-                r = (byte) 70;
-                g = (byte) 70;
-                b = (byte) 70;
+                r = (byte) 30;
+                g = (byte) 30;
+                b = (byte) 30;
             }
 
-            int firstPixel = numPixel / 2 - 2;
-
-            for (int n = firstPixel; n < firstPixel + 4; n++) {
+            for (int n = 0; n < numPixel; n++) {
                 int greenByte = n * 3;
                 int redByte = n * 3 + 1;
                 int blueByte = n * 3 + 2;

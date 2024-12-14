@@ -346,7 +346,7 @@ public class RobotHardware {
 
         // Update the light.
         if (light != null)
-            light.update(true, true);
+            light.update(false, true);
 
         // Update actions.
         //////////////////////////////////////////////////////////////////////
