@@ -288,23 +288,35 @@ public class TeleOpMain extends LinearOpMode {
         // If user pressed right bumper...
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
 
-            // Clear any pending actions.
-            robotHardware.clearActions();
+            // If the robot is in the basket position...
+            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
 
-            // Raise the wrist.
-            robotHardware.raiseWrist();
+                // Notify the user.
+                robotHardware.beep();
 
-            // Resets the swivel.
-            robotHardware.swivelSetHorizontal();
+            }
 
-            // Move the arm to the ground position.
-            robotHardware.setArmGroundPosition();
+            else {
 
-            // Move the lift to the ground position
-            robotHardware.setLiftGroundPosition();
+                // Clear any pending actions.
+                robotHardware.clearActions();
 
-            // Fully retract the slide.
-            robotHardware.setMinimumExtension();
+                // Raise the wrist.
+                robotHardware.raiseWrist();
+
+                // Resets the swivel.
+                robotHardware.swivelSetHorizontal();
+
+                // Move the arm to the ground position.
+                robotHardware.setArmGroundPosition();
+
+                // Move the lift to the ground position
+                robotHardware.setLiftGroundPosition();
+
+                // Fully retract the slide.
+                robotHardware.setMinimumExtension();
+
+            }
 
         }
 
