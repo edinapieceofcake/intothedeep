@@ -28,8 +28,8 @@ public class AutoSample extends LinearOpMode {
     public static double START_HEADING = 0;
 
     // Basket pose
-    public static double BASKET_X = -49;
-    public static double BASKET_Y = -49;
+    public static double BASKET_X = -50;
+    public static double BASKET_Y = -50;
     public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
 
     // First spike mark pose
@@ -248,16 +248,20 @@ public class AutoSample extends LinearOpMode {
                 driveFromBasketToFirstSpikeMark,
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
-                driveFromFirstSpikeMarkToBasket,
-                raiseAndScoreSample(),
+                new ParallelAction(
+                        driveFromFirstSpikeMarkToBasket,
+                        raiseAndScoreSample()
+                ),
 
                 // Score second spike mark sample.
                 driveFromBasketToFirstAndAHalfSpikeMark,
                 driveFromFirstAndAHalfToSecondSpikeMark,
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
-                driveFromSecondSpikeMarkToBasket,
-                raiseAndScoreSample(),
+                new ParallelAction(
+                        driveFromSecondSpikeMarkToBasket,
+                        raiseAndScoreSample()
+                ),
 
                 // Score third spike mark sample.
                 new InstantAction(() -> robotHardware.toggleSwivel()),

@@ -15,7 +15,7 @@ public class Swivel {
     public static double HORIZONTAL_POSITION = 0.42;
 
     // Vertical (BASED ON CLAW DIRECTION) position
-    public static double VERTICAL_POSITION = 0.1;
+    public static double VERTICAL_POSITION = 0.14;
 
     // Clip (BASED ON CLAW DIRECTION) position
     public static double HIGH_CHAMBER_POSITION = 0.98;
