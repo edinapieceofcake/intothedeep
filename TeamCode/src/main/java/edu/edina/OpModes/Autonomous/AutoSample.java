@@ -50,7 +50,7 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_AND_A_HALF_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -59;
+    public static double THIRD_SPIKE_MARK_X = -60;
     public static double THIRD_SPIKE_MARK_Y = -26;
     public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
 
