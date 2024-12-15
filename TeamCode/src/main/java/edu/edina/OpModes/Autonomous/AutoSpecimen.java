@@ -28,7 +28,7 @@ import edu.edina.Libraries.Robot.WaitForHardware;
 public class AutoSpecimen extends LinearOpMode {
 
 	// Chamber y coordinate
-	public static double CHAMBER_Y = -34;
+	public static double CHAMBER_Y = -33;
 
 	// Fast velocity
 	public static double FAST_VELOCITY = 27;
