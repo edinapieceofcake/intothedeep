@@ -11,6 +11,8 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import java.util.Stack;
+
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
@@ -287,7 +289,10 @@ public class AutoSample extends LinearOpMode {
         // Construct a raise and score sample action.
         Action action = new ParallelAction(
                 new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
-                new InstantAction(() -> robotHardware.raiseWrist()),
+                new SequentialAction(
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.raiseWrist())
+                ),
                 new SequentialAction(
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
@@ -345,7 +350,10 @@ public class AutoSample extends LinearOpMode {
             new InstantAction(() -> robotHardware.openClaw()),
             new WaitForTime(CLAW_MILLISECONDS),
             new ParallelAction(
-                    new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
+                    new SequentialAction(
+                            new WaitForTime(200),
+                            new MoveArm(robotHardware, Arm.GROUND_POSITION, false)
+                    ),
                     new SequentialAction(
                             new InstantAction(() -> robotHardware.lowerWrist()),
                             new WaitForTime(200),
