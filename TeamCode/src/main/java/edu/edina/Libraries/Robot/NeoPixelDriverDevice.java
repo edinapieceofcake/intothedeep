@@ -97,8 +97,6 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     private void flushColors() {
         byte[] pixArray = bufExch.viewBuffer();
 
-        attemptToResynchWithDevice();
-
         if (pixArray != null) {
             int max = Math.min(pixArray.length, NUM_BYTES);
 
@@ -147,15 +145,6 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         } catch (InterruptedException x) {
             // ignore
         }
-    }
-
-    private void attemptToResynchWithDevice() {
-//        byte[] empty = new byte[0];
-//        for (int i = 0; i < 20; i++) {
-//            sleep(5);
-//            deviceClient.write(empty, I2cWaitControl.WRITTEN);
-//            numWrites.incrementAndGet();
-//        }
     }
 
     private static class BufferExchange {
