@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.RoadRunner.OpticalOdometry;
-import edu.edina.Libraries.RoadRunner.SparkFunOTOSDrive;
 import edu.edina.Libraries.Robot.Odometry;
 
 @TeleOp
