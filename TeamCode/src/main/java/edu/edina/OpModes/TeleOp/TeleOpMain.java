@@ -5,14 +5,20 @@ import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSIO
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.WaitForHardware;
+import edu.edina.Libraries.Robot.WaitForTime;
+import edu.edina.OpModes.Autonomous.AutoSample;
 
 @Config
 @TeleOp
@@ -110,7 +116,7 @@ public class TeleOpMain extends LinearOpMode {
             currentGamepad.copy(gamepad1);
 
             // If the right trigger is down...
-            if(currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
 
                 // Handle debug mode.
                 handleDebugMode();
@@ -294,9 +300,7 @@ public class TeleOpMain extends LinearOpMode {
                 // Notify the user.
                 robotHardware.beep();
 
-            }
-
-            else {
+            } else {
 
                 // Clear any pending actions.
                 robotHardware.clearActions();
@@ -541,5 +545,95 @@ public class TeleOpMain extends LinearOpMode {
         }
 
     }
+
+    private Action goToSub() {
+        Pose2d startAfterAutoPose = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, startAfterAutoPose);
+        // todo Tune This
+        Pose2d subPose = new Pose2d(-30, -30, 2.0 / 4 * Math.PI);
+        Action driveFromstartAfterAutoPoseToSub = drive.actionBuilder(startAfterAutoPose)
+                .strafeToLinearHeading(subPose.position, subPose.heading)
+                .build();
+        Action action = new ParallelAction(
+                driveFromstartAfterAutoPoseToSub,
+                new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
+                new InstantAction(() -> robotHardware.setMinimumExtension())
+        );
+        return action;
+
+    }
+
+    private Action grabSpecimen() {
+        Pose2d subPose = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, subPose);
+        // todo Tune This
+        Pose2d subPoseGrab = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
+        Action backup = drive.actionBuilder(subPoseGrab)
+                .strafeToLinearHeading(subPose.position, subPose.heading)
+                .build();
+        Action action = new SequentialAction(
+                new InstantAction(() -> robotHardware.decrementArmPosition()),
+                new WaitForHardware(robotHardware, 3000),
+                new InstantAction(() -> robotHardware.closeClaw()),
+                new WaitForHardware(robotHardware, 3000),
+                new InstantAction(() -> robotHardware.incrementArmPosition()),
+                new WaitForHardware(robotHardware, 3000),
+                backup,
+                new WaitForHardware(robotHardware, 3000)
+
+        );
+        return action;
+
+    }
+
+    private Action gotToHighBasket() {
+        // TODO Tune This
+        Pose2d subGrabPose = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, subGrabPose);
+        Action driveFromGrabPoseToHighBasket = drive.actionBuilder(subGrabPose)
+                .strafeToLinearHeading(subGrabPose.position, subGrabPose.heading)
+                .build();
+        Action action = new SequentialAction(
+                new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
+                new InstantAction(() -> robotHardware.setMinimumExtension()),
+                driveFromGrabPoseToHighBasket,
+                new ParallelAction(
+                        new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                        new InstantAction(() -> robotHardware.setHighBasketExtension()),
+                        new SequentialAction(
+                                new WaitForTime(500),
+                                new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                        )
+                ),
+                new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                new SequentialAction(
+                        new InstantAction(() -> robotHardware.openClaw()),
+                        new WaitForTime(500),
+                        new ParallelAction(
+                                new SequentialAction(
+                                        new WaitForTime(200),
+                                        new MoveArm(robotHardware, Arm.GROUND_POSITION, false)
+                                ),
+                                new SequentialAction(
+                                        new InstantAction(() -> robotHardware.lowerWrist()),
+                                        new WaitForTime(200),
+                                        new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                                        new InstantAction(() -> robotHardware.setMinimumExtension()),
+                                        new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+                                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                                        new WaitForTime(500),
+                                        new InstantAction(() -> robotHardware.lowerWrist())
+                                )
+                        ),
+                        new WaitForHardware(robotHardware, 3500)
+                )
+        );
+
+        // Return the action.
+        return action;
+
+
+    }
+
 
 }

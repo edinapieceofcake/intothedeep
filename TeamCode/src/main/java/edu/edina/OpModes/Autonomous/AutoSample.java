@@ -23,6 +23,7 @@ import edu.edina.Libraries.Robot.WaitForHardware;
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSample extends LinearOpMode {
+    public static Pose2d lastPose;
 
     // Start pose
     public static double START_X = -38;
@@ -137,6 +138,8 @@ public class AutoSample extends LinearOpMode {
 
             // Update the telemetry.
             telemetry.update();
+
+            lastPose = robotHardware.drive.pose;
 
         }
 
