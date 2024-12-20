@@ -32,10 +32,13 @@ public class MeepMeepTesting {
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-47.5, -38), 1.0 / 2 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
-                    .strafeToLinearHeading(new Vector2d(-57.5, -44), 1.0 / 2 * Math.PI)
-                    .strafeToLinearHeading(new Vector2d(-57.5, -38), 1.0 / 2 * Math.PI)
+                    .setTangent(Math.toRadians(180))
+                    .splineToLinearHeading(new Pose2d(-57.5, -38, Math.toRadians(90)), Math.toRadians(90))
+                    //.strafeToLinearHeading(new Vector2d(-57.5, -44), 1.0 / 2 * Math.PI)
+                    //.strafeToLinearHeading(new Vector2d(-57.5, -38), 1.0 / 2 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-57, -25), Math.PI)
+                    .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
 
 
                     //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)

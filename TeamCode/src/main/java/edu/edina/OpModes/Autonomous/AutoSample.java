@@ -33,17 +33,20 @@ public class AutoSample extends LinearOpMode {
     // Basket pose
     public static double BASKET_X = -50;
     public static double BASKET_Y = -50;
-    public static double BASKET_HEADING = 1.0 / 4 * Math.PI;
+    public static double BASKET_HEADING = Math.toRadians(45);
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = -48;
     public static double FIRST_SPIKE_MARK_Y = -33;
-    public static double FIRST_SPIKE_MARK_HEADING = 1.0 / 2 * Math.PI;
+    public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(90);
 
     // Second spike mark pose
     public static double SECOND_SPIKE_MARK_X = -58.5;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
+    public static double SECOND_SPIKE_MARK_BEGIN_TANGENT = 180;
+    public static double SECOND_SPIKE_MARK_END_TANGENT = 90;
+
 
     // First and a half spike mark pose
     public static double FIRST_AND_A_HALF_SPIKE_MARK_X = SECOND_SPIKE_MARK_X;
@@ -53,7 +56,7 @@ public class AutoSample extends LinearOpMode {
     // Third spike mark pose
     public static double THIRD_SPIKE_MARK_X = -60;
     public static double THIRD_SPIKE_MARK_Y = -26;
-    public static double THIRD_SPIKE_MARK_HEADING = Math.PI;
+    public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(180);
 
     // Duration in milliseconds to toggle the claw
     public static int CLAW_MILLISECONDS = 500;
@@ -219,6 +222,12 @@ public class AutoSample extends LinearOpMode {
                 .strafeToLinearHeading(firstAndAHalfSpikeMarkPose.position, firstAndAHalfSpikeMarkPose.heading)
                 .build();
 
+        // Construct an action for driving from the basket to the second spike mark.
+        Action driveFromBasketToSecondSpikeMark = drive.actionBuilder(basketPose)
+                .setTangent(Math.toRadians(SECOND_SPIKE_MARK_BEGIN_TANGENT))
+                .splineToLinearHeading(secondSpikeMarkPose, Math.toRadians(SECOND_SPIKE_MARK_END_TANGENT))
+                .build();
+
         // Construct an action for driving from the first and a half spike mark to the second spike mark.
         Action driveFromFirstAndAHalfToSecondSpikeMark = drive.actionBuilder(firstAndAHalfSpikeMarkPose)
                 .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading, spikeMarkVelocityConstraint)
@@ -246,35 +255,48 @@ public class AutoSample extends LinearOpMode {
         Action mainAction = new SequentialAction(
 
                 // Score preloaded sample.
-                driveFromStartToBasket,
-                raiseAndScoreSample(),
+                new ParallelAction(
+                        driveFromStartToBasket,
+                        raiseSampleAuto(robotHardware)
+                ),
 
                 // Score first spike mark sample.
-                driveFromBasketToFirstSpikeMark,
+                new ParallelAction(
+                        scoreSample(robotHardware),
+                        driveFromBasketToFirstSpikeMark
+                ),
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 new ParallelAction(
                         driveFromFirstSpikeMarkToBasket,
-                        raiseAndScoreSample()
+                        raiseSampleAuto(robotHardware)
                 ),
 
                 // Score second spike mark sample.
-                driveFromBasketToFirstAndAHalfSpikeMark,
-                driveFromFirstAndAHalfToSecondSpikeMark,
+                new ParallelAction(
+                        scoreSample(robotHardware),
+                        driveFromBasketToSecondSpikeMark
+                ),
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
                 new ParallelAction(
                         driveFromSecondSpikeMarkToBasket,
-                        raiseAndScoreSample()
+                        raiseSampleAuto(robotHardware)
                 ),
 
                 // Score third spike mark sample.
-                new InstantAction(() -> robotHardware.toggleSwivel()),
-                driveFromBasketToThirdSpikeMark,
+                new ParallelAction(
+                        scoreSample(robotHardware),
+                        new InstantAction(() -> robotHardware.toggleSwivel()),
+                        driveFromBasketToThirdSpikeMark
+                ),
                 new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
-                driveFromThirdSpikeMarkToBasket,
-                raiseAndScoreSample(),
+                new ParallelAction(
+                        driveFromThirdSpikeMarkToBasket,
+                        raiseSampleAuto(robotHardware)
+                ),
+                scoreSample(robotHardware),
 
                 // Wait for everything to finish.
                 new WaitForTime(TIMEOUT_MILLISECONDS)
