@@ -117,8 +117,6 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     private void flushColors() {
         byte[] pixArray = bufExch.viewBuffer();
 
-        attemptToResynchWithDevice();
-
         if (pixArray != null) {
             int max = Math.min(pixArray.length, NUM_BYTES);
 

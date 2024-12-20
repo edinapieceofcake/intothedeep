@@ -1,59 +1,60 @@
 package edu.edina.Tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.Robot.ArmLift;
+import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
+import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
+import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
+import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.FuncInverter;
-import edu.edina.Libraries.Robot.GamePadClick;
-import edu.edina.Libraries.Robot.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
-import edu.edina.Libraries.Robot.LinearMechanismSettings;
-import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.Speedometer;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
-@Disabled
 public class CalibrateLinearMechanism extends LinearOpMode {
     double powerStep = 0.02;
     double speedThres = 1;
 
-    private GamePadClick click1;
     ILinearMechanism linearMech;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new ArmLift(new RobotHardware(this));
-        click1 = new GamePadClick(gamepad1);
+        linearMech = new RotationalDriveMechanism(new TestRobotHardware(this));
 
         waitForStart();
 
         telemetry.addLine("Press a to calibrate encoder");
         telemetry.addLine("Press b to calibrate Kv and Ks");
         telemetry.addLine("Press x to calibrate Ka");
-        telemetry.addLine("Press y to calibrate acceleration");
+//        telemetry.addLine("Press y to measure ambient acceleration");
         telemetry.update();
 
         while (opModeIsActive()) {
-            click1.read();
-
-            if (click1.a) {
+            if (gamepad1.a) {
                 calibrateEncoder();
             }
-            if (click1.b) {
+            if (gamepad1.b) {
                 calibrateLinearKs();
             }
-            if (click1.x) {
+            if (gamepad1.x) {
                 calibrateKa();
             }
-            if (click1.y) {
-            }
+            // if (gamepad1.y) {
+            // }
         }
     }
 
@@ -76,11 +77,9 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     }
 
     private void calibrateLinearKs() {
-        Speedometer speedometer = new Speedometer(10);
         double power = powerStep;
-
-        double prevRead = 0.0;
-        double maxSpeed = 0.0;
+        double ks = 0;
+        double kv = 0;
 
         List<Double> powerList = new ArrayList<>();
         List<Double> speedList = new ArrayList<>();
@@ -95,6 +94,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                     break;
             }
 
+            double maxSpeed = 0.0;
             while (opModeIsActive()) {
                 linearMech.setPower(power);
 
@@ -102,14 +102,20 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                     break;
                 }
 
-                speedometer.sample(linearMech.getPosition(false) - prevRead);
+                DualNum<Time> u = linearMech.getPositionAndVelocity(false);
 
-                double s = speedometer.getSpeed();
+                double s = u.get(1);
                 if (s > maxSpeed)
                     maxSpeed = s;
 
+                telemetry.addData("position", u.get(0));
                 telemetry.addData("speed", s);
                 telemetry.addData("power", power);
+                if (ks != 0) {
+                    double predictedSpeed = (power - ks) / kv;
+                    telemetry.addData("predicted max speed", predictedSpeed);
+                }
+
                 telemetry.update();
             }
 
@@ -126,8 +132,10 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             LinearFunc fit = ff.fit();
 
             if (fit != null) {
-                telemetry.addData("Ks", fit.alpha);
-                telemetry.addData("Kv", fit.beta);
+                ks = fit.alpha;
+                kv = fit.beta;
+                telemetry.addData("Ks", "%.4e", ks);
+                telemetry.addData("Kv", "%.4e", kv);
                 telemetry.addData("R", fit.R2);
             }
 
@@ -137,7 +145,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
             while (opModeIsActive()) {
                 if (gamepad1.dpad_down)
-                    linearMech.setPower(-power);
+                    linearMech.setPower(-Math.min(power, 0.5));
                 else
                     linearMech.setPower(0);
 
@@ -145,88 +153,112 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                     break;
             }
 
-            prevRead = linearMech.getPosition(false);
-
             power += powerStep;
         }
     }
 
     private void calibrateKa() {
         // assume that drive takes 1 second
-        double targetDist = linearMech.getSettings().accelCalibrationTarget / 2;
+        LinearMechanismSettings settings = linearMech.getSettings();
+        FuncInverter fi = new FuncInverter(1, 0.05);
 
-        FuncInverter fi = new FuncInverter(targetDist, 0.1);
+        double kaOneSecond = (1 - settings.ks) / (2 * settings.accelCalibrationDist) - settings.kv;
+        double ka0 = 0.3 * kaOneSecond;
+        double ka1 = 1.8 * kaOneSecond;
 
-        fi.eval(0, testKa(0, targetDist));
-        fi.eval(0.5, testKa(0.5, targetDist));
+        fi.eval(ka0, testKaAccelRatio(ka0));
+        fi.eval(ka1, testKaAccelRatio(ka1));
 
-        while (!fi.hasResult()) {
+        while (opModeIsActive() && !fi.hasResult()) {
             double ka = fi.getGuess();
-            double testDist = testKa(ka, targetDist);
+            double testDist = testKaAccelRatio(ka);
             fi.eval(ka, testDist);
         }
 
-        telemetry.addData("final result", "ka = %.4f", fi.getResult());
-        telemetry.update();
+        while (opModeIsActive()) {
+            telemetry.addData("final result", "ka = %.4e", fi.getResult());
+            telemetry.update();
+        }
     }
 
-    private double testKa(double ka, double targetDist) {
-        // assume that ka is the correct value (it probably won't
-        // be), and set the power based on that assumption. If you
-        // are right, then the mechanism will actually go the expected
-        // distance. The FuncInverter above will hopefully converge on
-        // the correct value for ka so that this math becomes good.
-
-        while (opModeIsActive()) {
-            telemetry.addLine("press and hold up to test");
-            telemetry.update();
-            if (gamepad1.dpad_up)
-                break;
-        }
+    private double testKaAccelRatio(double ka) {
+        // Try to drive a distance of accelCalibrationDist. Using the guess for ka,
+        // determine how long it should drive, apply the acceleration
 
         LinearMechanismSettings settings = linearMech.getSettings();
+        double d = settings.accelCalibrationDist;
+        double nominalTime = Quadratic.rootOrDefault(0.5, -2 * settings.kv * d,
+                -settings.ks - 2 * d * ka, 0);
 
-        double ks = linearMech.getSettings().ks;
-        double kv = linearMech.getSettings().kv;
-        double a = linearMech.getSettings().accelCalibrationTarget;
-        double startPos = linearMech.getPosition(false);
+        if (nominalTime == 0)
+            throw new RuntimeException("zero time test");
 
-        ElapsedTime timer = new ElapsedTime();
-        while (opModeIsActive()) {
-            if (!gamepad1.dpad_up) break;
+        double intendedAccel = 2 * d / (nominalTime * nominalTime);
 
-            double t = timer.seconds();
-            double derivedVelocityGuess = a * t;
-            double power = ks + kv * derivedVelocityGuess + ka * a;
-            linearMech.setPower(power);
+        try {
+            while (opModeIsActive()) {
+                telemetry.addData("ka", "%.4e", ka);
+                telemetry.addData("nominal test time", "%.2f", nominalTime);
+                telemetry.addLine("press and hold up to test");
+                telemetry.update();
+                if (gamepad1.dpad_up)
+                    break;
+            }
+
+            double ks = settings.ks;
+            double kv = settings.kv;
+            double startPos = linearMech.getPosition(false);
+            ElapsedTime timer = new ElapsedTime();
+            double t = 0;
+            double dist = 0;
+
+            while (opModeIsActive()) {
+                if (!gamepad1.dpad_up)
+                    throw new RuntimeException("test aborted");
+
+                t = timer.seconds();
+
+                DualNum<Time> u = linearMech.getPositionAndVelocity(false);
+                dist = u.get(0);
+                if (dist >= settings.accelCalibrationDist * 1.1) {
+                    break;
+                }
+
+                double v = u.get(1);
+                double power = ks + kv * v + ka * intendedAccel;
+
+                if (power > 1) {
+                    break;
+                }
+
+                linearMech.setPower(power);
+            }
+
+            double actualA = 2.0 * (dist / (t * t));
+
+            telemetry.addData("ka", "%.4e", ka);
+            telemetry.addData("test complete", "time=%.2f (nominal=%.2f)", t, nominalTime);
+            telemetry.addData("target dist", settings.accelCalibrationDist);
+            telemetry.addData("intended accel", intendedAccel);
+            telemetry.addData("actual accel", actualA);
+            telemetry.addData("ratio (goal is 1)", "%.4f", actualA / intendedAccel);
+            telemetry.addLine("press down to reset");
+            telemetry.addLine("press x to continue calibrating");
+            telemetry.update();
+
+            while (opModeIsActive()) {
+                if (gamepad1.dpad_down)
+                    linearMech.setPower(-0.2);
+                else
+                    linearMech.setPower(0);
+
+                if (gamepad1.x)
+                    break;
+            }
+
+            return actualA / intendedAccel;
+        } finally {
+            linearMech.setPower(0);
         }
-
-        double endPos = linearMech.getPosition(false);
-
-        linearMech.setPower(0);
-
-        double dist = endPos - startPos;
-
-        telemetry.addData("target dist", targetDist);
-        telemetry.addData("actual dist", dist);
-        telemetry.addLine("press down to reset");
-        telemetry.addLine("press x to continue calibrating");
-        telemetry.update();
-
-        while (opModeIsActive()) {
-            if (gamepad1.dpad_down)
-                linearMech.setPower(-0.2);
-            else
-                linearMech.setPower(0);
-
-            if (gamepad1.x)
-                break;
-        }
-
-        return dist;
-    }
-
-    public double testAccel(double accel) {
-        return 0.0;
     }
 }

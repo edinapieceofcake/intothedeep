@@ -1,5 +1,6 @@
 package edu.edina.OpModes.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,6 +11,7 @@ import edu.edina.Libraries.Robot.SampleColor;
 import edu.edina.Libraries.Robot.SampleSensor;
 
 @TeleOp
+//@Disabled
 public class LightTest extends LinearOpMode {
     private Light light;
 

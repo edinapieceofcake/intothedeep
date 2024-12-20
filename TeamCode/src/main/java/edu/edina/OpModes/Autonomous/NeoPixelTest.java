@@ -3,13 +3,15 @@ package edu.edina.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Random;
 
 import edu.edina.Libraries.Robot.NeoPixelDriverDevice;
 
-@Disabled
-@Autonomous
+//@Disabled
+@TeleOp
 public class NeoPixelTest extends LinearOpMode {
     @Override
     public void runOpMode() {
@@ -25,6 +27,7 @@ public class NeoPixelTest extends LinearOpMode {
         boolean enable_green = true;
         boolean enable_blue = true;
 
+        ElapsedTime t = new ElapsedTime();
         while (opModeIsActive()) {
             if (gamepad1.a) {
                 enable_red = false;
@@ -72,7 +75,9 @@ public class NeoPixelTest extends LinearOpMode {
 
             neoPixel.showColors(pixArray);
 
-            sleep(50);
+            telemetry.addData("time", t);
+            telemetry.addData("numWrites", neoPixel.getNumWrites());
+            telemetry.update();
         }
     }
 }

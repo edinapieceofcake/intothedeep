@@ -67,7 +67,6 @@ public class Drivetrain {
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
     }
 
     // Updates this.
@@ -80,6 +79,17 @@ public class Drivetrain {
         double lateral = currentGamepad.left_stick_x * m;
         double yaw = currentGamepad.right_stick_x;
 
+        update(axial, lateral, yaw);
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
+
+        // Display arm telemetry.
+        telemetry.addData("Drivetrain", "====================");
+        telemetry.addData("- Turtle Mode", turtleMode);
+    }
+
+    public void update(double axial, double lateral, double yaw) {
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
         double leftFrontPower = axial + lateral + yaw;
@@ -112,13 +122,6 @@ public class Drivetrain {
         rightFront.setPower(rightFrontPower);
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
-
-        // Get the telemetry.
-        Telemetry telemetry = opMode.telemetry;
-
-        // Display arm telemetry.
-        telemetry.addData("Drivetrain", "====================");
-        telemetry.addData("- Turtle Mode", turtleMode);
     }
 
     // Sets the turtle mode value.

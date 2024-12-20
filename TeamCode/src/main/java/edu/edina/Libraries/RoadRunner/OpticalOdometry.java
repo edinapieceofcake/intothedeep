@@ -1,80 +1,28 @@
-/*
-    SPDX-License-Identifier: MIT
+package edu.edina.Libraries.RoadRunner;
 
-    Copyright (c) 2024 SparkFun Electronics
-*/
-package org.firstinspires.ftc.robotcontroller.external.samples;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-/*
- * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
- *
- * The OpMode assumes that the sensor is configured with a name of "sensor_otos".
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- *
- * See the sensor's product page: https://www.sparkfun.com/products/24904
- */
-@TeleOp(name = "Sensor: SparkFun OTOS", group = "Sensor")
-//@Disabled
-public class SensorSparkFunOTOS extends LinearOpMode {
-    // Create an instance of the sensor
-    SparkFunOTOS myOtos;
+import edu.edina.Libraries.Robot.Odometry;
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        // Get a reference to the sensor
-        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+public class OpticalOdometry implements Odometry {
+    public final SparkFunOTOS myOtos;
+    private SparkFunOTOS.Pose2D pos, vel, acc;
 
-        // All the configuration for the OTOS is done in this helper method, check it out!
-        configureOtos();
-
-        // Wait for the start button to be pressed
-        waitForStart();
-
-        // Loop until the OpMode ends
-        while (opModeIsActive()) {
-            // Get the latest position, which includes the x and y coordinates, plus the
-            // heading angle
-            SparkFunOTOS.Pose2D pos = myOtos.getPosition();
-
-            // Reset the tracking if the user requests it
-            if (gamepad1.y) {
-                myOtos.resetTracking();
-            }
-
-            // Re-calibrate the IMU if the user requests it
-            if (gamepad1.x) {
-                myOtos.calibrateImu();
-            }
-
-            // Inform user of available controls
-            telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
-            telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
-            telemetry.addLine();
-
-            // Log the position to the telemetry
-            telemetry.addData("X coordinate", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading angle", pos.h);
-
-            // Update the telemetry on the driver station
-            telemetry.update();
-        }
+    public static boolean isMapped(HardwareMap hardwareMap) {
+        SparkFunOTOS o = hardwareMap.tryGet(SparkFunOTOS.class, "sensor_otos");
+        return o != null;
     }
 
-    public void configureOtos() {
-        telemetry.addLine("Configuring OTOS...");
-        telemetry.update();
+    public OpticalOdometry(HardwareMap hardwareMap) {
+        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
         // Set the desired units for linear and angular measurements. Can be either
         // meters or inches for linear, and radians or degrees for angular. If not
@@ -117,7 +65,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
         myOtos.setLinearScalar(1.0);
-        myOtos.setAngularScalar(1.0);
+        myOtos.setAngularScalar(0.9942);
 
         // The IMU on the OTOS includes a gyroscope and accelerometer, which could
         // have an offset. Note that as of firmware version 1.0, the calibration
@@ -142,15 +90,27 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
         myOtos.setPosition(currentPosition);
 
-        // Get the hardware and firmware version
-        SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
-        SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
-        myOtos.getVersionInfo(hwVersion, fwVersion);
+        pos = new SparkFunOTOS.Pose2D();
+        vel = new SparkFunOTOS.Pose2D();
+        acc = new SparkFunOTOS.Pose2D();
+    }
 
-        telemetry.addLine("OTOS configured! Press start to get position data!");
-        telemetry.addLine();
-        telemetry.addLine(String.format("OTOS Hardware Version: v%d.%d", hwVersion.major, hwVersion.minor));
-        telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
-        telemetry.update();
+    @Override
+    public void update() {
+        myOtos.getPosVelAcc(pos, vel, acc);
+    }
+
+    @Override
+    public Pose2d getPoseEstimate() {
+        return new Pose2d(
+                new Vector2d(-pos.y, pos.x),
+                Math.toRadians(pos.h));
+    }
+
+    @Override
+    public PoseVelocity2d getVelocityEstimate() {
+        return new PoseVelocity2d(
+                new Vector2d(-vel.y, vel.x),
+                Math.toRadians(vel.h));
     }
 }

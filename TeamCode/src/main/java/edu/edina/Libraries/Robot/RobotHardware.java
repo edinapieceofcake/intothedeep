@@ -21,13 +21,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.OpModes.Autonomous.AutoSample;
 import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
-public class RobotHardware {
+public class RobotHardware implements DrivingRobotHardware {
     /*
     Control Hub Portal
         Control Hub
@@ -65,10 +66,10 @@ public class RobotHardware {
 
     private final LinearOpMode opMode;
     public final IMU imu;
-    public ThreeDeadWheelLocalizer odometry;
+    public final Localizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
-    private Drivetrain drivetrain;
+    public final Drivetrain drivetrain;
     private final Wrist wrist;
     private final Swivel swivel;
     private final Arm arm;
@@ -977,4 +978,18 @@ public class RobotHardware {
         this.debugging = debugging;
     }
 
+    @Override
+    public Odometry getOdometry() {
+        return new LocalizerOdometry(odometry);
+    }
+
+    @Override
+    public Drivetrain getDrivetrain() {
+        return drivetrain;
+    }
+
+    @Override
+    public VoltageSensor getVoltageSensor() {
+        return voltageSensor;
+    }
 }
