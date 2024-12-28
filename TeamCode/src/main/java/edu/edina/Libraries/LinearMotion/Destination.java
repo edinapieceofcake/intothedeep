@@ -5,7 +5,9 @@ import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 public interface Destination {
-    Vector2d getDestination(Pose2d poseEst);
+    void updatePose(Pose2d pose);
 
-    Rotation2d heading(Pose2d poseEst);
+    Vector2d getDestination();
+
+    Rotation2d getHeading();
 }

@@ -33,6 +33,7 @@ public class LateralDriveMechanism implements ILinearMechanism {
     public static double MAX_JERK = 70000;
      */
 
+    /* test robot*/
     public static double KS = 0.12338;
     public static double KV = 0.017618;
     public static double KA = 0.0042431;

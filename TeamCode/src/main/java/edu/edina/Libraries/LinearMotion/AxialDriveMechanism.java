@@ -34,9 +34,9 @@ public class AxialDriveMechanism implements ILinearMechanism {
      */
 
     /* test robot */
-    public static double KS = 8.794e-2;
-    public static double KV = 1.6354e-2;
-    public static double KA = 3.3956e-3;
+    public static double KS = .08794;
+    public static double KV = .016354;
+    public static double KA = .0033956;
     public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
     public static double STOP_ACCEL_MULT = 0.3;
     public static double STOP_T_TOL = 0.45;

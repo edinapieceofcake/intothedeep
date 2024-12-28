@@ -31,7 +31,6 @@ public class ThreeAxisDriveMechanism {
     private final LinearMotionController axialCon, lateralCon, yawCon;
     private double axialPower, lateralPower, rotationalPower;
     private Pose2d stopPose;
-    private Vector2d maxVel;
 
     public ThreeAxisDriveMechanism(DrivingRobotHardware hw, Destination destination) {
         drivetrain = hw.getDrivetrain();
@@ -49,8 +48,6 @@ public class ThreeAxisDriveMechanism {
         this.destination = destination;
 
         stopPose = new Pose2d(new Vector2d(0, 0), 0);
-
-        maxVel = new Vector2d(1e99, 1e99);
     }
 
     public Pose2d getEstStopPose() {
@@ -62,15 +59,13 @@ public class ThreeAxisDriveMechanism {
         Pose2d pose = odometry.getPoseEstimate();
         PoseVelocity2d vel = odometry.getVelocityEstimate();
 
-        Pose2d headingOnlyPose = new Pose2d(new Vector2d(0, 0), pose.heading);
-
         updateStopPose(pose, vel);
 
-        Vector2d pursuit = destination.getDestination(pose);
-        Vector2d robotRelPursuitPoint = FieldToRobot.toRobotRel(pose, pursuit);
-        Rotation2d pursuitHeading = destination.heading(pose);
+        destination.updatePose(pose);
+        Vector2d pursuit = destination.getDestination();
+        Rotation2d pursuitHeading = destination.getHeading();
 
-        Vector2d rrMaxVel = FieldToRobot.toRobotRel(pose, maxVel);
+        Vector2d robotRelPursuitPoint = FieldToRobot.toRobotRel(pose, pursuit);
 
         axialCon.setTarget(robotRelPursuitPoint.x);
         lateralCon.setTarget(robotRelPursuitPoint.y);
@@ -78,9 +73,7 @@ public class ThreeAxisDriveMechanism {
 
         // calculate velocities
         Vector2d fieldVel = vel.linearVel;
-        robotRelVel = new Pose2d(FieldToRobot.toRobotRel(headingOnlyPose, fieldVel), vel.angVel);
-
-        // 
+        robotRelVel = new Pose2d(FieldToRobot.rotateToRobotRel(pose.heading, fieldVel), vel.angVel);
 
         // use the LinearMotionController to calculate powers
         axialCon.run();
@@ -101,10 +94,6 @@ public class ThreeAxisDriveMechanism {
 
     private void updateStopPose(Pose2d pose, PoseVelocity2d vel) {
         stopPose = pose;
-    }
-
-    public void setMaxVelVec(Vector2d v) {
-        maxVel = v;
     }
 
     public Vector2d makeLikeVec(Vector2d v, double d) {

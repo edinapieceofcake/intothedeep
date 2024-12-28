@@ -1,6 +1,7 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 public class FieldToRobot {
@@ -10,6 +11,10 @@ public class FieldToRobot {
         double tx = v.x - pose.position.x;
         double ty = v.y - pose.position.y;
         return new Vector2d((tx * dy) - (ty * dx), (tx * dx) + (ty * dy));
+    }
+
+    public static Vector2d rotateToRobotRel(Rotation2d heading, Vector2d v) {
+        return toRobotRel(new Pose2d(new Vector2d(0, 0), heading), v);
     }
 
 //    public Vector2d toFieldRel(Pose2d pose, Vector2d v) {

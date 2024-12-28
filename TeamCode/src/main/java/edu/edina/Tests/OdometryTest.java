@@ -5,14 +5,26 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import edu.edina.Libraries.RoadRunner.Localizer;
+import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.OpticalOdometry;
+import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
+import edu.edina.Libraries.Robot.LocalizerOdometry;
 import edu.edina.Libraries.Robot.Odometry;
 
 @TeleOp
 public class OdometryTest extends LinearOpMode {
+    private static final boolean USE_OPTICAL = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        Odometry odometry = new OpticalOdometry(hardwareMap);
+        Odometry odometry;
+        if (USE_OPTICAL) {
+            odometry = new OpticalOdometry(hardwareMap);
+        } else {
+            Localizer localizer = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+            odometry = new LocalizerOdometry(localizer);
+        }
 
         waitForStart();
 

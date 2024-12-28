@@ -8,8 +8,10 @@ import com.acmerobotics.roadrunner.Vector2d;
 @Config
 public class FieldCentricDestination implements Destination {
     private boolean stopping;
-    private Pose2d relDest;
+    private Pose2d poseEst, relDest;
     private Pose2d stopPose;
+    private Vector2d rectDir;
+    private double angDir;
 
     public static double
             Y_MULT = 50,
@@ -26,29 +28,32 @@ public class FieldCentricDestination implements Destination {
     }
 
     @Override
-    public Vector2d getDestination(Pose2d pose2d) {
-//        if (!stopping)
-        return new Vector2d(pose2d.position.x + relDest.position.x, pose2d.position.y + relDest.position.y);
-//        else
-//            return stopPose.position;
+    public void updatePose(Pose2d poseEst) {
+        this.poseEst = poseEst;
     }
 
     @Override
-    public Rotation2d heading(Pose2d pose2d) {
-//        if (!stopping)
-        return Rotation2d.fromDouble(pose2d.heading.toDouble() + relDest.heading.toDouble());
-//        else
-//        return stopPose.heading;
+    public Vector2d getDestination() {
+        if (stopping) {
+            return stopPose.position;
+        } else {
+            return new Vector2d(poseEst.position.x + relDest.position.x, poseEst.position.y + relDest.position.y);
+        }
     }
 
-    public void setRelDest(double x, double y, double h) {
+    @Override
+    public Rotation2d getHeading() {
+        if (stopping) {
+            return stopPose.heading;
+        } else {
+            return Rotation2d.fromDouble(poseEst.heading.toDouble() + relDest.heading.toDouble());
+        }
+    }
+
+    public void setDirection(double x, double y, double h) {
         stopping = false;
-
-        x *= X_MULT;
-        y *= Y_MULT;
-        h *= H_MULT;
-
-        relDest = new Pose2d(x, y, h);
+        rectDir = new Vector2d(x, y);
+        angDir = h;
     }
 
     public void setStopPose(Pose2d stopPose) {
