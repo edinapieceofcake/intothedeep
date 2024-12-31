@@ -37,7 +37,7 @@ public class AxialDriveMechanism implements ILinearMechanism {
     public static double KS = .08794;
     public static double KV = .016354;
     public static double KA = .0033956;
-    public static double NOMINAL_ACCEL = 1 / (2 * 3.4678e-3);
+    public static double NOMINAL_ACCEL = 1 / (2 * KA);
     public static double STOP_ACCEL_MULT = 0.3;
     public static double STOP_T_TOL = 0.45;
     public static double STOP_X_TOL = 0.3;

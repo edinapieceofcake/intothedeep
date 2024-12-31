@@ -1,42 +1,29 @@
 package edu.edina.Libraries.Robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import edu.edina.Libraries.LinearMotion.LinearMotionController;
+import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 
 @TeleOp
-@Disabled
 public class LiftTest extends LinearOpMode {
-    private DcMotor leftLift, rightLift;
-
-    public void runOpMode() {
-        leftLift = hardwareMap.get(DcMotor.class, "left_lift_motor");
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rightLift = hardwareMap.get(DcMotor.class, "right_lift_motor");
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
-
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
+        VerticalExtensionMechanism vertical = new VerticalExtensionMechanism(hw);
+        LinearMotionController verticalController = new LinearMotionController(vertical);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.dpad_up) {
-                leftLift.setPower(1);
-                //rightLift.setPower(1);
-            } else if (gamepad1.dpad_down) {
-                leftLift.setPower(-1);
-                //rightLift.setPower(-1);
-            } else {
-                leftLift.setPower(0.0);
-                //rightLift.setPower(0.0);
-            }
+            if (gamepad1.dpad_up)
+                verticalController.setTarget(14);
+            else if (gamepad1.dpad_down)
+                verticalController.setTarget(0);
+            else
+                verticalController.setTarget(vertical.getPositionAndVelocity(false).get(0));
 
-            telemetry.addData("leftLift", leftLift.getCurrentPosition());
-            telemetry.addData("rightLift", rightLift.getCurrentPosition());
-            telemetry.update();
+            verticalController.run();
         }
     }
 }

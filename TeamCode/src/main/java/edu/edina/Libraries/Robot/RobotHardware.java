@@ -992,4 +992,8 @@ public class RobotHardware implements DrivingRobotHardware {
     public VoltageSensor getVoltageSensor() {
         return voltageSensor;
     }
+
+    public Lift getLift() {
+        return lift;
+    }
 }

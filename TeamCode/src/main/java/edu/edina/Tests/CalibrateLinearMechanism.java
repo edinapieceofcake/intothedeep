@@ -4,28 +4,26 @@ import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.I2cDevice;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
-import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
-import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
+import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
+import edu.edina.Libraries.Robot.Accelerometer;
+import edu.edina.Libraries.Robot.BilinearFuncFitter;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
-import edu.edina.Libraries.Robot.TestRobotHardware;
+import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
 public class CalibrateLinearMechanism extends LinearOpMode {
+    public final String LOG_TAG = "linear cal";
     double powerStep = 0.02;
     double speedThres = 1;
 
@@ -33,14 +31,14 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new RotationalDriveMechanism(new TestRobotHardware(this));
+        linearMech = new VerticalExtensionMechanism(new RobotHardware(this));
 
         waitForStart();
 
         telemetry.addLine("Press a to calibrate encoder");
         telemetry.addLine("Press b to calibrate Kv and Ks");
         telemetry.addLine("Press x to calibrate Ka");
-//        telemetry.addLine("Press y to measure ambient acceleration");
+        telemetry.addLine("Press y to measure ambient acceleration");
         telemetry.update();
 
         while (opModeIsActive()) {
@@ -53,8 +51,9 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             if (gamepad1.x) {
                 calibrateKa();
             }
-            // if (gamepad1.y) {
-            // }
+            if (gamepad1.y) {
+                measureAmbientAccel();
+            }
         }
     }
 
@@ -74,6 +73,99 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             telemetry.addData("encoder (inch)", linearMech.getPosition(false));
             telemetry.update();
         }
+    }
+
+    private void measureAmbientAccel() {
+        ArrayList<Double> positions = new ArrayList<>(); // Position is in calibrated units;
+        ArrayList<Double> times = new ArrayList<>(); // In seconds
+
+        while (opModeIsActive()) {
+            telemetry.addLine("press and hold down to start");
+            telemetry.update();
+
+            if (gamepad1.dpad_down)
+                break;
+        }
+
+        ElapsedTime timer = new ElapsedTime();
+
+        double ks = linearMech.getSettings().ks;
+        double kv = linearMech.getSettings().kv;
+
+        while (opModeIsActive()) {
+            DualNum<Time> xv = linearMech.getPositionAndVelocity(false);
+
+            telemetry.addLine("release down to end");
+            telemetry.update();
+
+            double x = xv.get(0);
+            double v = xv.get(1);
+            double power;
+
+            // if v > 0, set power to ks + kv * v
+            // if v < 0, set power to -ks + kv * v
+
+            power = Math.signum(v) * ks + kv * v;
+
+            linearMech.setPower(power);
+
+            positions.add(x);
+            times.add(timer.seconds());
+
+            RobotLog.ii(LOG_TAG, "t, x = %.2f, %.2f", timer.seconds(), x);
+
+            if (!gamepad1.dpad_down)
+                break;
+        }
+
+        LinearFunc f = fitAccelFunc(times, positions);
+
+        while (opModeIsActive()) {
+            telemetry.addLine("test complete");
+            telemetry.addData("f", "g = %.2f, k = %.2f", f.alpha, f.beta);
+            telemetry.update();
+        }
+    }
+
+    private static LinearFunc fitAccelFunc(List<Double> t, List<Double> x) {
+        ArrayList<Double> xBatch = new ArrayList<>();
+        Accelerometer accelerometer = new Accelerometer(10);
+
+        ArrayList<Double> accelSample = new ArrayList<>();
+        ArrayList<Double> accelSampleCenter = new ArrayList<>();
+
+        // do batches of 10
+        for (int i = 0; i < t.size(); i++) {
+            accelerometer.sample(t.get(i), x.get(i));
+            xBatch.add(x.get(i));
+
+            if (xBatch.size() > 10) {
+                accelSample.add(accelerometer.getAccel());
+                accelSampleCenter.add(average(xBatch));
+
+                xBatch.clear();
+                accelerometer.clear();
+            }
+        }
+
+        // skip the first
+        accelSample.remove(0);
+        accelSampleCenter.remove(0);
+
+        // calculate gravity equation
+        LinearFuncFitter f = new LinearFuncFitter(accelSampleCenter, accelSample);
+        LinearFunc fit = f.fit();
+        if (fit == null)
+            throw new RuntimeException("Could not fit acceleration function");
+
+        return fit;
+    }
+
+    private static double average(List<Double> xs) {
+        double sum = 0;
+        for (double x : xs)
+            sum += x;
+        return sum / xs.size();
     }
 
     private void calibrateLinearKs() {
