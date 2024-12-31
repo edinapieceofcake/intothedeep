@@ -14,6 +14,6 @@ public class SpringForce implements IAmbientForce {
 
     @Override
     public double getAcceleration(DualNum<Time> posVel) {
-        return 0;
+        return g+k*posVel.get(0);
     }
 }

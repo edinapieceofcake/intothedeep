@@ -1,17 +1,24 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.LinearMotion.LinearMotionController;
+import edu.edina.Libraries.LinearMotion.SpringForce;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
-
+@Config
 @TeleOp
+
+
 public class LiftTest extends LinearOpMode {
+    public static double k=-1;
+    public static double g=-20;
     public void runOpMode() throws InterruptedException {
         RobotHardware hw = new RobotHardware(this);
+        SpringForce springForce = new SpringForce(k,g);
         VerticalExtensionMechanism vertical = new VerticalExtensionMechanism(hw);
-        LinearMotionController verticalController = new LinearMotionController(vertical);
+        LinearMotionController verticalController = new LinearMotionController(vertical,springForce);
 
         double lastPos = 0;
 
