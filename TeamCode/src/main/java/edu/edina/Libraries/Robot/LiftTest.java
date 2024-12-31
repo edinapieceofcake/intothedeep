@@ -13,15 +13,20 @@ public class LiftTest extends LinearOpMode {
         VerticalExtensionMechanism vertical = new VerticalExtensionMechanism(hw);
         LinearMotionController verticalController = new LinearMotionController(vertical);
 
+        double lastPos = 0;
+
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.dpad_up)
+            if (gamepad1.dpad_up) {
                 verticalController.setTarget(14);
-            else if (gamepad1.dpad_down)
+                lastPos = verticalController.lastPositionAndVelocity().get(0);
+            }
+            else if (gamepad1.dpad_down) {
                 verticalController.setTarget(0);
-            else
-                verticalController.setTarget(vertical.getPositionAndVelocity(false).get(0));
+                lastPos = verticalController.lastPositionAndVelocity().get(0);
+            } else
+                verticalController.setTarget(lastPos);
 
             verticalController.run();
         }
