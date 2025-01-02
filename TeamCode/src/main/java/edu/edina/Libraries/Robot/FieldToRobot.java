@@ -17,13 +17,13 @@ public class FieldToRobot {
         return toRobotRel(new Pose2d(new Vector2d(0, 0), heading), v);
     }
 
-//    public Vector2d toFieldRel(Pose2d pose, Vector2d v) {
-//        double dx = getDx();
-//        double dy = getDy();
-//        double tx = dy * v.x + dx * v.y;
-//        double ty = -dx * v.x + dy * v.y;
-//        return new Vector2d(pose.position.x + tx, pose.position. + ty, a);
-//    }
+    public static Vector2d toFieldRel(Pose2d pose, Vector2d v) {
+        double dx = getDx(pose);
+        double dy = getDy(pose);
+        double tx = dy * v.x + dx * v.y;
+        double ty = -dx * v.x + dy * v.y;
+        return new Vector2d(pose.position.x + tx, pose.position.y + ty);
+    }
 
     private static double getDx(Pose2d pose) {
         return -Math.sin(pose.heading.toDouble());

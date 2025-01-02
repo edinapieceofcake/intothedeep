@@ -68,9 +68,12 @@ public class LinearMotionController {
         double dt = t - tPrev;
         double dist = getDist(x);
 
+        double counterAccel = -a;
+
         double xStop = estConstDeccelStoppingPoint(x, v, s.stopAccel);
 
-        TimePoint coast = estConstPowerStoppingPoint(t, x, v, 0);
+        double coastPower = s.ka * counterAccel;
+        TimePoint coast = estConstPowerStoppingPoint(t, x, v, coastPower);
         boolean coastToStop = Math.abs(coast.x - target) < s.stopXTol
                 && coast.t - t < s.stopTTol;
         boolean deccelToStop = between(target, xStop, x);
@@ -79,8 +82,6 @@ public class LinearMotionController {
         if (LOG)
             ls += String.format("run %s, target=%.2f x=%.2f v=%.2f xStop=%.2f coast=%.2f",
                     s.name, target, x, v, xStop, coast.x);
-
-        double counterAccel = -a;
 
         double power;
         if (!coastToStop) {
@@ -111,7 +112,7 @@ public class LinearMotionController {
                 ls += String.format(" a=%.2f", nextAccel + counterAccel);
             }
         } else {
-            power = 0;
+            power = coastPower;
 
             if (LOG)
                 ls += " coasting to a stop";
