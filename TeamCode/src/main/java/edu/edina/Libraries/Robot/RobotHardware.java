@@ -66,6 +66,7 @@ public class RobotHardware implements DrivingRobotHardware {
 
     private final LinearOpMode opMode;
     public final IMU imu;
+    private final Odometry teleOpOdometry;
     public final Localizer odometry;
     public final MecanumDrive drive;
     public final VoltageSensor voltageSensor;
@@ -85,6 +86,7 @@ public class RobotHardware implements DrivingRobotHardware {
     private FtcDashboard dashboard;
     private boolean allowManualDriving = true;
     private boolean debugging;
+    public RearDistanceSensor distanceSensors;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -145,6 +147,10 @@ public class RobotHardware implements DrivingRobotHardware {
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
+
+        distanceSensors = new RearDistanceSensor(hardwareMap);
+
+        teleOpOdometry = new LocalizerOdometry(odometry);
     }
 
     public void initializeLights() {
@@ -980,7 +986,7 @@ public class RobotHardware implements DrivingRobotHardware {
 
     @Override
     public Odometry getOdometry() {
-        return new LocalizerOdometry(odometry);
+        return teleOpOdometry;
     }
 
     @Override
