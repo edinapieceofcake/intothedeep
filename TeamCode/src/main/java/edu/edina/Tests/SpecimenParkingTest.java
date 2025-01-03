@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.Actions.OdometryUpdater;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
@@ -18,8 +19,10 @@ public class SpecimenParkingTest extends LinearOpMode {
         RobotHardware hw = new RobotHardware(this);
 
         List<Action> runningActions = new ArrayList<>();
+        runningActions.add(new OdometryUpdater(hw));
 
         waitForStart();
+
         while (opModeIsActive()) {
             if (gamepad1.a && runningActions.size() == 1) {
                 // add parking
