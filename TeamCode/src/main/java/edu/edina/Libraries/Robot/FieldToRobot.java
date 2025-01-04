@@ -25,6 +25,14 @@ public class FieldToRobot {
         return new Vector2d(pose.position.x + tx, pose.position.y + ty);
     }
 
+    public static Vector2d[] toFieldRel(Pose2d pose, Vector2d[] v) {
+        Vector2d[] rr = new Vector2d[v.length];
+        for (int i = 0; i < v.length; i++)
+            rr[i] = toFieldRel(pose, v[i]);
+
+        return rr;
+    }
+
     private static double getDx(Pose2d pose) {
         return -Math.sin(pose.heading.toDouble());
     }

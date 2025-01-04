@@ -11,6 +11,7 @@ import java.util.List;
 
 import edu.edina.Libraries.Actions.OdometryUpdater;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SpecimenPark;
 
 @TeleOp
 public class SpecimenParkingTest extends LinearOpMode {
@@ -25,7 +26,7 @@ public class SpecimenParkingTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.a && runningActions.size() == 1) {
-                // add parking
+                runningActions.add(new SpecimenPark(hw));
             }
 
             TelemetryPacket packet = new TelemetryPacket();
