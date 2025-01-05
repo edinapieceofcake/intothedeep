@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 
-public class LinearMechanismSettings {
+public final class LinearMechanismSettings {
     // info
     public final String name;
     public final Units units;

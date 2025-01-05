@@ -29,6 +29,10 @@ public class SpecimenParkingTest extends LinearOpMode {
                 runningActions.add(new SpecimenPark(hw));
             }
 
+            if (runningActions.size() == 1) {
+                hw.drivetrain.update();
+            }
+
             TelemetryPacket packet = new TelemetryPacket();
             List<Action> newActions = new ArrayList<>();
 

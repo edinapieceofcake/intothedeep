@@ -60,7 +60,7 @@ public class SpecimenPark implements Action {
                 fieldCentricPath[1].x - fieldCentricPath[2].x
         ));
 
-        RobotLog.ii("SpecimenPark", "finalHeading: %.4f %.1f (deg)", finalHeading);
+        RobotLog.ii("SpecimenPark", "finalHeading: %.1f (deg)", finalHeading);
 
         pursuit = new PurePursuit(fieldCentricPath, false);
 
@@ -95,6 +95,8 @@ public class SpecimenPark implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+
         Pose2d currentPos = odometry.getPoseEstimate();
 
         pursuit.nextPursuitPoint(currentPos.position, radius);
@@ -136,7 +138,7 @@ public class SpecimenPark implements Action {
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
             Pose2d p = odometry.getPoseEstimate();
             PoseVelocity2d v = odometry.getVelocityEstimate();
-            return new DualNum<>(new double[]{p.heading.toDouble(), v.angVel});
+            return new DualNum<>(new double[]{Math.toDegrees(p.heading.toDouble()), Math.toDegrees(v.angVel)});
         }
 
         @Override
