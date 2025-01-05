@@ -42,6 +42,10 @@ public class LinearMotionController {
         this.target = target;
     }
 
+    public double getTarget() {
+        return target;
+    }
+
     public DualNum<Time> lastPositionAndVelocity() {
         return u;
     }

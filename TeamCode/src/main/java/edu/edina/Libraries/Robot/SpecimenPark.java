@@ -5,12 +5,19 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.LinearMotion.LinearMotionController;
+import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.PurePursuit.PurePursuit;
 
 @Config
@@ -22,7 +29,10 @@ public class SpecimenPark implements Action {
     public static double radius = 2;
     private final Telemetry telemetry;
     private final Odometry odometry;
-    private final double finalHeading;
+
+    // motion control
+    private final RotationalMechanism rotMech;
+    private final LinearMotionController rotCon;
 
     public SpecimenPark(RobotHardware hw) {
         this.hw = hw;
@@ -45,19 +55,22 @@ public class SpecimenPark implements Action {
 
         Vector2d[] fieldCentricPath = FieldToRobot.toFieldRel(pose, robotCentricPath);
 
-        finalHeading = Math.atan2(
+        double finalHeading = Math.toDegrees(Math.atan2(
                 fieldCentricPath[1].y - fieldCentricPath[2].y,
                 fieldCentricPath[1].x - fieldCentricPath[2].x
-        );
+        ));
 
-        RobotLog.ii("SpecimenPark", "finalHeading: %.4f (rad), %.1f (deg)",
-            finalHeading, Math.toDegrees(finalHeading));
+        RobotLog.ii("SpecimenPark", "finalHeading: %.4f %.1f (deg)", finalHeading);
 
         pursuit = new PurePursuit(fieldCentricPath, false);
 
         for (Vector2d v : pursuit.getPath()) {
             RobotLog.ii("SpecimenPark", "path: x = %.2f y = %.2f", v.x, v.y);
         }
+
+        rotMech = new RotationalMechanism();
+        rotCon = new LinearMotionController(rotMech);
+        rotCon.setTarget(finalHeading);
     }
 
     public static Vector2d pursuit(double left, double right, boolean near) {
@@ -94,15 +107,41 @@ public class SpecimenPark implements Action {
         double axial = M * pursuitPoint.x;
         double lateral = M * pursuitPoint.y;
 
-        double rotation = N * (finalHeading - currentPos.heading.toDouble());
+        rotCon.run();
+        double rotPow = rotMech.power;
 
-        hw.drivetrain.update(axial, -lateral, -rotation);
+        hw.drivetrain.update(axial, -lateral, rotPow);
 
         RobotLog.ii("SpecimenPark", "pursuit point: x = %.2f y = %.2f (fc)", fcPursuitPoint.x, fcPursuitPoint.y);
         RobotLog.ii("SpecimenPark", "pursuit point: x = %.2f y = %.2f (rr)", pursuitPoint.x, pursuitPoint.y);
-        RobotLog.ii("SpecimenPark", "alpha = %.2f (rad)", (rotation / N));
-        RobotLog.ii("SpecimenPark", "power: axial = %.2f lateral = %.2f rotation = %.2f", axial, lateral, rotation);
+        RobotLog.ii("SpecimenPark", "power: axial = %.2f lateral = %.2f rotation = %.2f", axial, lateral, rotPow);
 
         return true;
+    }
+
+    private class RotationalMechanism implements ILinearMechanism {
+        private double power;
+
+        @Override
+        public void setPower(double power) {
+            this.power = -power;
+        }
+
+        @Override
+        public double getPosition(boolean raw) {
+            return getPositionAndVelocity(raw).get(0);
+        }
+
+        @Override
+        public DualNum<Time> getPositionAndVelocity(boolean raw) {
+            Pose2d p = odometry.getPoseEstimate();
+            PoseVelocity2d v = odometry.getVelocityEstimate();
+            return new DualNum<>(new double[]{p.heading.toDouble(), v.angVel});
+        }
+
+        @Override
+        public LinearMechanismSettings getSettings() {
+            return RotationalDriveMechanism.getStaticSettings();
+        }
     }
 }
