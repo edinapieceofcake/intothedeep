@@ -41,6 +41,7 @@ public class SpecimenParkingTest extends LinearOpMode {
             }
 
             runningActions = newActions;
+
             Pose2d pose = hw.getOdometry().getPoseEstimate();
 
             telemetry.addData("position: ", "x = %.2f y = %.2f", pose.position.x, pose.position.y);

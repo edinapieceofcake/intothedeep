@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
@@ -31,7 +32,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new VerticalExtensionMechanism(new RobotHardware(this));
+        linearMech = new RotationalDriveMechanism(new RobotHardware(this));
 
         waitForStart();
 
@@ -254,9 +255,8 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         LinearMechanismSettings settings = linearMech.getSettings();
         FuncInverter fi = new FuncInverter(1, 0.05);
 
-        double kaOneSecond = (1 - settings.ks) / (2 * settings.accelCalibrationDist) - settings.kv;
-        double ka0 = 0.3 * kaOneSecond;
-        double ka1 = 1.8 * kaOneSecond;
+        double ka0 = 0.3 * settings.ka;
+        double ka1 = 3 * settings.ka;
 
         fi.eval(ka0, testKaAccelRatio(ka0));
         fi.eval(ka1, testKaAccelRatio(ka1));
@@ -299,7 +299,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
             double ks = settings.ks;
             double kv = settings.kv;
-            double startPos = linearMech.getPosition(false);
+            double startPos = linearMech.getPositionAndVelocity(false).get(0);
             ElapsedTime timer = new ElapsedTime();
             double t = 0;
             double dist = 0;
@@ -311,7 +311,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 t = timer.seconds();
 
                 DualNum<Time> u = linearMech.getPositionAndVelocity(false);
-                dist = u.get(0);
+                dist = u.get(0) - startPos;
                 if (dist >= settings.accelCalibrationDist * 1.1) {
                     break;
                 }

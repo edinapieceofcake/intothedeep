@@ -1,5 +1,6 @@
 package edu.edina.Libraries.LinearMotion;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -15,14 +16,15 @@ import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.Odometry;
 import edu.edina.Libraries.Robot.RobotHardware;
 
+@Config
 public class RotationalDriveMechanism implements ILinearMechanism {
     private final Odometry odometry;
     private final Drivetrain drivetrain;
     private final VoltageSensor vs;
 
-    public static double KS = 5.6038e-2;
-    public static double KV = 4.3259e-3;
-    public static double KA = 0.001;
+    public static double KS = 7.7046e-02;
+    public static double KV = 3.6075e-03;
+    public static double KA = 4.7e-4;
     public static double NOMINAL_ACCEL = 50;
     public static double STOP_ACCEL_MULT = 0.3;
     public static double STOP_T_TOL = 0.45;
@@ -32,7 +34,7 @@ public class RotationalDriveMechanism implements ILinearMechanism {
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
                 "rotational drive", Units.DEGREES,
-                KS, KV, KA, 20,
+                KS, KV, KA, 10,
                 NOMINAL_ACCEL,
                 STOP_ACCEL_MULT,
                 STOP_T_TOL,
