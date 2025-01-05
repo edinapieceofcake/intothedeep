@@ -29,6 +29,10 @@ public class SpecimenParkingTest extends LinearOpMode {
                 runningActions.add(new SpecimenPark(hw));
             }
 
+            if (!gamepad1.a && runningActions.size() == 2) {
+                runningActions.remove(1);
+            }
+
             if (runningActions.size() == 1) {
                 hw.drivetrain.update();
             }
