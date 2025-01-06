@@ -47,9 +47,9 @@ public class SpecimenPark implements Action {
 
         double left = hw.distanceSensors.readLeftBack();
         double right = hw.distanceSensors.readRightBack();
-        telemetry.addData("left", left);
-        telemetry.addData("right", right);
-        telemetry.update();
+
+        RobotLog.ii("SpecimenPark", "init -- distance left %.1f right %.1f",
+                left, right);
 
         Vector2d[] robotCentricPath = new Vector2d[]{
                 new Vector2d(0, 0),
@@ -62,22 +62,23 @@ public class SpecimenPark implements Action {
 
         Vector2d[] fieldCentricPath = FieldToRobot.toFieldRel(pose, robotCentricPath);
 
-        double finalHeading = Math.toDegrees(Math.atan2(
+        double targetHeading = Math.toDegrees(Math.atan2(
                 fieldCentricPath[1].y - fieldCentricPath[2].y,
                 fieldCentricPath[1].x - fieldCentricPath[2].x
         ));
 
-        RobotLog.ii("SpecimenPark", "finalHeading: %.1f (deg)", finalHeading);
+        RobotLog.ii("SpecimenPark", "init -- heading: %.1f (deg) targetHeading: %.1f (deg)",
+                Math.toDegrees(pose.heading.toDouble()), targetHeading);
 
         pursuit = new PurePursuit(fieldCentricPath, false);
 
         for (Vector2d v : pursuit.getPath()) {
-            RobotLog.ii("SpecimenPark", "path: x = %.2f y = %.2f", v.x, v.y);
+            RobotLog.ii("SpecimenPark", "init -- path: x = %.2f y = %.2f", v.x, v.y);
         }
 
         rotMech = new RotationalMechanism();
         rotCon = new LinearMotionController(rotMech);
-        rotCon.setTarget(finalHeading);
+        rotCon.setTarget(targetHeading);
     }
 
     public static Vector2d pursuit(double left, double right, boolean near) {

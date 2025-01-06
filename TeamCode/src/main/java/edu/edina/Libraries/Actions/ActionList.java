@@ -8,9 +8,9 @@ public class ActionList {
     public static boolean manualDrive(List<Action> actions) {
         for (Action a : actions) {
             if (a.getClass().getAnnotation(AutoDrive.class) != null)
-                return true;
+                return false;
         }
 
-        return false;
+        return true;
     }
 }
