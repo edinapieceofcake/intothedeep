@@ -9,9 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.Actions.ActionList;
 import edu.edina.Libraries.Actions.OdometryUpdater;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.SpecimenPark;
+import edu.edina.Libraries.Actions.SpecimenPark;
 
 @TeleOp
 public class SpecimenParkingTest extends LinearOpMode {
@@ -25,16 +26,14 @@ public class SpecimenParkingTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.a && runningActions.size() == 1) {
-                runningActions.add(new SpecimenPark(hw));
+            if (!ActionList.containsAutoDrive(runningActions)) {
+                if (gamepad1.a) {
+                    runningActions.add(new SpecimenPark(hw));
+                }
             }
 
             if (!gamepad1.a && runningActions.size() == 2) {
                 runningActions.remove(1);
-            }
-
-            if (runningActions.size() == 1) {
-                hw.drivetrain.update();
             }
 
             TelemetryPacket packet = new TelemetryPacket();

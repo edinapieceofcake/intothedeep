@@ -1,4 +1,4 @@
-package edu.edina.Libraries.Robot;
+package edu.edina.Libraries.Actions;
 
 import androidx.annotation.NonNull;
 
@@ -19,11 +19,15 @@ import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.PurePursuit.PurePursuit;
+import edu.edina.Libraries.Robot.FieldToRobot;
+import edu.edina.Libraries.Robot.Odometry;
+import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.SensorLayout;
 
 @Config
+@AutoDrive
 public class SpecimenPark implements Action {
     public static double M = 0.1;
-    public static double N = 0.1;
     private final RobotHardware hw;
     private final PurePursuit pursuit;
     public static double radius = 2;
