@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.edina.Libraries.Actions.ActionList;
+import edu.edina.Libraries.Actions.Condition;
+import edu.edina.Libraries.Actions.Conditions;
 import edu.edina.Libraries.Actions.OdometryUpdater;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Actions.SpecimenPark;
@@ -26,14 +28,17 @@ public class SpecimenParkingTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (!ActionList.containsAutoDrive(runningActions)) {
-                if (gamepad1.a) {
-                    runningActions.add(new SpecimenPark(hw));
+            // check if driver wants to start auto drive
+            if (ActionList.manualDrive(runningActions)) {
+                Condition sp = new Conditions.SpecimenPark(this);
+                if (sp.check()) {
+                    runningActions.add(new SpecimenPark(hw, sp));
                 }
             }
 
-            if (!gamepad1.a && runningActions.size() == 2) {
-                runningActions.remove(1);
+            // check if still in manual driving mode
+            if (ActionList.manualDrive(runningActions)) {
+                hw.drivetrain.update();
             }
 
             TelemetryPacket packet = new TelemetryPacket();

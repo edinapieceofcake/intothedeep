@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -32,15 +33,17 @@ public class SpecimenPark implements Action {
     private final PurePursuit pursuit;
     public static double radius = 2;
     private final Telemetry telemetry;
+    private final Condition condition;
     private final Odometry odometry;
 
     // motion control
     private final RotationalMechanism rotMech;
     private final LinearMotionController rotCon;
 
-    public SpecimenPark(RobotHardware hw) {
+    public SpecimenPark(RobotHardware hw, Condition condition) {
         this.hw = hw;
         telemetry = hw.getOpMode().telemetry;
+        this.condition = condition;
 
         double left = hw.distanceSensors.readLeftBack();
         double right = hw.distanceSensors.readRightBack();
@@ -99,7 +102,8 @@ public class SpecimenPark implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
+        if (!condition.check())
+            return false;
 
         Pose2d currentPos = odometry.getPoseEstimate();
 
