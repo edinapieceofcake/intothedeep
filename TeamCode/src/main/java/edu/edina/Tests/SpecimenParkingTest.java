@@ -30,17 +30,20 @@ public class SpecimenParkingTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             // check if driver wants to start auto drive
-            if (ActionList.manualDrive(runningActions)) {
-                Condition sp = new Conditions.SpecimenPark(this);
-                if (sp.check()) {
+            Condition sp = new Conditions.SpecimenPark(this);
+
+            if (sp.check()) {
+                if (ActionList.canAddAction(SpecimenPark.class, runningActions)) {
                     runningActions.add(new SpecimenPark(hw, sp));
-                    runningActions.add(new RaiseLift(hw, 14));
                 }
 
+                if (ActionList.canAddAction(RaiseLift.class, runningActions)) {
+                    runningActions.add(new RaiseLift(hw, 14));
+                }
             }
 
             // check if still in manual driving mode
-            if (ActionList.manualDrive(runningActions)) {
+            if (ActionList.canControlPart("drivetrain", runningActions)) {
                 hw.drivetrain.update();
             }
 

@@ -24,10 +24,10 @@ public class VerticalExtensionMechanism implements ILinearMechanism {
     public static double KV = 3.8799e-02;
     public static double KA = 8.4763e-03;
     public static double NOMINAL_ACCEL = 1 / (2 * KA);
-    public static double STOP_ACCEL_MULT = 0.7;
+    public static double STOP_ACCEL_MULT = 2;
     public static double STOP_T_TOL = 0.45;
     public static double STOP_X_TOL = 0.5;
-    public static double MAX_JERK = 7000;
+    public static double MAX_JERK = 4000;
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(

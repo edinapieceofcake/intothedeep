@@ -3,6 +3,8 @@ package edu.edina.Libraries.Robot;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.LinearMotion.SpringForce;
@@ -11,8 +13,8 @@ import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 @Config
 @TeleOp
 public class LiftTest extends LinearOpMode {
-    public static double k=-1;
-    public static double g=-20;
+    public static double k = -1;
+    public static double g = -20;
 
     public void runOpMode() throws InterruptedException {
         RobotHardware hw = new RobotHardware(this);
@@ -26,10 +28,9 @@ public class LiftTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.dpad_up) {
-                verticalController.setTarget(14.1);
+                verticalController.setTarget(15);
                 lastPos = verticalController.lastPositionAndVelocity().get(0);
-            }
-            else if (gamepad1.dpad_down) {
+            } else if (gamepad1.dpad_down) {
                 verticalController.setTarget(-0.1);
                 lastPos = verticalController.lastPositionAndVelocity().get(0);
             } else

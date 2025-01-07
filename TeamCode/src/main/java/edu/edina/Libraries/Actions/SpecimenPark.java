@@ -25,7 +25,7 @@ import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.SensorLayout;
 
 @Config
-@AutoDrive
+@Controls(part = "drivetrain")
 public class SpecimenPark implements Action {
     public static double M = 0.1;
     private final RobotHardware hw;
