@@ -13,6 +13,7 @@ import edu.edina.Libraries.Actions.ActionList;
 import edu.edina.Libraries.Actions.Condition;
 import edu.edina.Libraries.Actions.Conditions;
 import edu.edina.Libraries.Actions.OdometryUpdater;
+import edu.edina.Libraries.Actions.RaiseLift;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Actions.SpecimenPark;
 
@@ -33,7 +34,9 @@ public class SpecimenParkingTest extends LinearOpMode {
                 Condition sp = new Conditions.SpecimenPark(this);
                 if (sp.check()) {
                     runningActions.add(new SpecimenPark(hw, sp));
+                    runningActions.add(new RaiseLift(hw, 14));
                 }
+
             }
 
             // check if still in manual driving mode
