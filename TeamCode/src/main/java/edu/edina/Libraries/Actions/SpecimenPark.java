@@ -10,7 +10,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -40,6 +39,8 @@ public class SpecimenPark implements Action {
     private final RotationalMechanism rotMech;
     private final LinearMotionController rotCon;
 
+    private final boolean sanityCheck;
+
     public SpecimenPark(RobotHardware hw, Condition condition) {
         this.hw = hw;
         telemetry = hw.getOpMode().telemetry;
@@ -47,6 +48,8 @@ public class SpecimenPark implements Action {
 
         double left = hw.distanceSensors.readLeftBack();
         double right = hw.distanceSensors.readRightBack();
+
+        sanityCheck = !(left > 28) && !(right > 28) && !(Math.abs(left - right) > 4);
 
         RobotLog.ii("SpecimenPark", "init -- distance left %.1f right %.1f",
                 left, right);
@@ -106,6 +109,9 @@ public class SpecimenPark implements Action {
         if (!condition.check())
             return false;
 
+        if (!sanityCheck)
+            return false;
+
         Pose2d currentPos = odometry.getPoseEstimate();
 
         pursuit.nextPursuitPoint(currentPos.position, radius);
@@ -118,7 +124,8 @@ public class SpecimenPark implements Action {
         double axial = M * pursuitPoint.x;
         double lateral = M * pursuitPoint.y;
 
-        rotCon.run();
+        boolean doneRotating = rotCon.run();
+
         double rotPow = rotMech.power;
 
         hw.drivetrain.update(axial, -lateral, rotPow);
@@ -127,7 +134,7 @@ public class SpecimenPark implements Action {
         RobotLog.ii("SpecimenPark", "pursuit point: x = %.2f y = %.2f (rr)", pursuitPoint.x, pursuitPoint.y);
         RobotLog.ii("SpecimenPark", "power: axial = %.2f lateral = %.2f rotation = %.2f", axial, lateral, rotPow);
 
-        return true;
+        return !doneRotating;
     }
 
     private class RotationalMechanism implements ILinearMechanism {
