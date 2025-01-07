@@ -4,8 +4,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -100,7 +102,7 @@ public class Lift {
         rightMotor = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
 
         // Set the right motor's direction.
-        rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Reset the motors.
         reset();
@@ -132,7 +134,7 @@ public class Lift {
         //////////////////////////////////////////////////////////////////////
 
         // If we are rezeroing...
-        if(rezeroing) {
+        if (rezeroing) {
 
             // Use the rezeroing power.
             leftMotor.setPower(REZEROING_POWER);
@@ -257,7 +259,7 @@ public class Lift {
     public void raise() {
 
         // If the lift is fully raised...
-        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+        if (targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -276,7 +278,7 @@ public class Lift {
     public void lower() {
 
         // If the lift is fully lowered...
-        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+        if (targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -389,7 +391,7 @@ public class Lift {
     public void stopRezeroing() {
 
         // If we are not rezeroing...
-        if(!rezeroing) {
+        if (!rezeroing) {
 
             // Exit the method.
             return;
