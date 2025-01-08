@@ -9,9 +9,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< Updated upstream
 import edu.edina.Libraries.Actions.ActionList;
 import edu.edina.Libraries.Actions.Condition;
 import edu.edina.Libraries.Actions.Conditions;
+=======
+import edu.edina.Libraries.Actions.Condition;
+>>>>>>> Stashed changes
 import edu.edina.Libraries.Actions.OdometryUpdater;
 import edu.edina.Libraries.Actions.RaiseLift;
 import edu.edina.Libraries.Robot.RobotHardware;
@@ -27,6 +31,8 @@ public class SpecimenParkingTest extends LinearOpMode {
         runningActions.add(new OdometryUpdater(hw));
 
         waitForStart();
+
+        Condition autoCondition = null;
 
         while (opModeIsActive()) {
             // check if driver wants to start auto drive
