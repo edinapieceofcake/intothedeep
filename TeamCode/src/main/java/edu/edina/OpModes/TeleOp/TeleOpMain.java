@@ -1,5 +1,6 @@
 package edu.edina.OpModes.TeleOp;
 
+import static edu.edina.OpModes.Autonomous.AutoSample.lastPose;
 import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -75,12 +76,14 @@ public class TeleOpMain extends LinearOpMode {
 
     // Robot hardware
     private RobotHardware robotHardware;
+    private MecanumDrive drive;
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
+        drive = new MecanumDrive(hardwareMap, lastPose);
 
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
@@ -548,11 +551,11 @@ public class TeleOpMain extends LinearOpMode {
     }
 
     private Action goToSub() {
-        Pose2d startAfterAutoPose = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startAfterAutoPose);
+//        Pose2d startAfterAutoPose = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
+//        MecanumDrive drive = new MecanumDrive(hardwareMap, startAfterAutoPose);
         // todo Tune This
         Pose2d subPose = new Pose2d(-30, -30, 2.0 / 4 * Math.PI);
-        Action driveFromstartAfterAutoPoseToSub = drive.actionBuilder(startAfterAutoPose)
+        Action driveFromstartAfterAutoPoseToSub = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(subPose.position, subPose.heading)
                 .build();
         Action action = new ParallelAction(
@@ -565,11 +568,11 @@ public class TeleOpMain extends LinearOpMode {
     }
 
     private Action grabSpecimen() {
-        Pose2d subPose = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, subPose);
-        // todo Tune This
-        Pose2d subPoseGrab = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
-        Action backup = drive.actionBuilder(subPoseGrab)
+        Pose2d subPose = new Pose2d(-30, -30, 1.0 / 4 * Math.PI);
+//        MecanumDrive drive = new MecanumDrive(hardwareMap, subPose);
+//        // todo Tune This
+//        Pose2d subGrabPose = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
+        Action backup = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(subPose.position, subPose.heading)
                 .build();
         Action action = new SequentialAction(
@@ -589,10 +592,11 @@ public class TeleOpMain extends LinearOpMode {
 
     private Action gotToHighBasket() {
         // TODO Tune This
-        Pose2d subGrabPose = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, subGrabPose);
-        Action driveFromGrabPoseToHighBasket = drive.actionBuilder(subGrabPose)
-                .strafeToLinearHeading(subGrabPose.position, subGrabPose.heading)
+//        Pose2d subGrabPose = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
+//        MecanumDrive drive = new MecanumDrive(hardwareMap, subGrabPose);
+        Pose2d HighBasket = new Pose2d(-55,-50, 4.0 / 4 * Math.PI);
+        Action driveFromGrabPoseToHighBasket = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(HighBasket.position, HighBasket.heading)
                 .build();
         Action action = new SequentialAction(
                 new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
