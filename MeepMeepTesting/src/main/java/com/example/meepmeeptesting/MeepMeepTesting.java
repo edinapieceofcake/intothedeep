@@ -1,10 +1,20 @@
 package com.example.meepmeeptesting;
 
+import com.acmerobotics.roadrunner.Arclength;
+import com.acmerobotics.roadrunner.HeadingPath;
+import com.acmerobotics.roadrunner.HeadingPosePath;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PosePath;
+import com.acmerobotics.roadrunner.PositionPath;
+import com.acmerobotics.roadrunner.Rotation2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.Vector2dDual;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Vector;
 
@@ -18,7 +28,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = false;
+        boolean sampleSide = true;
 
         if (sampleSide) {
             // *****SAMPLES*****
@@ -39,6 +49,15 @@ public class MeepMeepTesting {
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-57, -25), Math.PI)
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
+                    .setTangent(Math.toRadians(0))
+                    .splineToSplineHeading(new Pose2d(-20, -60, Math.toRadians(0)), Math.toRadians(0))
+                    .setTangent(Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(32, -60), Math.toRadians(0))
+
+                    .setTangent(Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-20, -60), Math.toRadians(180))
+                    .setTangent(Math.toRadians(180))
+                    .splineToSplineHeading(new Pose2d(-50, -50, Math.toRadians(45)), Math.toRadians(180))
 
 
                     //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
