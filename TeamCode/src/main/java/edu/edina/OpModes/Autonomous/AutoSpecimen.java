@@ -214,8 +214,18 @@ public class AutoSpecimen extends LinearOpMode {
 				.lineToY(WALL_Y, wallVelocityConstraint);
 		Action plow2 = plow2Builder.build();
 
+		// Construct third plow action.
+		TrajectoryActionBuilder plow3Builder = plow2Builder.endTrajectory().fresh()
+				.setTangent(Math.toRadians(270))
+				.splineToConstantHeading(new Vector2d(59,-13), Math.toRadians(0))
+				.setTangent(Math.toRadians(0))
+				.splineToConstantHeading(new Vector2d(61,-15), Math.toRadians(270))
+				.splineToConstantHeading(new Vector2d(61,-49), Math.toRadians(270))
+				.lineToY(WALL_Y, wallVelocityConstraint);
+		Action plow3 = plow3Builder.build();
+
 		// Construct a second drive to chamber action.
-		TrajectoryActionBuilder driveToChamber2Builder = plow2Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToChamber2Builder = plow3Builder.endTrajectory().fresh()
 				.setTangent(Math.toRadians(90))
 				.splineToConstantHeading(new Vector2d(3, CHAMBER_Y), Math.toRadians(90), chamberVelocityConstraint);
 		Action driveToChamber2 = driveToChamber2Builder.build();
@@ -249,8 +259,25 @@ public class AutoSpecimen extends LinearOpMode {
 				.strafeTo(new Vector2d(-3, SCORE_Y));
 		Action driveToScore4 = driveToScore4Builder.build();
 
+		// Construct a third drive to wall action.
+		TrajectoryActionBuilder driveToWall3Builder = driveToChamber4Builder.endTrajectory().fresh()
+				.setTangent(Math.toRadians(270))
+				.splineToConstantHeading(new Vector2d(WALL_X, WALL_Y), Math.toRadians(270), wallVelocityConstraint);
+		Action driveToWall3 = driveToWall3Builder.build();
+
+		// Construct a fifth drive to chamber action.
+		TrajectoryActionBuilder driveToChamber5Builder = driveToWall3Builder.endTrajectory().fresh()
+				.setTangent(Math.toRadians(90))
+				.splineToConstantHeading(new Vector2d(-6, CHAMBER_Y), Math.toRadians(90), chamberVelocityConstraint);
+		Action driveToChamber5 = driveToChamber5Builder.build();
+
+		// Construct a fifth drive to score action.
+		TrajectoryActionBuilder driveToScore5Builder = driveToChamber5Builder.endTrajectory().fresh()
+				.strafeTo(new Vector2d(-6, SCORE_Y));
+		Action driveToScore5 = driveToScore5Builder.build();
+
 		// Construct a drive to park action.
-		TrajectoryActionBuilder driveToParkBuilder = driveToScore4Builder.endTrajectory().fresh()
+		TrajectoryActionBuilder driveToParkBuilder = driveToScore5Builder.endTrajectory().fresh()
 				.strafeTo(new Vector2d(54, -54));
 		Action driveToPark = driveToParkBuilder.build();
 
@@ -275,20 +302,26 @@ public class AutoSpecimen extends LinearOpMode {
 				// Plow the second sample.
 				plow2,
 
+				// Plow the third sample.
+				plow3,
+
 				// Grab and score the first wall specimen.
 				grabAndScoreSpecimen(driveToChamber2, driveToWall1),
 
 				// Grab and score the second wall specimen.
 				grabAndScoreSpecimen(driveToChamber3, driveToWall2),
 
-				// Grab the third wall specimen.
+				// Grab and score the third wall specimen.
+				grabAndScoreSpecimen(driveToChamber4, driveToWall3),
+
+				// Grab the fourth wall specimen.
 				grabSpecimen(),
 
 				// Drive to the chamber while raising the arm.
-				raiseArmToChamberAndDrive(driveToChamber4, true, false),
+				raiseArmToChamberAndDrive(driveToChamber5, true, false),
 
 				// Score the third wall specimen.
-				scoreSpecimen(driveToScore4, robotHardware),
+				scoreSpecimen(driveToScore5, robotHardware),
 
 				// Lower the arm.
 				lowerArmFromChamber(false)
