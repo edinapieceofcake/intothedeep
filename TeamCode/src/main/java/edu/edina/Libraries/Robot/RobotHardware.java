@@ -959,6 +959,9 @@ public class RobotHardware implements DrivingRobotHardware {
         runningActions.add(action);
 
     }
+    public void stopDrivetrain() {
+        drivetrain.stop();
+    }
 
     // Disables manual driving.
     public void disableManualDriving() {

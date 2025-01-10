@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
+import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForHardware;
@@ -77,6 +78,7 @@ public class TeleOpMain extends LinearOpMode {
     // Robot hardware
     private RobotHardware robotHardware;
     private MecanumDrive drive;
+
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
@@ -594,7 +596,7 @@ public class TeleOpMain extends LinearOpMode {
         // TODO Tune This
 //        Pose2d subGrabPose = new Pose2d(-35, -30, 2.0 / 4 * Math.PI);
 //        MecanumDrive drive = new MecanumDrive(hardwareMap, subGrabPose);
-        Pose2d HighBasket = new Pose2d(-55,-50, 4.0 / 4 * Math.PI);
+        Pose2d HighBasket = new Pose2d(-55, -50, 4.0 / 4 * Math.PI);
         Action driveFromGrabPoseToHighBasket = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(HighBasket.position, HighBasket.heading)
                 .build();
@@ -640,5 +642,8 @@ public class TeleOpMain extends LinearOpMode {
 
     }
 
-
+    private void killswitch() {
+        robotHardware.clearActions();
+        robotHardware.stopDrivetrain();
+    }
 }
