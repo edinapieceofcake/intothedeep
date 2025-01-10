@@ -1,6 +1,5 @@
 package edu.edina.Libraries.Actions;
 
-<<<<<<< Updated upstream
 import com.acmerobotics.roadrunner.Action;
 
 import java.util.List;
@@ -30,8 +29,4 @@ public class ActionList {
 
         return true;
     }
-=======
-public class ActionList {
-    public static void addAutoDrive(){}
->>>>>>> Stashed changes
 }

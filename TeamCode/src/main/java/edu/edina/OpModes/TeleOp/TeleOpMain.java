@@ -471,7 +471,6 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.toggleSwivel();
 
         }
-
     }
 
     private void handleSubmersibleControls() {
