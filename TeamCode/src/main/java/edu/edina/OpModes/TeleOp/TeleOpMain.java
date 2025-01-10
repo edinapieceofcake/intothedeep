@@ -567,7 +567,7 @@ public class TeleOpMain extends LinearOpMode {
 
     }
 
-    private Action grabSpecimen() {
+    private Action grabSample() {
         Pose2d subPose = new Pose2d(-30, -30, 1.0 / 4 * Math.PI);
 //        MecanumDrive drive = new MecanumDrive(hardwareMap, subPose);
 //        // todo Tune This
