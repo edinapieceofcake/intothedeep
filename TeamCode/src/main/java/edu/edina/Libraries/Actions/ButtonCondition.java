@@ -13,7 +13,7 @@ public class ButtonCondition implements Condition {
     }
 
     @Override
-    public boolean check() {
+    public boolean run() {
         Gamepad g1 = opMode.gamepad1;
         Gamepad g2 = opMode.gamepad2;
 

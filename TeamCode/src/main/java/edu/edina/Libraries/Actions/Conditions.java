@@ -11,7 +11,7 @@ public class Conditions {
         }
 
         @Override
-        public boolean check() {
+        public boolean run() {
             return opMode.gamepad1.a;
         }
     }

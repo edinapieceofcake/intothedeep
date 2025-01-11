@@ -34,7 +34,7 @@ public class SpecimenParkingTest extends LinearOpMode {
             // check if driver wants to start auto drive
             Condition sp = new Conditions.SpecimenPark(this);
 
-            if (sp.check()) {
+            if (sp.run()) {
                 if (ActionList.canAddAction(SpecimenPark.class, runningActions)) {
                     runningActions.add(new SpecimenPark(hw, sp));
                 }

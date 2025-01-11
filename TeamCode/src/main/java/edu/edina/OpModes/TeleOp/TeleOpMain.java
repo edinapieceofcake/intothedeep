@@ -14,6 +14,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import edu.edina.Libraries.Actions.Condition;
+import edu.edina.Libraries.Actions.Conditions;
+import edu.edina.Libraries.Actions.KillSwitchAction;
+import edu.edina.Libraries.Actions.RaiseLift;
+import edu.edina.Libraries.Actions.SpecimenPark;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.Drivetrain;
@@ -78,6 +83,7 @@ public class TeleOpMain extends LinearOpMode {
     // Robot hardware
     private RobotHardware robotHardware;
     private MecanumDrive drive;
+    private Condition autoCondition;
 
 
     // Runs the op mode.
@@ -92,6 +98,7 @@ public class TeleOpMain extends LinearOpMode {
 
         // Wait for the user to press start.
         waitForStart();
+        autoCondition = null;
 
         // Lower the arm.
         robotHardware.setArmGroundPosition();
@@ -116,7 +123,7 @@ public class TeleOpMain extends LinearOpMode {
 
         // While the op mode is active...
         while (opModeIsActive()) {
-
+            Condition sp = new Conditions.SpecimenPark(this);
             // Update the gamepads.
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
@@ -159,6 +166,7 @@ public class TeleOpMain extends LinearOpMode {
 
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
+
 
             // Toggle wrist.
             robotHardware.toggleWrist();
@@ -243,11 +251,13 @@ public class TeleOpMain extends LinearOpMode {
 
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
+            // Used for A Test
+           // ScoreSpecimen();
 
             // Clear any pending actions.
             robotHardware.clearActions();
-
-            // Raise the sample.
+//
+//            // Raise the sample.
             robotHardware.raiseSample();
 
         }
@@ -644,5 +654,14 @@ public class TeleOpMain extends LinearOpMode {
     private void killswitch() {
         robotHardware.clearActions();
         robotHardware.stopDrivetrain();
+    }
+
+    private void  ScoreSpecimen() {
+        Action scoreSepcimenAction = new ParallelAction (
+                new SpecimenPark(robotHardware, autoCondition),
+                new RaiseLift(robotHardware, 12),
+                new KillSwitchAction(robotHardware,()-> !currentGamepad.y)
+        );
+        robotHardware.addAction(scoreSepcimenAction);
     }
 }

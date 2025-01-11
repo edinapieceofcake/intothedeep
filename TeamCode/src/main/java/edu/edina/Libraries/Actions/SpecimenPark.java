@@ -106,7 +106,7 @@ public class SpecimenPark implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        if (!condition.check())
+        if (!condition.run())
             return false;
 
         if (!sanityCheck)
