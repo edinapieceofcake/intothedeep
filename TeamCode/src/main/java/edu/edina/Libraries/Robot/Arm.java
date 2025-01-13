@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // This represents an arm.
 @Config
 public class Arm {
-
     // Derivative coefficient
     public static double DERIVATIVE = 0.00005;
 
@@ -121,6 +120,10 @@ public class Arm {
         // Initialize the arm controller.
         controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
+    }
+
+    public DcMotorEx getArmMotor() {
+        return motor;
     }
 
     // Updates this.

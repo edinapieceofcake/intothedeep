@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.ftccommon.SoundPlayer;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -990,6 +991,16 @@ public class RobotHardware implements DrivingRobotHardware {
     @Override
     public Odometry getOdometry() {
         return teleOpOdometry;
+    }
+
+    @Override
+    public DcMotorEx getArm() {
+        return arm.getArmMotor();
+    }
+
+    @Override
+    public DcMotorEx getExtension() {
+        return null;
     }
 
     @Override

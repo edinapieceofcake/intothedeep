@@ -1,6 +1,8 @@
 package edu.edina.Libraries.Robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -13,9 +15,15 @@ public class TestRobotHardware implements DrivingRobotHardware {
     public final Odometry odometry;
     public final VoltageSensor voltageSensor;
     public final Drivetrain drivetrain;
+    public final DcMotorEx extension;
+    public final DcMotorEx arm;
 
     public TestRobotHardware(LinearOpMode opMode) throws InterruptedException {
         HardwareMap hardwareMap = opMode.hardwareMap;
+
+        extension = hardwareMap.get(DcMotorEx.class, "extension_motor");
+        arm = hardwareMap.get(DcMotorEx.class, "arm_motor");
+        extension.setDirection(DcMotorSimple.Direction.REVERSE);
 
         drivetrain = new Drivetrain(opMode);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -31,6 +39,16 @@ public class TestRobotHardware implements DrivingRobotHardware {
     @Override
     public Odometry getOdometry() {
         return odometry;
+    }
+
+    @Override
+    public DcMotorEx getArm() {
+        return arm;
+    }
+
+    @Override
+    public DcMotorEx getExtension() {
+        return extension;
     }
 
     @Override
