@@ -1,13 +1,12 @@
 package edu.edina.Libraries.Actions;
 
-import static edu.edina.Libraries.Robot.LiftTest.g;
-import static edu.edina.Libraries.Robot.LiftTest.k;
+import static edu.edina.Libraries.Robot.LiftActions.k;
+import static edu.edina.Libraries.Robot.LiftActions.g;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.LinearMotion.LinearMotionController;

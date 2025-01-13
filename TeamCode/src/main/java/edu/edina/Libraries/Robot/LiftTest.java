@@ -1,42 +1,44 @@
 package edu.edina.Libraries.Robot;
 
-import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import edu.edina.Libraries.LinearMotion.LinearMotionController;
-import edu.edina.Libraries.LinearMotion.SpringForce;
-import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
-
-@Config
 @TeleOp
 public class LiftTest extends LinearOpMode {
-    public static double k = -1;
-    public static double g = -20;
-
     public void runOpMode() throws InterruptedException {
         RobotHardware hw = new RobotHardware(this);
-        SpringForce springForce = new SpringForce(k, g);
-        VerticalExtensionMechanism vertical = new VerticalExtensionMechanism(hw);
-        LinearMotionController verticalController = new LinearMotionController(vertical, springForce);
-
-        double lastPos = 0;
+        LiftActions liftActions = new LiftActions(hw);
+        TelemetryPacket telemetryPacket = new TelemetryPacket();
+        FtcDashboard ftcDashboard = FtcDashboard.getInstance();
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            if (gamepad1.dpad_up) {
-                verticalController.setTarget(15);
-                lastPos = verticalController.lastPositionAndVelocity().get(0);
-            } else if (gamepad1.dpad_down) {
-                verticalController.setTarget(-0.1);
-                lastPos = verticalController.lastPositionAndVelocity().get(0);
-            } else
-                verticalController.setTarget(lastPos);
+        Action raise = new SequentialAction(
+                liftActions.setTarget(14),
+                liftActions.holdPos(14)
+        );
 
-            verticalController.run();
+        Action lower = new SequentialAction(
+                liftActions.setTarget(0.3),
+                liftActions.holdPos(0)
+        );
+
+        while (opModeIsActive()) {
+            telemetryPacket.put("current draw", liftActions.getVMech().getCurrent());
+            telemetryPacket.put("position", liftActions.getVMech().getPositionAndVelocity(false).get(0));
+
+            if (gamepad1.dpad_up) {
+                raise.run(new TelemetryPacket());
+            }
+            if (gamepad1.dpad_down) {
+                lower.run(new TelemetryPacket());
+            }
+
+            ftcDashboard.sendTelemetryPacket(telemetryPacket);
         }
     }
 }
