@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
 import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
@@ -21,10 +22,11 @@ import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
 public class CalibrateLinearMechanism extends LinearOpMode {
-    public final String LOG_TAG = "linear cal";
+    private static final String LOG_TAG = "linear cal";
     double powerStep = 0.02;
     double speedThres = 1;
 
@@ -32,7 +34,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new RotationalDriveMechanism(new RobotHardware(this));
+        linearMech = new VerticalExtensionMechanism(new RobotHardware(this));
 
         waitForStart();
 
@@ -77,60 +79,69 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     }
 
     private void measureAmbientAccel() {
-        ArrayList<Double> positions = new ArrayList<>(); // Position is in calibrated units;
-        ArrayList<Double> times = new ArrayList<>(); // In seconds
+        double target = -1000;
 
         while (opModeIsActive()) {
-            telemetry.addLine("press and hold down to start");
+            target = linearMech.getPositionAndVelocity(false).get(0);
+
+            telemetry.addLine("move lifts to wanted location");
+            telemetry.addData("target", "%.2f", target);
+            telemetry.addLine("press b to start calibration");
             telemetry.update();
 
-            if (gamepad1.dpad_down)
-                break;
+            if (gamepad1.b) break;
         }
 
-        ElapsedTime timer = new ElapsedTime();
+        FuncInverter fi = new FuncInverter(target, 0.1);
 
-        double ks = linearMech.getSettings().ks;
-        double kv = linearMech.getSettings().kv;
+        fi.eval(-0.75, testAmbientAccel(-0.75));
+        fi.eval(0.75, testAmbientAccel(0.75));
 
-        while (opModeIsActive()) {
-            DualNum<Time> xv = linearMech.getPositionAndVelocity(false);
-
-            telemetry.addLine("release down to end");
-            telemetry.update();
-
-            double x = xv.get(0);
-            double v = xv.get(1);
-            double power;
-
-            // if v > 0, set power to ks + kv * v
-            // if v < 0, set power to -ks + kv * v
-
-            power = Math.signum(v) * ks + kv * v;
-
-            linearMech.setPower(power);
-
-            positions.add(x);
-            times.add(timer.seconds());
-
-            RobotLog.ii(LOG_TAG, "t, x = %.2f, %.2f", timer.seconds(), x);
-
-            if (!gamepad1.dpad_down)
-                break;
+        while (opModeIsActive() && !fi.hasResult()) {
+            double guess = fi.getGuess();
+            fi.eval(guess, testAmbientAccel(guess));
         }
 
-        LinearFunc f = fitAccelFunc(times, positions);
-
         while (opModeIsActive()) {
-            telemetry.addLine("test complete");
-            telemetry.addData("f", "g = %.2f, k = %.2f", f.alpha, f.beta);
+            telemetry.addData("target", "%.2f", target);
+            telemetry.addData("final power", "%.2f", fi.getResult());
             telemetry.update();
         }
     }
 
+    private double testAmbientAccel(double power) {
+        while (opModeIsActive()) {
+            telemetry.addData("press and hold b to test with ", "%.2f power", power);
+            telemetry.addData("position", linearMech.getPosition(false));
+            telemetry.update();
+
+            if (gamepad1.b) {
+                break;
+            }
+        }
+
+        double extraPower = 0.9 * linearMech.getSettings().ks;
+
+        while (opModeIsActive()) {
+            linearMech.setPower(power + extraPower);
+
+            telemetry.addData("power", "%.2f (+ %.2f)", power, extraPower);
+            telemetry.addData("position", "%.2f", linearMech.getPosition(false));
+            telemetry.update();
+
+            if (!gamepad1.b) {
+                break;
+            }
+        }
+
+        linearMech.setPower(0);
+
+        return linearMech.getPositionAndVelocity(false).get(0);
+    }
+
     private static LinearFunc fitAccelFunc(List<Double> t, List<Double> x) {
         ArrayList<Double> xBatch = new ArrayList<>();
-        Accelerometer accelerometer = new Accelerometer(10);
+        Accelerometer accelerometer = new Accelerometer(3);
 
         ArrayList<Double> accelSample = new ArrayList<>();
         ArrayList<Double> accelSampleCenter = new ArrayList<>();
@@ -140,7 +151,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             accelerometer.sample(t.get(i), x.get(i));
             xBatch.add(x.get(i));
 
-            if (xBatch.size() > 10) {
+            if (xBatch.size() > 3) {
                 accelSample.add(accelerometer.getAccel());
                 accelSampleCenter.add(average(xBatch));
 
@@ -153,11 +164,14 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         accelSample.remove(0);
         accelSampleCenter.remove(0);
 
+        for (int i = 1; i < accelSample.size(); i++) {
+            RobotLog.ii(LOG_TAG, "accel sample: a = %.1f, x = %.1f", accelSample.get(i), accelSampleCenter.get(i));
+        }
+
         // calculate gravity equation
         LinearFuncFitter f = new LinearFuncFitter(accelSampleCenter, accelSample);
         LinearFunc fit = f.fit();
-        if (fit == null)
-            throw new RuntimeException("Could not fit acceleration function");
+        if (fit == null) throw new RuntimeException("Could not fit acceleration function");
 
         return fit;
     }
@@ -183,8 +197,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 telemetry.addData("power", power);
                 telemetry.update();
 
-                if (gamepad1.dpad_up)
-                    break;
+                if (gamepad1.dpad_up) break;
             }
 
             double maxSpeed = 0.0;
@@ -198,8 +211,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 DualNum<Time> u = linearMech.getPositionAndVelocity(false);
 
                 double s = u.get(1);
-                if (s > maxSpeed)
-                    maxSpeed = s;
+                if (s > maxSpeed) maxSpeed = s;
 
                 telemetry.addData("position", u.get(0));
                 telemetry.addData("speed", s);
@@ -237,13 +249,10 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             telemetry.update();
 
             while (opModeIsActive()) {
-                if (gamepad1.dpad_down)
-                    linearMech.setPower(-Math.min(power, 0.5));
-                else
-                    linearMech.setPower(0);
+                if (gamepad1.dpad_down) linearMech.setPower(-Math.min(power, 0.5));
+                else linearMech.setPower(0);
 
-                if (gamepad1.b)
-                    break;
+                if (gamepad1.b) break;
             }
 
             power += powerStep;
@@ -279,11 +288,9 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
         LinearMechanismSettings settings = linearMech.getSettings();
         double d = settings.accelCalibrationDist;
-        double nominalTime = Quadratic.rootOrDefault(0.5, -2 * settings.kv * d,
-                -settings.ks - 2 * d * ka, 0);
+        double nominalTime = Quadratic.rootOrDefault(0.5, -2 * settings.kv * d, -settings.ks - 2 * d * ka, 0);
 
-        if (nominalTime == 0)
-            throw new RuntimeException("zero time test");
+        if (nominalTime == 0) throw new RuntimeException("zero time test");
 
         double intendedAccel = 2 * d / (nominalTime * nominalTime);
 
@@ -293,8 +300,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 telemetry.addData("nominal test time", "%.2f", nominalTime);
                 telemetry.addLine("press and hold up to test");
                 telemetry.update();
-                if (gamepad1.dpad_up)
-                    break;
+                if (gamepad1.dpad_up) break;
             }
 
             double ks = settings.ks;
@@ -305,8 +311,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             double dist = 0;
 
             while (opModeIsActive()) {
-                if (!gamepad1.dpad_up)
-                    throw new RuntimeException("test aborted");
+                if (!gamepad1.dpad_up) throw new RuntimeException("test aborted");
 
                 t = timer.seconds();
 
@@ -339,13 +344,10 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             telemetry.update();
 
             while (opModeIsActive()) {
-                if (gamepad1.dpad_down)
-                    linearMech.setPower(-0.2);
-                else
-                    linearMech.setPower(0);
+                if (gamepad1.dpad_down) linearMech.setPower(-0.2);
+                else linearMech.setPower(0);
 
-                if (gamepad1.x)
-                    break;
+                if (gamepad1.x) break;
             }
 
             return actualA / intendedAccel;

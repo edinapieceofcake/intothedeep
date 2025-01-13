@@ -8,15 +8,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 
 @Config
 public class VerticalExtensionMechanism implements ILinearMechanism {
-    private Speedometer speedometer;
-    private VoltageSensor vs;
-    private DcMotorEx left;
-    private DcMotorEx right;
+    private final Speedometer speedometer;
+    private final VoltageSensor vs;
+    private final DcMotorEx left;
+    private final DcMotorEx right;
 
     private static final double INCH_MULT = 14 / 1589.0 ;
 
@@ -47,6 +49,10 @@ public class VerticalExtensionMechanism implements ILinearMechanism {
         left = hw.get(DcMotorEx.class, "left_lift_motor");
         right = hw.get(DcMotorEx.class, "right_lift_motor");
         right.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public double getCurrent() {
+        return left.getCurrent(CurrentUnit.AMPS) + right.getCurrent(CurrentUnit.AMPS);
     }
 
     @Override
