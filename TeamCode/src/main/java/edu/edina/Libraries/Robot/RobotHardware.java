@@ -75,10 +75,10 @@ public class RobotHardware implements DrivingRobotHardware {
     private final Wrist wrist;
     private final Swivel swivel;
     private final Arm arm;
-    private final Claw claw;
+//    private final Claw claw;
     private final Lift lift;
-    private final Slide slide;
-    private final BoundingBoxFailsafe failsafe;
+//    private final Slide slide;
+//    private final BoundingBoxFailsafe failsafe;
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
@@ -118,13 +118,13 @@ public class RobotHardware implements DrivingRobotHardware {
         arm = new Arm(this);
 
         // Initialize the claw.
-        claw = new Claw(this);
+//        claw = new Claw(this);
 
         // Initialize the lift.
         lift = new Lift(this);
 
         // Initialize the slide.
-        slide = new Slide(this);
+//        slide = new Slide(this);
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
@@ -135,7 +135,7 @@ public class RobotHardware implements DrivingRobotHardware {
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
 
-        failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
+//        failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -330,7 +330,7 @@ public class RobotHardware implements DrivingRobotHardware {
         arm.update();
 
         // Update the claw.
-        claw.update();
+//        claw.update();
 
         // If manual driving is allowed...
         if (allowManualDriving) {
@@ -344,7 +344,7 @@ public class RobotHardware implements DrivingRobotHardware {
         lift.update();
 
         // Update the slide.
-        slide.update();
+//        slide.update();
 
         // Update the wrist.
         wrist.update();
@@ -411,7 +411,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void toggleClaw() {
 
         // Toggle the claw.
-        claw.toggle();
+//        claw.toggle();
 
     }
 
@@ -419,7 +419,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void openClaw() {
 
         // Open the claw.
-        claw.open();
+//        claw.open();
 
     }
 
@@ -427,7 +427,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void closeClaw() {
 
         // Close the claw.
-        claw.close();
+//        claw.close();
 
     }
 
@@ -459,7 +459,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setSlidePosition(double position) {
 
         // Set the slide's position.
-        slide.setPosition(position);
+//        slide.setPosition(position);
 
     }
 
@@ -467,7 +467,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void retractSlide() {
 
         // Retract the slide.
-        slide.retract();
+//        slide.retract();
 
     }
 
@@ -475,7 +475,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void extendSlide() {
 
         // Extend the slide.
-        slide.extend();
+//        slide.extend();
 
     }
 
@@ -483,7 +483,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-        slide.setMinimumExtension();
+//        slide.setMinimumExtension();
 
     }
 
@@ -491,7 +491,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setLowBasketExtension() {
 
         // Set the low basket extension.
-        slide.setLowBasketExtension();
+//        slide.setLowBasketExtension();
 
     }
 
@@ -499,7 +499,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setHighBasketExtension() {
 
         // Set the high basket extension.
-        slide.setHighBasketExtension();
+//        slide.setHighBasketExtension();
 
     }
 
@@ -673,7 +673,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public boolean isSlideBusy() {
 
         // Checks if the slide is busy.
-        return slide.isBusy();
+        return false;
 
     }
 
@@ -721,7 +721,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public double getCurrentSlideExtension() {
 
         // Return the current slide extension.
-        return slide.getCurrentExtension();
+        return 0;
 
     }
 
@@ -734,7 +734,7 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     public BoundingBoxFailsafe getFailsafe() {
-        return failsafe;
+        return null;
     }
 
     // Beeps
@@ -849,7 +849,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public boolean isSlideFullyRetracted() {
 
         // Return indicating if the slide is fully retracted.
-        return slide.isFullyRetracted();
+        return false;
 
     }
 
@@ -857,7 +857,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public boolean isSlideFullyExtended() {
 
         // Return indicating if the slide is fully extended.
-        return slide.isFullyExtended();
+        return false;
 
     }
 
@@ -941,7 +941,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void startSlideRezeroing() {
 
         // Start slide rezeroing.
-        slide.startRezeroing();
+//        slide.startRezeroing();
 
     }
 
@@ -949,7 +949,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void stopSlideRezeroing() {
 
         // Stop slide rezeroing.
-        slide.stopRezeroing();
+//        slide.stopRezeroing();
 
     }
 

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
+import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
 import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
@@ -34,7 +35,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new VerticalExtensionMechanism(new RobotHardware(this));
+        linearMech = new ArmSwingMechanism(new RobotHardware(this));
 
         waitForStart();
 
