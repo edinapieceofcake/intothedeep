@@ -570,6 +570,7 @@ public class TeleOpMain extends LinearOpMode {
                 .strafeToLinearHeading(subPose.position, subPose.heading)
                 .build();
         Action action = new ParallelAction(
+                new KillSwitchAction(robotHardware,()-> !currentGamepad.y),
                 driveFromstartAfterAutoPoseToSub,
                 new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
                 new InstantAction(() -> robotHardware.setMinimumExtension())
@@ -587,6 +588,7 @@ public class TeleOpMain extends LinearOpMode {
                 .strafeToLinearHeading(subPose.position, subPose.heading)
                 .build();
         Action action = new SequentialAction(
+                new KillSwitchAction(robotHardware,()-> !currentGamepad.y),
                 new InstantAction(() -> robotHardware.decrementArmPosition()),
                 new WaitForHardware(robotHardware, 3000),
                 new InstantAction(() -> robotHardware.closeClaw()),
@@ -610,6 +612,7 @@ public class TeleOpMain extends LinearOpMode {
                 .strafeToLinearHeading(HighBasket.position, HighBasket.heading)
                 .build();
         Action action = new SequentialAction(
+                new KillSwitchAction(robotHardware,()-> !currentGamepad.y),
                 new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
                 new InstantAction(() -> robotHardware.setMinimumExtension()),
                 driveFromGrabPoseToHighBasket,
