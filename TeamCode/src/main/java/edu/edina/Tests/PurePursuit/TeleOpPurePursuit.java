@@ -18,6 +18,7 @@ import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
+@Disabled
 public class TeleOpPurePursuit extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

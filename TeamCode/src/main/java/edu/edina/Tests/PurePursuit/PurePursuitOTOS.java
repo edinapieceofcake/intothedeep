@@ -3,6 +3,7 @@ package edu.edina.Tests.PurePursuit;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,11 +16,13 @@ import edu.edina.Libraries.Robot.FieldToRobot;
 
 //@Disabled
 @TeleOp
+@Disabled
 public class PurePursuitOTOS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     SparkFunOTOS myOtos;
 
     @Override
+
     public void runOpMode() throws InterruptedException {
 //        RobotHardware hw = new RobotHardware(this);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");

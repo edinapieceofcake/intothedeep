@@ -3,6 +3,7 @@ package edu.edina.OpModes.TeleOp;
 import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -12,6 +13,7 @@ import edu.edina.Libraries.Robot.RobotHardware;
 
 @Config
 @TeleOp
+@Disabled
 public class TeleOpMain2 extends LinearOpMode {
 
     /*

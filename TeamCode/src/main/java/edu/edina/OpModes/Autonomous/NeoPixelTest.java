@@ -12,6 +12,7 @@ import edu.edina.Libraries.Robot.NeoPixelDriverDevice;
 
 //@Disabled
 @TeleOp
+@Disabled
 public class NeoPixelTest extends LinearOpMode {
     @Override
     public void runOpMode() {

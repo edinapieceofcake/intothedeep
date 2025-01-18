@@ -1,5 +1,6 @@
 package edu.edina.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -10,6 +11,7 @@ import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
+@Disabled
 public class FieldCentricDriveTest extends LinearOpMode {
     public static double STICK_DEADZONE = 0.05;
 

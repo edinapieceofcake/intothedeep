@@ -1,6 +1,7 @@
 package edu.edina.Libraries.RoadRunner.tuning.otos;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import edu.edina.Libraries.RoadRunner.OpticalOdometry;
 import edu.edina.Libraries.Robot.Odometry;
 
 @TeleOp
+@Disabled
 //@Disabled
 public class OTOSTest extends LinearOpMode {
     @Override

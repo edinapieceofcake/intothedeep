@@ -11,6 +11,7 @@ import edu.edina.Libraries.Robot.SampleColor;
 import edu.edina.Libraries.Robot.SampleSensor;
 
 @TeleOp
+@Disabled
 //@Disabled
 public class LightTest extends LinearOpMode {
     private Light light;
