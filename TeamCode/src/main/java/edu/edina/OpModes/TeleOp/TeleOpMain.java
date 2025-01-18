@@ -161,6 +161,7 @@ public class TeleOpMain extends LinearOpMode {
         // Set debugging to true.
         robotHardware.setDebugging(true);
 
+        /*
         // Handle the submersible controls.
         handleSubmersibleControls();
 
@@ -229,6 +230,24 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.stopLiftRezeroing();
 
         }
+你好！
+         */
+
+        if (currentGamepad.a && !previousGamepad.a){
+            robotHardware.toggleSmallClaw();
+        }
+        if (currentGamepad.b && !previousGamepad.b){
+            robotHardware.toggleBigClaw();
+        }
+        if (currentGamepad.x && !previousGamepad.x){
+            robotHardware.lowerWrist();
+        }
+        if (currentGamepad.y && !previousGamepad.y){
+            robotHardware.setWristWallPosition();
+        }
+        if (currentGamepad.right_bumper && !previousGamepad.right_bumper){
+            robotHardware.raiseWrist();
+        }
 
     }
 
@@ -261,9 +280,7 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.raiseSample();
 
         }
-        if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-            robotHardware.toggleBigClaw();
-        }
+
         // Submersible
         //////////////////////////////////////////////////////////////////////
 
