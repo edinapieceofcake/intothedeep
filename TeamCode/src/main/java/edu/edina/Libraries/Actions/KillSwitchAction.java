@@ -25,10 +25,10 @@ public class KillSwitchAction implements Action {
         if (shouldKill.run()) {
             robotHardware.clearActions();
             robotHardware.drivetrain.stop();
-            // resuturn false becuase we are done checking
+            // return false because we are done checking
             return false;
         } else {
-            // reture true becuase thsi value we want the killswitchaction.run to be called again
+            // return true because this value we want the killswitchaction.run to be called again
             return true;
         }
 
