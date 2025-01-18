@@ -25,10 +25,13 @@ public class Lift {
     public static double INTEGRAL = 0;
 
     // Maximum position
-    public static int MAXIMUM_POSITION = 1800;
+    public static int MAXIMUM_POSITION = 1600;
+
+    // Chamber position
+    public static int CHAMBER_POSITION = 1000;
 
     // Minimum position
-    public static int MINIMUM_POSITION = 0;
+    public static int MINIMUM_POSITION = -400;
 
     // Up position threshold
     public static int RAISED_POSITION_THRESHOLD = 400;
@@ -209,12 +212,14 @@ public class Lift {
     }
 
     // Resets a lift motor.
-    private static void reset(DcMotorEx motor) {
+    private void reset(DcMotorEx motor) {
 
         // Reset the motor.
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        targetPosition = 0;
 
     }
 
@@ -328,6 +333,14 @@ public class Lift {
 
         // Move the lift to the high basket position.
         targetPosition = HIGH_BASKET_POSITION;
+
+    }
+
+    // Moves the lift to the chamber position.
+    public void setChamberPosition() {
+
+        // Move the lift to the high basket position.
+        targetPosition = CHAMBER_POSITION;
 
     }
 

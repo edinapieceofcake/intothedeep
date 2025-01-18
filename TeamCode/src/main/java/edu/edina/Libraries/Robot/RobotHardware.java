@@ -44,7 +44,6 @@ public class RobotHardware implements DrivingRobotHardware {
                 2 - Axon MINI+ servo - swivel_servo
             Digital Devices
                 5 - REV Touch Sensor - arm_touch
-                7 - REV Touch Sensor - lift_touch
             I2C
                 3 - Neopixel Driver - neopixel_driver
             Analog
@@ -58,6 +57,8 @@ public class RobotHardware implements DrivingRobotHardware {
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
                 2 - CRServo Axon Mini+ - slide_servo
+            Digital Devices
+                1 - REV Touch Sensor - lift_touch
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */
@@ -676,6 +677,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Move the lift to the high basket position.
         lift.setHighBasketPosition();
+
+    }
+
+    // Moves the lift to the chamber position.
+    public void setLiftChamberPosition() {
+
+        // Move the lift to the chamber position.
+        lift.setChamberPosition();
 
     }
 

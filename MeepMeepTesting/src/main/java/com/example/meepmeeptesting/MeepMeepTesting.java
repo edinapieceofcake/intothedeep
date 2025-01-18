@@ -28,16 +28,24 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        boolean sampleSide = false;
+        boolean sampleSide = true;
 
         if (sampleSide) {
             // *****SAMPLES*****
 
             // COPY THIS LINE
-            Pose2d beginPose = new Pose2d(-38, -62, 0);
+            // Grabbing from front and scoring from back
+            //Pose2d beginPose = new Pose2d(-38, -62, 0);
+
+            // Grabbing from back and scoring from front
+            Pose2d beginPose = new Pose2d(-38, -62, Math.toRadians(180));
+
             // COPY THIS LINE
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
+
+                    // Grabbing from front and scoring from back
+                    /*
                     // COPY HERE
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
                     .strafeToLinearHeading(new Vector2d(-47.5, -38), 1.0 / 2 * Math.PI)
@@ -58,7 +66,15 @@ public class MeepMeepTesting {
                     .splineToConstantHeading(new Vector2d(-20, -60), Math.toRadians(180))
                     .setTangent(Math.toRadians(180))
                     .splineToSplineHeading(new Pose2d(-50, -50, Math.toRadians(45)), Math.toRadians(180))
+                     */
 
+                    // Grabbing from back and scoring from front
+                    .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(225))
+                    .strafeToLinearHeading(new Vector2d(-56, -50), Math.toRadians(242))
+                    .strafeToLinearHeading(new Vector2d(-60, -45), Math.toRadians(265))
+                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(290))
+                    .turnTo(Math.toRadians(255))
+                    //.strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(265))
 
                     //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
 
