@@ -15,13 +15,13 @@ public class Swivel {
     public static double SWIVEL_SERVO_TRAVEL_TIME = 2.5;
 
     // Horizontal (BASED ON CLAW DIRECTION) position
-    public static double HORIZONTAL_POSITION = 0.385;
+    public static double HORIZONTAL_POSITION = 0.0822;
 
     // Vertical (BASED ON CLAW DIRECTION) position
-    public static double VERTICAL_POSITION = 0.65;
+    public static double VERTICAL_POSITION = 0.3611;
 
     // Clip (BASED ON CLAW DIRECTION) position
-    public static double HIGH_CHAMBER_POSITION = 0.95;
+    public static double HIGH_CHAMBER_POSITION = 0.6378;
 
     // Servo
     private final TrackingServo servo;

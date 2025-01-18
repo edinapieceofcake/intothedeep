@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
+@Disabled
 public class SubmersibleGrabTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

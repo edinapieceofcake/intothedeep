@@ -44,7 +44,6 @@ public class RobotHardware implements DrivingRobotHardware {
                 2 - Axon MINI+ servo - swivel_servo
             Digital Devices
                 5 - REV Touch Sensor - arm_touch
-                7 - REV Touch Sensor - lift_touch
             I2C
                 3 - Neopixel Driver - neopixel_driver
             Analog
@@ -58,6 +57,8 @@ public class RobotHardware implements DrivingRobotHardware {
                 3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
             Servos
                 2 - CRServo Axon Mini+ - slide_servo
+            Digital Devices
+                1 - REV Touch Sensor - lift_touch
             Analog
                 0 - Axon Mini+ Encoder - slide_encoder
     */
@@ -264,7 +265,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void swivelSetVertical() {
 
         // Sets the swivel to horizontal.
-        swivel.setHorizontal();
+        swivel.setVertical();
 
     }
 
@@ -424,9 +425,33 @@ public class RobotHardware implements DrivingRobotHardware {
     public void openClaw() {
 
         // Open the claw.
-//        claw.open();
+      // claw.open();
 
     }
+    public void openBothClaws() {
+
+        // Open the claw.
+    runningActions.add(claw.openBoth());
+    }
+    public void openBigClaw() {
+        runningActions.add(claw.openBig());
+    }
+    public void openSmallClaw() {
+        runningActions.add(claw.openSmall());
+    }
+    public void closeSmallClaw() {
+        runningActions.add(claw.closeSmall());
+    }
+    public void closeBigClaw() {
+        runningActions.add(claw.closeBig());
+    }
+    public void toggleSmallClaw() {
+        runningActions.add(claw.toggleSmall());
+    }
+    public void toggleBigClaw() {
+        runningActions.add(claw.toggleBig());
+    }
+
 
     // Closes the claw.
     public void closeClaw() {
@@ -655,6 +680,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Move the lift to the high basket position.
         lift.setHighBasketPosition();
+
+    }
+
+    // Moves the lift to the chamber position.
+    public void setLiftChamberPosition() {
+
+        // Move the lift to the chamber position.
+        lift.setChamberPosition();
 
     }
 

@@ -1,6 +1,7 @@
 package edu.edina.Tests.PurePursuit;
 
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
+@Disabled
 public class TeleOpPurePursuit2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

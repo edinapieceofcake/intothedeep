@@ -161,6 +161,7 @@ public class TeleOpMain extends LinearOpMode {
         // Set debugging to true.
         robotHardware.setDebugging(true);
 
+        /*
         // Handle the submersible controls.
         handleSubmersibleControls();
 
@@ -228,6 +229,42 @@ public class TeleOpMain extends LinearOpMode {
             // Start lift rezeroing.
             robotHardware.stopLiftRezeroing();
 
+        }
+你好！
+         */
+
+        if (currentGamepad.a && !previousGamepad.a){
+            robotHardware.toggleSmallClaw();
+        }
+        if (currentGamepad.b && !previousGamepad.b){
+            robotHardware.toggleBigClaw();
+        }
+        if (currentGamepad.x && !previousGamepad.x){
+            robotHardware.lowerWrist();
+        }
+        if (currentGamepad.y && !previousGamepad.y){
+            robotHardware.setWristWallPosition();
+        }
+        if (currentGamepad.right_bumper && !previousGamepad.right_bumper){
+            robotHardware.raiseWrist();
+        }
+        if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+            robotHardware.swivelSetVertical();
+        }
+        if (currentGamepad.dpad_left && !previousGamepad.dpad_left){
+            robotHardware.swivelSetHorizontal();
+        }
+        if (currentGamepad.dpad_right && !previousGamepad.dpad_right){
+            robotHardware.swivelSetClip();
+        }
+        if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
+            robotHardware.setLiftGroundPosition();
+        }
+        if (currentGamepad.left_stick_button && !previousGamepad.left_stick_button){
+            robotHardware.setLiftChamberPosition();
+        }
+        if (currentGamepad.right_stick_button && !previousGamepad.right_stick_button){
+            robotHardware.setLiftHighBasketPosition();
         }
 
     }
@@ -365,8 +402,8 @@ public class TeleOpMain extends LinearOpMode {
             // Otherwise...
             else {
 
-                // Toggle the claw.
-                robotHardware.toggleClaw();
+
+                robotHardware.toggleSmallClaw();
 
             }
 
@@ -667,4 +704,5 @@ public class TeleOpMain extends LinearOpMode {
         );
         robotHardware.addAction(scoreSepcimenAction);
     }
+
 }
