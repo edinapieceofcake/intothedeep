@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import edu.edina.Libraries.Robot.DrivingRobotHardware;
+import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 
 public class ArmExtensionMechanism implements ILinearMechanism{
@@ -35,7 +36,7 @@ public class ArmExtensionMechanism implements ILinearMechanism{
                 MAX_JERK);
     }
 
-    public ArmExtensionMechanism(DrivingRobotHardware hw) {
+    public ArmExtensionMechanism(RobotHardware hw) {
         speedometer = new Speedometer(3);
         vs = hw.getVoltageSensor();
         extension = hw.getExtension();

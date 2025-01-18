@@ -1,6 +1,11 @@
 package edu.edina.Libraries.Robot;
 
+import android.drm.DrmStore;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -8,6 +13,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import edu.edina.Libraries.Actions.LinearMotionAction;
+import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
 
 // This represents an arm.
 @Config
@@ -25,7 +33,7 @@ public class Arm {
     public static double INTEGRAL = 0;
 
     // Initial degrees below horizontal (determined experimentally)
-    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 15;
+    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 30;
 
     // Low basket position
     public static int LOW_BASKET_POSITION = 2700;
@@ -149,7 +157,7 @@ public class Arm {
         //////////////////////////////////////////////////////////////////////
 
         // If we are rezeroing...
-        if(rezeroing) {
+        if (rezeroing) {
 
             // Use the rezeroing power.
             motor.setPower(REZEROING_POWER);
@@ -251,7 +259,7 @@ public class Arm {
     public void decrementPosition() {
 
         // If the arm is fully lowered...
-        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+        if (targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -270,7 +278,7 @@ public class Arm {
     public void incrementPosition() {
 
         // If the arm is fully raised...
-        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+        if (targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -413,7 +421,7 @@ public class Arm {
     public void stopRezeroing() {
 
         // If we are not rezeroing...
-        if(!rezeroing) {
+        if (!rezeroing) {
 
             // Exit the method.
             return;
@@ -425,7 +433,24 @@ public class Arm {
 
         // Stop rezeroing.
         rezeroing = false;
-
     }
 
+    public Action swingToBack() {
+        return swingToPosition(180);
+    }
+
+    public Action swingToBasket() {
+        return swingToPosition(75);
+    }
+
+    public Action swingToWall() {
+        return swingToPosition(-20);
+    }
+
+    private Action swingToPosition(double target) {
+        ArmSwingMechanism asm = new ArmSwingMechanism(robotHardware.getVoltageSensor(), motor);
+        ArmForces af = new ArmForces();
+        LinearMotionAction lma = new LinearMotionAction(asm, af, target);
+        return lma;
+    }
 }

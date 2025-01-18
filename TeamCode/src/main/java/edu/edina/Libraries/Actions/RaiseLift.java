@@ -17,7 +17,6 @@ import edu.edina.Libraries.Robot.RobotHardware;
 @Controls(part = "lift")
 public class RaiseLift implements Action {
     private final LinearMotionController verticalController;
-
     private final VerticalExtensionMechanism vertical;
 
     public RaiseLift(RobotHardware hw, double heightInches) {

@@ -1,6 +1,9 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -102,4 +105,24 @@ public class Swivel {
 
     }
 
+    public Action turnToWall() {
+        return new SequentialAction(
+                new InstantAction(() -> servo.setPosition(0.0822)),
+                new WaitForTime(100)
+        );
+    }
+
+    public Action turnToScore() {
+        return new SequentialAction(
+                new InstantAction(() -> servo.setPosition(0.6378)),
+                new WaitForTime(100)
+        );
+    }
+
+    public Action turnToPerpendicular() {
+        return new SequentialAction(
+                new InstantAction(() -> servo.setPosition(0.3611)),
+                new WaitForTime(100)
+        );
+    }
 }

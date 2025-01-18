@@ -73,12 +73,10 @@ public class RobotHardware implements DrivingRobotHardware {
     public final VoltageSensor voltageSensor;
     public final Drivetrain drivetrain;
     private final Wrist wrist;
+    private final DualClaw claw;
     private final Swivel swivel;
     private final Arm arm;
-//    private final Claw claw;
     private final Lift lift;
-//    private final Slide slide;
-//    private final BoundingBoxFailsafe failsafe;
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
@@ -118,7 +116,7 @@ public class RobotHardware implements DrivingRobotHardware {
         arm = new Arm(this);
 
         // Initialize the claw.
-//        claw = new Claw(this);
+        claw = new DualClaw(this);
 
         // Initialize the lift.
         lift = new Lift(this);
@@ -356,6 +354,10 @@ public class RobotHardware implements DrivingRobotHardware {
         if (light != null)
             light.update(false, true);
 
+        runActions();
+    }
+
+    public void runActions() {
         // Update actions.
         //////////////////////////////////////////////////////////////////////
 
@@ -993,12 +995,22 @@ public class RobotHardware implements DrivingRobotHardware {
         return teleOpOdometry;
     }
 
-    @Override
-    public DcMotorEx getArm() {
-        return arm.getArmMotor();
+    public Arm getArm() {
+        return arm;
     }
 
-    @Override
+    public Wrist getWrist() {
+        return wrist;
+    }
+
+    public DualClaw getDualClaw() {
+        return claw;
+    }
+
+    public Swivel getSwivel() {
+        return swivel;
+    }
+
     public DcMotorEx getExtension() {
         return null;
     }

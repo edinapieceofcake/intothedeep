@@ -41,6 +41,10 @@ public class SpecimenPark implements Action {
 
     private final boolean sanityCheck;
 
+    public SpecimenPark(RobotHardware hw) {
+        this(hw, null);
+    }
+
     public SpecimenPark(RobotHardware hw, Condition condition) {
         this.hw = hw;
         telemetry = hw.getOpMode().telemetry;
@@ -106,7 +110,7 @@ public class SpecimenPark implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        if (!condition.run())
+        if (condition != null && !condition.run())
             return false;
 
         if (!sanityCheck)

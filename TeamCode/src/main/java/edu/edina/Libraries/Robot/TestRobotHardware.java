@@ -41,12 +41,10 @@ public class TestRobotHardware implements DrivingRobotHardware {
         return odometry;
     }
 
-    @Override
     public DcMotorEx getArm() {
         return arm;
     }
 
-    @Override
     public DcMotorEx getExtension() {
         return extension;
     }

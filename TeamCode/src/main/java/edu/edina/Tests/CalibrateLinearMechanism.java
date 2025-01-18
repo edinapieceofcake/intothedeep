@@ -12,18 +12,14 @@ import java.util.List;
 
 import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
 import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
-import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;
-import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
-import edu.edina.Libraries.Robot.BilinearFuncFitter;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.TestRobotHardware;
 
 @TeleOp
 public class CalibrateLinearMechanism extends LinearOpMode {
@@ -35,7 +31,8 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        linearMech = new ArmSwingMechanism(new RobotHardware(this));
+        RobotHardware hw = new RobotHardware(this);
+        linearMech = new ArmSwingMechanism(hw.getVoltageSensor(), hw.getArm().getArmMotor());
 
         waitForStart();
 
@@ -56,7 +53,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 calibrateKa();
             }
             if (gamepad1.y) {
-                measureAmbientAccel();
+                measureAccelCounterPower();
             }
         }
     }
@@ -79,7 +76,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         }
     }
 
-    private void measureAmbientAccel() {
+    private void measureAccelCounterPower() {
         double target = -1000;
 
         while (opModeIsActive()) {
@@ -93,7 +90,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             if (gamepad1.b) break;
         }
 
-        FuncInverter fi = new FuncInverter(target, 0.1);
+        FuncInverter fi = new FuncInverter(target, linearMech.getSettings().stopXTol);
 
         fi.eval(-0.75, testAmbientAccel(-0.75));
         fi.eval(0.75, testAmbientAccel(0.75));
@@ -112,7 +109,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     private double testAmbientAccel(double power) {
         while (opModeIsActive()) {
-            telemetry.addData("press and hold b to test with ", "%.2f power", power);
+            telemetry.addData("press and hold b to test with ", "%.4g power", power);
             telemetry.addData("position", linearMech.getPosition(false));
             telemetry.update();
 
@@ -121,12 +118,10 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             }
         }
 
-        double extraPower = 0.9 * linearMech.getSettings().ks;
-
         while (opModeIsActive()) {
-            linearMech.setPower(power + extraPower);
+            linearMech.setPower(power);
 
-            telemetry.addData("power", "%.2f (+ %.2f)", power, extraPower);
+            telemetry.addData("power", "%.2f", power);
             telemetry.addData("position", "%.2f", linearMech.getPosition(false));
             telemetry.update();
 

@@ -1,6 +1,9 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -149,4 +152,24 @@ public class Wrist {
         servo.setPosition(HIGH_CHAMBER_CLIP_POSITION);
     }
 
+    public Action submersibleGrab() {
+        return new SequentialAction(
+                new InstantAction(() -> servo.setPosition(0.1583)),
+                new WaitForTime(200)
+        );
+    }
+
+    public Action scorePosition() {
+        return new SequentialAction(
+                new InstantAction(() -> servo.setPosition(0.8194)),
+                new WaitForTime(200)
+        );
+    }
+
+    public Action wallPosition() {
+        return new SequentialAction(
+                new InstantAction(() -> servo.setPosition(0.3844)),
+                new WaitForTime(200)
+        );
+    }
 }

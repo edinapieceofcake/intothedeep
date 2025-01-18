@@ -9,6 +9,4 @@ public interface DrivingRobotHardware {
     Drivetrain getDrivetrain();
     VoltageSensor getVoltageSensor();
     Odometry getOdometry();
-    DcMotorEx getArm();
-    DcMotorEx getExtension();
 }
