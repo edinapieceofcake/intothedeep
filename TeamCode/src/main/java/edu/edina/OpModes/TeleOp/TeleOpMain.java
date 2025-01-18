@@ -248,6 +248,15 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper){
             robotHardware.raiseWrist();
         }
+        if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+            robotHardware.swivelSetVertical();
+        }
+        if (currentGamepad.dpad_left && !previousGamepad.dpad_left){
+            robotHardware.swivelSetHorizontal();
+        }
+        if (currentGamepad.dpad_right && !previousGamepad.dpad_right){
+            robotHardware.swivelSetClip();
+        }
 
     }
 

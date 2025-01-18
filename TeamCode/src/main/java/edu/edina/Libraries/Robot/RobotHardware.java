@@ -261,7 +261,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void swivelSetVertical() {
 
         // Sets the swivel to horizontal.
-        swivel.setHorizontal();
+        swivel.setVertical();
 
     }
 
