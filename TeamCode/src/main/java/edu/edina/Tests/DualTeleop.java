@@ -56,7 +56,7 @@ public class DualTeleop extends LinearOpMode {
                     hw.addAction(new ParallelAction(
                             claw.openBoth(),
                             wrist.submersibleGrab(),
-                            new RaiseLift(hw, 0),
+                            new RaiseLift(hw, -1),
                             new WaitForTime(100),
                             arm.swingToWall()
                     ));

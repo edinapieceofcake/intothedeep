@@ -35,6 +35,8 @@ public class Wrist {
     // Servo
     private final TrackingServo servo;
 
+    private final Servo wrist;
+
     private final Telemetry telemetry;
 
     // Up
@@ -44,6 +46,7 @@ public class Wrist {
     public Wrist(HardwareMap hardwareMap, Telemetry telemetry) {
         this.servo = new TrackingServo(hardwareMap.get(Servo.class, "wrist"),
                 WRIST_SERVO_TRAVEL_TIME);
+        wrist = hardwareMap.get(Servo.class, "wrist");
         this.telemetry = telemetry;
     }
 
@@ -154,21 +157,21 @@ public class Wrist {
 
     public Action submersibleGrab() {
         return new SequentialAction(
-                new InstantAction(() -> servo.setPosition(0.1583)),
+                new InstantAction(() -> wrist.setPosition(0.1583)),
                 new WaitForTime(200)
         );
     }
 
     public Action scorePosition() {
         return new SequentialAction(
-                new InstantAction(() -> servo.setPosition(0.8194)),
+                new InstantAction(() -> wrist.setPosition(0.8194)),
                 new WaitForTime(200)
         );
     }
 
     public Action wallPosition() {
         return new SequentialAction(
-                new InstantAction(() -> servo.setPosition(0.3844)),
+                new InstantAction(() -> wrist.setPosition(0.3844)),
                 new WaitForTime(200)
         );
     }

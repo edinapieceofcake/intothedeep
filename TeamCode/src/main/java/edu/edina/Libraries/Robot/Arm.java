@@ -444,7 +444,7 @@ public class Arm {
     }
 
     public Action swingToWall() {
-        return swingToPosition(-20);
+        return swingToPosition(-30);
     }
 
     private Action swingToPosition(double target) {
