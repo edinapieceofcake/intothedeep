@@ -261,7 +261,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.raiseSample();
 
         }
-
+        if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+            robotHardware.toggleBigClaw();
+        }
         // Submersible
         //////////////////////////////////////////////////////////////////////
 
@@ -365,8 +367,8 @@ public class TeleOpMain extends LinearOpMode {
             // Otherwise...
             else {
 
-                // Toggle the claw.
-                robotHardware.toggleClaw();
+
+                robotHardware.toggleSmallClaw();
 
             }
 
@@ -667,4 +669,5 @@ public class TeleOpMain extends LinearOpMode {
         );
         robotHardware.addAction(scoreSepcimenAction);
     }
+
 }

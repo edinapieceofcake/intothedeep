@@ -94,7 +94,7 @@ public class DualTeleop extends LinearOpMode {
 
     private Action scoreSpecimen() {
         return new ParallelAction(
-                claw.closeTop(),
+                claw.closeSmall(),
                 wrist.scorePosition(),
                 swivel.turnToScore()
         );
