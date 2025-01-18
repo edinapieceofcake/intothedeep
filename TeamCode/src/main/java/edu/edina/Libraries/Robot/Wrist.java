@@ -25,9 +25,6 @@ public class Wrist {
     // Up position
     public static double UP_POSITION = 0.1583;
 
-    // Init position
-    public static double INITIALIZE_POSITION = 0.86;
-
     // Wall position
     //0.41
     public static double WALL_POSITION = 0.3844;
@@ -122,7 +119,7 @@ public class Wrist {
     public void initialize() {
 
         // Raise the wrist.
-        servo.setPosition(INITIALIZE_POSITION);
+        servo.setPosition(DOWN_POSITION);
 
         // Remember that the wrist is up.
         up = true;
