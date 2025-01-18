@@ -86,6 +86,7 @@ public class RobotHardware implements DrivingRobotHardware {
     private boolean allowManualDriving = true;
     private boolean debugging;
     public RearDistanceSensor distanceSensors;
+    private DcMotorEx extension;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
 
@@ -150,6 +151,8 @@ public class RobotHardware implements DrivingRobotHardware {
         distanceSensors = new RearDistanceSensor(hardwareMap);
 
         teleOpOdometry = new LocalizerOdometry(odometry);
+
+        extension = hardwareMap.get(DcMotorEx.class, "extension_motor");
     }
 
     public void initializeLights() {
@@ -1012,7 +1015,7 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     public DcMotorEx getExtension() {
-        return null;
+        return extension;
     }
 
     @Override

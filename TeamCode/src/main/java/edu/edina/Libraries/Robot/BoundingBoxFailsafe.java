@@ -49,10 +49,10 @@ public class BoundingBoxFailsafe {
         this.slide = slide;
     }
 
-    // use a globally-updated sensor caching mechanism instead, eventually
-    public void updateSensorsForTestEventuallyRemoveThisMethod() {
-        slide.updateVoltage();
-    }
+//    // use a globally-updated sensor caching mechanism instead, eventually
+//    public void updateSensorsForTestEventuallyRemoveThisMethod() {
+//        slide.updateVoltage();
+//    }
 
     public void apply() {
         if (DISABLE)
@@ -72,7 +72,7 @@ public class BoundingBoxFailsafe {
             }
 
             wrist.raise();
-            slide.overridePower(-1);
+//            slide.overridePower(-1);
         } else if (maxExtent > BOUNDING_BOX_MAX) {
             if (p.armDeg > 0) {
                 arm.overridePower(1);
@@ -81,7 +81,7 @@ public class BoundingBoxFailsafe {
             }
 
             wrist.raise();
-            slide.overridePower(-1);
+//            slide.overridePower(-1);
         }
     }
 
@@ -115,7 +115,7 @@ public class BoundingBoxFailsafe {
     }
 
     private double getSlidePosition() {
-        return slide.getPosition() + MIN_SLIDE_LENGTH;
+        return 0;
     }
 
     private double getLiftPosition() {

@@ -3,7 +3,7 @@ package edu.edina.Libraries.LinearMotion;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 
-public class SpringForce implements IAmbientForce {
+public class SpringForce implements IFeedForward {
     private double k;
     private double g;
 

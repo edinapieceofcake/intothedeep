@@ -6,8 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.R;
+
 import java.util.ArrayList;
 
+import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
 import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
@@ -30,10 +33,11 @@ public class LinearMechanismTest extends LinearOpMode {
             telemetry.addLine("otherwise axial");
             telemetry.update();
 
-            if (gamepad1.x)
-                linearMech = new LateralDriveMechanism(new RobotHardware(this));
-            else
-                linearMech = new AxialDriveMechanism(new RobotHardware(this));
+//            if (gamepad1.x)
+//                linearMech = new LateralDriveMechanism(new RobotHardware(this));
+//            else
+//                linearMech = new AxialDriveMechanism(new RobotHardware(this));
+            linearMech = new ArmExtensionMechanism(new RobotHardware(this));
 
             settings = linearMech.getSettings();
             accelMax = 1.0 / settings.ka;

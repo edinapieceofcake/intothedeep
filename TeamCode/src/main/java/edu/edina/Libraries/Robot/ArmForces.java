@@ -4,9 +4,9 @@ import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 
 import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
-import edu.edina.Libraries.LinearMotion.IAmbientForce;
+import edu.edina.Libraries.LinearMotion.IFeedForward;
 
-public class ArmForces implements IAmbientForce {
+public class ArmForces implements IFeedForward {
     public static double STOP_POWER = 0.12;
 
     private final double g;

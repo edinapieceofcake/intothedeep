@@ -11,7 +11,7 @@ public class LinearMotionController {
     private static final boolean LOG = true;
 
     private final ILinearMechanism linearMech;
-    private final IAmbientForce ambForce;
+    private final IFeedForward ambForce;
     private final LinearMechanismSettings s;
     private final ElapsedTime et;
     private final String tag;
@@ -23,7 +23,7 @@ public class LinearMotionController {
         this(linearMech, null);
     }
 
-    public LinearMotionController(ILinearMechanism linearMech, IAmbientForce ambForce) {
+    public LinearMotionController(ILinearMechanism linearMech, IFeedForward ambForce) {
         this.ambForce = ambForce;
         this.linearMech = linearMech;
         this.s = linearMech.getSettings();

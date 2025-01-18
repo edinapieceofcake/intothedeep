@@ -11,7 +11,7 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import edu.edina.Libraries.LinearMotion.IAmbientForce;
+import edu.edina.Libraries.LinearMotion.IFeedForward;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
@@ -20,7 +20,7 @@ public class LinearMotionAction implements Action {
     private static final boolean LOG = true;
 
     private final ILinearMechanism linearMech;
-    private final IAmbientForce ambForce;
+    private final IFeedForward ambForce;
     private final LinearMechanismSettings s;
     private final ElapsedTime et;
     private final String tag;
@@ -32,7 +32,7 @@ public class LinearMotionAction implements Action {
         this(linearMech, null, target);
     }
 
-    public LinearMotionAction(ILinearMechanism linearMech, IAmbientForce ambForce, double target) {
+    public LinearMotionAction(ILinearMechanism linearMech, IFeedForward ambForce, double target) {
         this.ambForce = ambForce;
         this.linearMech = linearMech;
         this.s = linearMech.getSettings();

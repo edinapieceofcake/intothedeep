@@ -14,6 +14,7 @@ import edu.edina.Libraries.Actions.SpecimenPark;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.DualClaw;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.Slide;
 import edu.edina.Libraries.Robot.Swivel;
 import edu.edina.Libraries.Robot.WaitForTime;
 import edu.edina.Libraries.Robot.Wrist;
@@ -33,6 +34,7 @@ public class DualTeleop extends LinearOpMode {
         RobotHardware hw = new RobotHardware(this);
 
         swivel = hw.getSwivel();
+        Slide slide = new Slide(hw);
         wrist = hw.getWrist();
         claw = hw.getDualClaw();
         arm = hw.getArm();
@@ -45,40 +47,16 @@ public class DualTeleop extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            if (currentGamepad.b && !previousGamepad.b) {
+            if (gamepad1.dpad_up) {
                 hw.clearActions();
-                Action a = new SpecimenPark(hw);
-                hw.addAction(a);
-                hw.addAction(new KillSwitchAction(hw, () -> !currentGamepad.b));
-            } else {
-                if (currentGamepad.a && !previousGamepad.a) {
-                    hw.clearActions();
-                    hw.addAction(new ParallelAction(
-                            claw.openBoth(),
-                            wrist.submersibleGrab(),
-                            new RaiseLift(hw, -1),
-                            new WaitForTime(100),
-                            arm.swingToWall()
-                    ));
-                }
-                if (currentGamepad.y && !previousGamepad.y) {
-                    hw.clearActions();
-                    hw.addAction(new ParallelAction(
-                            new RaiseLift(hw, 14),
-                            arm.swingToBasket()
-                    ));
-                }
-                if (currentGamepad.x && !previousGamepad.x) {
-                    hw.clearActions();
-
-                    hw.addAction(new ParallelAction(
-                            new RaiseLift(hw, 14),
-                            scoreSpecimen(),
-                            arm.swingToBack()
-                    ));
-                }
-                hw.drivetrain.update();
+                hw.addAction(slide.extendToAmount(12));
             }
+            if (gamepad1.dpad_down) {
+                hw.clearActions();
+                hw.addAction(slide.extendToAmount(-.2));
+            }
+
+            hw.drivetrain.update();
 
             hw.runActions();
         }

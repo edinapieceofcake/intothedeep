@@ -22,7 +22,7 @@ public class BoundingBoxTest extends LinearOpMode {
             if (c.a)
                 hw.toggleWrist();
 
-            hw.getFailsafe().updateSensorsForTestEventuallyRemoveThisMethod();
+//            hw.getFailsafe().updateSensorsForTestEventuallyRemoveThisMethod();
             hw.getFailsafe().apply();
 
             hw.getFailsafe().addToTelemetry(telemetry);

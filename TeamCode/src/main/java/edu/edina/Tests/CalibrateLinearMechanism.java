@@ -32,7 +32,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         RobotHardware hw = new RobotHardware(this);
-        linearMech = new ArmSwingMechanism(hw.getVoltageSensor(), hw.getArm().getArmMotor());
+        linearMech = new ArmExtensionMechanism(hw);
 
         waitForStart();
 
