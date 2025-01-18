@@ -248,6 +248,8 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper){
             robotHardware.raiseWrist();
         }
+
+        /*
         if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
             robotHardware.swivelSetVertical();
         }
@@ -257,6 +259,24 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad.dpad_right && !previousGamepad.dpad_right){
             robotHardware.swivelSetClip();
         }
+        */
+
+        if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
+            robotHardware.setArmGroundPosition();
+        }
+        if (currentGamepad.dpad_left && !previousGamepad.dpad_left){
+            robotHardware.setArmWallPosition();
+        }
+        if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+            robotHardware.setArmHighBasketPosition();
+        }
+        if (currentGamepad.dpad_right && !previousGamepad.dpad_right){
+            robotHardware.setArmHighChamberPosition();
+        }
+        if (currentGamepad.back && !previousGamepad.back){
+            robotHardware.setArmSubmersiblePosition();
+        }
+
         if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
             robotHardware.setLiftGroundPosition();
         }
