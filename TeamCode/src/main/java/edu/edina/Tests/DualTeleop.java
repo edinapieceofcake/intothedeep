@@ -1,6 +1,7 @@
 package edu.edina.Tests;
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -72,7 +73,8 @@ public class DualTeleop extends LinearOpMode {
 
     private Action scoreSpecimen() {
         return new ParallelAction(
-                claw.closeSmall(),
+          //      claw.closeSmall(),
+                new InstantAction(() ->  claw.closeSmall()),
                 wrist.scorePosition(),
                 swivel.turnToScore()
         );

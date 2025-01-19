@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.ServoController;
 
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardware;
@@ -405,7 +404,7 @@ public class TeleOpMain2 extends LinearOpMode {
             else {
 
                 // Set the wrist to high chamber hold position.
-                robotHardware.setWristHighChamberHoldPosition();
+                robotHardware.setWristHighChamberPosition();
 
                 // Set the swivel to clip position.
                 robotHardware.swivelSetClip();

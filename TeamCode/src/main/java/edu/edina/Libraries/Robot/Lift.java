@@ -28,7 +28,7 @@ public class Lift {
     public static int MAXIMUM_POSITION = 1600;
 
     // Chamber position
-    public static int CHAMBER_POSITION = 1000;
+    public static int CHAMBER_POSITION = 2000;
 
     // Minimum position
     public static int MINIMUM_POSITION = -400;
@@ -370,6 +370,17 @@ public class Lift {
 
         // Return the result.
         return isInHighBasketPosition;
+
+    }
+
+    // Determines whether the lift is in the chamber position.
+    public boolean isInChamberPosition() {
+
+        // Determine whether the lift is in the chamber position.
+        boolean isInChamberPosition = targetPosition == CHAMBER_POSITION;
+
+        // Return the result.
+        return isInChamberPosition;
 
     }
 
