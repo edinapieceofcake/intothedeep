@@ -1,12 +1,16 @@
 package edu.edina.Libraries.LinearMotion;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import java.util.ArrayList;
+
+import edu.edina.Libraries.Actions.RunToPositionAction;
 import edu.edina.Libraries.Robot.Speedometer;
 
 @Config
@@ -22,9 +26,11 @@ public class TestMechanism implements ILinearMechanism {
     public static double KA = 0.01;
     public static double NOMINAL_ACCEL = 1 / (2 * KA);
     public static double STOP_ACCEL_MULT = 0.3;
-    public static double STOP_T_TOL = 0.45;
-    public static double STOP_X_TOL = 0.3;
+    public static double STOP_T_TOL = 450;
+    public static double STOP_X_TOL = 300;
     public static double MAX_JERK = 6000;
+
+    private ArrayList<RunToPositionAction> regAction;
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
@@ -41,6 +47,7 @@ public class TestMechanism implements ILinearMechanism {
         speedometer = new Speedometer(3);
         motor = hw.get(DcMotorEx.class, "left_front_drive");
         vs = hw.voltageSensor.iterator().next();
+        regAction = new ArrayList<>();
     }
 
     @Override
@@ -67,5 +74,14 @@ public class TestMechanism implements ILinearMechanism {
     @Override
     public LinearMechanismSettings getSettings() {
         return getStaticSettings();
+    }
+
+    public void registerAction(RunToPositionAction a) {
+        for (RunToPositionAction r : regAction) {
+            r.cancelAction();
+        }
+
+        regAction.clear();
+        regAction.add(a);
     }
 }
