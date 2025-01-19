@@ -16,7 +16,7 @@ import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
 
-public class LinearMotionAction implements Action {
+public class RunToPositionAction implements Action {
     private static final boolean LOG = true;
 
     private final ILinearMechanism linearMech;
@@ -28,11 +28,11 @@ public class LinearMotionAction implements Action {
     private DualNum<Time> u;
     private double maxPower;
 
-    public LinearMotionAction(ILinearMechanism linearMech, double target) {
+    public RunToPositionAction(ILinearMechanism linearMech, double target) {
         this(linearMech, null, target);
     }
 
-    public LinearMotionAction(ILinearMechanism linearMech, IFeedForward ambForce, double target) {
+    public RunToPositionAction(ILinearMechanism linearMech, IFeedForward ambForce, double target) {
         this.ambForce = ambForce;
         this.linearMech = linearMech;
         this.s = linearMech.getSettings();
@@ -90,7 +90,7 @@ public class LinearMotionAction implements Action {
         double xStop = estConstDeccelStoppingPoint(x, v, s.stopAccel);
 
         double coastPower = s.ka * counterAccel;
-        LinearMotionAction.TimePoint coast = estConstPowerStoppingPoint(t, x, v, coastPower);
+        RunToPositionAction.TimePoint coast = estConstPowerStoppingPoint(t, x, v, coastPower);
         boolean coastToStop = Math.abs(coast.x - target) < s.stopXTol
                 && coast.t - t < s.stopTTol;
         boolean deccelToStop = between(target, xStop, x);
@@ -170,18 +170,18 @@ public class LinearMotionAction implements Action {
         return d + x;
     }
 
-    private LinearMotionAction.TimePoint estConstPowerStoppingPoint(double t0, double x0, double v0,
-                                                                    double stoppingPowerPct) {
+    private RunToPositionAction.TimePoint estConstPowerStoppingPoint(double t0, double x0, double v0,
+                                                                     double stoppingPowerPct) {
         int sg = sign(v0);
         if (sg == 0)
-            return new LinearMotionAction.TimePoint(t0, x0);
+            return new RunToPositionAction.TimePoint(t0, x0);
 
         double a = -1 / (s.ka * s.maxSpeed);
         double b = -1 * (s.ks + stoppingPowerPct) / s.ka;
         double c = sg * v0 + b / a;
         double t = Math.log(b / (a * c)) / a; // when coasting will stop
         double d = (c * Math.exp(a * t) - c - b * t) / a; // where coasting will stop
-        return new LinearMotionAction.TimePoint(t0 + t, x0 + sg * d);
+        return new RunToPositionAction.TimePoint(t0 + t, x0 + sg * d);
     }
 
     private static boolean between(double x, double bound0, double bound1) {

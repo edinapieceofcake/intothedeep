@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import edu.edina.Libraries.Actions.LinearMotionAction;
+import edu.edina.Libraries.Actions.RunToPositionAction;
 import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
 
 // This represents an arm.
@@ -452,7 +452,7 @@ public class Arm {
     private Action swingToPosition(double target) {
         ArmSwingMechanism asm = new ArmSwingMechanism(robotHardware.getVoltageSensor(), motor);
         ArmForces af = new ArmForces();
-        LinearMotionAction lma = new LinearMotionAction(asm, af, target);
+        RunToPositionAction lma = new RunToPositionAction(asm, af, target);
         return lma;
     }
 }
