@@ -67,6 +67,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
     private final LinearOpMode opMode;
+    private final Slide slide;
     public final IMU imu;
     private final Odometry teleOpOdometry;
     public final Localizer odometry;
@@ -124,7 +125,7 @@ public class RobotHardware implements DrivingRobotHardware {
         lift = new Lift(this);
 
         // Initialize the slide.
-//        slide = new Slide(this);
+        slide = new Slide(this);
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
@@ -425,29 +426,36 @@ public class RobotHardware implements DrivingRobotHardware {
     public void openClaw() {
 
         // Open the claw.
-      // claw.open();
+        // claw.open();
 
     }
+
     public void openBothClaws() {
 
         // Open the claw.
-    runningActions.add(claw.openBoth());
+        runningActions.add(claw.openBoth());
     }
+
     public void openBigClaw() {
         runningActions.add(claw.openBig());
     }
+
     public void openSmallClaw() {
         runningActions.add(claw.openSmall());
     }
+
     public void closeSmallClaw() {
         runningActions.add(claw.closeSmall());
     }
+
     public void closeBigClaw() {
         runningActions.add(claw.closeBig());
     }
+
     public void toggleSmallClaw() {
         runningActions.add(claw.toggleSmall());
     }
+
     public void toggleBigClaw() {
         runningActions.add(claw.toggleBig());
     }
@@ -883,6 +891,16 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    public void fullExtension() {
+        Action extend = slide.extendToAmount(12);
+        runningActions.add(extend);
+    }
+
+    public void minimumExtension() {
+        Action extend = slide.extendToAmount(0);
+        runningActions.add(extend);
+    }
+
     // Determines whether the slide is fully retracted.
     public boolean isSlideFullyRetracted() {
 
@@ -998,6 +1016,7 @@ public class RobotHardware implements DrivingRobotHardware {
         runningActions.add(action);
 
     }
+
     public void stopDrivetrain() {
         drivetrain.stop();
     }
