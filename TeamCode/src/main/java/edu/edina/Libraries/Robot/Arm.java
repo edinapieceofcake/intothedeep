@@ -1,15 +1,10 @@
 package edu.edina.Libraries.Robot;
 
-import android.drm.DrmStore;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -100,7 +95,8 @@ public class Arm {
     private int targetPosition;
 
     // Touch sensor
-    private final TouchSensor touch;
+    private final TouchSensor touchFront;
+    private final TouchSensor touchBack;
 
     // Initializes this.
     public Arm(RobotHardware robotHardware) {
@@ -124,7 +120,8 @@ public class Arm {
         reset();
 
         // Get the touch sensor.
-        touch = hardwareMap.get(TouchSensor.class, "arm_touch");
+        touchFront = hardwareMap.get(TouchSensor.class, "arm_touch_front");
+        touchBack = hardwareMap.get(TouchSensor.class, "arm_touch_back");
 
         // Initialize the arm controller.
         controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
@@ -177,15 +174,18 @@ public class Arm {
         //////////////////////////////////////////////////////////////////////
 
         // Determine whether the arm is down.
-        boolean down = touch.isPressed();
+        boolean frontDown = touchFront.isPressed();
 
         // If the arm is down...
-        if (down) {
+        if (frontDown) {
 
             // Reset the arm motor.
             reset();
 
         }
+
+        boolean backDown = touchBack.isPressed();
+
 
         // Display arm telemetry.
         //////////////////////////////////////////////////////////////////////
@@ -204,7 +204,8 @@ public class Arm {
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
         telemetry.addData("- Current Position", currentPosition);
-        telemetry.addData("- Down", down);
+        telemetry.addData("- Front Down", frontDown);
+        telemetry.addData("- Back Down", backDown);
         telemetry.addData("- Feedforward", feedForward);
         telemetry.addData("- PID", pid);
         telemetry.addData("- Power", power);
@@ -231,7 +232,7 @@ public class Arm {
         LinearOpMode opMode = robotHardware.getOpMode();
 
         // While the arm is up...
-        while (!opMode.isStopRequested() && !touch.isPressed()) {
+        while (!opMode.isStopRequested() && !touchFront.isPressed()) {
 
             // Instruct the user to lower the arm.
             robotHardware.log("Please lower the arm...");

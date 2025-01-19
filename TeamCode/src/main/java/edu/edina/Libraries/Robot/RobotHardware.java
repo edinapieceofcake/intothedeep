@@ -46,7 +46,7 @@ public class RobotHardware implements DrivingRobotHardware {
                 4 - Servo - wrist
                 5 - Servo - claw_top
             Digital Devices
-                5 - REV Touch Sensor - arm_touch
+                5 - REV Touch Sensor - arm_touch_front
             I2C Bus 2
                 0 - Neopixel Driver - neopixel_driver
             I2C Bus 3
@@ -63,7 +63,8 @@ public class RobotHardware implements DrivingRobotHardware {
             Servos
                 3 - Servo - claw_bottom
             Digital Devices
-                1 - REV Touch Sensor - lift_touch
+               1 - REV Touch Sensor - lift_touch
+               3 - REV Touch Sensor - arm_touch_back
             Analog (don't knoe it it's here)
                 0 - Analog Input - slide_encoder
             I2C Bus 0
