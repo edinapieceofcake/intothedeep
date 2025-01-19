@@ -17,8 +17,7 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.75;
 
-    public static double HIGH_CHAMBER_HOLD_POSITION = 0.8194;
-    public static double HIGH_CHAMBER_CLIP_POSITION = 0.86;
+    public static double HIGH_CHAMBER_POSITION = 0.8194;
 
     public static double HIGH_BASKET_POSITION = 0.67;
 
@@ -27,7 +26,7 @@ public class Wrist {
 
     // Wall position
     //0.41
-    public static double WALL_POSITION = 0.3844;
+    public static double WALL_POSITION = 0.47;
 
     // Servo
     private final TrackingServo servo;
@@ -145,12 +144,10 @@ public class Wrist {
         up = true;
     }
 
-    public void setHighChamberHoldPosition() {
-        servo.setPosition(HIGH_CHAMBER_HOLD_POSITION);
+    public void setHighChamberPosition() {
+        servo.setPosition(HIGH_CHAMBER_POSITION);
     }
-    public void setHighChamberClipPosition() {
-        servo.setPosition(HIGH_CHAMBER_CLIP_POSITION);
-    }
+
 
     public Action submersibleGrab() {
         return new SequentialAction(

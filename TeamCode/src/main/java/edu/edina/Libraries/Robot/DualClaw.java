@@ -15,16 +15,12 @@ public class DualClaw {
         clawBig = hw.getOpMode().hardwareMap.get(Servo.class, "claw_bottom");
     }
 
-    public Action closeSmall() {
-        return new SequentialAction(
-                new InstantAction(() -> clawSmall.setPosition(0.4348))
-        );
+    public void closeSmall() {
+        clawSmall.setPosition(0.4348);
     }
 
-    public Action closeBig() {
-        return new SequentialAction(
-                new InstantAction(() -> clawBig.setPosition(0.3917))
-        );
+    public void closeBig() {
+        clawBig.setPosition(0.3917);
     }
 
     public Action openBoth() {
@@ -34,46 +30,33 @@ public class DualClaw {
         );
     }
 
-    public Action openBig() {
-        return new SequentialAction(
-                new InstantAction(() -> clawBig.setPosition(0.0000))
-        );
+    public void openBig() {
+        clawBig.setPosition(0.0000);
     }
 
-    public Action openSmall() {
-        return new SequentialAction(
-                new InstantAction(() -> clawSmall.setPosition(0.9944))
-        );
+    public void openSmall() {
+        clawSmall.setPosition(0.9944);
     }
 
-    public Action toggleSmall() {
+    public void toggleSmall() {
         if (smallOpen) {
             smallOpen = false;
-            return new SequentialAction(
-                    new InstantAction(() -> clawSmall.setPosition(0.4348))
-
-            );
+            closeSmall();
 
         } else {
             smallOpen = true;
-            return new SequentialAction(
-                    new InstantAction(() -> clawSmall.setPosition(0.9944))
-                    );
+           openSmall();
         }
 
     }
-    public Action toggleBig() {
+    public void toggleBig() {
         if (bigOpen) {
             bigOpen = false;
-            return new SequentialAction(
-                    new InstantAction(() -> clawBig.setPosition(0.3917))
-            );
+           closeBig();
 
         } else {
            bigOpen = true;
-            return new SequentialAction(
-                    new InstantAction(() -> clawBig.setPosition(0.0000))
-            );
+           openBig();
         }
 
     }

@@ -377,7 +377,7 @@ public class TeleOpMainTest extends LinearOpMode {
             else {
 
                 // Set the wrist to high chamber hold position.
-                robotHardware.setWristHighChamberHoldPosition();
+                robotHardware.setWristHighChamberPosition();
 
                 // Set the swivel to clip position.
                 robotHardware.swivelSetClip();

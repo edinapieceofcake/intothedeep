@@ -286,13 +286,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void swivelSetClip() {
 
         // Construct an action to set swivel to clip position after a delay.
-        Action action = new SequentialAction(
-                new WaitForTime(100),
-                new InstantAction(() -> swivel.setClip())
-        );
-
-        // Run the action.
-        runningActions.add(action);
+         swivel.setClip();
 
     }
 
@@ -449,27 +443,28 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     public void openBigClaw() {
-        runningActions.add(claw.openBig());
+        claw.openBig();
     }
 
     public void openSmallClaw() {
-        runningActions.add(claw.openSmall());
+        claw.openSmall();
     }
 
     public void closeSmallClaw() {
-        runningActions.add(claw.closeSmall());
+
+        claw.closeSmall();
     }
 
     public void closeBigClaw() {
-        runningActions.add(claw.closeBig());
+        claw.closeBig();
     }
 
     public void toggleSmallClaw() {
-        runningActions.add(claw.toggleSmall());
+       claw.toggleSmall();
     }
 
     public void toggleBigClaw() {
-        runningActions.add(claw.toggleBig());
+      claw.toggleBig();
     }
 
 
@@ -783,13 +778,10 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    public void setWristHighChamberHoldPosition() {
-        wrist.setHighChamberHoldPosition();
+    public void setWristHighChamberPosition() {
+        wrist.setHighChamberPosition();
     }
 
-    public void setWristHighChamberClipPosition() {
-        wrist.setHighChamberClipPosition();
-    }
 
     public BoundingBoxFailsafe getFailsafe() {
         return null;
@@ -865,6 +857,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Return indicating if the lift is in the high basket position.
         return lift.isInHighBasketPosition();
+
+    }
+
+    // Determines whether the lift is in the chamber position.
+    public boolean isLiftInChamberPosition() {
+
+        // Return indicating if the lift is in the chamber position.
+        return lift.isInChamberPosition();
 
     }
 
