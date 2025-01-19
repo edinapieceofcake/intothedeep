@@ -1,5 +1,7 @@
 package edu.edina.Tests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,6 +14,7 @@ import java.util.List;
 
 import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
 import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
+import edu.edina.Libraries.LinearMotion.TestMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
 import edu.edina.Libraries.Robot.FuncInverter;
@@ -31,16 +34,17 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotHardware hw = new RobotHardware(this);
-        linearMech = new ArmExtensionMechanism(hw);
+        TelemetryPacket t = new TelemetryPacket();
+        FtcDashboard f = FtcDashboard.getInstance();
+        linearMech = new TestMechanism(hardwareMap);
 
         waitForStart();
 
-        telemetry.addLine("Press a to calibrate encoder");
-        telemetry.addLine("Press b to calibrate Kv and Ks");
-        telemetry.addLine("Press x to calibrate Ka");
-        telemetry.addLine("Press y to measure ambient acceleration");
-        telemetry.update();
+        t.addLine("Press a to calibrate encoder");
+        t.addLine("Press b to calibrate Kv and Ks");
+        t.addLine("Press x to calibrate Ka");
+        t.addLine("Press y to measure ambient acceleration");
+        f.sendTelemetryPacket(t);
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
@@ -55,6 +59,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             if (gamepad1.y) {
                 measureAccelCounterPower();
             }
+
         }
     }
 

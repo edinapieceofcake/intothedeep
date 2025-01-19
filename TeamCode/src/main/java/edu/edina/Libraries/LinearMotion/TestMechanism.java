@@ -15,7 +15,7 @@ public class TestMechanism implements ILinearMechanism {
     private VoltageSensor vs;
     private Speedometer speedometer;
 
-    public static double DEG_MULT = 0;
+    public static double DEG_MULT = 1;
 
     public static double KS = 0.01;
     public static double KV = 0.01;
@@ -28,7 +28,7 @@ public class TestMechanism implements ILinearMechanism {
 
     public static LinearMechanismSettings getStaticSettings() {
         return new LinearMechanismSettings(
-                "test motor", Units.DEGREES,
+                "test motor", Units.NONE,
                 KS, KV, KA, 180,
                 NOMINAL_ACCEL,
                 STOP_ACCEL_MULT,
@@ -39,7 +39,7 @@ public class TestMechanism implements ILinearMechanism {
 
     public TestMechanism(HardwareMap hw) {
         speedometer = new Speedometer(3);
-        motor = hw.get(DcMotorEx.class, "test");
+        motor = hw.get(DcMotorEx.class, "left_front_drive");
         vs = hw.voltageSensor.iterator().next();
     }
 

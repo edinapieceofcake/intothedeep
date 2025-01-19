@@ -28,6 +28,8 @@ public class RunToPositionAction implements Action {
     private DualNum<Time> u;
     private double maxPower;
 
+    private boolean cancel;
+
     public RunToPositionAction(ILinearMechanism linearMech, double target) {
         this(linearMech, null, target);
     }
@@ -43,6 +45,8 @@ public class RunToPositionAction implements Action {
         maxPower = 1;
 
         this.target = target;
+
+        cancel = false;
     }
 
     public void setMaxPower(double power) {
@@ -61,19 +65,26 @@ public class RunToPositionAction implements Action {
         return u;
     }
 
+    public void cancelAction() {
+        cancel = true;
+    }
+
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        double t = et.seconds();
+        if (cancel) return false;
+        else {
+            double t = et.seconds();
 
-        u = linearMech.getPositionAndVelocity(false);
-        double x = u.get(0);
-        double v = u.get(1);
-        double a = ambForce != null ? ambForce.getAcceleration(u) : 0;
-        double p = power(t, x, v, a);
-        linearMech.setPower(p);
+            u = linearMech.getPositionAndVelocity(false);
+            double x = u.get(0);
+            double v = u.get(1);
+            double a = ambForce != null ? ambForce.getAcceleration(u) : 0;
+            double p = power(t, x, v, a);
+            linearMech.setPower(p);
 
-        boolean done = stopped(v) && Math.abs(x - target) < s.stopXTol;
-        return !done;
+            boolean done = stopped(v) && Math.abs(x - target) < s.stopXTol;
+            return !done;
+        }
     }
 
     // t: current time
@@ -102,9 +113,13 @@ public class RunToPositionAction implements Action {
 
         double power;
         if (!coastToStop) {
-            double nextAccel;
+            double nextAccel, kv = 0;
+
             if (deccelToStop) {
                 nextAccel = -v * v / (2 * dist);
+
+                if (sameSign(v, dist))
+                    kv = s.kv;
 
                 if (LOG)
                     ls += String.format(" nominal deccel=%.2f", nextAccel);
@@ -123,7 +138,7 @@ public class RunToPositionAction implements Action {
 
             double sg = !stopped(v) ? sign(v) : sign(dist);
 
-            power = (s.ka * (nextAccel + counterAccel) + s.kv * v) * maxPower + s.ks * sg;
+            power = (s.ka * (nextAccel + counterAccel) + kv * v) * maxPower + s.ks * sg;
 
             if (LOG) {
                 ls += String.format(" a=%.2f", nextAccel + counterAccel);
@@ -143,6 +158,10 @@ public class RunToPositionAction implements Action {
         tPrev = t;
 
         return power;
+    }
+
+    private boolean sameSign(double a, double b) {
+        return sign(a) * sign(b) == 1;
     }
 
     private double getDist(double x) {
