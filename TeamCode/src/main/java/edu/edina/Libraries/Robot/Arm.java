@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -117,7 +118,7 @@ public class Arm {
         motor = hardwareMap.get(DcMotorEx.class, "arm_motor");
 
         // Reverse the motor.
-        motor.setDirection(DcMotorEx.Direction.REVERSE);
+        motor.setDirection(DcMotorEx.Direction.FORWARD);
 
         // Reset the motor.
         reset();
