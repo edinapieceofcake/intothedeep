@@ -79,7 +79,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
     private final LinearOpMode opMode;
-    private final Slide slide;
+    private final Slide2 slide;
     public final IMU imu;
     private final Odometry teleOpOdometry;
     public final Localizer odometry;
@@ -137,7 +137,7 @@ public class RobotHardware implements DrivingRobotHardware {
         lift = new Lift(this);
 
         // Initialize the slide.
-        slide = new Slide(this);
+        slide = new Slide2(this);
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
@@ -286,7 +286,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void swivelSetClip() {
 
         // Construct an action to set swivel to clip position after a delay.
-         swivel.setClip();
+        swivel.setClip();
 
     }
 
@@ -353,7 +353,7 @@ public class RobotHardware implements DrivingRobotHardware {
         lift.update();
 
         // Update the slide.
-//        slide.update();
+        slide.update();
 
         // Update the wrist.
         wrist.update();
@@ -460,11 +460,11 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     public void toggleSmallClaw() {
-       claw.toggleSmall();
+        claw.toggleSmall();
     }
 
     public void toggleBigClaw() {
-      claw.toggleBig();
+        claw.toggleBig();
     }
 
 
@@ -528,23 +528,16 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-//        slide.setMinimumExtension();
+        slide.setMinimumExtension();
 
     }
 
-    // Sets the low basket extension.
-    public void setLowBasketExtension() {
-
-        // Set the low basket extension.
-//        slide.setLowBasketExtension();
-
-    }
 
     // Sets the high basket extension.
-    public void setHighBasketExtension() {
+    public void setMaximumExtension() {
 
         // Set the high basket extension.
-//        slide.setHighBasketExtension();
+        slide.setMaximumExtension();
 
     }
 
@@ -903,15 +896,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    public void fullExtension() {
-        Action extend = slide.extendToAmount(12);
-        runningActions.add(extend);
-    }
-
-    public void minimumExtension() {
-        Action extend = slide.extendToAmount(0);
-        runningActions.add(extend);
-    }
 
     // Determines whether the slide is fully retracted.
     public boolean isSlideFullyRetracted() {

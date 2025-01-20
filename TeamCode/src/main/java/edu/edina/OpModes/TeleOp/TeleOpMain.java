@@ -309,14 +309,14 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad.a && !previousGamepad.a) {
             if (robotHardware.isLiftInChamberPosition()) {
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
+                        new InstantAction(() -> robotHardware.toggleBigClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition())
                 );
                 robotHardware.addAction(action);
             }
             else {
-                robotHardware.toggleSmallClaw();
+                robotHardware.toggleBigClaw();
             }
         }
         if (currentGamepad.b && !previousGamepad.b) {
@@ -326,14 +326,15 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.swivelSetHorizontal();
         }
         if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
-           robotHardware.swivelSetClip();
+           robotHardware.toggleSwivel();
         }
-        if (currentGamepad.dpad_left && !previousGamepad.dpad_left){
-            robotHardware.swivelSetHorizontal();
+        if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
+            robotHardware.setMinimumExtension();
         }
         if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
-            robotHardware.swivelSetVertical();
+            robotHardware.setMaximumExtension();
         }
+
 
 
     }
@@ -724,7 +725,7 @@ public class TeleOpMain extends LinearOpMode {
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(
                         new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
-                        new InstantAction(() -> robotHardware.setHighBasketExtension()),
+                        new InstantAction(() -> robotHardware.setMaximumExtension()),
                         new SequentialAction(
                                 new WaitForTime(500),
                                 new InstantAction(() -> robotHardware.setLiftHighBasketPosition())

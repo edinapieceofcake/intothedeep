@@ -184,9 +184,9 @@ public class TeleOpForScrimmage extends LinearOpMode {
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
-
-                    // Use the low basket extension.
-                    robotHardware.setLowBasketExtension();
+//
+//                    Use the low basket extension.
+//                    robotHardware.setLowBasketExtension();
 
                 }
 
@@ -276,7 +276,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.setLiftHighBasketPosition();
 
                     // Use the high basket extension.
-                    robotHardware.setHighBasketExtension();
+                    robotHardware.setMaximumExtension();
 
                 }
 

@@ -14,10 +14,8 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.internal.camera.libuvc.api.UvcApiExposureControl;
 
 @Config
 public class BoundingBoxFailsafe {

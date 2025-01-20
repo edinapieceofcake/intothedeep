@@ -599,7 +599,7 @@ public class TeleOpMainTest extends LinearOpMode {
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(
                         new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
-                        new InstantAction(() -> robotHardware.setHighBasketExtension()),
+                        new InstantAction(() -> robotHardware.setMaximumExtension()),
                         new SequentialAction(
                                 new WaitForTime(500),
                                 new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
