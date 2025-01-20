@@ -22,20 +22,13 @@ public class Slide2 {
     // Integral coefficient
     public static double INTEGRAL = 0;
 
-    // Maximum position
-    public static int MAXIMUM_POSITION = 1600;
-
-    // Chamber position
-    public static int CHAMBER_POSITION = 2000;
-
     // Minimum position
-    public static int MINIMUM_POSITION = -400;
+    public static int MINIMUM_POSITION = -200;
 
-    // Up position threshold
-    public static int RAISED_POSITION_THRESHOLD = 400;
-
+    // High basket position
+    public static int HIGH_BASKET_POSITION = 1900;
     // Nearly up position
-    public static int NEARLY_UP_POSITION = 1500;
+    public static int NEARLY_UP_POSITION = HIGH_BASKET_POSITION - 200;
 
     // Position increment
     public static int POSITION_INCREMENT = 50;
@@ -45,17 +38,7 @@ public class Slide2 {
 
     // Busy threshold
     public static int BUSY_THRESHOLD = 150;
-
-    // High basket position
-    public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
-
-    // Descend position
-    public static int DESCEND_POSITION = 1500;
-
-    // Ascend position
-    public static int ASCEND_POSITION = -400;
-
-    private static double INCHES_PER_POS = 14.835 / 1679.0;
+    public static int INITIALIZE_POSITION = 500;
 
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
@@ -190,14 +173,6 @@ public class Slide2 {
         return extensionPosition;
     }
 
-    public double getPositionInInches() {
-        return getPosition() * INCHES_PER_POS;
-    }
-
-    public void overridePower(double power) {
-        extensionMotor.setPower(power);
-    }
-
     // Determines whether the lift is busy.
     public boolean isBusy() {
 
@@ -224,7 +199,7 @@ public class Slide2 {
     public void raise() {
 
         // If the lift is fully raised...
-        if (targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+        if (targetPosition + POSITION_INCREMENT > HIGH_BASKET_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -274,22 +249,12 @@ public class Slide2 {
         targetPosition = HIGH_BASKET_POSITION;
 
     }
-    // Determines whether the lift is raised.
-    public boolean isRaised() {
+    // Moves the lift to the high basket position.
+    public void setInitializeExtension() {
 
-        // Get the lift's current position.
-        double currentPosition = getPosition();
+        // Move the lift to the initialize position.
+        targetPosition = INITIALIZE_POSITION;
 
-        // Determine whether the lift is raised.
-        boolean isRaised = currentPosition > RAISED_POSITION_THRESHOLD;
-
-        // Return the result.
-        return isRaised;
-
-    }
-
-    public boolean targetingScoringPos() {
-        return targetPosition > MINIMUM_POSITION;
     }
 
     // Sets the lift's position.

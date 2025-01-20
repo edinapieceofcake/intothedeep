@@ -103,11 +103,19 @@ public class TeleOpMain extends LinearOpMode {
         // Open the claw.
         robotHardware.openClaw();
 
-        // Lowers the wrist.
-        robotHardware.lowerWrist();
 
         // Resets the swivel.
         robotHardware.swivelSetHorizontal();
+
+        // Initializes the Extension
+        robotHardware.setInitializeExtension();
+
+        // Lowers the wrist.
+        Action action = new SequentialAction(
+                new WaitForTime(500),
+                new InstantAction(() -> robotHardware.lowerWrist())
+        );
+        robotHardware.addAction(action);
 
         // Get current and previous gamepads.
         currentGamepad = new Gamepad();

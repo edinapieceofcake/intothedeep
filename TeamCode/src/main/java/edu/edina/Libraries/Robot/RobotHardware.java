@@ -540,6 +540,12 @@ public class RobotHardware implements DrivingRobotHardware {
         slide.setMaximumExtension();
 
     }
+    public void setInitializeExtension() {
+
+        // Set the high basket extension.
+        slide.setInitializeExtension();
+
+    }
 
     // Toggles turtle mode.
     public void toggleTurtleMode() {
