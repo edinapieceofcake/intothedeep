@@ -298,33 +298,50 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.setArmGroundPosition();
             robotHardware.lowerWrist();
             robotHardware.swivelSetHorizontal();
+            robotHardware.setInitializeExtension();
         }
         if (currentGamepad.x && !previousGamepad.x) {
             Action action = new ParallelAction(
-                    new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false),
+                    new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
                     new SequentialAction(
                             new WaitForTime(500),
                             new InstantAction(() -> robotHardware.swivelSetClip()),
                             new InstantAction(() -> robotHardware.setLiftChamberPosition()),
-                            new InstantAction(() -> robotHardware.setWristHighChamberPosition())
+                            new InstantAction(() -> robotHardware.setWristHighChamberPosition()),
+                            new InstantAction(() -> robotHardware.setChamberExtension())
 
                     )
-
-
-                    );
+                );
             robotHardware.addAction(action);
         }
         if (currentGamepad.a && !previousGamepad.a) {
-            if (robotHardware.isLiftInChamberPosition()) {
+            if (robotHardware.isArmInChamberPosition()) {
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleBigClaw()),
+                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition())
                 );
                 robotHardware.addAction(action);
             }
+            else if (robotHardware.isArmInBasketPosition()) {
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new WaitForTime(500),
+                        new SequentialAction(
+                            new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                            new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+                            new InstantAction(() -> robotHardware.setInitializeExtension()),
+                            new InstantAction(() -> robotHardware.lowerWrist()),
+                            new WaitForTime(500),
+                            new MoveArm(robotHardware, Arm.GROUND_POSITION, true)
+                        )
+                );
+                robotHardware.addAction(action);
+            }
             else {
-                robotHardware.toggleBigClaw();
+                robotHardware.toggleSmallClaw();
             }
         }
         if (currentGamepad.b && !previousGamepad.b) {
@@ -332,6 +349,14 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.setArmWallPosition();
             robotHardware.setWristWallPosition();
             robotHardware.swivelSetHorizontal();
+            robotHardware.setMinimumExtension();
+        }
+        if (currentGamepad.y && !previousGamepad.y) {
+            robotHardware.setLiftHighBasketPosition();
+            robotHardware.setArmHighBasketPosition();
+            robotHardware.setWristHighBasketPosition();
+            robotHardware.swivelSetVertical();
+            robotHardware.setMaximumExtension();
         }
         if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
            robotHardware.toggleSwivel();

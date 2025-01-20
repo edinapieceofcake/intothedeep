@@ -19,7 +19,7 @@ public class Wrist {
 
     public static double HIGH_CHAMBER_POSITION = 0.8194;
 
-    public static double HIGH_BASKET_POSITION = 0.67;
+    public static double HIGH_BASKET_POSITION = 0.7;
 
     // Up position
     public static double UP_POSITION = 0.1583;

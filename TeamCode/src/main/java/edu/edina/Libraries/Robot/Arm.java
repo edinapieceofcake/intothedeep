@@ -23,7 +23,7 @@ public class Arm {
     public static double FEEDFORWARD = 0.1;
 
     // High basket position
-    public static int HIGH_BASKET_POSITION = 2500;
+    public static int HIGH_BASKET_POSITION = 2200;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
@@ -254,6 +254,28 @@ public class Arm {
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+    }
+
+    // Determines whether the arm is in the chamber position.
+    public boolean isInChamberPosition() {
+
+        // Determine whether the arm is in the chamber position.
+        boolean isInChamberPosition = targetPosition == HIGH_CHAMBER_POSITION;
+
+        // Return the result.
+        return isInChamberPosition;
+
+    }
+
+    // Determines whether the arm is in the basket position.
+    public boolean isInBasketPosition() {
+
+        // Determine whether the arm is in the basket position.
+        boolean isInBasketPosition = targetPosition == HIGH_BASKET_POSITION;
+
+        // Return the result.
+        return isInBasketPosition;
 
     }
 

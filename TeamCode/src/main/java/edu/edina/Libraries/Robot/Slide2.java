@@ -27,6 +27,10 @@ public class Slide2 {
 
     // High basket position
     public static int HIGH_BASKET_POSITION = 1900;
+
+    // Chamber position
+    public static int CHAMBER_POSITION = 100;
+
     // Nearly up position
     public static int NEARLY_UP_POSITION = HIGH_BASKET_POSITION - 200;
 
@@ -254,6 +258,14 @@ public class Slide2 {
 
         // Move the lift to the initialize position.
         targetPosition = INITIALIZE_POSITION;
+
+    }
+
+    // Moves the lift to the high basket position.
+    public void setChamber() {
+
+        // Move the lift to the chamber position.
+        targetPosition = CHAMBER_POSITION;
 
     }
 

@@ -547,6 +547,13 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    public void setChamberExtension() {
+
+        // Set the chamber extension.
+        slide.setChamber();
+
+    }
+
     // Toggles turtle mode.
     public void toggleTurtleMode() {
 
@@ -593,7 +600,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setArmGroundPosition() {
 
         // Determine whether to move fast.
-        boolean fast = arm.isNearSubmersiblePosition();
+        boolean fast = true;
 
         // Construct an action to move the arm to the ground position.
         Action action = new SequentialAction(
@@ -630,7 +637,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setArmHighBasketPosition() {
 
         // Construct an action to move the arm to the high basket position.
-        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, false);
+        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -872,6 +879,22 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Return indicating if the lift is in the ground position.
         return lift.isInGroundPosition();
+
+    }
+
+    // Determines whether the arm is in the chamber position.
+    public boolean isArmInChamberPosition() {
+
+        // Return indicating if the arm is in the chamber position.
+        return arm.isInChamberPosition();
+
+    }
+
+    // Determines whether the arm is in the basket position.
+    public boolean isArmInBasketPosition() {
+
+        // Return indicating if the arm is in the basket position.
+        return arm.isInBasketPosition();
 
     }
 

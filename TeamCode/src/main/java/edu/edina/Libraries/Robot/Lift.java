@@ -25,10 +25,10 @@ public class Lift {
     public static double INTEGRAL = 0;
 
     // Maximum position
-    public static int MAXIMUM_POSITION = 1600;
+    public static int MAXIMUM_POSITION = 2000;
 
     // Chamber position
-    public static int CHAMBER_POSITION = 2000;
+    public static int CHAMBER_POSITION = MAXIMUM_POSITION;
 
     // Minimum position
     public static int MINIMUM_POSITION = -400;
