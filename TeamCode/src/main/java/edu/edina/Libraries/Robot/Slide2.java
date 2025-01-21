@@ -31,9 +31,6 @@ public class Slide2 {
     // Chamber position
     public static int CHAMBER_POSITION = 100;
 
-    // Nearly up position
-    public static int NEARLY_UP_POSITION = HIGH_BASKET_POSITION - 200;
-
     // Position increment
     public static int POSITION_INCREMENT = 50;
 
@@ -182,14 +179,6 @@ public class Slide2 {
 
         // Get the lift's current position.
         double currentPosition = getPosition();
-
-        // If the lift is up as requested...
-        if (currentPosition >= NEARLY_UP_POSITION && targetPosition >= NEARLY_UP_POSITION) {
-
-            // Return indicating that the lift is not busy.
-            return false;
-
-        }
 
         // Get the position difference.
         double difference = Math.abs(currentPosition - targetPosition);

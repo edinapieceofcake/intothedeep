@@ -512,7 +512,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void retractSlide() {
 
         // Retract the slide.
-//        slide.retract();
+        slide.lower();
 
     }
 
@@ -520,7 +520,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void extendSlide() {
 
         // Extend the slide.
-//        slide.extend();
+        slide.raise();
 
     }
 
@@ -732,7 +732,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public boolean isSlideBusy() {
 
         // Checks if the slide is busy.
-        return false;
+        return slide.isBusy();
 
     }
 

@@ -57,6 +57,8 @@ public class Arm {
 
     // Submersible position
     public static int SUBMERSIBLE_POSITION = 4200;
+    public static int SUBMERSIBLE_GRAB_POSITION = 4800;
+
 
     // Submersible position threshold
     public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;
