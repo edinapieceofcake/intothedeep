@@ -23,6 +23,7 @@ import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForHardware;
+import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 @Config
@@ -53,6 +54,10 @@ public class TeleOpMain extends LinearOpMode {
     - b = rezero lift
     - y = toggle wrist
     - robot is always fast in debug mode
+    - d-pad left = retract slide
+    - d-pad right = extend slide
+    - UNTESTED right trigger = ready submersible position
+    - UNTESTED left trigger = pick up sample from submersible
 
     Submersible Controls
     (in normal mode, toggled with dpad up)
@@ -134,7 +139,7 @@ public class TeleOpMain extends LinearOpMode {
             currentGamepad.copy(gamepad1);
 
             // If the right trigger is down...
-            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            /*if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
 
                 // Handle debug mode.
                 handleDebugMode();
@@ -147,8 +152,8 @@ public class TeleOpMain extends LinearOpMode {
                 // Handle normal mode.
                 handleNormalMode();
 
-            }
-
+            }*/
+            handleNormalMode();
             // Update the robot hardware.
             robotHardware.update();
             robotHardware.updateHardwareInteractions();
@@ -293,80 +298,6 @@ public class TeleOpMain extends LinearOpMode {
 //          robotHardware.setLiftHighBasketPosition();
 //            robotHardware.fullExtension();
 //        }
-        if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
-            robotHardware.setLiftGroundPosition();
-            robotHardware.setArmGroundPosition();
-            robotHardware.lowerWrist();
-            robotHardware.swivelSetHorizontal();
-            robotHardware.setInitializeExtension();
-        }
-        if (currentGamepad.x && !previousGamepad.x) {
-            Action action = new ParallelAction(
-                    new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
-                    new SequentialAction(
-                            new WaitForTime(500),
-                            new InstantAction(() -> robotHardware.swivelSetClip()),
-                            new InstantAction(() -> robotHardware.setLiftChamberPosition()),
-                            new InstantAction(() -> robotHardware.setWristHighChamberPosition()),
-                            new InstantAction(() -> robotHardware.setChamberExtension())
-
-                    )
-                );
-            robotHardware.addAction(action);
-        }
-        if (currentGamepad.a && !previousGamepad.a) {
-            if (robotHardware.isArmInChamberPosition()) {
-                Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
-                        new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.setWristWallPosition())
-                );
-                robotHardware.addAction(action);
-            }
-            else if (robotHardware.isArmInBasketPosition()) {
-                Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
-                        new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        new WaitForTime(500),
-                        new SequentialAction(
-                            new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                            new InstantAction(() -> robotHardware.swivelSetHorizontal()),
-                            new InstantAction(() -> robotHardware.setInitializeExtension()),
-                            new InstantAction(() -> robotHardware.lowerWrist()),
-                            new WaitForTime(500),
-                            new MoveArm(robotHardware, Arm.GROUND_POSITION, true)
-                        )
-                );
-                robotHardware.addAction(action);
-            }
-            else {
-                robotHardware.toggleSmallClaw();
-            }
-        }
-        if (currentGamepad.b && !previousGamepad.b) {
-            robotHardware.setLiftGroundPosition();
-            robotHardware.setArmWallPosition();
-            robotHardware.setWristWallPosition();
-            robotHardware.swivelSetHorizontal();
-            robotHardware.setMinimumExtension();
-        }
-        if (currentGamepad.y && !previousGamepad.y) {
-            robotHardware.setLiftHighBasketPosition();
-            robotHardware.setArmHighBasketPosition();
-            robotHardware.setWristHighBasketPosition();
-            robotHardware.swivelSetVertical();
-            robotHardware.setMaximumExtension();
-        }
-        if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
-           robotHardware.toggleSwivel();
-        }
-        if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
-            robotHardware.setMinimumExtension();
-        }
-        if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
-            robotHardware.setMaximumExtension();
-        }
 
 
 
@@ -386,9 +317,112 @@ public class TeleOpMain extends LinearOpMode {
         robotHardware.stopLiftRezeroing();
         robotHardware.stopSlideRezeroing();
 
+        if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
+            robotHardware.setLiftGroundPosition();
+            robotHardware.setArmGroundPosition();
+            robotHardware.lowerWrist();
+            robotHardware.swivelSetHorizontal();
+            robotHardware.setInitializeExtension();
+        }
+        if (currentGamepad.x && !previousGamepad.x) {
+            Action action = new ParallelAction(
+                    new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
+                    new SequentialAction(
+                            new WaitForTime(500),
+                            new InstantAction(() -> robotHardware.swivelSetClip()),
+                            new InstantAction(() -> robotHardware.setLiftChamberPosition()),
+                            new InstantAction(() -> robotHardware.setWristHighChamberPosition()),
+                            new InstantAction(() -> robotHardware.setChamberExtension())
+
+                    )
+            );
+            robotHardware.addAction(action);
+        }
+        if (currentGamepad.a && !previousGamepad.a) {
+            if (robotHardware.isArmInChamberPosition()) {
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.setWristWallPosition())
+                );
+                robotHardware.addAction(action);
+            }
+            else if (robotHardware.isArmInBasketPosition()) {
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new WaitForTime(500),
+                        new SequentialAction(
+                                new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                                new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+                                new InstantAction(() -> robotHardware.setInitializeExtension()),
+                                new InstantAction(() -> robotHardware.lowerWrist()),
+                                new WaitForTime(500),
+                                new MoveArm(robotHardware, Arm.GROUND_POSITION, true)
+                        )
+                );
+                robotHardware.addAction(action);
+            }
+            else {
+                robotHardware.toggleSmallClaw();
+            }
+        }
+        if (currentGamepad.b && !previousGamepad.b) {
+            robotHardware.setLiftGroundPosition();
+            robotHardware.setArmWallPosition();
+            robotHardware.setWristWallPosition();
+            robotHardware.swivelSetHorizontal();
+            robotHardware.setMinimumExtension();
+        }
+        if (currentGamepad.y && !previousGamepad.y) {
+            Action action = new SequentialAction(
+                    new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                    new InstantAction(() -> robotHardware.swivelSetVertical()),
+                    new InstantAction(() -> robotHardware.setLiftHighBasketPosition()),
+                    new InstantAction(() -> robotHardware.setInitializeExtension()),
+                    new WaitForSlide(robotHardware, 3000),
+                    new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, true),
+                    new InstantAction(() -> robotHardware.setMaximumExtension())
+            );
+            robotHardware.addAction(action);
+        }
+        if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
+            robotHardware.toggleSwivel();
+        }
+        if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
+            robotHardware.setMinimumExtension();
+        }
+        if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+            robotHardware.setMaximumExtension();
+        }
+        if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()){
+            robotHardware.extendSlide();
+        }
+        if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()){
+            robotHardware.retractSlide();
+        }
+        if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD){
+            if (robotHardware.isArmInSubmersiblePosition()) {
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.openBigClaw()),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
+                        new InstantAction(() -> robotHardware.closeBigClaw()),
+                        new WaitForTime(751),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, true)
+                );
+                robotHardware.addAction(action);
+            }
+            else {
+                robotHardware.setArmSubmersiblePosition();
+                robotHardware.raiseWrist();
+                robotHardware.openBigClaw();
+            }
+
+        }
         // High basket
         //////////////////////////////////////////////////////////////////////
-
+/*
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
             // Used for A Test
@@ -698,7 +732,7 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.retractSlide();
 
         }
-
+*/
     }
 
     private Action goToSub() {
