@@ -367,6 +367,12 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
             robotHardware.setMaximumExtension();
         }
+        if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()){
+            robotHardware.extendSlide();
+        }
+        if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()){
+            robotHardware.retractSlide();
+        }
 
 
 
