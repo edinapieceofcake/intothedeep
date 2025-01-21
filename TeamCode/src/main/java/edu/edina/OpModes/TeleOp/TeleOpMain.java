@@ -373,6 +373,10 @@ public class TeleOpMain extends LinearOpMode {
         if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()){
             robotHardware.retractSlide();
         }
+        if(currentGamepad.right_trigger > TRIGGER_THRESHOLD){
+            robotHardware.setArmSubmersiblePosition();
+            robotHardware.setWristHighChamberPosition();
+        }
 
 
 
