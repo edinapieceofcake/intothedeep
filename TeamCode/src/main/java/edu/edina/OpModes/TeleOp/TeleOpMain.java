@@ -53,6 +53,10 @@ public class TeleOpMain extends LinearOpMode {
     - b = rezero lift
     - y = toggle wrist
     - robot is always fast in debug mode
+    - d-pad left = retract slide
+    - d-pad right = extend slide
+    - UNTESTED right trigger = ready submersible position
+    - UNTESTED left trigger = pick up sample from submersible
 
     Submersible Controls
     (in normal mode, toggled with dpad up)
