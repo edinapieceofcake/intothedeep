@@ -341,7 +341,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad.a && !previousGamepad.a) {
             if (robotHardware.isArmInChamberPosition()) {
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
+                        new InstantAction(() -> robotHardware.toggleBigClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition())
                 );
@@ -349,7 +349,7 @@ public class TeleOpMain extends LinearOpMode {
             }
             else if (robotHardware.isArmInBasketPosition()) {
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleSmallClaw()),
+                        new InstantAction(() -> robotHardware.toggleBigClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new WaitForTime(500),
@@ -357,15 +357,15 @@ public class TeleOpMain extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.setLiftGroundPosition()),
                                 new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                 new InstantAction(() -> robotHardware.setInitializeExtension()),
-                                new InstantAction(() -> robotHardware.lowerWrist()),
+                                new InstantAction(() -> robotHardware.raiseWrist()),
                                 new WaitForTime(500),
-                                new MoveArm(robotHardware, Arm.GROUND_POSITION, true)
+                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, true)
                         )
                 );
                 robotHardware.addAction(action);
             }
             else {
-                robotHardware.toggleSmallClaw();
+                robotHardware.toggleBigClaw();
             }
         }
         if (currentGamepad.b && !previousGamepad.b) {
