@@ -91,8 +91,8 @@ public class TeleOpMain2 extends LinearOpMode {
         // Lower the arm.
         robotHardware.setArmGroundPosition();
 
-        // Open the claw.
-        robotHardware.openClaw();
+        // Open the claws.
+        robotHardware.openClaws();
 
         // Lowers the wrist.
         robotHardware.lowerWrist();
@@ -374,13 +374,13 @@ public class TeleOpMain2 extends LinearOpMode {
             else {
 
                 // Toggle the claw.
-                robotHardware.toggleClaw();
+                //robotHardware.toggleClaw();
 
             }
 
         }
         if (currentGamepad2.a && previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition()){
-            robotHardware.toggleClaw();
+            //robotHardware.toggleClaw();
         }
 
         // High chamber

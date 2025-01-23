@@ -91,7 +91,7 @@ public class TeleOpMainTest extends LinearOpMode {
         robotHardware.setArmGroundPosition();
 
         // Open the claw.
-        robotHardware.openClaw();
+        robotHardware.openClaws();
 
         // Lowers the wrist.
         robotHardware.lowerWrist();
@@ -350,7 +350,7 @@ public class TeleOpMainTest extends LinearOpMode {
             else {
 
                 // Toggle the claw.
-                robotHardware.toggleClaw();
+                //robotHardware.toggleClaws();
 
             }
 
@@ -607,7 +607,7 @@ public class TeleOpMainTest extends LinearOpMode {
                 ),
                 new InstantAction(() -> robotHardware.setWristBasketPosition()),
                 new SequentialAction(
-                        new InstantAction(() -> robotHardware.openClaw()),
+                        new InstantAction(() -> robotHardware.openClaws()),
                         new WaitForTime(500),
                         new ParallelAction(
                                 new SequentialAction(

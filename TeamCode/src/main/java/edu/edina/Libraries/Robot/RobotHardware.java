@@ -420,30 +420,21 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Toggles the updateHardwareInteractions.
-    public void toggleClaw() {
+    // Opens the claws.
+    public void openClaws() {
 
-        // Toggle the claw.
-//        claw.toggle();
+        // Open the claws.
+        openBigClaw();
+        openSmallClaw();
 
-    }
-
-    // Opens the claw.
-    public void openClaw() {
-
-        // Open the claw.
-        // claw.open();
-
-    }
-
-    public void openBothClaws() {
-
-        // Open the claw.
-        runningActions.add(claw.openBoth());
     }
 
     public void openBigClaw() {
         claw.openBig();
+    }
+
+    public boolean isBigClawOpen() {
+        return claw.isBigOpen();
     }
 
     public void openSmallClaw() {

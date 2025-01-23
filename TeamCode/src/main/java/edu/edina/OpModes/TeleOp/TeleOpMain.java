@@ -104,9 +104,8 @@ public class TeleOpMain extends LinearOpMode {
         // Lower the arm.
         robotHardware.setArmGroundPosition();
 
-        // Open the claw.
-        robotHardware.openClaw();
-
+        // Open the claws.
+        robotHardware.openClaws();
 
         // Resets the swivel.
         robotHardware.swivelSetHorizontal();
@@ -377,7 +376,6 @@ public class TeleOpMain extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.setLiftChamberPosition()),
                                 new InstantAction(() -> robotHardware.setWristChamberPosition()),
                                 new InstantAction(() -> robotHardware.setChamberExtension())
-
                         )
                 );
                 robotHardware.addAction(action);
@@ -408,8 +406,8 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Release the specimen.
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.openBigClaw()),
-                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.openSmallClaw()),
+                        new WaitForTime(200),
                         new InstantAction(() -> robotHardware.setWristWallPosition())
                 );
                 robotHardware.addAction(action);
@@ -438,7 +436,28 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-            // Otherwise (if the arm is not in the chamber or basket position)...
+            // Otherwise, if the arm is in the wall position...
+            else if (robotHardware.isArmInWallPosition()) {
+
+                // If the big claw is open...
+                if(robotHardware.isBigClawOpen()) {
+
+                    // Toggle the small claw.
+                    robotHardware.toggleSmallClaw();
+
+                }
+
+                // Otherwise (if the big claw is closed)...
+                else {
+
+                    // Open the big claw.
+                    robotHardware.openBigClaw();
+
+                }
+
+            }
+
+            // Otherwise (if the arm is in another position)...
             else {
 
                 // Toggle the big claw.
@@ -596,6 +615,7 @@ public class TeleOpMain extends LinearOpMode {
             else {
 
                 // Move the arm to the submersible position.
+                robotHardware.setLiftGroundPosition();
                 robotHardware.setArmSubmersibleHoverPosition();
                 robotHardware.raiseWrist();
                 robotHardware.openBigClaw();
@@ -983,7 +1003,7 @@ public class TeleOpMain extends LinearOpMode {
                 ),
                 new InstantAction(() -> robotHardware.setWristBasketPosition()),
                 new SequentialAction(
-                        new InstantAction(() -> robotHardware.openClaw()),
+                        new InstantAction(() -> robotHardware.openClaws()),
                         new WaitForTime(500),
                         new ParallelAction(
                                 new SequentialAction(

@@ -527,7 +527,7 @@ public class AutoSample extends LinearOpMode {
 
         // Construct a score sample action.
         Action action = new SequentialAction(
-            new InstantAction(() -> robotHardware.openClaw()),
+            new InstantAction(() -> robotHardware.openClaws()),
             new WaitForTime(CLAW_MILLISECONDS),
             new ParallelAction(
                     new SequentialAction(

@@ -69,7 +69,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
         robotHardware.setArmGroundPosition();
 
         // Open the claw.
-        robotHardware.openClaw();
+        robotHardware.openClaws();
 
         // Lowers the wrist.
         robotHardware.lowerWrist();
@@ -288,7 +288,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if (currentGamepad.a && !previousGamepad.a) {
 
                     // Toggle the claw.
-                    robotHardware.toggleClaw();
+                    //robotHardware.toggleClaw();
 
                 }
 

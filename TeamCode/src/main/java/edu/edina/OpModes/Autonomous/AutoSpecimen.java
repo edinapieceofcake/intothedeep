@@ -395,7 +395,7 @@ public class AutoSpecimen extends LinearOpMode {
 				),
 				new SequentialAction(
 						new WaitForTime(400),
-						new InstantAction(() -> robotHardware.openClaw())
+						new InstantAction(() -> robotHardware.openClaws())
 				)
 		);
 

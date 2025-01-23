@@ -22,47 +22,48 @@ public class DualClaw {
 
     public void closeSmall() {
         clawSmall.setPosition(SMALL_CLOSE);
+        smallOpen = false;
     }
 
     public void closeBig() {
         clawBig.setPosition(BIG_CLOSE);
+        bigOpen = false;
     }
 
     public Action openBoth() {
         return new SequentialAction(
-                new InstantAction(() -> clawSmall.setPosition(SMALL_OPEN)),
-                new InstantAction(() -> clawBig.setPosition(BIG_OPEN))
+                new InstantAction(() -> openSmall()),
+                new InstantAction(() -> openBig())
         );
     }
 
     public void openBig() {
         clawBig.setPosition(BIG_OPEN);
+        bigOpen = true;
     }
 
     public void openSmall() {
         clawSmall.setPosition(SMALL_OPEN);
+        smallOpen = true;
     }
 
     public void toggleSmall() {
         if (smallOpen) {
-            smallOpen = false;
             closeSmall();
-
         } else {
-            smallOpen = true;
-           openSmall();
+            openSmall();
         }
-
     }
+
     public void toggleBig() {
         if (bigOpen) {
-            bigOpen = false;
-           closeBig();
-
+            closeBig();
         } else {
-           bigOpen = true;
-           openBig();
+            openBig();
         }
+    }
 
+    public boolean isBigOpen() {
+        return bigOpen;
     }
 }
