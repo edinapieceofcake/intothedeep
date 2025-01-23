@@ -461,7 +461,7 @@ public class TeleOpMain extends LinearOpMode {
                         new WaitForSlide(robotHardware, 3000),
                         new InstantAction(() -> robotHardware.setLiftBasketPosition()),
                         new MoveArm(robotHardware, Arm.BASKET_POSITION, true),
-                        new InstantAction(() -> robotHardware.setMaximumExtension()),
+                        new InstantAction(() -> robotHardware.setBasketExtension()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristBasketPosition())
                 );
@@ -508,7 +508,7 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.clearActions();
 
             // Set the maximum extension.
-            robotHardware.setMaximumExtension();
+            robotHardware.setBasketExtension();
 
         }
 
@@ -947,7 +947,7 @@ public class TeleOpMain extends LinearOpMode {
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(
                         new MoveArm(robotHardware, Arm.BASKET_POSITION, false),
-                        new InstantAction(() -> robotHardware.setMaximumExtension()),
+                        new InstantAction(() -> robotHardware.setBasketExtension()),
                         new SequentialAction(
                                 new WaitForTime(500),
                                 new InstantAction(() -> robotHardware.setLiftBasketPosition())

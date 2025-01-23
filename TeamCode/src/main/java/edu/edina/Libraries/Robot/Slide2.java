@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-// This represents a lift.
+// This represents a slide.
 @Config
 public class Slide2 {
 
@@ -25,8 +25,11 @@ public class Slide2 {
     // Minimum position
     public static int MINIMUM_POSITION = -200;
 
-    // High basket position
-    public static int HIGH_BASKET_POSITION = 1900;
+    // Basket position
+    public static int BASKET_POSITION = 1900;
+
+    // Maximum submersible position
+    public static int MAXIMUM_SUBMERSIBLE_POSITION = 1500;
 
     // Chamber position
     public static int CHAMBER_POSITION = 100;
@@ -84,7 +87,7 @@ public class Slide2 {
         reset();
 
 
-        // Initialize the lift controller.
+        // Initialize the slide controller.
         controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
     }
@@ -92,13 +95,13 @@ public class Slide2 {
     // Update this.
     public void update() {
 
-        // Update the lift controller.
+        // Update the slide controller.
         //////////////////////////////////////////////////////////////////////
 
         // PIDF Loops & Arm Control | FTC | 16379 KookyBotz
         // https://www.youtube.com/watch?v=E6H6Nqe6qJo
 
-        // Determine the appropriate lift power.
+        // Determine the appropriate slide power.
         controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
         int currentPosition = extensionMotor.getCurrentPosition();
         double pid = controller.calculate(currentPosition, targetPosition);
@@ -133,23 +136,23 @@ public class Slide2 {
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
 
-        // Determine whether the lift is busy.
+        // Determine whether the slide is busy.
         boolean isBusy = isBusy();
 
-        // Display lift telemetry.
-        telemetry.addData("Extension", "====================");
+        // Display slide telemetry.
+        telemetry.addData("Slide", "====================");
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Position", "%d", extensionPosition);
         telemetry.addData("- PID", pid);
         telemetry.addData("- Power", "%.2f",  extensionMotorPower);
         telemetry.addData("- Target Position", targetPosition);
 
-        // Add lift information to the telemetry.
-        telemetry.addData("Extension", "Position = %d, Power = %.2f", extensionPosition, extensionMotorPower);
+        // Add slide information to the telemetry.
+        telemetry.addData("Slide", "Position = %d, Power = %.2f", extensionPosition, extensionMotorPower);
 
     }
 
-    // Resets the lift.
+    // Resets the slide.
     private void reset() {
 
         // Reset the extension motors.
@@ -157,7 +160,7 @@ public class Slide2 {
 
     }
 
-    // Resets a lift motor.
+    // Resets a slide motor.
     private void reset(DcMotorEx motor) {
 
         // Reset the motor.
@@ -174,25 +177,25 @@ public class Slide2 {
         return extensionPosition;
     }
 
-    // Determines whether the lift is busy.
+    // Determines whether the slide is busy.
     public boolean isBusy() {
 
-        // Get the lift's current position.
+        // Get the slide's current position.
         double currentPosition = getPosition();
 
         // Get the position difference.
         double difference = Math.abs(currentPosition - targetPosition);
 
-        // Return indicating if the lift is busy.
+        // Return indicating if the slide is busy.
         return difference >= BUSY_THRESHOLD;
 
     }
 
-    // Raises the lift.
+    // Raises the slide.
     public void raise() {
 
-        // If the lift is fully raised...
-        if (targetPosition + POSITION_INCREMENT > HIGH_BASKET_POSITION) {
+        // If the slide is fully raised...
+        if (targetPosition + POSITION_INCREMENT > MAXIMUM_SUBMERSIBLE_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -202,15 +205,15 @@ public class Slide2 {
 
         }
 
-        // Raise the lift.
+        // Raise the slide.
         targetPosition += POSITION_INCREMENT;
 
     }
 
-    // Lowers the lift.
+    // Lowers the slide.
     public void lower() {
 
-        // If the lift is fully lowered...
+        // If the slide is fully lowered...
         if (targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
 
             // Notify the user.
@@ -221,44 +224,44 @@ public class Slide2 {
 
         }
 
-        // Lower the lift.
+        // Lower the slide.
         targetPosition -= POSITION_INCREMENT;
 
     }
 
 
-    // Moves the lift to the ground position.
-    public void setMinimumExtension() {
+    // Moves the slide to the minimum position.
+    public void setMinimum() {
 
-        // Move the lift to the minimum position.
+        // Move the slide to the minimum position.
         targetPosition = MINIMUM_POSITION;
 
     }
 
-    // Moves the lift to the high basket position.
-    public void setMaximumExtension() {
+    // Moves the slide to the basket position.
+    public void setBasket() {
 
-        // Move the lift to the high basket position.
-        targetPosition = HIGH_BASKET_POSITION;
+        // Move the slide to the basket position.
+        targetPosition = BASKET_POSITION;
 
     }
-    // Moves the lift to the high basket position.
-    public void setInitializeExtension() {
+    // Moves the slide to the initialize position.
+    public void setInitialize() {
 
-        // Move the lift to the initialize position.
+        // Move the slide to the initialize position.
         targetPosition = INITIALIZE_POSITION;
 
     }
 
-    // Moves the lift to the high basket position.
+    // Moves the slide to the chamber position.
     public void setChamber() {
 
-        // Move the lift to the chamber position.
+        // Move the slide to the chamber position.
         targetPosition = CHAMBER_POSITION;
 
     }
 
-    // Sets the lift's position.
+    // Sets the slide's position.
     public void setPosition(int targetPosition) {
 
         // Set the target position.

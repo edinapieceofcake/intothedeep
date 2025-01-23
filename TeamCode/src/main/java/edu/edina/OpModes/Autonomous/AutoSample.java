@@ -476,7 +476,7 @@ public class AutoSample extends LinearOpMode {
                 new SequentialAction(
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristBasketPosition()),
-                        new InstantAction(() -> robotHardware.setMaximumExtension()),
+                        new InstantAction(() -> robotHardware.setBasketExtension()),
                         new InstantAction(() -> robotHardware.setLiftBasketPosition())
                 )
         );
@@ -493,7 +493,7 @@ public class AutoSample extends LinearOpMode {
             new SequentialAction(
                 new ParallelAction(
                     new MoveArm(robotHardware, Arm.BASKET_POSITION, false),
-                    new InstantAction(() -> robotHardware.setMaximumExtension()),
+                    new InstantAction(() -> robotHardware.setBasketExtension()),
                     new SequentialAction(
                             new WaitForTime(500),
                             new InstantAction(() -> robotHardware.setLiftBasketPosition())

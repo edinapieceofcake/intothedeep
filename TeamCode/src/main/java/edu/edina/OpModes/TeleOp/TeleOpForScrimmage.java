@@ -272,7 +272,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.setLiftBasketPosition();
 
                     // Use the high basket extension.
-                    robotHardware.setMaximumExtension();
+                    robotHardware.setBasketExtension();
 
                 }
 

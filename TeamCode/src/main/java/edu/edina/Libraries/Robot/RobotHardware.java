@@ -528,16 +528,16 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-        slide.setMinimumExtension();
+        slide.setMinimum();
 
     }
 
 
-    // Sets the maximum extension.
-    public void setMaximumExtension() {
+    // Sets the basket extension.
+    public void setBasketExtension() {
 
-        // Set the maximum extension.
-        slide.setMaximumExtension();
+        // Set the basket extension.
+        slide.setBasket();
 
     }
 
@@ -545,7 +545,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setInitializeExtension() {
 
         // Set the extension to the initialize position.
-        slide.setInitializeExtension();
+        slide.setInitialize();
 
     }
 
