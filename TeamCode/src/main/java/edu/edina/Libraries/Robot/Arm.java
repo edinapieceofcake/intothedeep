@@ -53,11 +53,10 @@ public class Arm {
     public static double REZEROING_POWER = -0.3;
 
     // Submersible hover position
-    public static int SUBMERSIBLE_HOVER_POSITION = 4500;
+    public static int SUBMERSIBLE_HOVER_POSITION = 4200;
 
     // Submersible grab position
-    public static int SUBMERSIBLE_GRAB_POSITION = 4700;
-
+    public static int SUBMERSIBLE_GRAB_POSITION = 4800;
 
     // Submersible position threshold
     public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;
@@ -95,6 +94,9 @@ public class Arm {
     // Touch sensor
     private final TouchSensor touchFront;
     private final TouchSensor touchBack;
+
+    // Previous front down value
+    private boolean previousFrontDown;
 
     // Initializes this.
     public Arm(RobotHardware robotHardware) {
@@ -172,18 +174,19 @@ public class Arm {
         //////////////////////////////////////////////////////////////////////
 
         // Determine whether the arm is down.
-        boolean frontDown = touchFront.isPressed();
+        boolean currentFrontDown = touchFront.isPressed();
 
         // If the arm is down...
-        if (frontDown) {
+        if (currentFrontDown && !previousFrontDown) {
 
             // Reset the arm motor.
             reset();
 
         }
 
-        boolean backDown = touchBack.isPressed();
+        previousFrontDown = currentFrontDown;
 
+        boolean backDown = touchBack.isPressed();
 
         // Display arm telemetry.
         //////////////////////////////////////////////////////////////////////
@@ -202,7 +205,7 @@ public class Arm {
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
         telemetry.addData("- Current Position", currentPosition);
-        telemetry.addData("- Front Down", frontDown);
+        telemetry.addData("- Front Down", currentFrontDown);
         telemetry.addData("- Back Down", backDown);
         telemetry.addData("- Feedforward", feedForward);
         telemetry.addData("- PID", pid);

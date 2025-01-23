@@ -306,6 +306,9 @@ public class TeleOpMain extends LinearOpMode {
     private void handleNormalMode() {
 
         // Set debugging to false
+        //////////////////////////////////////////////////////////////////////
+
+        // Set debugging to false
         robotHardware.setDebugging(false);
 
         // Stop rezeroing.
@@ -315,6 +318,15 @@ public class TeleOpMain extends LinearOpMode {
         robotHardware.stopArmRezeroing();
         robotHardware.stopLiftRezeroing();
         robotHardware.stopSlideRezeroing();
+
+        // Enable turtle mode.
+        //////////////////////////////////////////////////////////////////////
+
+        // Enable turtle mode.
+        robotHardware.setTurtleMode(true);
+
+        // Handle normal mode.
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed right bumper...
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
@@ -423,17 +435,30 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
 
-            // Move the arm to the basket position.
-            Action action = new SequentialAction(
-                    new InstantAction(() -> robotHardware.setWristBasketPosition()),
-                    new InstantAction(() -> robotHardware.swivelSetVertical()),
-                    new InstantAction(() -> robotHardware.setLiftBasketPosition()),
-                    new InstantAction(() -> robotHardware.setInitializeExtension()),
-                    new WaitForSlide(robotHardware, 3000),
-                    new MoveArm(robotHardware, Arm.BASKET_POSITION, true),
-                    new InstantAction(() -> robotHardware.setMaximumExtension())
-            );
-            robotHardware.addAction(action);
+            // If the arm is in the submersible position...
+            if (robotHardware.isArmNearSubmersiblePosition()) {
+
+                // Move the arm to the basket position.
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.swivelSetVertical()),
+                        new InstantAction(() -> robotHardware.setLiftBasketPosition()),
+                        new MoveArm(robotHardware, Arm.BASKET_POSITION, true),
+                        new InstantAction(() -> robotHardware.setMaximumExtension()),
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.setWristBasketPosition())
+                );
+                robotHardware.addAction(action);
+
+            }
+
+            // Otherwise (if the arm is not in the submersible position)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
 
         }
 
