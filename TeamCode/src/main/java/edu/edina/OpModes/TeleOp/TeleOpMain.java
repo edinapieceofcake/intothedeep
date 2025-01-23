@@ -331,6 +331,9 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed right bumper...
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // If the arm is in the basket or submersible position...
             if (robotHardware.isArmInBasketPosition() || robotHardware.isArmNearSubmersiblePosition()) {
 
@@ -356,6 +359,9 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed x...
         if (currentGamepad.x && !previousGamepad.x) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // Move the arm to the chamber position.
             Action action = new ParallelAction(
                     new MoveArm(robotHardware, Arm.CHAMBER_POSITION, true),
@@ -375,12 +381,15 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed a...
         if (currentGamepad.a && !previousGamepad.a) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // If the arm is in the chamber position...
             if (robotHardware.isArmInChamberPosition()) {
 
                 // Release the specimen.
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleBigClaw()),
+                        new InstantAction(() -> robotHardware.openBigClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition())
                 );
@@ -393,7 +402,7 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Drop the sample and move the arm to the submersible position.
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.toggleBigClaw()),
+                        new InstantAction(() -> robotHardware.openBigClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new WaitForTime(500),
@@ -423,6 +432,9 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed b...
         if (currentGamepad.b && !previousGamepad.b) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // Move the arm to the wall position.
             robotHardware.setLiftGroundPosition();
             robotHardware.setArmWallPosition();
@@ -435,6 +447,9 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // If the arm is in the submersible position...
             if (robotHardware.isArmNearSubmersiblePosition()) {
 
@@ -442,6 +457,8 @@ public class TeleOpMain extends LinearOpMode {
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new InstantAction(() -> robotHardware.swivelSetVertical()),
+                        new InstantAction(() -> robotHardware.setInitializeExtension()),
+                        new WaitForSlide(robotHardware, 3000),
                         new InstantAction(() -> robotHardware.setLiftBasketPosition()),
                         new MoveArm(robotHardware, Arm.BASKET_POSITION, true),
                         new InstantAction(() -> robotHardware.setMaximumExtension()),
@@ -463,7 +480,10 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user pressed left bumper...
-        if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
+        if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+
+            // Clear any pending actions.
+            robotHardware.clearActions();
 
             // Toggle the swivel.
             robotHardware.toggleSwivel();
@@ -471,7 +491,10 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user pressed dpad down...
-        if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
+        if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+
+            // Clear any pending actions.
+            robotHardware.clearActions();
 
             // Set the minimum extension.
             robotHardware.setMinimumExtension();
@@ -479,7 +502,10 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user pressed dpad up...
-        if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+        if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
+
+            // Clear any pending actions.
+            robotHardware.clearActions();
 
             // Set the maximum extension.
             robotHardware.setMaximumExtension();
@@ -489,6 +515,9 @@ public class TeleOpMain extends LinearOpMode {
         // If the user is holding dpad right and the arm is near the submersible position...
         if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // Extend the slide.
             robotHardware.extendSlide();
 
@@ -497,13 +526,19 @@ public class TeleOpMain extends LinearOpMode {
         // If the user is holding dpad left and the arm is near the submersible position...
         if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
 
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
             // Retract the slide.
             robotHardware.retractSlide();
 
         }
 
         // If the user pressed left trigger...
-        if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD){
+        if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD) {
+
+            // Clear any pending actions.
+            robotHardware.clearActions();
 
             // If the arm is in the basket position...
             if (robotHardware.isArmInBasketPosition()) {
