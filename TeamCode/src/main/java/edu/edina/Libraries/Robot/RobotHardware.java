@@ -732,6 +732,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Determines whether the arm is in the wall position.
+    public boolean isArmInWallPosition() {
+
+        // Return indicating if the arm is in the wall position.
+        return arm.isInWallPosition();
+
+    }
+
     // Determines whether the arm is in the ground position.
     public boolean isArmInGroundPosition() {
 

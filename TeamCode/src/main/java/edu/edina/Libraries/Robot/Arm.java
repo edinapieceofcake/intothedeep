@@ -262,10 +262,15 @@ public class Arm {
     public boolean isInChamberPosition() {
 
         // Determine whether the arm is in the chamber position.
-        boolean isInChamberPosition = targetPosition == CHAMBER_POSITION;
+        return targetPosition == CHAMBER_POSITION;
 
-        // Return the result.
-        return isInChamberPosition;
+    }
+
+    // Determines whether the arm is in the wall position.
+    public boolean isInWallPosition() {
+
+        // Determine whether the arm is in the wall position.
+        return targetPosition == WALL_POSITION;
 
     }
 
@@ -273,10 +278,7 @@ public class Arm {
     public boolean isInBasketPosition() {
 
         // Determine whether the arm is in the basket position.
-        boolean isInBasketPosition = targetPosition == BASKET_POSITION;
-
-        // Return the result.
-        return isInBasketPosition;
+        return targetPosition == BASKET_POSITION;
 
     }
 
@@ -371,10 +373,7 @@ public class Arm {
     public boolean isInSubmersibleHoverPosition() {
 
         // Determine whether the arm is in the submersible hover position.
-        boolean isInSubmersibleHoverPosition = targetPosition == SUBMERSIBLE_HOVER_POSITION;
-
-        // Return the result.
-        return isInSubmersibleHoverPosition;
+        return targetPosition == SUBMERSIBLE_HOVER_POSITION;
 
     }
 
@@ -394,10 +393,7 @@ public class Arm {
     public boolean isInGroundPosition() {
 
         // Determine whether the arm is in the ground position.
-        boolean isInGroundPosition = targetPosition == GROUND_POSITION;
-
-        // Return the result.
-        return isInGroundPosition;
+        return targetPosition == GROUND_POSITION;
 
     }
 

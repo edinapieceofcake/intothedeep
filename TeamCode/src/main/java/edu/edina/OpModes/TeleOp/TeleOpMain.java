@@ -365,19 +365,32 @@ public class TeleOpMain extends LinearOpMode {
             // Clear any pending actions.
             robotHardware.clearActions();
 
-            // Move the arm to the chamber position.
-            Action action = new ParallelAction(
-                    new MoveArm(robotHardware, Arm.CHAMBER_POSITION, true),
-                    new SequentialAction(
-                            new WaitForTime(500),
-                            new InstantAction(() -> robotHardware.swivelSetClip()),
-                            new InstantAction(() -> robotHardware.setLiftChamberPosition()),
-                            new InstantAction(() -> robotHardware.setWristChamberPosition()),
-                            new InstantAction(() -> robotHardware.setChamberExtension())
+            // If the arm is in the wall position...
+            if (robotHardware.isArmInWallPosition()) {
 
-                    )
-            );
-            robotHardware.addAction(action);
+                // Move the arm to the chamber position.
+                Action action = new ParallelAction(
+                        new MoveArm(robotHardware, Arm.CHAMBER_POSITION, true),
+                        new SequentialAction(
+                                new WaitForTime(500),
+                                new InstantAction(() -> robotHardware.swivelSetClip()),
+                                new InstantAction(() -> robotHardware.setLiftChamberPosition()),
+                                new InstantAction(() -> robotHardware.setWristChamberPosition()),
+                                new InstantAction(() -> robotHardware.setChamberExtension())
+
+                        )
+                );
+                robotHardware.addAction(action);
+
+            }
+
+            // Otherwise (if the arm is not in the wall position)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
 
         }
 
@@ -444,12 +457,25 @@ public class TeleOpMain extends LinearOpMode {
             // Clear any pending actions.
             robotHardware.clearActions();
 
-            // Move the arm to the wall position.
-            robotHardware.setLiftGroundPosition();
-            robotHardware.setArmWallPosition();
-            robotHardware.setWristWallPosition();
-            robotHardware.swivelSetHorizontal();
-            robotHardware.setMinimumExtension();
+            // If the arm is in the ground or submersible position...
+            if(robotHardware.isArmInGroundPosition() || robotHardware.isArmNearSubmersiblePosition()) {
+
+                // Move the arm to the wall position.
+                robotHardware.setLiftGroundPosition();
+                robotHardware.setArmWallPosition();
+                robotHardware.setWristWallPosition();
+                robotHardware.swivelSetHorizontal();
+                robotHardware.setMinimumExtension();
+
+            }
+
+            // Otherwise (if the arm is in another position)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
 
         }
 
