@@ -17,9 +17,9 @@ public class Wrist {
     // Down position
     public static double DOWN_POSITION = 0.75;
 
-    public static double HIGH_CHAMBER_POSITION = 0.8194;
+    public static double CHAMBER_POSITION = 0.8194;
 
-    public static double HIGH_BASKET_POSITION = 0.7;
+    public static double BASKET_POSITION = 0.7;
 
     // Up position
     public static double UP_POSITION = 0.1583;
@@ -134,18 +134,18 @@ public class Wrist {
         up = true;
     }
 
-    // Set the wrist to high basket position.
-    public void setHighBasketPosition() {
+    // Set the wrist to basket position.
+    public void setBasketPosition() {
 
-        // Sets the wrist to high basket position.
-        servo.setPosition(HIGH_BASKET_POSITION);
+        // Sets the wrist to basket position.
+        servo.setPosition(BASKET_POSITION);
 
         // Remember that the wrist is up.
         up = true;
     }
 
-    public void setHighChamberPosition() {
-        servo.setPosition(HIGH_CHAMBER_POSITION);
+    public void setChamberPosition() {
+        servo.setPosition(CHAMBER_POSITION);
     }
 
 

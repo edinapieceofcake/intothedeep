@@ -22,17 +22,14 @@ public class Arm {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
-    // High basket position
-    public static int HIGH_BASKET_POSITION = 2200;
+    // Basket position
+    public static int BASKET_POSITION = 2200;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
 
     // Initial degrees below horizontal (determined experimentally)
     public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 30;
-
-    // Low basket position
-    public static int LOW_BASKET_POSITION = 2700;
 
     // Maximum position
     public static int MAXIMUM_POSITION = 5000;
@@ -69,11 +66,8 @@ public class Arm {
     // Wall position
     public static int WALL_POSITION = 500;
 
-    // High Chamber Position
-    public static int HIGH_CHAMBER_POSITION = 5200;
-
-    // Low Chamber Position
-    public static int LOW_CHAMBER_POSITION = 4150;
+    // Chamber position
+    public static int CHAMBER_POSITION = 5200;
 
     // Ascent position
     public static int ASCENT_POSITION = 700;
@@ -263,7 +257,7 @@ public class Arm {
     public boolean isInChamberPosition() {
 
         // Determine whether the arm is in the chamber position.
-        boolean isInChamberPosition = targetPosition == HIGH_CHAMBER_POSITION;
+        boolean isInChamberPosition = targetPosition == CHAMBER_POSITION;
 
         // Return the result.
         return isInChamberPosition;
@@ -274,7 +268,7 @@ public class Arm {
     public boolean isInBasketPosition() {
 
         // Determine whether the arm is in the basket position.
-        boolean isInBasketPosition = targetPosition == HIGH_BASKET_POSITION;
+        boolean isInBasketPosition = targetPosition == BASKET_POSITION;
 
         // Return the result.
         return isInBasketPosition;
@@ -399,39 +393,6 @@ public class Arm {
 
         // Return the result.
         return isInGroundPosition;
-
-    }
-
-    // Determines whether the arm is in the low basket position.
-    public boolean isInLowBasketPosition() {
-
-        // Determine whether the arm is in the low basket position.
-        boolean isInLowBasketPosition = targetPosition == LOW_BASKET_POSITION;
-
-        // Return the result.
-        return isInLowBasketPosition;
-
-    }
-
-    // Determines whether the arm is in the high basket position.
-    public boolean isInHighBasketPosition() {
-
-        // Determine whether the arm is in the high basket position.
-        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
-
-        // Return the result.
-        return isInHighBasketPosition;
-
-    }
-
-    // Determines whether the arm is in the high chamber position.
-    public boolean isInHighChamberPosition() {
-
-        // Determine whether the arm is in the high chamber position.
-        boolean isInHighChamberPosition = targetPosition == HIGH_CHAMBER_POSITION;
-
-        // Return the result.
-        return isInHighChamberPosition;
 
     }
 

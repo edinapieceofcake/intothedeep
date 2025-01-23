@@ -284,7 +284,7 @@ public class TeleOpMain2 extends LinearOpMode {
             robotHardware.clearActions();
 
             // If the robot is in the high basket position...
-            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition() && robotHardware.isLiftInBasketPosition()) {
 
                 // Notify the user.
                 robotHardware.beep();
@@ -317,7 +317,7 @@ public class TeleOpMain2 extends LinearOpMode {
         if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
 
             // If the robot is in the basket position...
-            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition() && robotHardware.isLiftInBasketPosition()) {
 
                 // Notify the user.
                 robotHardware.beep();
@@ -355,7 +355,7 @@ public class TeleOpMain2 extends LinearOpMode {
         if (currentGamepad1.a && !previousGamepad1.a && !robotHardware.isArmNearSubmersiblePosition()) {
 
             // If the robot is in the basket position...
-            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition() && robotHardware.isLiftInBasketPosition()) {
 
                 // Score the sample.
                 robotHardware.scoreSample();
@@ -363,7 +363,7 @@ public class TeleOpMain2 extends LinearOpMode {
             }
 
             // Otherwise, if the robot is in the chamber position...
-            else if (robotHardware.isArmInHighChamberPosition() && robotHardware.isLiftInGroundPosition()) {
+            else if (robotHardware.isArmInChamberPosition() && robotHardware.isLiftInGroundPosition()) {
 
                 // Score the specimen.
                 robotHardware.scoreSpecimen();
@@ -404,13 +404,13 @@ public class TeleOpMain2 extends LinearOpMode {
             else {
 
                 // Set the wrist to high chamber hold position.
-                robotHardware.setWristHighChamberPosition();
+                robotHardware.setWristChamberPosition();
 
                 // Set the swivel to clip position.
                 robotHardware.swivelSetClip();
 
                 // Move the arm to the high chamber position.
-                robotHardware.setArmHighChamberPosition();
+                robotHardware.setArmChamberPosition();
 
                 // Move the lift to the ground position.
                 robotHardware.setLiftGroundPosition();

@@ -48,8 +48,8 @@ public class Lift {
     // Busy threshold
     public static int BUSY_THRESHOLD = 150;
 
-    // High basket position
-    public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
+    // Basket position
+    public static int BASKET_POSITION = MAXIMUM_POSITION;
 
     // Descend position
     public static int DESCEND_POSITION = 1500;
@@ -328,18 +328,18 @@ public class Lift {
 
     }
 
-    // Moves the lift to the high basket position.
-    public void setHighBasketPosition() {
+    // Moves the lift to the basket position.
+    public void setBasketPosition() {
 
-        // Move the lift to the high basket position.
-        targetPosition = HIGH_BASKET_POSITION;
+        // Move the lift to the basket position.
+        targetPosition = BASKET_POSITION;
 
     }
 
     // Moves the lift to the chamber position.
     public void setChamberPosition() {
 
-        // Move the lift to the high basket position.
+        // Move the lift to the basket position.
         targetPosition = CHAMBER_POSITION;
 
     }
@@ -362,14 +362,14 @@ public class Lift {
         return targetPosition > MINIMUM_POSITION;
     }
 
-    // Determines whether the lift is in the high basket position.
-    public boolean isInHighBasketPosition() {
+    // Determines whether the lift is in the basket position.
+    public boolean isInBasketPosition() {
 
-        // Determine whether the lift is in the high basket position.
-        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
+        // Determine whether the lift is in the basket position.
+        boolean isInBasketPosition = targetPosition == BASKET_POSITION;
 
         // Return the result.
-        return isInHighBasketPosition;
+        return isInBasketPosition;
 
     }
 

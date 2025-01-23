@@ -242,11 +242,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Sets the wrist to high basket position.
-    public void setWristHighBasketPosition() {
+    // Sets the wrist to basket position.
+    public void setWristBasketPosition() {
 
-        // Sets the wrist to high basket position.
-        wrist.setHighBasketPosition();
+        // Sets the wrist to basket position.
+        wrist.setBasketPosition();
 
     }
 
@@ -533,16 +533,18 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
 
-    // Sets the high basket extension.
+    // Sets the maximum extension.
     public void setMaximumExtension() {
 
-        // Set the high basket extension.
+        // Set the maximum extension.
         slide.setMaximumExtension();
 
     }
+
+    // Sets the extension to the initialize position.
     public void setInitializeExtension() {
 
-        // Set the high basket extension.
+        // Set the extension to the initialize position.
         slide.setInitializeExtension();
 
     }
@@ -614,11 +616,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Moves the arm to the low basket position.
-    public void setArmLowBasketPosition() {
+    // Moves the arm to the basket position.
+    public void setArmBasketPosition() {
 
-        // Construct an action to move the arm to the low basket position.
-        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION, false);
+        // Construct an action to move the arm to the basket position.
+        Action action = new MoveArm(this, Arm.BASKET_POSITION, false);
 
         // Run the action.
         runningActions.add(action);
@@ -633,22 +635,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Moves the arm to the high basket position.
-    public void setArmHighBasketPosition() {
+    // Moves the arm to the chamber position.
+    public void setArmChamberPosition() {
 
-        // Construct an action to move the arm to the high basket position.
-        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, true);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the high chamber position.
-    public void setArmHighChamberPosition() {
-
-        // Construct an action to move the arm to the high chamber position.
-        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, true);
+        // Construct an action to move the arm to the chamber position.
+        Action action = new MoveArm(this, Arm.CHAMBER_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -660,17 +651,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Construct an action to move the arm to the wall position.
         Action action = new MoveArm(this, Arm.WALL_POSITION, true);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the low chamber position.
-    public void setArmLowChamberPosition() {
-
-        // Construct an action to move the arm to the low chamber position.
-        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -696,11 +676,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Moves the lift to the high basket position.
-    public void setLiftHighBasketPosition() {
+    // Moves the lift to the basket position.
+    public void setLiftBasketPosition() {
 
-        // Move the lift to the high basket position.
-        lift.setHighBasketPosition();
+        // Move the lift to the basket position.
+        lift.setBasketPosition();
 
     }
 
@@ -744,19 +724,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the arm is in the low basket position.
-    public boolean isArmInLowBasketPosition() {
+    // Determines whether the arm is in the basket position.
+    public boolean isArmInBasketPosition() {
 
-        // Return indicating if the arm is in the low basket position.
-        return arm.isInLowBasketPosition();
-
-    }
-
-    // Determines whether the arm is in the high basket position.
-    public boolean isArmInHighBasketPosition() {
-
-        // Return indicating if the arm is in the high basket position.
-        return arm.isInHighBasketPosition();
+        // Return indicating if the arm is in the basket position.
+        return arm.isInBasketPosition();
 
     }
 
@@ -768,11 +740,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the arm is in the high chamber position.
-    public boolean isArmInHighChamberPosition() {
+    // Determines whether the arm is in the chamber position.
+    public boolean isArmInChamberPosition() {
 
-        // Return indicating if the arm is in the high chamber position.
-        return arm.isInHighChamberPosition();
+        // Return indicating if the arm is in the chamber position.
+        return arm.isInChamberPosition();
 
     }
 
@@ -784,8 +756,8 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    public void setWristHighChamberPosition() {
-        wrist.setHighChamberPosition();
+    public void setWristChamberPosition() {
+        wrist.setChamberPosition();
     }
 
 
@@ -858,11 +830,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the lift is in the high basket position.
-    public boolean isLiftInHighBasketPosition() {
+    // Determines whether the lift is in the basket position.
+    public boolean isLiftInBasketPosition() {
 
-        // Return indicating if the lift is in the high basket position.
-        return lift.isInHighBasketPosition();
+        // Return indicating if the lift is in the basket position.
+        return lift.isInBasketPosition();
 
     }
 
@@ -879,22 +851,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Return indicating if the lift is in the ground position.
         return lift.isInGroundPosition();
-
-    }
-
-    // Determines whether the arm is in the chamber position.
-    public boolean isArmInChamberPosition() {
-
-        // Return indicating if the arm is in the chamber position.
-        return arm.isInChamberPosition();
-
-    }
-
-    // Determines whether the arm is in the basket position.
-    public boolean isArmInBasketPosition() {
-
-        // Return indicating if the arm is in the basket position.
-        return arm.isInBasketPosition();
 
     }
 

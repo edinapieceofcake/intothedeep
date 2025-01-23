@@ -180,7 +180,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.raiseWrist();
 
                     // Move the arm to the low basket position.
-                    robotHardware.setArmLowBasketPosition();
+                    //robotHardware.setArmLowBasketPosition();
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
@@ -197,7 +197,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.lowerWrist();
 
                     // Move the arm to the high chamber position.
-                    robotHardware.setArmHighChamberPosition();
+                    robotHardware.setArmChamberPosition();
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
@@ -214,7 +214,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.lowerWrist();
 
                     // Move the arm to the low chamber position.
-                    robotHardware.setArmLowChamberPosition();
+                    //robotHardware.setArmLowChamberPosition();
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
@@ -227,14 +227,11 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 // If the user pressed dpad down...
                 if(currentGamepad.dpad_right && !previousGamepad.dpad_right) {
 
-                    // Determine whether the arm is in the low basket position.
-                    boolean isArmInLowBasketPosition = robotHardware.isArmInLowBasketPosition();
-
                     // Determine whether the arm is in the high basket position.
-                    boolean isArmInHighBasketPosition = robotHardware.isArmInHighBasketPosition();
+                    boolean isArmInHighBasketPosition = robotHardware.isArmInBasketPosition();
 
                     // Determine whether to disallow the submersible preset (so the robot stays within the expansion box).
-                    boolean disallowSubmersiblePreset = isArmInLowBasketPosition || isArmInHighBasketPosition;
+                    boolean disallowSubmersiblePreset = isArmInHighBasketPosition;
 
                     // If the submersible preset is disallowed...
                     if (disallowSubmersiblePreset) {
@@ -270,10 +267,10 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     robotHardware.raiseWrist();
 
                     // Move the arm to the high basket position.
-                    robotHardware.setArmHighBasketPosition();
+                    robotHardware.setArmBasketPosition();
 
                     // Move the lift to the high basket position
-                    robotHardware.setLiftHighBasketPosition();
+                    robotHardware.setLiftBasketPosition();
 
                     // Use the high basket extension.
                     robotHardware.setMaximumExtension();

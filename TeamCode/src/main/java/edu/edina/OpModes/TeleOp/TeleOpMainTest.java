@@ -262,7 +262,7 @@ public class TeleOpMainTest extends LinearOpMode {
             robotHardware.clearActions();
 
             // If the robot is in the high basket position...
-            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition() && robotHardware.isLiftInBasketPosition()) {
 
                 // Notify the user.
                 robotHardware.beep();
@@ -295,7 +295,7 @@ public class TeleOpMainTest extends LinearOpMode {
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
 
             // If the robot is in the basket position...
-            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition() && robotHardware.isLiftInBasketPosition()) {
 
                 // Notify the user.
                 robotHardware.beep();
@@ -331,7 +331,7 @@ public class TeleOpMainTest extends LinearOpMode {
         if (currentGamepad.a && !previousGamepad.a) {
 
             // If the robot is in the basket position...
-            if (robotHardware.isArmInHighBasketPosition() && robotHardware.isLiftInHighBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition() && robotHardware.isLiftInBasketPosition()) {
 
                 // Score the sample.
                 robotHardware.scoreSample();
@@ -339,7 +339,7 @@ public class TeleOpMainTest extends LinearOpMode {
             }
 
             // Otherwise, if the robot is in the chamber position...
-            else if (robotHardware.isArmInHighChamberPosition() && robotHardware.isLiftInGroundPosition()) {
+            else if (robotHardware.isArmInChamberPosition() && robotHardware.isLiftInGroundPosition()) {
 
                 // Score the specimen.
                 robotHardware.scoreSpecimen();
@@ -377,13 +377,13 @@ public class TeleOpMainTest extends LinearOpMode {
             else {
 
                 // Set the wrist to high chamber hold position.
-                robotHardware.setWristHighChamberPosition();
+                robotHardware.setWristChamberPosition();
 
                 // Set the swivel to clip position.
                 robotHardware.swivelSetClip();
 
                 // Move the arm to the high chamber position.
-                robotHardware.setArmHighChamberPosition();
+                robotHardware.setArmChamberPosition();
 
                 // Move the lift to the ground position.
                 robotHardware.setLiftGroundPosition();
@@ -598,14 +598,14 @@ public class TeleOpMainTest extends LinearOpMode {
                 new InstantAction(() -> robotHardware.setMinimumExtension()),
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(
-                        new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                        new MoveArm(robotHardware, Arm.BASKET_POSITION, false),
                         new InstantAction(() -> robotHardware.setMaximumExtension()),
                         new SequentialAction(
                                 new WaitForTime(500),
-                                new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                                new InstantAction(() -> robotHardware.setLiftBasketPosition())
                         )
                 ),
-                new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                new InstantAction(() -> robotHardware.setWristBasketPosition()),
                 new SequentialAction(
                         new InstantAction(() -> robotHardware.openClaw()),
                         new WaitForTime(500),
@@ -617,7 +617,7 @@ public class TeleOpMainTest extends LinearOpMode {
                                 new SequentialAction(
                                         new InstantAction(() -> robotHardware.lowerWrist()),
                                         new WaitForTime(200),
-                                        new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                                        new InstantAction(() -> robotHardware.setWristBasketPosition()),
                                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),

@@ -317,37 +317,70 @@ public class TeleOpMain extends LinearOpMode {
         robotHardware.stopLiftRezeroing();
         robotHardware.stopSlideRezeroing();
 
+        // If the user pressed right bumper...
         if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
-            robotHardware.setLiftGroundPosition();
-            robotHardware.setArmGroundPosition();
-            robotHardware.lowerWrist();
-            robotHardware.swivelSetHorizontal();
-            robotHardware.setInitializeExtension();
+
+            // If the arm is in the basket or submersible position...
+            if (robotHardware.isArmInBasketPosition() || robotHardware.isArmNearSubmersiblePosition()) {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
+
+            // Otherwise (if the arm is not in the basket or submersible position)...
+            else {
+
+                // Move the arm to the ground position.
+                robotHardware.setLiftGroundPosition();
+                robotHardware.setArmGroundPosition();
+                robotHardware.lowerWrist();
+                robotHardware.swivelSetHorizontal();
+                robotHardware.setInitializeExtension();
+
+            }
+
         }
+
+        // If the user pressed x...
         if (currentGamepad.x && !previousGamepad.x) {
+
+            // Move the arm to the chamber position.
             Action action = new ParallelAction(
-                    new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, true),
+                    new MoveArm(robotHardware, Arm.CHAMBER_POSITION, true),
                     new SequentialAction(
                             new WaitForTime(500),
                             new InstantAction(() -> robotHardware.swivelSetClip()),
                             new InstantAction(() -> robotHardware.setLiftChamberPosition()),
-                            new InstantAction(() -> robotHardware.setWristHighChamberPosition()),
+                            new InstantAction(() -> robotHardware.setWristChamberPosition()),
                             new InstantAction(() -> robotHardware.setChamberExtension())
 
                     )
             );
             robotHardware.addAction(action);
+
         }
+
+        // If the user pressed a...
         if (currentGamepad.a && !previousGamepad.a) {
+
+            // If the arm is in the chamber position...
             if (robotHardware.isArmInChamberPosition()) {
+
+                // Release the specimen.
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.toggleBigClaw()),
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.setWristWallPosition())
                 );
                 robotHardware.addAction(action);
+
             }
+
+            // Otherwise, if the arm is in the basket position...
             else if (robotHardware.isArmInBasketPosition()) {
+
+                // Drop the sample and move the arm to the submersible position.
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.toggleBigClaw()),
                         new WaitForTime(500),
@@ -363,47 +396,95 @@ public class TeleOpMain extends LinearOpMode {
                         )
                 );
                 robotHardware.addAction(action);
+
             }
+
+            // Otherwise (if the arm is not in the chamber or basket position)...
             else {
+
+                // Toggle the big claw.
                 robotHardware.toggleBigClaw();
+
             }
+
         }
+
+        // If the user pressed b...
         if (currentGamepad.b && !previousGamepad.b) {
+
+            // Move the arm to the wall position.
             robotHardware.setLiftGroundPosition();
             robotHardware.setArmWallPosition();
             robotHardware.setWristWallPosition();
             robotHardware.swivelSetHorizontal();
             robotHardware.setMinimumExtension();
+
         }
+
+        // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
+
+            // Move the arm to the basket position.
             Action action = new SequentialAction(
-                    new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                    new InstantAction(() -> robotHardware.setWristBasketPosition()),
                     new InstantAction(() -> robotHardware.swivelSetVertical()),
-                    new InstantAction(() -> robotHardware.setLiftHighBasketPosition()),
+                    new InstantAction(() -> robotHardware.setLiftBasketPosition()),
                     new InstantAction(() -> robotHardware.setInitializeExtension()),
                     new WaitForSlide(robotHardware, 3000),
-                    new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, true),
+                    new MoveArm(robotHardware, Arm.BASKET_POSITION, true),
                     new InstantAction(() -> robotHardware.setMaximumExtension())
             );
             robotHardware.addAction(action);
+
         }
+
+        // If the user pressed left bumper...
         if (currentGamepad.left_bumper && !previousGamepad.left_bumper){
+
+            // Toggle the swivel.
             robotHardware.toggleSwivel();
+
         }
+
+        // If the user pressed dpad down...
         if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
+
+            // Set the minimum extension.
             robotHardware.setMinimumExtension();
+
         }
+
+        // If the user pressed dpad up...
         if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+
+            // Set the maximum extension.
             robotHardware.setMaximumExtension();
+
         }
-        if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()){
+
+        // If the user is holding dpad right and the arm is near the submersible position...
+        if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
+
+            // Extend the slide.
             robotHardware.extendSlide();
+
         }
-        if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()){
+
+        // If the user is holding dpad left and the arm is near the submersible position...
+        if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
+
+            // Retract the slide.
             robotHardware.retractSlide();
+
         }
+
+        // If the user pressed left trigger...
         if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD){
+
+            // If the arm is in the submersible...
             if (robotHardware.isArmInSubmersiblePosition()) {
+
+                // Grab a sample.
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.openBigClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
@@ -412,11 +493,17 @@ public class TeleOpMain extends LinearOpMode {
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, true)
                 );
                 robotHardware.addAction(action);
+
             }
+
+            // Otherwise (if the arm is not in the submersible)...
             else {
+
+                // Move the arm to the submersible position.
                 robotHardware.setArmSubmersiblePosition();
                 robotHardware.raiseWrist();
                 robotHardware.openBigClaw();
+
             }
 
         }
@@ -791,14 +878,14 @@ public class TeleOpMain extends LinearOpMode {
                 new InstantAction(() -> robotHardware.setMinimumExtension()),
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(
-                        new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                        new MoveArm(robotHardware, Arm.BASKET_POSITION, false),
                         new InstantAction(() -> robotHardware.setMaximumExtension()),
                         new SequentialAction(
                                 new WaitForTime(500),
-                                new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                                new InstantAction(() -> robotHardware.setLiftBasketPosition())
                         )
                 ),
-                new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                new InstantAction(() -> robotHardware.setWristBasketPosition()),
                 new SequentialAction(
                         new InstantAction(() -> robotHardware.openClaw()),
                         new WaitForTime(500),
@@ -810,7 +897,7 @@ public class TeleOpMain extends LinearOpMode {
                                 new SequentialAction(
                                         new InstantAction(() -> robotHardware.lowerWrist()),
                                         new WaitForTime(200),
-                                        new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                                        new InstantAction(() -> robotHardware.setWristBasketPosition()),
                                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),

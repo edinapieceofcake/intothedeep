@@ -468,16 +468,16 @@ public class AutoSample extends LinearOpMode {
 
         // Construct a raise and score sample action.
         Action action = new ParallelAction(
-                new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                new MoveArm(robotHardware, Arm.BASKET_POSITION, false),
                 new SequentialAction(
                         new WaitForTime(500),
                         new InstantAction(() -> robotHardware.raiseWrist())
                 ),
                 new SequentialAction(
                         new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                        new InstantAction(() -> robotHardware.setWristBasketPosition()),
                         new InstantAction(() -> robotHardware.setMaximumExtension()),
-                        new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                        new InstantAction(() -> robotHardware.setLiftBasketPosition())
                 )
         );
 
@@ -492,14 +492,14 @@ public class AutoSample extends LinearOpMode {
         Action action =
             new SequentialAction(
                 new ParallelAction(
-                    new MoveArm(robotHardware, Arm.HIGH_BASKET_POSITION, false),
+                    new MoveArm(robotHardware, Arm.BASKET_POSITION, false),
                     new InstantAction(() -> robotHardware.setMaximumExtension()),
                     new SequentialAction(
                             new WaitForTime(500),
-                            new InstantAction(() -> robotHardware.setLiftHighBasketPosition())
+                            new InstantAction(() -> robotHardware.setLiftBasketPosition())
                     )
                 ),
-                new InstantAction(() -> robotHardware.setWristHighBasketPosition())
+                new InstantAction(() -> robotHardware.setWristBasketPosition())
             );
 
         return action;
@@ -537,7 +537,7 @@ public class AutoSample extends LinearOpMode {
                     new SequentialAction(
                             new InstantAction(() -> robotHardware.lowerWrist()),
                             new WaitForTime(200),
-                            new InstantAction(() -> robotHardware.setWristHighBasketPosition()),
+                            new InstantAction(() -> robotHardware.setWristBasketPosition()),
                             new InstantAction(() -> robotHardware.setMinimumExtension()),
                             new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                             new InstantAction(() -> robotHardware.setLiftGroundPosition()),
