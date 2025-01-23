@@ -374,7 +374,7 @@ public class AutoSpecimen extends LinearOpMode {
 				new WaitForTime(500),
 				new InstantAction(() -> robotHardware.swivelSetHorizontal()),
 				new InstantAction(endAtWall ? () -> robotHardware.setWristWallPosition() : () -> robotHardware.lowerWrist()),
-				new MoveArm(robotHardware, endAtWall ? Arm.WALL_POSITION : Arm.GROUND_POSITION, false),
+				new MoveArm(robotHardware, endAtWall ? Arm.SUBMERSIBLE_TO_WALL_POSITION : Arm.GROUND_POSITION, false),
 				new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
 		);
 

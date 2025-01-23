@@ -479,9 +479,12 @@ public class TeleOpMain extends LinearOpMode {
             // If the arm is in the ground or submersible position...
             if(robotHardware.isArmInGroundPosition() || robotHardware.isArmNearSubmersiblePosition()) {
 
+                // Determine whether the arm is in the ground position.
+                boolean fromGround = robotHardware.isArmInGroundPosition();
+
                 // Move the arm to the wall position.
                 robotHardware.setLiftGroundPosition();
-                robotHardware.setArmWallPosition();
+                robotHardware.setArmWallPosition(fromGround);
                 robotHardware.setWristWallPosition();
                 robotHardware.swivelSetHorizontal();
                 robotHardware.setMinimumExtension();

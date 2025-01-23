@@ -411,7 +411,7 @@ public class TeleOpMainTest extends LinearOpMode {
             robotHardware.swivelSetHorizontal();
 
             // Move the arm to the wall position.
-            robotHardware.setArmWallPosition();
+            robotHardware.setArmWallPosition(true);
 
             // Move the lift to the ground position
             robotHardware.setLiftGroundPosition();

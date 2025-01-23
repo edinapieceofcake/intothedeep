@@ -637,11 +637,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Moves the arm to the wall position.
-    public void setArmWallPosition() {
+    // Moves the arm to the ground to wall position.
+    public void setArmWallPosition(boolean fromGround) {
+
+        // Get a position.
+        int position = fromGround ? Arm.GROUND_TO_WALL_POSITION : Arm.SUBMERSIBLE_TO_WALL_POSITION;
 
         // Construct an action to move the arm to the wall position.
-        Action action = new MoveArm(this, Arm.WALL_POSITION, true);
+        Action action = new MoveArm(this, position, true);
 
         // Run the action.
         runningActions.add(action);
