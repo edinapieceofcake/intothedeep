@@ -276,7 +276,7 @@ public class TeleOpMainTest extends LinearOpMode {
                 robotHardware.raiseWrist();
 
                 // Move the arm to the submersible position.
-                robotHardware.setArmSubmersiblePosition();
+                robotHardware.setArmSubmersibleHoverPosition();
 
                 // Move the lift to the ground position
                 robotHardware.setLiftGroundPosition();
@@ -366,7 +366,7 @@ public class TeleOpMainTest extends LinearOpMode {
             robotHardware.clearActions();
 
             // If the arm is in the submersible...
-            if (robotHardware.isArmInSubmersiblePosition()) {
+            if (robotHardware.isArmInSubmersibleHoverPosition()) {
 
                 // Notify the user.
                 robotHardware.beep();
@@ -556,7 +556,7 @@ public class TeleOpMainTest extends LinearOpMode {
                 .build();
         Action action = new ParallelAction(
                 driveFromstartAfterAutoPoseToSub,
-                new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
+                new InstantAction(() -> robotHardware.setArmSubmersibleHoverPosition()),
                 new InstantAction(() -> robotHardware.setMinimumExtension())
         );
         return action;
@@ -594,7 +594,7 @@ public class TeleOpMainTest extends LinearOpMode {
                 .strafeToLinearHeading(subGrabPose.position, subGrabPose.heading)
                 .build();
         Action action = new SequentialAction(
-                new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
+                new InstantAction(() -> robotHardware.setArmSubmersibleHoverPosition()),
                 new InstantAction(() -> robotHardware.setMinimumExtension()),
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(

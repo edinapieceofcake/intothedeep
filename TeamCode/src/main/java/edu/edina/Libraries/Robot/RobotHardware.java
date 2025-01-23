@@ -657,11 +657,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Moves the arm to the submersible position.
-    public void setArmSubmersiblePosition() {
+    // Moves the arm to the submersible hover position.
+    public void setArmSubmersibleHoverPosition() {
 
-        // Construct an action to move the arm to the submersible position.
-        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, true);
+        // Construct an action to move the arm to the submersible hover position.
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_HOVER_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -716,11 +716,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the arm is in the submersible position.
-    public boolean isArmInSubmersiblePosition() {
+    // Determines whether the arm is in the submersible hover position.
+    public boolean isArmInSubmersibleHoverPosition() {
 
-        // Return indicating if the arm is in the submersible position.
-        return arm.isInSubmersiblePosition();
+        // Return indicating if the arm is in the submersible hover position.
+        return arm.isInSubmersibleHoverPosition();
 
     }
 

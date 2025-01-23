@@ -1,7 +1,6 @@
 package edu.edina.OpModes.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -95,7 +94,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     boolean isArmNearlyDown = robotHardware.isArmNearlyDown();
 
                     // Determine whether the arm is in the submersible position.
-                    boolean isArmInSubmersiblePosition = robotHardware.isArmInSubmersiblePosition();
+                    boolean isArmInSubmersiblePosition = robotHardware.isArmInSubmersibleHoverPosition();
 
                     // Get the current slide extension.
                     double currentSlideExtension = robotHardware.getCurrentSlideExtension();
@@ -248,7 +247,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                         robotHardware.raiseWrist();
 
                         // Move the arm to the submersible position.
-                        robotHardware.setArmSubmersiblePosition();
+                        robotHardware.setArmSubmersibleHoverPosition();
 
                         // Move the lift to the ground position
                         robotHardware.setLiftGroundPosition();

@@ -298,7 +298,7 @@ public class TeleOpMain2 extends LinearOpMode {
                 robotHardware.raiseWrist();
 
                 // Move the arm to the submersible position.
-                robotHardware.setArmSubmersiblePosition();
+                robotHardware.setArmSubmersibleHoverPosition();
 
                 // Move the lift to the ground position
                 robotHardware.setLiftGroundPosition();
@@ -393,7 +393,7 @@ public class TeleOpMain2 extends LinearOpMode {
             robotHardware.clearActions();
 
             // If the arm is in the submersible...
-            if (robotHardware.isArmInSubmersiblePosition()) {
+            if (robotHardware.isArmInSubmersibleHoverPosition()) {
 
                 // Notify the user.
                 robotHardware.beep();

@@ -52,9 +52,11 @@ public class Arm {
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
 
-    // Submersible position
-    public static int SUBMERSIBLE_POSITION = 4200;
-    public static int SUBMERSIBLE_GRAB_POSITION = 4800;
+    // Submersible hover position
+    public static int SUBMERSIBLE_HOVER_POSITION = 4500;
+
+    // Submersible grab position
+    public static int SUBMERSIBLE_GRAB_POSITION = 4700;
 
 
     // Submersible position threshold
@@ -362,14 +364,14 @@ public class Arm {
 
     }
 
-    // Determines whether the arm is in the submersible position.
-    public boolean isInSubmersiblePosition() {
+    // Determines whether the arm is in the submersible hover position.
+    public boolean isInSubmersibleHoverPosition() {
 
-        // Determine whether the arm is in the submersible position.
-        boolean isInSubmersiblePosition = targetPosition == SUBMERSIBLE_POSITION;
+        // Determine whether the arm is in the submersible hover position.
+        boolean isInSubmersibleHoverPosition = targetPosition == SUBMERSIBLE_HOVER_POSITION;
 
         // Return the result.
-        return isInSubmersiblePosition;
+        return isInSubmersibleHoverPosition;
 
     }
 
@@ -377,7 +379,7 @@ public class Arm {
     public boolean isNearSubmersiblePosition() {
 
         // Determine whether the arm is near the submersible position.
-        boolean isNearSubmersiblePosition = Math.abs(targetPosition - SUBMERSIBLE_POSITION) <= SUBMERSIBLE_POSITION_THRESHOLD;
+        boolean isNearSubmersiblePosition = Math.abs(targetPosition - SUBMERSIBLE_HOVER_POSITION) <= SUBMERSIBLE_POSITION_THRESHOLD;
 
         // Return the result.
         return isNearSubmersiblePosition;

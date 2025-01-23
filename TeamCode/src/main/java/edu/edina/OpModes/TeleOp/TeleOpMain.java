@@ -1,7 +1,6 @@
 package edu.edina.OpModes.TeleOp;
 
 import static edu.edina.OpModes.Autonomous.AutoSample.lastPose;
-import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.MAXIMUM_SLIDE_EXTENSION_IN_SUBMERSIBLE;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -392,7 +391,7 @@ public class TeleOpMain extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.setInitializeExtension()),
                                 new InstantAction(() -> robotHardware.raiseWrist()),
                                 new WaitForTime(500),
-                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, true)
+                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
                         )
                 );
                 robotHardware.addAction(action);
@@ -481,26 +480,35 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed left trigger...
         if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD){
 
-            // If the arm is in the submersible...
-            if (robotHardware.isArmInSubmersiblePosition()) {
+            // If the arm is in the basket position...
+            if (robotHardware.isArmInBasketPosition()) {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
+
+            // Otherwise, if the arm is in the submersible position...
+            else if (robotHardware.isArmInSubmersibleHoverPosition()) {
 
                 // Grab a sample.
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.openBigClaw()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
+                        new WaitForTime(500),
                         new InstantAction(() -> robotHardware.closeBigClaw()),
-                        new WaitForTime(751),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, true)
+                        new WaitForTime(500),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
                 );
                 robotHardware.addAction(action);
 
             }
 
-            // Otherwise (if the arm is not in the submersible)...
+            // Otherwise (if the arm is in another position)...
             else {
 
                 // Move the arm to the submersible position.
-                robotHardware.setArmSubmersiblePosition();
+                robotHardware.setArmSubmersibleHoverPosition();
                 robotHardware.raiseWrist();
                 robotHardware.openBigClaw();
 
@@ -833,7 +841,7 @@ public class TeleOpMain extends LinearOpMode {
         Action action = new ParallelAction(
                 new KillSwitchAction(robotHardware, () -> !currentGamepad.y),
                 driveFromstartAfterAutoPoseToSub,
-                new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
+                new InstantAction(() -> robotHardware.setArmSubmersibleHoverPosition()),
                 new InstantAction(() -> robotHardware.setMinimumExtension())
         );
         return action;
@@ -874,7 +882,7 @@ public class TeleOpMain extends LinearOpMode {
                 .build();
         Action action = new SequentialAction(
                 new KillSwitchAction(robotHardware, () -> !currentGamepad.y),
-                new InstantAction(() -> robotHardware.setArmSubmersiblePosition()),
+                new InstantAction(() -> robotHardware.setArmSubmersibleHoverPosition()),
                 new InstantAction(() -> robotHardware.setMinimumExtension()),
                 driveFromGrabPoseToHighBasket,
                 new ParallelAction(
