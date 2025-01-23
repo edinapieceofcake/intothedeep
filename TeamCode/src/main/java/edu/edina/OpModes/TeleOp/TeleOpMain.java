@@ -41,31 +41,18 @@ public class TeleOpMain extends LinearOpMode {
     - x = chamber
     - y = basket
     - b = wall
-    - right bumper = ground
+    - right bumper = submersible
     - left bumper = toggle swivel
     - left trigger = hold for turtle
-    - back = toggle ascend
+    - back = toggle ascend (unimplemented)
+    - dpad left = retract slide
+    - dpad right = extend slide
 
     Debug Mode (hold right trigger)
 
-    - a = rezero arm
-    - x = rezero slide
-    - b = rezero lift
-    - y = toggle wrist
-    - robot is always fast in debug mode
-    - d-pad left = retract slide
-    - d-pad right = extend slide
-    - UNTESTED right trigger = ready submersible position
-    - UNTESTED left trigger = pick up sample from submersible
-
-    Submersible Controls
-    (in normal mode, toggled with dpad up)
-    (in debug mode, always enabled)
-
-    - dpad up = increment arm
-    - dpad down = decrement arm
-    - dpad right = extend slide
-    - dpad left = retract slide
+    - a = rezero arm (unimplemented)
+    - x = rezero slide (unimplemented)
+    - b = rezero lift (unimplemented)
 
     */
 
@@ -318,42 +305,11 @@ public class TeleOpMain extends LinearOpMode {
         robotHardware.stopLiftRezeroing();
         robotHardware.stopSlideRezeroing();
 
-        // Enable turtle mode.
+        // Enable turtle mode if appropriate.
         //////////////////////////////////////////////////////////////////////
 
-        // Enable turtle mode.
-        robotHardware.setTurtleMode(true);
-
-        // Ground
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user pressed right bumper...
-        if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
-            // If the arm is in the basket or submersible position...
-            if (robotHardware.isArmInBasketPosition() || robotHardware.isArmNearSubmersiblePosition()) {
-
-                // Notify the user.
-                robotHardware.beep();
-
-            }
-
-            // Otherwise (if the arm is not in the basket or submersible position)...
-            else {
-
-                // Move the arm to the ground position.
-                robotHardware.setLiftGroundPosition();
-                robotHardware.setArmGroundPosition();
-                robotHardware.lowerWrist();
-                robotHardware.swivelSetHorizontal();
-                robotHardware.setInitializeExtension();
-
-            }
-
-        }
+        // Enable turtle mode if appropriate.
+        robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
 
         // Chamber
         //////////////////////////////////////////////////////////////////////
@@ -584,8 +540,8 @@ public class TeleOpMain extends LinearOpMode {
         // Submersible
         //////////////////////////////////////////////////////////////////////
 
-        // If the user pressed left trigger...
-        if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD) {
+        // If the user pressed right bumper...
+        if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
