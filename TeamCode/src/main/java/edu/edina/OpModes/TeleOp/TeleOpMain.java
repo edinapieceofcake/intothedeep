@@ -325,7 +325,7 @@ public class TeleOpMain extends LinearOpMode {
         // Enable turtle mode.
         robotHardware.setTurtleMode(true);
 
-        // Handle normal mode.
+        // Ground
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed right bumper...
@@ -356,6 +356,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Chamber
+        //////////////////////////////////////////////////////////////////////
+
         // If the user pressed x...
         if (currentGamepad.x && !previousGamepad.x) {
 
@@ -377,6 +380,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.addAction(action);
 
         }
+
+        // Claw
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
         if (currentGamepad.a && !previousGamepad.a) {
@@ -429,6 +435,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Wall
+        //////////////////////////////////////////////////////////////////////
+
         // If the user pressed b...
         if (currentGamepad.b && !previousGamepad.b) {
 
@@ -443,6 +452,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.setMinimumExtension();
 
         }
+
+        // Basket
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed y...
         if (currentGamepad.y && !previousGamepad.y) {
@@ -479,6 +491,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Swivel
+        //////////////////////////////////////////////////////////////////////
+
         // If the user pressed left bumper...
         if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
 
@@ -490,27 +505,8 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // If the user pressed dpad down...
-        if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
-            // Set the minimum extension.
-            robotHardware.setMinimumExtension();
-
-        }
-
-        // If the user pressed dpad up...
-        if (currentGamepad.dpad_up && !previousGamepad.dpad_up) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
-            // Set the maximum extension.
-            robotHardware.setBasketExtension();
-
-        }
+        // Extend slide
+        //////////////////////////////////////////////////////////////////////
 
         // If the user is holding dpad right and the arm is near the submersible position...
         if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
@@ -523,6 +519,9 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Retract slide
+        //////////////////////////////////////////////////////////////////////
+
         // If the user is holding dpad left and the arm is near the submersible position...
         if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
 
@@ -533,6 +532,9 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.retractSlide();
 
         }
+
+        // Submersible
+        //////////////////////////////////////////////////////////////////////
 
         // If the user pressed left trigger...
         if(currentGamepad.left_trigger > TRIGGER_THRESHOLD && previousGamepad.left_trigger <= TRIGGER_THRESHOLD) {
