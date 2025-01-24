@@ -1011,7 +1011,6 @@ public class RobotHardware implements DrivingRobotHardware {
         );
         return action;
     }
-
 /*
     // Go to ground
     public Action goToGround() {
