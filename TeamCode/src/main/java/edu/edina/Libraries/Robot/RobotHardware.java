@@ -979,7 +979,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void startSlideRezeroing() {
 
         // Start slide rezeroing.
-//        slide.startRezeroing();
+        slide.startRezeroing();
 
     }
 
@@ -987,7 +987,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void stopSlideRezeroing() {
 
         // Stop slide rezeroing.
-//        slide.stopRezeroing();
+        slide.stopRezeroing();
 
     }
 
