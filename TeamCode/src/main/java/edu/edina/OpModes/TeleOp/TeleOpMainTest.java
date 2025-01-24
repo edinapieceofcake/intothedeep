@@ -574,7 +574,7 @@ public class TeleOpMainTest extends LinearOpMode {
         Action action = new SequentialAction(
                 new InstantAction(() -> robotHardware.decrementArmPosition()),
                 new WaitForHardware(robotHardware, 3000),
-                new InstantAction(() -> robotHardware.closeClaw()),
+                //new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForHardware(robotHardware, 3000),
                 new InstantAction(() -> robotHardware.incrementArmPosition()),
                 new WaitForHardware(robotHardware, 3000),

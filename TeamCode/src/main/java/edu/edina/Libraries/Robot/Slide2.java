@@ -28,7 +28,7 @@ public class Slide2 {
     public static int MINIMUM_POSITION = -200;
 
     // Basket position
-    public static int BASKET_POSITION = 1900;
+    public static int BASKET_POSITION = 1800;
 
     // Maximum submersible position
     public static int MAXIMUM_SUBMERSIBLE_POSITION = 1500;
@@ -150,9 +150,6 @@ public class Slide2 {
         telemetry.addData("- PID", pid);
         telemetry.addData("- Power", "%.2f",  extensionMotorPower);
         telemetry.addData("- Target Position", targetPosition);
-
-        // Add slide information to the telemetry.
-        telemetry.addData("Slide", "Position = %d, Power = %.2f", extensionPosition, extensionMotorPower);
 
     }
 

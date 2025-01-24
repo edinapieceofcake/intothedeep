@@ -383,7 +383,7 @@ public class TeleOpMain extends LinearOpMode {
             else if (robotHardware.isArmInBasketPosition()) {
 
                 // Score the sample and lower the arm.
-                robotHardware.addAction(robotHardware.scoreSampleAndLower());
+                robotHardware.addAction(robotHardware.scoreSampleAndLower(true));
 
             }
 

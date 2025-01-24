@@ -70,8 +70,11 @@ public class AutoSpecimen extends LinearOpMode {
 		// Wait for the user to lower the arm.
 		robotHardware.waitForArmDown();
 
-		// Close the claw.
-		robotHardware.closeClaw();
+		// Close the small claw.
+		robotHardware.closeSmallClaw();
+
+		// Open the big claw.
+		robotHardware.openBigClaw();
 
 		// Initialize the wrist.
 		robotHardware.setWristSubmersiblePosition();
@@ -419,7 +422,7 @@ public class AutoSpecimen extends LinearOpMode {
 
 		// Construct an action.
 		Action action = new SequentialAction(
-				new InstantAction(() -> robotHardware.closeClaw()),
+				new InstantAction(() -> robotHardware.closeSmallClaw()),
 				new WaitForTime(400)
 		);
 

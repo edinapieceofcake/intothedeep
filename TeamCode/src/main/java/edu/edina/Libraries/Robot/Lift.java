@@ -129,7 +129,7 @@ public class Lift {
 
         // Determine the appropriate lift power.
         controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
-        int currentPosition = leftMotor.getCurrentPosition();
+        int currentPosition = getPosition();
         double pid = controller.calculate(currentPosition, targetPosition);
         double power = pid + FEEDFORWARD;
 
@@ -170,7 +170,7 @@ public class Lift {
 
         // Get the lift's position.
         int leftPosition = leftMotor.getCurrentPosition();
-        int rightPosition = rightMotor.getCurrentPosition();
+        int rightPosition = -rightMotor.getCurrentPosition();
 
         // Get the lift's power.
         double leftPower = leftMotor.getPower();
@@ -197,9 +197,6 @@ public class Lift {
         telemetry.addData("- Power", "%.2f/%.2f", leftPower, rightPower);
         telemetry.addData("- Target Position", targetPosition);
 
-        // Add lift information to the telemetry.
-        telemetry.addData("Lift", "Position = %d/%d, Power = %.2f/%.2f", leftPosition, rightPosition, leftPower, rightPower);
-
     }
 
     // Resets the lift.
@@ -223,19 +220,12 @@ public class Lift {
 
     }
 
-    public double getPosition() {
-        double leftPosition = leftMotor.getCurrentPosition();
-        double rightPosition = rightMotor.getCurrentPosition();
-        return (leftPosition + rightPosition) / 2;
+    public int getPosition() {
+        return leftMotor.getCurrentPosition();
     }
 
     public double getPositionInInches() {
         return getPosition() * INCHES_PER_POS;
-    }
-
-    public void overridePower(double power) {
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
     }
 
     // Determines whether the lift is busy.

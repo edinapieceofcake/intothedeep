@@ -302,9 +302,6 @@ public class RobotHardware implements DrivingRobotHardware {
         // Update the arm.
         arm.update();
 
-        // Update the claw.
-//        claw.update();
-
         // If manual driving is allowed...
         if (allowManualDriving) {
 
@@ -405,10 +402,7 @@ public class RobotHardware implements DrivingRobotHardware {
         claw.openSmall();
     }
 
-    public void closeSmallClaw() {
-
-        claw.closeSmall();
-    }
+    public void closeSmallClaw() { claw.closeSmall(); }
 
     public void closeBigClaw() {
         claw.closeBig();
@@ -420,15 +414,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     public void toggleBigClaw() {
         claw.toggleBig();
-    }
-
-
-    // Closes the claw.
-    public void closeClaw() {
-
-        // Close the claw.
-//        claw.close();
-
     }
 
     // Raises the lift.
@@ -972,7 +957,8 @@ public class RobotHardware implements DrivingRobotHardware {
                 new MoveArm(this, Arm.BASKET_POSITION, true),
                 new InstantAction(() -> setBasketExtension()),
                 new WaitForTime(500),
-                new InstantAction(() -> setWristBasketPosition())
+                new InstantAction(() -> setWristBasketPosition()),
+                new WaitForHardware(this, 3000)
         );
         return action;
     }
@@ -987,13 +973,15 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Lowers the arm from the basket.
-    public Action lowerArmFromBasket() {
+    public Action lowerArmFromBasket(boolean horizontalSwivel) {
         Action action = new SequentialAction(
                 new InstantAction(() -> setWristWallPosition()),
                 new WaitForTime(500),
                 new SequentialAction(
                         new InstantAction(() -> setLiftGroundPosition()),
-                        new InstantAction(() -> swivelSetHorizontal()),
+                        horizontalSwivel ?
+                                new InstantAction(() -> swivelSetHorizontal()) :
+                                new InstantAction(() -> swivelSetVertical()),
                         new InstantAction(() -> setInitializeExtension()),
                         new InstantAction(() -> setWristSubmersiblePosition()),
                         new WaitForTime(500),
@@ -1004,10 +992,10 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Scores a sample in the basket an then lowers the arm.
-    public Action scoreSampleAndLower() {
+    public Action scoreSampleAndLower(boolean horizontalSwivel) {
         Action action = new SequentialAction(
                 scoreSample(),
-                lowerArmFromBasket()
+                lowerArmFromBasket(horizontalSwivel)
         );
         return action;
     }
