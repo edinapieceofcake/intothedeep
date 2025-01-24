@@ -38,9 +38,9 @@ public class TeleOpMain extends LinearOpMode {
     - right bumper = submersible
     - left bumper = toggle swivel
     - left trigger = hold for turtle
-    - back = toggle ascend (unimplemented)
     - dpad left = retract slide
     - dpad right = extend slide
+    - back = toggle ascend (unimplemented)
 
     Debug Mode (hold right trigger)
 
@@ -363,9 +363,10 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-                // Otherwise, if the arm is in the basket position...
-                else if (robotHardware.isArmInBasketPosition()) {
+            // Otherwise, if the arm is in the basket position...
+            else if (robotHardware.isArmInBasketPosition()) {
 
+                // Score the sample and lower the arm.
                 robotHardware.addAction(robotHardware.scoreSampleAndLower());
 
             }
@@ -374,7 +375,7 @@ public class TeleOpMain extends LinearOpMode {
             else if (robotHardware.isArmInWallPosition()) {
 
                 // If the big claw is open...
-                if(robotHardware.isBigClawOpen()) {
+                if (robotHardware.isBigClawOpen()) {
 
                     // Toggle the small claw.
                     robotHardware.toggleSmallClaw();
@@ -411,7 +412,7 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.clearActions();
 
             // If the arm is in the ground or submersible position...
-            if(robotHardware.isArmInGroundPosition() || robotHardware.isArmNearSubmersiblePosition()) {
+            if (robotHardware.isArmInGroundPosition() || robotHardware.isArmNearSubmersiblePosition()) {
 
                 // Determine whether the arm is in the ground position.
                 boolean fromGround = robotHardware.isArmInGroundPosition();
@@ -479,7 +480,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user is holding dpad right and the arm is near the submersible position...
-        if(currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -493,7 +494,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user is holding dpad left and the arm is near the submersible position...
-        if(currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
