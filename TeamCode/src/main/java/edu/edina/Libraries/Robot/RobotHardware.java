@@ -1057,4 +1057,13 @@ public class RobotHardware implements DrivingRobotHardware {
     public Lift getLift() {
         return lift;
     }
+
+    // Returns indicating if there are running actions.
+    public boolean hasRunningActions() {
+
+        // Return indicating if there are running actions.
+        return !runningActions.isEmpty();
+
+    }
+
 }
