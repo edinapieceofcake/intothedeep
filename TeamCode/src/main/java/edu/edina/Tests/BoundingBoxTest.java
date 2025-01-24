@@ -19,8 +19,8 @@ public class BoundingBoxTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             c.read();
-            if (c.a)
-                hw.toggleWrist();
+            //if (c.a)
+                //hw.toggleWrist();
 
 //            hw.getFailsafe().updateSensorsForTestEventuallyRemoveThisMethod();
             hw.getFailsafe().apply();

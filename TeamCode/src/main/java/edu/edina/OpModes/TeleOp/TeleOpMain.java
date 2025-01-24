@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,15 +13,10 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.Actions.Condition;
 import edu.edina.Libraries.Actions.Conditions;
-import edu.edina.Libraries.Actions.KillSwitchAction;
-import edu.edina.Libraries.Actions.RaiseLift;
-import edu.edina.Libraries.Actions.SpecimenPark;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.WaitForHardware;
-import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 @Config
@@ -89,7 +83,7 @@ public class TeleOpMain extends LinearOpMode {
         autoCondition = null;
 
         // Lower the arm.
-        robotHardware.setArmGroundPosition();
+        //robotHardware.setArmGroundPosition();
 
         // Open the claws.
         robotHardware.openClaws();
@@ -97,16 +91,19 @@ public class TeleOpMain extends LinearOpMode {
         // Resets the swivel.
         robotHardware.swivelSetHorizontal();
 
-        // Initializes the Extension
-        robotHardware.setInitializeExtension();
+        // Set the wrist to the submersible position.
+        robotHardware.setWristSubmersiblePosition();
 
+        // Initializes the Extension
+        //robotHardware.setInitializeExtension();
+        /*
         // Lowers the wrist.
         Action action = new SequentialAction(
                 new WaitForTime(500),
                 new InstantAction(() -> robotHardware.lowerWrist())
         );
         robotHardware.addAction(action);
-
+        */
         // Get current and previous gamepads.
         currentGamepad = new Gamepad();
         previousGamepad = new Gamepad();
@@ -370,25 +367,10 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-            // Otherwise, if the arm is in the basket position...
-            else if (robotHardware.isArmInBasketPosition()) {
+                // Otherwise, if the arm is in the basket position...
+                else if (robotHardware.isArmInBasketPosition()) {
 
-                // Drop the sample and move the arm to the submersible position.
-                Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.openBigClaw()),
-                        new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        new WaitForTime(500),
-                        new SequentialAction(
-                                new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                                new InstantAction(() -> robotHardware.swivelSetHorizontal()),
-                                new InstantAction(() -> robotHardware.setInitializeExtension()),
-                                new InstantAction(() -> robotHardware.raiseWrist()),
-                                new WaitForTime(500),
-                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
-                        )
-                );
-                robotHardware.addAction(action);
+                robotHardware.addAction(robotHardware.scoreSampleAndLower());
 
             }
 
@@ -469,19 +451,7 @@ public class TeleOpMain extends LinearOpMode {
             // If the arm is in the submersible position...
             if (robotHardware.isArmNearSubmersiblePosition()) {
 
-                // Move the arm to the basket position.
-                Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        new InstantAction(() -> robotHardware.swivelSetVertical()),
-                        new InstantAction(() -> robotHardware.setInitializeExtension()),
-                        new WaitForSlide(robotHardware, 3000),
-                        new InstantAction(() -> robotHardware.setLiftBasketPosition()),
-                        new MoveArm(robotHardware, Arm.BASKET_POSITION, true),
-                        new InstantAction(() -> robotHardware.setBasketExtension()),
-                        new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.setWristBasketPosition())
-                );
-                robotHardware.addAction(action);
+                robotHardware.addAction(robotHardware.raiseSampleToBasket());
 
             }
 
@@ -576,7 +546,7 @@ public class TeleOpMain extends LinearOpMode {
                 // Move the arm to the submersible position.
                 robotHardware.setLiftGroundPosition();
                 robotHardware.setArmSubmersibleHoverPosition();
-                robotHardware.raiseWrist();
+                robotHardware.setWristSubmersiblePosition();
                 robotHardware.openBigClaw();
 
             }
@@ -896,7 +866,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 */
     }
-
+/*
     private Action goToSub() {
 //        Pose2d startAfterAutoPose = new Pose2d(-50, -50, 1.0 / 4 * Math.PI);
 //        MecanumDrive drive = new MecanumDrive(hardwareMap, startAfterAutoPose);
@@ -960,7 +930,7 @@ public class TeleOpMain extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.setLiftBasketPosition())
                         )
                 ),
-                new InstantAction(() -> robotHardware.setWristBasketPosition()),
+                new InstantAction(() -> robotHardware.setWristBasketDropPosition()),
                 new SequentialAction(
                         new InstantAction(() -> robotHardware.openClaws()),
                         new WaitForTime(500),
@@ -972,7 +942,7 @@ public class TeleOpMain extends LinearOpMode {
                                 new SequentialAction(
                                         new InstantAction(() -> robotHardware.lowerWrist()),
                                         new WaitForTime(200),
-                                        new InstantAction(() -> robotHardware.setWristBasketPosition()),
+                                        new InstantAction(() -> robotHardware.setWristBasketropPosition()),
                                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
@@ -1003,5 +973,5 @@ public class TeleOpMain extends LinearOpMode {
         );
         robotHardware.addAction(scoreSepcimenAction);
     }
-
+*/
 }

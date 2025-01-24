@@ -69,14 +69,24 @@ public class MeepMeepTesting {
                      */
 
                     // Grabbing from back and scoring from front
-                    .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(225))
-                    .strafeToLinearHeading(new Vector2d(-56, -50), Math.toRadians(242))
-                    .strafeToLinearHeading(new Vector2d(-60, -45), Math.toRadians(265))
-                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(290))
-                    .turnTo(Math.toRadians(255))
+//                    .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(225))
+//                    .strafeToLinearHeading(new Vector2d(-56, -50), Math.toRadians(242))
+//                    .strafeToLinearHeading(new Vector2d(-60, -45), Math.toRadians(265))
+//                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(290))
+//                    .turnTo(Math.toRadians(255))
+
                     //.strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(265))
 
                     //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
+
+                    // Auto sample test number a lot
+                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+                    .strafeToLinearHeading(new Vector2d(-48, -45), Math.toRadians(270))
+                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(270))
+                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+                    .strafeToLinearHeading(new Vector2d(-50, -25), Math.toRadians(0))
+                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
 
                     /*
                     .waitSeconds(1)

@@ -14,18 +14,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Wrist {
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
 
-    // Down position
-    public static double DOWN_POSITION = 0.75;
+    // Baseket position
+    public static double BASKET_POSITION = 0.70;
 
-    public static double CHAMBER_POSITION = 0.8194;
+    // Chamber position
+    public static double CHAMBER_POSITION = 0.82;
 
-    public static double BASKET_POSITION = 0.7;
-
-    // Up position
-    public static double UP_POSITION = 0.1583;
+    // Submersible position
+    public static double SUBMERSIBLE_POSITION = 0.16;
 
     // Wall position
-    //0.41
     public static double WALL_POSITION = 0.47;
 
     // Servo
@@ -34,9 +32,6 @@ public class Wrist {
     private final Servo wrist;
 
     private final Telemetry telemetry;
-
-    // Up
-    private boolean up;
 
     // Initializes this.
     public Wrist(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -52,76 +47,14 @@ public class Wrist {
 
     // Updates this.
     public void update() {
+
         // Get the wrist's position.
         double position = servo.getEstimatedPosition();
 
         // Display wrist telemetry.
         telemetry.addData("Wrist", "====================");
         telemetry.addData("- Position", position);
-        telemetry.addData("- Up", up);
 
-    }
-
-    // Toggles the wrist.
-    public void toggle() {
-
-        // If the wrist is up...
-        if (up) {
-
-            // Lower the wrist.
-            lower();
-
-        }
-
-        // Otherwise (if the wrist is down)...
-        else {
-
-            // Raise the wrist.
-            raise();
-
-        }
-
-    }
-
-    // Lowers the wrist.
-    public void lower() {
-
-        // Lower the wrist.
-        servo.setPosition(DOWN_POSITION);
-
-        // Remember that the wrist is down.
-        up = false;
-
-    }
-
-    // Raises the wrist.
-    public void raise() {
-
-        // Raise the wrist.
-        servo.setPosition(UP_POSITION);
-
-        // Remember that the wrist is up.
-        up = true;
-    }
-
-    // Angles the wrist.
-//    public void angle() {
-//
-//        // Raise the wrist.
-//        servo.setPosition(ANGLE_POSITION);
-//
-//        // Remember that the wrist is up.
-//        up = true;
-//    }
-
-    // Raises the wrist.
-    public void initialize() {
-
-        // Raise the wrist.
-        servo.setPosition(DOWN_POSITION);
-
-        // Remember that the wrist is up.
-        up = true;
     }
 
     // Set the wrist to wall position.
@@ -130,8 +63,6 @@ public class Wrist {
         // Sets the wrist to wall position.
         servo.setPosition(WALL_POSITION);
 
-        // Remember that the wrist is up.
-        up = true;
     }
 
     // Set the wrist to basket position.
@@ -140,14 +71,23 @@ public class Wrist {
         // Sets the wrist to basket position.
         servo.setPosition(BASKET_POSITION);
 
-        // Remember that the wrist is up.
-        up = true;
     }
 
+    // Set the wrist to submersible position.
+    public void setSubmersiblePosition() {
+
+        // Sets the wrist to submersible position.
+        servo.setPosition(SUBMERSIBLE_POSITION);
+
+    }
+
+    // Set the wrist to the chamber position.
     public void setChamberPosition() {
-        servo.setPosition(CHAMBER_POSITION);
-    }
 
+        // Set the wrist to the chamber position.
+        servo.setPosition(CHAMBER_POSITION);
+
+    }
 
     public Action submersibleGrab() {
         return new SequentialAction(

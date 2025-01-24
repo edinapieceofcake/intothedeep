@@ -1,7 +1,5 @@
 package edu.edina.Libraries.Robot;
 
-import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -25,7 +23,6 @@ import java.util.List;
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
-import edu.edina.OpModes.Autonomous.AutoSample;
 import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
@@ -209,30 +206,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Toggles the wrist.
-    public void toggleWrist() {
-
-        // Toggle the wrist.
-        wrist.toggle();
-
-    }
-
-    // Raises the wrist.
-    public void raiseWrist() {
-
-        // Raise the wrist.
-        wrist.raise();
-
-    }
-
-    // Initializes the wrist.
-    public void initializeWrist() {
-
-        // Raise the wrist.
-        wrist.initialize();
-
-    }
-
     // Sets the wrist to wall position.
     public void setWristWallPosition() {
 
@@ -249,21 +222,13 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Lowers the wrist.
-    public void lowerWrist() {
+    // Sets the wrist to submersible position.
+    public void setWristSubmersiblePosition() {
 
-        // Lowers the wrist.
-        wrist.lower();
+        // Sets the wrist to submersible position.
+        wrist.setSubmersiblePosition();
 
     }
-
-    // Angles the wrist.
-//    public void angleWrist() {
-//
-//        // Angles the wrist.
-//        wrist.angle();
-//
-//    }
 
     // Sets the swivel to horizontal.
     public void swivelSetHorizontal() {
@@ -317,7 +282,7 @@ public class RobotHardware implements DrivingRobotHardware {
             lowerWrist();
         */
 
-        drivetrain.setAutoTurtleMode(lift.isRaised() && !debugging);
+        //drivetrain.setAutoTurtleMode(lift.isRaised() && !debugging);
 
     }
 
@@ -561,10 +526,6 @@ public class RobotHardware implements DrivingRobotHardware {
         this.turtleMode = turtleMode;
 
     }
-//
-//    public boolean wristCanBeExtended() {
-//        return arm.isForward();
-//    }
 
     // Determines whether the arm is nearly down.
     public boolean isArmNearlyDown() {
@@ -587,7 +548,7 @@ public class RobotHardware implements DrivingRobotHardware {
         return isArmNearSubmersiblePosition;
 
     }
-
+    /*
     // Moves the arm to the ground position.
     public void setArmGroundPosition() {
 
@@ -605,7 +566,7 @@ public class RobotHardware implements DrivingRobotHardware {
         runningActions.add(action);
 
     }
-
+    */
     // Moves the arm to the basket position.
     public void setArmBasketPosition() {
 
@@ -809,28 +770,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Scores a sample.
-    public void scoreSample() {
-
-        // Construct a score sample action.
-        Action action = AutoSample.scoreSample(this);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Raises a sample.
-    public void raiseSample() {
-
-        // Construct a raise sample action.
-        Action action = AutoSample.raiseSampleTeleOp(this);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
     // Determines whether the lift is in the basket position.
     public boolean isLiftInBasketPosition() {
 
@@ -1022,6 +961,72 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Raises a sample to the basket.
+    public Action raiseSampleToBasket() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> setWristWallPosition()),
+                new InstantAction(() -> swivelSetVertical()),
+                new InstantAction(() -> setInitializeExtension()),
+                new WaitForSlide(this, 3000),
+                new InstantAction(() -> setLiftBasketPosition()),
+                new MoveArm(this, Arm.BASKET_POSITION, true),
+                new InstantAction(() -> setBasketExtension()),
+                new WaitForTime(500),
+                new InstantAction(() -> setWristBasketPosition())
+        );
+        return action;
+    }
+
+    // Scores a sample in the basket.
+    public Action scoreSample() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> openBigClaw()),
+                new WaitForTime(500)
+        );
+        return action;
+    }
+
+    // Lowers the arm from the basket.
+    public Action lowerArmFromBasket() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> setWristWallPosition()),
+                new WaitForTime(500),
+                new SequentialAction(
+                        new InstantAction(() -> setLiftGroundPosition()),
+                        new InstantAction(() -> swivelSetHorizontal()),
+                        new InstantAction(() -> setInitializeExtension()),
+                        new InstantAction(() -> setWristSubmersiblePosition()),
+                        new WaitForTime(500),
+                        new MoveArm(this, Arm.SUBMERSIBLE_HOVER_POSITION, true)
+                )
+        );
+        return action;
+    }
+
+    // Scores a sample in the basket an then lowers the arm.
+    public Action scoreSampleAndLower() {
+        Action action = new SequentialAction(
+                scoreSample(),
+                lowerArmFromBasket()
+        );
+        return action;
+    }
+
+/*
+    // Go to ground
+    public Action goToGround() {
+        // Drop the sample and move the arm to the submersible position.
+        Action action = new SequentialAction(
+            new InstantAction(() -> setLiftGroundPosition()),
+            new InstantAction(() -> setArmGroundPosition()),
+            new InstantAction(() -> lowerWrist()),
+            new InstantAction(() -> swivelSetHorizontal()),
+            new InstantAction(() -> setInitializeExtension()),
+            new WaitForHardware(this, 3000)
+        );
+        return action;
+    }
+*/
     // Sets debugging.
     public void setDebugging(boolean debugging) {
         this.debugging = debugging;

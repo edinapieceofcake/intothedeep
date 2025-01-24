@@ -69,7 +69,7 @@ public class BoundingBoxFailsafe {
                 arm.overridePower(-1);
             }
 
-            wrist.raise();
+            //wrist.raise();
 //            slide.overridePower(-1);
         } else if (maxExtent > BOUNDING_BOX_MAX) {
             if (p.armDeg > 0) {
@@ -78,7 +78,7 @@ public class BoundingBoxFailsafe {
                 arm.overridePower(-1);
             }
 
-            wrist.raise();
+            //wrist.raise();
 //            slide.overridePower(-1);
         }
     }
@@ -123,7 +123,7 @@ public class BoundingBoxFailsafe {
     private double getWristPosDeg() {
         double p = wrist.getEstimatedPosition();
         double deg = interp(p,
-                Wrist.DOWN_POSITION, Wrist.UP_POSITION,
+                Wrist.WALL_POSITION, Wrist.BASKET_POSITION,
                 WRIST_DOWN_POSITION_DEG, WRIST_UP_POSITION_DEG);
         return deg;
     }

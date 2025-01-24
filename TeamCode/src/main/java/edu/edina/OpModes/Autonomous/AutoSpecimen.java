@@ -74,7 +74,7 @@ public class AutoSpecimen extends LinearOpMode {
 		robotHardware.closeClaw();
 
 		// Initialize the wrist.
-		robotHardware.initializeWrist();
+		robotHardware.setWristSubmersiblePosition();
 
 		// Reset the swivel.
 		robotHardware.swivelSetHorizontal();
@@ -373,7 +373,7 @@ public class AutoSpecimen extends LinearOpMode {
 		Action action = new SequentialAction(
 				new WaitForTime(500),
 				new InstantAction(() -> robotHardware.swivelSetHorizontal()),
-				new InstantAction(endAtWall ? () -> robotHardware.setWristWallPosition() : () -> robotHardware.lowerWrist()),
+				new InstantAction(endAtWall ? () -> robotHardware.setWristWallPosition() : () -> robotHardware.setWristSubmersiblePosition()),
 				new MoveArm(robotHardware, endAtWall ? Arm.SUBMERSIBLE_TO_WALL_POSITION : Arm.GROUND_POSITION, false),
 				new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
 		);
