@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,6 +19,7 @@ import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForTime;
+import edu.edina.OpModes.Autonomous.AutoSample;
 
 @Config
 @TeleOp
@@ -73,6 +75,11 @@ public class TeleOpMain extends LinearOpMode {
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
+
+        // DEBUG
+        lastPose = new Pose2d(AutoSample.START_X, AutoSample.START_Y, AutoSample.START_HEADING);
+
+        // Construct a drive interface.
         drive = new MecanumDrive(hardwareMap, lastPose);
 
         // Prompt the user to press start.
@@ -135,6 +142,15 @@ public class TeleOpMain extends LinearOpMode {
                 handleNormalMode();
 
             }
+
+            // Update the pose estimate.
+            drive.updatePoseEstimate();
+
+            // Display the pose.
+            telemetry.addData("Pose", "====================");
+            telemetry.addData("- X", drive.pose.position.x);
+            telemetry.addData("- Y", drive.pose.position.y);
+            telemetry.addData("- Heading", Math.toDegrees(drive.pose.heading.toDouble()));
 
             // Update the robot hardware.
             robotHardware.update();
