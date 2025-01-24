@@ -44,9 +44,9 @@ public class TeleOpMain extends LinearOpMode {
 
     Debug Mode (hold right trigger)
 
-    - a = rezero arm (unimplemented)
-    - x = rezero slide (unimplemented)
-    - b = rezero lift (unimplemented)
+    - a = rezero arm 
+    - x = rezero slide
+    - b = rezero lift
 
     */
 
@@ -121,7 +121,7 @@ public class TeleOpMain extends LinearOpMode {
             currentGamepad.copy(gamepad1);
 
             // If the right trigger is down...
-            /*if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
 
                 // Handle debug mode.
                 handleDebugMode();
@@ -134,8 +134,8 @@ public class TeleOpMain extends LinearOpMode {
                 // Handle normal mode.
                 handleNormalMode();
 
-            }*/
-            handleNormalMode();
+            }
+
             // Update the robot hardware.
             robotHardware.update();
             robotHardware.updateHardwareInteractions();
@@ -165,7 +165,7 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.toggleWrist();
 
         }
-
+        */
         // Arm rezeroing
         //////////////////////////////////////////////////////////////////////
 
@@ -222,8 +222,6 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.stopLiftRezeroing();
 
         }
-你好！
-         */
 
 //        if (currentGamepad.a && !previousGamepad.a){
 //            robotHardware.toggleSmallClaw();
@@ -280,8 +278,6 @@ public class TeleOpMain extends LinearOpMode {
 //          robotHardware.setLiftHighBasketPosition();
 //            robotHardware.fullExtension();
 //        }
-
-
 
     }
 
