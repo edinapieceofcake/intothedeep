@@ -65,12 +65,6 @@ public class TeleOpMain extends LinearOpMode {
 
     */
 
-    // Submersible pose
-    public static double SUBMERSIBLE_X = -24;
-    public static double SUBMERSIBLE_Y = -6;
-    public static double SUBMERSIBLE_HEADING = Math.toRadians(180);
-    public static double SUBMERSIBLE_TANGENT = Math.toRadians(0);
-
     // Ascending value
     private boolean ascending;
 
