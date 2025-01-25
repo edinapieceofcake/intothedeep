@@ -297,8 +297,7 @@ public class TeleOpMain extends LinearOpMode {
         // Claw
         //////////////////////////////////////////////////////////////////////
 
-        // If the user pressed a...
-        if (currentGamepad2.a && !previousGamepad2.a) {
+        if (currentGamepad1.a && !previousGamepad1.a) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -345,13 +344,16 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-            // Otherwise (if the arm is in another position)...
-            else {
+        }
 
-                // Toggle the big claw.
-                robotHardware.toggleBigClaw();
+            // If the user pressed a...
+        if (currentGamepad2.a && !previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition()) {
 
-            }
+            // Clear any pending actions.
+            robotHardware.clearActions();
+
+            // Toggle the big claw.
+            robotHardware.toggleBigClaw();
 
         }
 
