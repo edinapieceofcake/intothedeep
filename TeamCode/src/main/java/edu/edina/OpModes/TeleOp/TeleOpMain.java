@@ -38,6 +38,7 @@ public class TeleOpMain extends LinearOpMode {
         - left stick = move robot
         - right stick = rotate robot
         - a = score in basket, score in chamber, grab from wall
+        - x = chamber
         - left trigger = hold for turtle
 
     Gamepad 2
@@ -46,7 +47,6 @@ public class TeleOpMain extends LinearOpMode {
         - left stick = move robot
         - right stick = rotate robot
         - a = toggle claw in submersible
-        - x = chamber
         - y = basket
         - b = wall
         - right bumper = submersible
@@ -262,7 +262,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
-        if (currentGamepad2.x && !previousGamepad2.x) {
+        if (currentGamepad1.x && !previousGamepad1.x) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
