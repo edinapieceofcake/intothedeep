@@ -10,7 +10,7 @@ public class DualClaw {
     public static double SMALL_OPEN = 0.75;
     public static double BIG_OPEN = 0;
     public static double SMALL_CLOSE = 0.22;
-    public static double BIG_CLOSE = 0.3917;
+    public static double BIG_CLOSE = 0.5;
     private RobotHardware hw;
     private Servo clawSmall, clawBig;
     private boolean smallOpen;
