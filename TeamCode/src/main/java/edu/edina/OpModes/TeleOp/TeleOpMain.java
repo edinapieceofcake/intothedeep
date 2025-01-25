@@ -34,27 +34,34 @@ public class TeleOpMain extends LinearOpMode {
 
     Robot Controls
 
-    Normal Mode
+    Gamepad 1
+        - left stick = move robot
+        - right stick = rotate robot
+        - a = score in basket, score in chamber, grab from wall
+        - left trigger = hold for turtle
 
-    - left stick = move robot
-    - right stick = rotate robot
-    - a = toggle claw
-    - x = chamber
-    - y = basket
-    - b = wall
-    - right bumper = submersible
-    - left bumper = toggle swivel
-    - left trigger = hold for turtle
-    - dpad left = retract slide
-    - dpad right = extend slide
-    - back = toggle ascend (unimplemented)
+    Gamepad 2
 
-    Debug Mode (hold right trigger)
+        Normal Mode
+        - left stick = move robot
+        - right stick = rotate robot
+        - a = toggle claw in submersible
+        - x = chamber
+        - y = basket
+        - b = wall
+        - right bumper = submersible
+        - left bumper = toggle swivel
+        - dpad left = retract slide
+        - dpad right = extend slide
+        - dpad up = raise arm
+        - dpad down = lower arm
+        - back = toggle ascend (unimplemented)
 
-    - a = rezero arm 
-    - x = rezero slide
-    - b = rezero lift
-    - y = score sample
+        Debug Mode (hold right trigger)
+        - a = rezero arm
+        - x = rezero slide
+        - b = rezero lift
+        - y = score sample
 
     */
 
