@@ -1,6 +1,7 @@
 package edu.edina.OpModes.TeleOp;
 
 import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_HEADING;
+import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_TANGENT;
 import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_X;
 import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_Y;
 import static edu.edina.OpModes.Autonomous.AutoSample.lastPose;
@@ -58,9 +59,10 @@ public class TeleOpMain extends LinearOpMode {
     */
 
     // Submersible pose
-    public static double SUBMERSIBLE_X = -36;
+    public static double SUBMERSIBLE_X = -24;
     public static double SUBMERSIBLE_Y = -6;
     public static double SUBMERSIBLE_HEADING = Math.toRadians(180);
+    public static double SUBMERSIBLE_TANGENT = Math.toRadians(0);
 
     // Ascending value
     private boolean ascending;
@@ -250,12 +252,14 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Construct an action for driving from the current position to the basket.
                 Action driveFromCurrentToBasket = drive.actionBuilder(currentPose)
-                        .strafeToLinearHeading(basketPose.position, basketPose.heading)
+                        .setReversed(false)
+                        .splineTo(basketPose.position, BASKET_TANGENT)
                         .build();
 
                 // Construct an action for driving from the basket to the submersible.
                 Action driveFromBasketToSubmersible = drive.actionBuilder(basketPose)
-                        .strafeToLinearHeading(submersiblePose.position, submersiblePose.heading)
+                        .setReversed(true)
+                        .splineTo(submersiblePose.position, SUBMERSIBLE_TANGENT)
                         .build();
 
                 // Construct a score action.
@@ -264,11 +268,21 @@ public class TeleOpMain extends LinearOpMode {
                         // Disable manual driving.
                         new InstantAction(() -> robotHardware.disableManualDriving()),
 
-                        // Drive from the current position to the basket.
-                        driveFromCurrentToBasket,
+                        // Raise the arm while driving to the basket
+                        new ParallelAction(
 
-                        // Raise the sample to the basket.
-                        robotHardware.raiseSampleToBasket(),
+                                // Drive from the current position to the basket.
+                                driveFromCurrentToBasket,
+
+                                new SequentialAction(
+                                        // Wait until it has pulled out of the submersible
+                                        new WaitForTime(1000),
+
+                                        // Raise the sample to the basket.
+                                        robotHardware.raiseSampleToBasket()
+                                )
+
+                        ),
 
                         // Score the sample.
                         robotHardware.scoreSample(),

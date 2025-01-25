@@ -34,6 +34,7 @@ public class AutoSample extends LinearOpMode {
     public static double BASKET_X = -58;
     public static double BASKET_Y = -58;
     public static double BASKET_HEADING = Math.toRadians(225);
+    public static double BASKET_TANGENT = Math.toRadians(225);
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = -48;

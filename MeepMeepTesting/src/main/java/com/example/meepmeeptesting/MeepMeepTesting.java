@@ -38,13 +38,23 @@ public class MeepMeepTesting {
             //Pose2d beginPose = new Pose2d(-38, -62, 0);
 
             // Grabbing from back and scoring from front
-            Pose2d beginPose = new Pose2d(-38, -62, Math.toRadians(180));
+            //Pose2d beginPose = new Pose2d(-38, -62, Math.toRadians(180));
+
+            // AUTOMATIC SCORING TEST
+            Pose2d beginPose = new Pose2d(-58, -58, Math.toRadians(225));
 
             // COPY THIS LINE
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
-                    // Grabbing from front and scoring from back
+                    // AUTOMATIC SCORING TEST
+                    //.setTangent(Math.toRadians(180))
+                    .setReversed(true)
+                    .splineTo(new Vector2d(-24, -6), Math.toRadians(0))
+                    .setReversed(false)
+                    .splineTo(new Vector2d(-58, -58), Math.toRadians(225))
+                    //.splineToLinearHeading(new Pose2d(-36, -6, Math.toRadians(180)), Math.toRadians(0))
+
                     /*
                     // COPY HERE
                     .strafeToLinearHeading(new Vector2d(-50, -50), 1.0 / 4 * Math.PI)
@@ -68,25 +78,14 @@ public class MeepMeepTesting {
                     .splineToSplineHeading(new Pose2d(-50, -50, Math.toRadians(45)), Math.toRadians(180))
                      */
 
-                    // Grabbing from back and scoring from front
-//                    .strafeToLinearHeading(new Vector2d(-50, -50), Math.toRadians(225))
-//                    .strafeToLinearHeading(new Vector2d(-56, -50), Math.toRadians(242))
-//                    .strafeToLinearHeading(new Vector2d(-60, -45), Math.toRadians(265))
-//                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(290))
-//                    .turnTo(Math.toRadians(255))
-
-                    //.strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(265))
-
-                    //.splineToLinearHeading(new Pose2d(-57.5, -38, 1.0 / 2 * Math.PI), 1.0 / 2 * Math.PI)
-
-                    // Auto sample test number a lot
-                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
-                    .strafeToLinearHeading(new Vector2d(-48, -45), Math.toRadians(270))
-                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
-                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(270))
-                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
-                    .strafeToLinearHeading(new Vector2d(-50, -25), Math.toRadians(0))
-                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+                    // Auto sample current
+//                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+//                    .strafeToLinearHeading(new Vector2d(-48, -45), Math.toRadians(270))
+//                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+//                    .strafeToLinearHeading(new Vector2d(-58, -45), Math.toRadians(270))
+//                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
+//                    .strafeToLinearHeading(new Vector2d(-50, -25), Math.toRadians(0))
+//                    .strafeToLinearHeading(new Vector2d(-58, -58), Math.toRadians(225))
 
                     /*
                     .waitSeconds(1)
