@@ -73,13 +73,24 @@ public class Drivetrain {
     public void update() {
         double m = drivingReverseMult();
 
-        Gamepad currentGamepad = opMode.gamepad1;
+        Gamepad gamepad1 = opMode.gamepad1;
+        Gamepad gamepad2 = opMode.gamepad2;
+        Gamepad currentGamepad;
+
+        boolean isDriver1InControl = Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y) + Math.abs(gamepad1.right_stick_x) > 0.1;
+
+        if (isDriver1InControl) {
+            currentGamepad = gamepad1;
+        }
+        else {
+            currentGamepad = gamepad2;
+        }
 
         double axial = -currentGamepad.left_stick_y * m;  // Note: pushing stick forward gives negative value
         double lateral = currentGamepad.left_stick_x * m;
         double yaw = currentGamepad.right_stick_x;
 
-        update(axial, lateral, yaw);
+        update(axial, lateral, yaw, isDriver1InControl);
 
         // Get the telemetry.
         Telemetry telemetry = opMode.telemetry;
@@ -89,7 +100,7 @@ public class Drivetrain {
         telemetry.addData("- Turtle Mode", turtleMode);
     }
 
-    public void update(double axial, double lateral, double yaw) {
+    public void update(double axial, double lateral, double yaw, boolean isDriver1InControl) {
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
         double leftFrontPower = axial + lateral + yaw;
@@ -110,7 +121,7 @@ public class Drivetrain {
             rightBackPower /= max;
         }
 
-        double multiplier = getTurtleMode() ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
+        double multiplier = getTurtleMode() || !isDriver1InControl ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
 
         leftFrontPower *= multiplier;
         leftBackPower *= multiplier;
@@ -124,7 +135,11 @@ public class Drivetrain {
         rightBack.setPower(rightBackPower);
     }
 
-    // Sets the turtle mode value.
+    public void update(double axial, double lateral, double yaw) {
+        update(axial, lateral, yaw, true);
+    }
+
+        // Sets the turtle mode value.
     public void setTurtleMode(boolean turtleMode) {
 
         // Set the turtle mode value.

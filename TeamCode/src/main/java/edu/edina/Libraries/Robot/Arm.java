@@ -47,7 +47,7 @@ public class Arm {
     public static double PROPORTIONAL = 0.0008;
 
     // Position increment (ticks)
-    public static int POSITION_INCREMENT = 275;
+    public static int POSITION_INCREMENT = 50;
 
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;

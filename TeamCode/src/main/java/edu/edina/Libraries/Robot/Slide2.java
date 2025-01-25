@@ -1,6 +1,7 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -19,6 +20,7 @@ public class Slide2 {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
+    public static double AMPS = -1;
     // Integral coefficient
     public static double INTEGRAL = 0;
 
@@ -26,7 +28,7 @@ public class Slide2 {
     public static int MINIMUM_POSITION = -200;
 
     // Basket position
-    public static int BASKET_POSITION = 1900;
+    public static int BASKET_POSITION = 1800;
 
     // Maximum submersible position
     public static int MAXIMUM_SUBMERSIBLE_POSITION = 1500;
@@ -115,6 +117,7 @@ public class Slide2 {
 
             // Use the rezeroing power.
             extensionMotor.setPower(REZEROING_POWER);
+
         }
 
         // Otherwise (if we are not rezeroing)...
@@ -124,6 +127,7 @@ public class Slide2 {
             extensionMotor.setPower(power);
 
         }
+
         int extensionPosition = extensionMotor.getCurrentPosition();
 
         // Get the extension's power.
@@ -146,9 +150,6 @@ public class Slide2 {
         telemetry.addData("- PID", pid);
         telemetry.addData("- Power", "%.2f",  extensionMotorPower);
         telemetry.addData("- Target Position", targetPosition);
-
-        // Add slide information to the telemetry.
-        telemetry.addData("Slide", "Position = %d, Power = %.2f", extensionPosition, extensionMotorPower);
 
     }
 

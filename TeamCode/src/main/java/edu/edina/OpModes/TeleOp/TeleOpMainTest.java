@@ -88,13 +88,13 @@ public class TeleOpMainTest extends LinearOpMode {
         waitForStart();
 
         // Lower the arm.
-        robotHardware.setArmGroundPosition();
+        //robotHardware.setArmGroundPosition();
 
         // Open the claw.
         robotHardware.openClaws();
 
         // Lowers the wrist.
-        robotHardware.lowerWrist();
+        //robotHardware.lowerWrist();
 
         // Resets the swivel.
         robotHardware.swivelSetHorizontal();
@@ -155,7 +155,7 @@ public class TeleOpMainTest extends LinearOpMode {
         if (currentGamepad.y && !previousGamepad.y) {
 
             // Toggle wrist.
-            robotHardware.toggleWrist();
+            //robotHardware.toggleWrist();
 
         }
 
@@ -242,7 +242,7 @@ public class TeleOpMainTest extends LinearOpMode {
             robotHardware.clearActions();
 
             // Raise the sample.
-            robotHardware.raiseSample();
+            robotHardware.raiseSampleToBasket();
 
         }
 
@@ -273,7 +273,7 @@ public class TeleOpMainTest extends LinearOpMode {
             else {
 
                 // Raise the wrist.
-                robotHardware.raiseWrist();
+                //robotHardware.raiseWrist();
 
                 // Move the arm to the submersible position.
                 robotHardware.setArmSubmersibleHoverPosition();
@@ -306,13 +306,13 @@ public class TeleOpMainTest extends LinearOpMode {
                 robotHardware.clearActions();
 
                 // Raise the wrist.
-                robotHardware.raiseWrist();
+                //robotHardware.raiseWrist();
 
                 // Resets the swivel.
                 robotHardware.swivelSetHorizontal();
 
                 // Move the arm to the ground position.
-                robotHardware.setArmGroundPosition();
+                //robotHardware.setArmGroundPosition();
 
                 // Move the lift to the ground position
                 robotHardware.setLiftGroundPosition();
@@ -574,7 +574,7 @@ public class TeleOpMainTest extends LinearOpMode {
         Action action = new SequentialAction(
                 new InstantAction(() -> robotHardware.decrementArmPosition()),
                 new WaitForHardware(robotHardware, 3000),
-                new InstantAction(() -> robotHardware.closeClaw()),
+                //new InstantAction(() -> robotHardware.closeClaw()),
                 new WaitForHardware(robotHardware, 3000),
                 new InstantAction(() -> robotHardware.incrementArmPosition()),
                 new WaitForHardware(robotHardware, 3000),
@@ -605,7 +605,7 @@ public class TeleOpMainTest extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.setLiftBasketPosition())
                         )
                 ),
-                new InstantAction(() -> robotHardware.setWristBasketPosition()),
+                //new InstantAction(() -> robotHardware.setWristBasketPosition()),
                 new SequentialAction(
                         new InstantAction(() -> robotHardware.openClaws()),
                         new WaitForTime(500),
@@ -615,14 +615,14 @@ public class TeleOpMainTest extends LinearOpMode {
                                         new MoveArm(robotHardware, Arm.GROUND_POSITION, false)
                                 ),
                                 new SequentialAction(
-                                        new InstantAction(() -> robotHardware.lowerWrist()),
+                                        //new InstantAction(() -> robotHardware.lowerWrist()),
                                         new WaitForTime(200),
-                                        new InstantAction(() -> robotHardware.setWristBasketPosition()),
+                                        //new InstantAction(() -> robotHardware.setWristBasketPosition()),
                                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                                        new WaitForTime(500),
-                                        new InstantAction(() -> robotHardware.lowerWrist())
+                                        new WaitForTime(500)
+                                        //new InstantAction(() -> robotHardware.lowerWrist())
                                 )
                         ),
                         new WaitForHardware(robotHardware, 3500)

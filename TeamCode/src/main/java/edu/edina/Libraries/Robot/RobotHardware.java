@@ -1,7 +1,5 @@
 package edu.edina.Libraries.Robot;
 
-import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -25,7 +23,6 @@ import java.util.List;
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
-import edu.edina.OpModes.Autonomous.AutoSample;
 import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
@@ -35,8 +32,7 @@ public class RobotHardware implements DrivingRobotHardware {
         Control Hub
             Motors
                 0 - GoBILDA 5201 series - left_back_drive (encoder port returns 0 and -1)
-                1 - GoBILDA 5201 series - left_front_drive (has front odometry encoder)
-                front_encoder (is front odometry encoder)
+                1 - GoBILDA 5201 series - left_front_drive (has left odometry encoder (A))
                 2 - GoBILDA 5201 series - extension_motor
                 3 - GoBILDA 5201 series - left_lift_motor (has left lift encoder)
             Servos
@@ -57,8 +53,8 @@ public class RobotHardware implements DrivingRobotHardware {
         Expansion Hub 2
             Motors
                 0 - GoBILDA 5201 series - right_lift_motor (has right lift encoder)
-                1 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
-                2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
+                1 - GoBILDA 5201 series - right_back_drive  (has right odometry encoder (B))
+                2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)  (has front odometry encoder (C))
                 3 - GoBILDA 5201 series - arm_motor (has through bore encoder)
             Servos
                 3 - Servo - claw_bottom
@@ -67,7 +63,7 @@ public class RobotHardware implements DrivingRobotHardware {
             Digital Devices
                1 - REV Touch Sensor - lift_touch
                3 - REV Touch Sensor - arm_touch_back
-            Analog (don't knoe it it's here)
+            Analog (don't know it it's here)
                 0 - Analog Input - slide_encoder
             I2C Bus 0
                 0 - REV Internal IMU (BNO055) - imu
@@ -212,30 +208,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Toggles the wrist.
-    public void toggleWrist() {
-
-        // Toggle the wrist.
-        wrist.toggle();
-
-    }
-
-    // Raises the wrist.
-    public void raiseWrist() {
-
-        // Raise the wrist.
-        wrist.raise();
-
-    }
-
-    // Initializes the wrist.
-    public void initializeWrist() {
-
-        // Raise the wrist.
-        wrist.initialize();
-
-    }
-
     // Sets the wrist to wall position.
     public void setWristWallPosition() {
 
@@ -252,21 +224,13 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Lowers the wrist.
-    public void lowerWrist() {
+    // Sets the wrist to submersible position.
+    public void setWristSubmersiblePosition() {
 
-        // Lowers the wrist.
-        wrist.lower();
+        // Sets the wrist to submersible position.
+        wrist.setSubmersiblePosition();
 
     }
-
-    // Angles the wrist.
-//    public void angleWrist() {
-//
-//        // Angles the wrist.
-//        wrist.angle();
-//
-//    }
 
     // Sets the swivel to horizontal.
     public void swivelSetHorizontal() {
@@ -320,7 +284,7 @@ public class RobotHardware implements DrivingRobotHardware {
             lowerWrist();
         */
 
-        drivetrain.setAutoTurtleMode(lift.isRaised() && !debugging);
+        //drivetrain.setAutoTurtleMode(lift.isRaised() && !debugging);
 
     }
 
@@ -339,9 +303,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Update the arm.
         arm.update();
-
-        // Update the claw.
-//        claw.update();
 
         // If manual driving is allowed...
         if (allowManualDriving) {
@@ -443,10 +404,7 @@ public class RobotHardware implements DrivingRobotHardware {
         claw.openSmall();
     }
 
-    public void closeSmallClaw() {
-
-        claw.closeSmall();
-    }
+    public void closeSmallClaw() { claw.closeSmall(); }
 
     public void closeBigClaw() {
         claw.closeBig();
@@ -458,15 +416,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     public void toggleBigClaw() {
         claw.toggleBig();
-    }
-
-
-    // Closes the claw.
-    public void closeClaw() {
-
-        // Close the claw.
-//        claw.close();
-
     }
 
     // Raises the lift.
@@ -564,10 +513,6 @@ public class RobotHardware implements DrivingRobotHardware {
         this.turtleMode = turtleMode;
 
     }
-//
-//    public boolean wristCanBeExtended() {
-//        return arm.isForward();
-//    }
 
     // Determines whether the arm is nearly down.
     public boolean isArmNearlyDown() {
@@ -590,7 +535,7 @@ public class RobotHardware implements DrivingRobotHardware {
         return isArmNearSubmersiblePosition;
 
     }
-
+    /*
     // Moves the arm to the ground position.
     public void setArmGroundPosition() {
 
@@ -608,7 +553,7 @@ public class RobotHardware implements DrivingRobotHardware {
         runningActions.add(action);
 
     }
-
+    */
     // Moves the arm to the basket position.
     public void setArmBasketPosition() {
 
@@ -812,28 +757,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Scores a sample.
-    public void scoreSample() {
-
-        // Construct a score sample action.
-        Action action = AutoSample.scoreSample(this);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Raises a sample.
-    public void raiseSample() {
-
-        // Construct a raise sample action.
-        Action action = AutoSample.raiseSampleTeleOp(this);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
     // Determines whether the lift is in the basket position.
     public boolean isLiftInBasketPosition() {
 
@@ -982,7 +905,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void startSlideRezeroing() {
 
         // Start slide rezeroing.
-//        slide.startRezeroing();
+        slide.startRezeroing();
 
     }
 
@@ -990,7 +913,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void stopSlideRezeroing() {
 
         // Stop slide rezeroing.
-//        slide.stopRezeroing();
+        slide.stopRezeroing();
 
     }
 
@@ -1025,6 +948,74 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Raises a sample to the basket.
+    public Action raiseSampleToBasket() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> setWristWallPosition()),
+                new InstantAction(() -> swivelSetVertical()),
+                new InstantAction(() -> setInitializeExtension()),
+                new WaitForSlide(this, 3000),
+                new InstantAction(() -> setLiftBasketPosition()),
+                new MoveArm(this, Arm.BASKET_POSITION, true),
+                new InstantAction(() -> setBasketExtension()),
+                new WaitForTime(500),
+                new InstantAction(() -> setWristBasketPosition()),
+                new WaitForHardware(this, 3000)
+        );
+        return action;
+    }
+
+    // Scores a sample in the basket.
+    public Action scoreSample() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> openBigClaw()),
+                new WaitForTime(500)
+        );
+        return action;
+    }
+
+    // Lowers the arm from the basket.
+    public Action lowerArmFromBasket(boolean horizontalSwivel) {
+        Action action = new SequentialAction(
+                new InstantAction(() -> setWristWallPosition()),
+                new WaitForTime(500),
+                new SequentialAction(
+                        new InstantAction(() -> setLiftGroundPosition()),
+                        horizontalSwivel ?
+                                new InstantAction(() -> swivelSetHorizontal()) :
+                                new InstantAction(() -> swivelSetVertical()),
+                        new InstantAction(() -> setInitializeExtension()),
+                        new InstantAction(() -> setWristSubmersiblePosition()),
+                        new WaitForTime(500),
+                        new MoveArm(this, Arm.SUBMERSIBLE_HOVER_POSITION, true)
+                )
+        );
+        return action;
+    }
+
+    // Scores a sample in the basket an then lowers the arm.
+    public Action scoreSampleAndLower(boolean horizontalSwivel) {
+        Action action = new SequentialAction(
+                scoreSample(),
+                lowerArmFromBasket(horizontalSwivel)
+        );
+        return action;
+    }
+/*
+    // Go to ground
+    public Action goToGround() {
+        // Drop the sample and move the arm to the submersible position.
+        Action action = new SequentialAction(
+            new InstantAction(() -> setLiftGroundPosition()),
+            new InstantAction(() -> setArmGroundPosition()),
+            new InstantAction(() -> lowerWrist()),
+            new InstantAction(() -> swivelSetHorizontal()),
+            new InstantAction(() -> setInitializeExtension()),
+            new WaitForHardware(this, 3000)
+        );
+        return action;
+    }
+*/
     // Sets debugging.
     public void setDebugging(boolean debugging) {
         this.debugging = debugging;
@@ -1068,4 +1059,13 @@ public class RobotHardware implements DrivingRobotHardware {
     public Lift getLift() {
         return lift;
     }
+
+    // Returns indicating if there are running actions.
+    public boolean hasRunningActions() {
+
+        // Return indicating if there are running actions.
+        return !runningActions.isEmpty();
+
+    }
+
 }

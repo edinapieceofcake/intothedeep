@@ -66,13 +66,13 @@ public class TeleOpForScrimmage extends LinearOpMode {
         waitForStart();
 
         // Move the arm to the ground position.
-        robotHardware.setArmGroundPosition();
+        //robotHardware.setArmGroundPosition();
 
         // Open the claw.
         robotHardware.openClaws();
 
         // Lowers the wrist.
-        robotHardware.lowerWrist();
+        //robotHardware.lowerWrist();
 
         // While the op mode is active...
         while (opModeIsActive()) {
@@ -159,10 +159,10 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if(currentGamepad.a && !previousGamepad.a) {
 
                     // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    //robotHardware.raiseWrist();
 
                     // Move the arm to the ground position.
-                    robotHardware.setArmGroundPosition();
+                    //robotHardware.setArmGroundPosition();
 
                     // Move the lift to the ground position
                     robotHardware.setLiftGroundPosition();
@@ -176,7 +176,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if(currentGamepad.x && !previousGamepad.x) {
 
                     // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    //robotHardware.raiseWrist();
 
                     // Move the arm to the low basket position.
                     //robotHardware.setArmLowBasketPosition();
@@ -193,7 +193,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if(currentGamepad.dpad_up && !previousGamepad.dpad_up) {
 
                     // Lower the wrist.
-                    robotHardware.lowerWrist();
+                    //robotHardware.lowerWrist();
 
                     // Move the arm to the high chamber position.
                     robotHardware.setArmChamberPosition();
@@ -210,7 +210,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if(currentGamepad.dpad_down && !previousGamepad.dpad_down) {
 
                     // Lower the wrist.
-                    robotHardware.lowerWrist();
+                    //robotHardware.lowerWrist();
 
                     // Move the arm to the low chamber position.
                     //robotHardware.setArmLowChamberPosition();
@@ -244,7 +244,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                     else {
 
                         // Raise the wrist.
-                        robotHardware.raiseWrist();
+                        //robotHardware.raiseWrist();
 
                         // Move the arm to the submersible position.
                         robotHardware.setArmSubmersibleHoverPosition();
@@ -263,7 +263,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if(currentGamepad.y && !previousGamepad.y) {
 
                     // Raise the wrist.
-                    robotHardware.raiseWrist();
+                    //robotHardware.raiseWrist();
 
                     // Move the arm to the high basket position.
                     robotHardware.setArmBasketPosition();
@@ -296,7 +296,7 @@ public class TeleOpForScrimmage extends LinearOpMode {
                 if (currentGamepad.x && !previousGamepad.x) {
 
                     // Toggle the wrist.
-                    robotHardware.toggleWrist();
+                    //robotHardware.toggleWrist();
 
                 }
 

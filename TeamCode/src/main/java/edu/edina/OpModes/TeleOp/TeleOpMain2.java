@@ -89,13 +89,13 @@ public class TeleOpMain2 extends LinearOpMode {
         waitForStart();
 
         // Lower the arm.
-        robotHardware.setArmGroundPosition();
+        //robotHardware.setArmGroundPosition();
 
         // Open the claws.
         robotHardware.openClaws();
 
         // Lowers the wrist.
-        robotHardware.lowerWrist();
+        //robotHardware.lowerWrist();
 
         // Resets the swivel.
         robotHardware.swivelSetHorizontal();
@@ -177,7 +177,7 @@ public class TeleOpMain2 extends LinearOpMode {
         if (currentGamepad1.y && !previousGamepad1.y) {
 
             // Toggle wrist.
-            robotHardware.toggleWrist();
+            //robotHardware.toggleWrist();
 
         }
 
@@ -264,7 +264,7 @@ public class TeleOpMain2 extends LinearOpMode {
             robotHardware.clearActions();
 
             // Raise the sample.
-            robotHardware.raiseSample();
+            robotHardware.raiseSampleToBasket();
 
         }
 
@@ -295,7 +295,7 @@ public class TeleOpMain2 extends LinearOpMode {
             else {
 
                 // Raise the wrist.
-                robotHardware.raiseWrist();
+                //robotHardware.raiseWrist();
 
                 // Move the arm to the submersible position.
                 robotHardware.setArmSubmersibleHoverPosition();
@@ -330,13 +330,13 @@ public class TeleOpMain2 extends LinearOpMode {
                 robotHardware.clearActions();
 
                 // Raise the wrist.
-                robotHardware.raiseWrist();
+                //robotHardware.raiseWrist();
 
                 // Resets the swivel.
                 robotHardware.swivelSetHorizontal();
 
                 // Move the arm to the ground position.
-                robotHardware.setArmGroundPosition();
+                //robotHardware.setArmGroundPosition();
 
                 // Move the lift to the ground position
                 robotHardware.setLiftGroundPosition();
