@@ -66,10 +66,14 @@ public class TeleOpMain extends LinearOpMode {
     private boolean ascending;
 
     // Current gamepad
-    private Gamepad currentGamepad = new Gamepad();
+    private Gamepad currentGamepad1 = new Gamepad();
 
     // Previous gamepad
-    private Gamepad previousGamepad = new Gamepad();
+    private Gamepad previousGamepad1 = new Gamepad();
+    private Gamepad currentGamepad2 = new Gamepad();
+
+    // Previous gamepad
+    private Gamepad previousGamepad2 = new Gamepad();
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -106,8 +110,10 @@ public class TeleOpMain extends LinearOpMode {
         robotHardware.setWristSubmersiblePosition();
 
         // Get current and previous gamepads.
-        currentGamepad = new Gamepad();
-        previousGamepad = new Gamepad();
+        currentGamepad1 = new Gamepad();
+        previousGamepad1 = new Gamepad();
+        currentGamepad2 = new Gamepad();
+        previousGamepad2 = new Gamepad();
 
         // Reverse the robot.
         robotHardware.setReversed(true);
@@ -120,11 +126,13 @@ public class TeleOpMain extends LinearOpMode {
             Condition sp = new Conditions.SpecimenPark(this);
 
             // Update the gamepads.
-            previousGamepad.copy(currentGamepad);
-            currentGamepad.copy(gamepad1);
+            previousGamepad1.copy(currentGamepad1);
+            currentGamepad1.copy(gamepad1);
+            previousGamepad2.copy(currentGamepad2);
+            currentGamepad2.copy(gamepad2);
 
             // If the right trigger is down...
-            if (currentGamepad.right_trigger > TRIGGER_THRESHOLD) {
+            if (currentGamepad1.right_trigger > TRIGGER_THRESHOLD) {
 
                 // Handle debug mode.
                 handleDebugMode();
@@ -169,7 +177,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
-        if (currentGamepad.a && !previousGamepad.a) {
+        if (currentGamepad1.a && !previousGamepad1.a) {
 
             // Start arm rezeroing.
             robotHardware.startArmRezeroing();
@@ -177,7 +185,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user released a...
-        if (!currentGamepad.a && previousGamepad.a) {
+        if (!currentGamepad1.a && previousGamepad1.a) {
 
             // Stop arm rezeroing.
             robotHardware.stopArmRezeroing();
@@ -188,7 +196,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
-        if (currentGamepad.x && !previousGamepad.x) {
+        if (currentGamepad1.x && !previousGamepad1.x) {
 
             // Start slide rezeroing.
             robotHardware.startSlideRezeroing();
@@ -196,7 +204,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user released x...
-        if (!currentGamepad.x && previousGamepad.x) {
+        if (!currentGamepad1.x && previousGamepad1.x) {
 
             // Start slide rezeroing.
             robotHardware.stopSlideRezeroing();
@@ -207,7 +215,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed b...
-        if (currentGamepad.b && !previousGamepad.b) {
+        if (currentGamepad1.b && !previousGamepad1.b) {
 
             // Start lift rezeroing.
             robotHardware.startLiftRezeroing();
@@ -215,7 +223,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user released b...
-        if (!currentGamepad.b && previousGamepad.b) {
+        if (!currentGamepad1.b && previousGamepad1.b) {
 
             // Start lift rezeroing.
             robotHardware.stopLiftRezeroing();
@@ -226,7 +234,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
-        if (currentGamepad.y && !previousGamepad.y) {
+        if (currentGamepad1.y && !previousGamepad1.y) {
 
             // If there are running actions...
             if(robotHardware.hasRunningActions()) {
@@ -319,13 +327,13 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // Enable turtle mode if appropriate.
-        robotHardware.setTurtleMode(currentGamepad.left_trigger > TRIGGER_THRESHOLD);
+        robotHardware.setTurtleMode(currentGamepad1.left_trigger > TRIGGER_THRESHOLD);
 
         // Chamber
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
-        if (currentGamepad.x && !previousGamepad.x) {
+        if (currentGamepad2.x && !previousGamepad2.x) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -362,7 +370,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
-        if (currentGamepad.a && !previousGamepad.a) {
+        if (currentGamepad2.a && !previousGamepad2.a) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -423,7 +431,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed b...
-        if (currentGamepad.b && !previousGamepad.b) {
+        if (currentGamepad2.b && !previousGamepad2.b) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -457,7 +465,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed y...
-        if (currentGamepad.y && !previousGamepad.y) {
+        if (currentGamepad2.y && !previousGamepad2.y) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -483,7 +491,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed left bumper...
-        if (currentGamepad.left_bumper && !previousGamepad.left_bumper) {
+        if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -497,7 +505,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user is holding dpad right and the arm is near the submersible position...
-        if (currentGamepad.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad2.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -511,7 +519,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user is holding dpad left and the arm is near the submersible position...
-        if (currentGamepad.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad2.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -525,7 +533,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed right bumper...
-        if (currentGamepad.right_bumper && !previousGamepad.right_bumper) {
+        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
 
             // Clear any pending actions.
             robotHardware.clearActions();
@@ -564,6 +572,23 @@ public class TeleOpMain extends LinearOpMode {
                 robotHardware.openBigClaw();
 
             }
+
+        }
+        if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up && robotHardware.isArmNearSubmersiblePosition()) {
+
+            // Decrement the arm position.
+            robotHardware.decrementArmPosition();
+
+        }
+
+        // Increment arm
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user tapped dpad down...
+        if (currentGamepad2.dpad_down && !previousGamepad2.dpad_down && robotHardware.isArmNearSubmersiblePosition()) {
+
+            // Increment the arm position.
+            robotHardware.incrementArmPosition();
 
         }
         /*
