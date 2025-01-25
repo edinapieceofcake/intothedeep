@@ -179,7 +179,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
-        if (currentGamepad1.a && !previousGamepad1.a) {
+        if (currentGamepad2.a && !previousGamepad2.a) {
 
             // Start arm rezeroing.
             robotHardware.startArmRezeroing();
@@ -187,7 +187,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user released a...
-        if (!currentGamepad1.a && previousGamepad1.a) {
+        if (!currentGamepad2.a && previousGamepad2.a) {
 
             // Stop arm rezeroing.
             robotHardware.stopArmRezeroing();
@@ -198,7 +198,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
-        if (currentGamepad1.x && !previousGamepad1.x) {
+        if (currentGamepad2.x && !previousGamepad2.x) {
 
             // Start slide rezeroing.
             robotHardware.startSlideRezeroing();
@@ -206,7 +206,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user released x...
-        if (!currentGamepad1.x && previousGamepad1.x) {
+        if (!currentGamepad2.x && previousGamepad2.x) {
 
             // Start slide rezeroing.
             robotHardware.stopSlideRezeroing();
@@ -217,7 +217,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed b...
-        if (currentGamepad1.b && !previousGamepad1.b) {
+        if (currentGamepad2.b && !previousGamepad2.b) {
 
             // Start lift rezeroing.
             robotHardware.startLiftRezeroing();
@@ -225,7 +225,7 @@ public class TeleOpMain extends LinearOpMode {
         }
 
         // If the user released b...
-        if (!currentGamepad1.b && previousGamepad1.b) {
+        if (!currentGamepad2.b && previousGamepad2.b) {
 
             // Start lift rezeroing.
             robotHardware.stopLiftRezeroing();
@@ -236,7 +236,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
-        if (currentGamepad1.y && !previousGamepad1.y) {
+        if (currentGamepad2.y && !previousGamepad2.y) {
 
             // If there are running actions...
             if(robotHardware.hasRunningActions()) {
