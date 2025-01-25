@@ -68,10 +68,10 @@ public class Arm {
     public static int GROUND_TO_WALL_POSITION = 550;
 
     // Submersible to wall position
-    public static int SUBMERSIBLE_TO_WALL_POSITION = 400;
+    public static int SUBMERSIBLE_TO_WALL_POSITION = 350;
 
     // Chamber position
-    public static int CHAMBER_POSITION = 5200;
+    public static int CHAMBER_POSITION = 5000;
 
     // Ascent position
     public static int ASCENT_POSITION = 700;
