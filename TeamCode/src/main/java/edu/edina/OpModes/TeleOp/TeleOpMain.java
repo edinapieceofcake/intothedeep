@@ -134,7 +134,7 @@ public class TeleOpMain extends LinearOpMode {
             currentGamepad2.copy(gamepad2);
 
             // If the right trigger is down...
-            if (currentGamepad1.right_trigger > TRIGGER_THRESHOLD) {
+            if (currentGamepad2.right_trigger > TRIGGER_THRESHOLD) {
 
                 // Handle debug mode.
                 handleDebugMode();
