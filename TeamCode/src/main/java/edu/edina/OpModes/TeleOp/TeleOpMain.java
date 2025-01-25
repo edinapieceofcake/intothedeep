@@ -232,92 +232,6 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // Automatic sample scoring
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user pressed a...
-        if (currentGamepad2.y && !previousGamepad2.y) {
-
-            // If there are running actions...
-            if(robotHardware.hasRunningActions()) {
-
-                // Clear the running actions.
-                robotHardware.clearActions();
-
-            }
-
-            // Otherwise (if there are no running actions)...
-            else {
-
-                // Get the robot's current pose.
-                Pose2d currentPose = drive.pose;
-
-                // Construct a basket pose.
-                Pose2d basketPose = new Pose2d(BASKET_X, BASKET_Y, BASKET_HEADING);
-
-                // Construct a submersible pose.
-                Pose2d submersiblePose = new Pose2d(SUBMERSIBLE_X, SUBMERSIBLE_Y, SUBMERSIBLE_HEADING);
-
-                // Construct an action for driving from the current position to the basket.
-                Action driveFromCurrentToBasket = drive.actionBuilder(currentPose)
-                        .setReversed(false)
-                        .splineTo(basketPose.position, BASKET_TANGENT)
-                        .build();
-
-                // Construct an action for driving from the basket to the submersible.
-                Action driveFromBasketToSubmersible = drive.actionBuilder(basketPose)
-                        .setReversed(true)
-                        .splineTo(submersiblePose.position, SUBMERSIBLE_TANGENT)
-                        .build();
-
-                // Construct a score action.
-                Action scoreAction = new SequentialAction(
-
-                        // Disable manual driving.
-                        new InstantAction(() -> robotHardware.disableManualDriving()),
-
-                        // Raise the arm while driving to the basket
-                        new ParallelAction(
-
-                                // Drive from the current position to the basket.
-                                driveFromCurrentToBasket,
-
-                                new SequentialAction(
-                                        // Wait until it has pulled out of the submersible
-                                        new WaitForTime(1000),
-
-                                        // Raise the sample to the basket.
-                                        robotHardware.raiseSampleToBasket()
-                                )
-
-                        ),
-
-                        // Score the sample.
-                        robotHardware.scoreSample(),
-
-                        // Lower the arm while driving to the submersible.
-                        new ParallelAction(
-
-                                // Lower the arm.
-                                robotHardware.lowerArmFromBasket(true),
-
-                                // Drive to the submersible.
-                                driveFromBasketToSubmersible
-
-                        ),
-
-                        // Enable manual driving.
-                        new InstantAction(() -> robotHardware.enableManualDriving())
-
-                );
-
-                // Score the sample.
-                robotHardware.addAction(scoreAction);
-
-            }
-
-        }
-
     }
 
     // Handles normal mode.
@@ -605,6 +519,93 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.incrementArmPosition();
 
         }
+
+        // Automatic sample scoring
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed a...
+        if (currentGamepad2.back && !previousGamepad2.back) {
+
+            // If there are running actions...
+            if(robotHardware.hasRunningActions()) {
+
+                // Clear the running actions.
+                robotHardware.clearActions();
+
+            }
+
+            // Otherwise (if there are no running actions)...
+            else {
+
+                // Get the robot's current pose.
+                Pose2d currentPose = drive.pose;
+
+                // Construct a basket pose.
+                Pose2d basketPose = new Pose2d(BASKET_X, BASKET_Y, BASKET_HEADING);
+
+                // Construct a submersible pose.
+                Pose2d submersiblePose = new Pose2d(SUBMERSIBLE_X, SUBMERSIBLE_Y, SUBMERSIBLE_HEADING);
+
+                // Construct an action for driving from the current position to the basket.
+                Action driveFromCurrentToBasket = drive.actionBuilder(currentPose)
+                        .setReversed(false)
+                        .splineTo(basketPose.position, BASKET_TANGENT)
+                        .build();
+
+                // Construct an action for driving from the basket to the submersible.
+                Action driveFromBasketToSubmersible = drive.actionBuilder(basketPose)
+                        .setReversed(true)
+                        .splineTo(submersiblePose.position, SUBMERSIBLE_TANGENT)
+                        .build();
+
+                // Construct a score action.
+                Action scoreAction = new SequentialAction(
+
+                        // Disable manual driving.
+                        new InstantAction(() -> robotHardware.disableManualDriving()),
+
+                        // Raise the arm while driving to the basket
+                        new ParallelAction(
+
+                                // Drive from the current position to the basket.
+                                driveFromCurrentToBasket,
+
+                                new SequentialAction(
+                                        // Wait until it has pulled out of the submersible
+                                        new WaitForTime(1000),
+
+                                        // Raise the sample to the basket.
+                                        robotHardware.raiseSampleToBasket()
+                                )
+
+                        ),
+
+                        // Score the sample.
+                        robotHardware.scoreSample(),
+
+                        // Lower the arm while driving to the submersible.
+                        new ParallelAction(
+
+                                // Lower the arm.
+                                robotHardware.lowerArmFromBasket(true),
+
+                                // Drive to the submersible.
+                                driveFromBasketToSubmersible
+
+                        ),
+
+                        // Enable manual driving.
+                        new InstantAction(() -> robotHardware.enableManualDriving())
+
+                );
+
+                // Score the sample.
+                robotHardware.addAction(scoreAction);
+
+            }
+
+        }
+
         /*
         // Submersible
         //////////////////////////////////////////////////////////////////////
