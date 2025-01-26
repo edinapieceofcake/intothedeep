@@ -781,6 +781,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Determines whether the wrist is in the wall position.
+    public boolean isWristInWallPosition() {
+
+        // Return indicating if the wrist is in the wall position.
+        return wrist.isInWallPosition();
+
+    }
+
     // Clears any pending actions.
     public void clearActions() {
 

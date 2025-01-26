@@ -33,6 +33,9 @@ public class Lift {
     // Minimum position
     public static int MINIMUM_POSITION = -400;
 
+    // Ground position
+    public static int GROUND_POSITION = 0;
+
     // Up position threshold
     public static int RAISED_POSITION_THRESHOLD = 400;
 
@@ -216,7 +219,7 @@ public class Lift {
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        targetPosition = 0;
+        targetPosition = GROUND_POSITION;
 
     }
 
@@ -378,7 +381,7 @@ public class Lift {
     public boolean isInGroundPosition() {
 
         // Determine whether the lift is in the ground position.
-        boolean isInGroundPosition = targetPosition == MINIMUM_POSITION;
+        boolean isInGroundPosition = targetPosition == GROUND_POSITION;
 
         // Return the result.
         return isInGroundPosition;

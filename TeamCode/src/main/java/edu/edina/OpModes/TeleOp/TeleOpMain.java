@@ -42,9 +42,10 @@ public class TeleOpMain extends LinearOpMode {
         - a = toggle claw in submersible
         - y = basket
         - b = wall
-        - x = clear actions
-        - right bumper = submersible
+        - x = submersible
+        - right bumper = toggle wrist in submersible
         - left bumper = toggle swivel
+        - left trigger = clear actions
         - dpad left = retract slide
         - dpad right = extend slide
         - dpad up = raise arm
@@ -426,7 +427,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed right bumper...
-        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
+        if (currentGamepad2.x && !previousGamepad2.x) {
 
             // If the arm is in the basket position...
             if (robotHardware.isArmInBasketPosition()) {
@@ -516,9 +517,34 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+        // Toggle wrist in submersible
+        //////////////////////////////////////////////////////////////////////
+        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
+
+            // If the robot is in the submersible...
+            if (robotHardware.isArmNearSubmersiblePosition() && robotHardware.isLiftInGroundPosition()) {
+
+                // Toggle the wrist
+                if (robotHardware.isWristInWallPosition()) {
+                    robotHardware.setWristSubmersiblePosition();
+                }
+                else {
+                    robotHardware.setWristWallPosition();
+                }
+
+            }
+            // Otherwise (if the robot is not in the submersible)...
+            else {
+                // Beep
+                robotHardware.beep();
+            }
+
+        }
+
         // Clear all actions
         //////////////////////////////////////////////////////////////////////
-        if (currentGamepad2.x && !previousGamepad2.x) {
+
+        if (currentGamepad2.left_trigger > TRIGGER_THRESHOLD && previousGamepad2.left_trigger <= TRIGGER_THRESHOLD) {
             robotHardware.clearActions();
         }
 

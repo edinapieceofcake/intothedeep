@@ -29,14 +29,16 @@ public class Wrist {
     // Servo
     private final TrackingServo servo;
 
+    private final Servo servo2;
+
     private final Servo wrist;
 
     private final Telemetry telemetry;
 
     // Initializes this.
     public Wrist(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.servo = new TrackingServo(hardwareMap.get(Servo.class, "wrist"),
-                WRIST_SERVO_TRAVEL_TIME);
+        servo2 = hardwareMap.get(Servo.class, "wrist");
+        this.servo = new TrackingServo(servo2, WRIST_SERVO_TRAVEL_TIME);
         wrist = hardwareMap.get(Servo.class, "wrist");
         this.telemetry = telemetry;
     }
@@ -86,6 +88,14 @@ public class Wrist {
 
         // Set the wrist to the chamber position.
         servo.setPosition(CHAMBER_POSITION);
+
+    }
+
+    // Determines whether the wrist is in the wall position.
+    public boolean isInWallPosition() {
+
+        // Return the result.
+        return Math.abs(servo2.getPosition() - WALL_POSITION) < 0.0001;
 
     }
 
