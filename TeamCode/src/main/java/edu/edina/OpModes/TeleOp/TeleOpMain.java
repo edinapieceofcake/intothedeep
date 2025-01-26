@@ -6,8 +6,6 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Trajectory;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -20,7 +18,6 @@ import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForHardware;
 import edu.edina.Libraries.Robot.WaitForTime;
-import edu.edina.OpModes.Autonomous.AutoSample;
 
 @Config
 @TeleOp
@@ -248,9 +245,6 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed x...
         if (currentGamepad1.x && !previousGamepad1.x) {
 
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
             // If the arm is in the wall position...
             if (robotHardware.isArmInWallPosition()) {
 
@@ -283,9 +277,6 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         if (currentGamepad1.a && !previousGamepad1.a) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
 
             // Otherwise, if the arm is in the basket position...
             if (robotHardware.isArmInBasketPosition()) {
@@ -321,9 +312,6 @@ public class TeleOpMain extends LinearOpMode {
             // If the user pressed a...
         if (currentGamepad2.a && !previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition()) {
 
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
             // Toggle the big claw.
             robotHardware.toggleBigClaw();
 
@@ -334,9 +322,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // If the user pressed b...
         if (currentGamepad2.b && !previousGamepad2.b) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
 
             boolean fromGound = robotHardware.isArmInGroundPosition();
 
@@ -386,9 +371,6 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed y...
         if (currentGamepad2.y && !previousGamepad2.y) {
 
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
             // If the arm is in the submersible position...
             if (robotHardware.isArmNearSubmersiblePosition()) {
 
@@ -412,9 +394,6 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed left bumper...
         if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
 
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
             // Toggle the swivel.
             robotHardware.toggleSwivel();
 
@@ -425,9 +404,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // If the user is holding dpad right and the arm is near the submersible position...
         if (currentGamepad2.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
 
             // Extend the slide.
             robotHardware.extendSlide();
@@ -440,9 +416,6 @@ public class TeleOpMain extends LinearOpMode {
         // If the user is holding dpad left and the arm is near the submersible position...
         if (currentGamepad2.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
 
-            // Clear any pending actions.
-            robotHardware.clearActions();
-
             // Retract the slide.
             robotHardware.retractSlide();
 
@@ -453,9 +426,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // If the user pressed right bumper...
         if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
 
             // If the arm is in the basket position...
             if (robotHardware.isArmInBasketPosition()) {
@@ -544,15 +514,19 @@ public class TeleOpMain extends LinearOpMode {
             robotHardware.incrementArmPosition();
 
         }
+
+        // Clear all actions
+        //////////////////////////////////////////////////////////////////////
+        if (currentGamepad2.x && !previousGamepad2.x) {
+            robotHardware.clearActions();
+        }
+
         /*
         // Ascend
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed back...
         if (currentGamepad.back && !previousGamepad.back) {
-
-            // Clear any pending actions.
-            robotHardware.clearActions();
 
             // If we are ascending...
             if (ascending) {
