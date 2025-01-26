@@ -30,7 +30,7 @@ public class TeleOpMain extends LinearOpMode {
     Gamepad 1
         - left stick = move robot
         - right stick = rotate robot
-        - a = score in basket, score in chamber, grab from wall
+        - a = score in basket/chamber, grab from wall
         - x = chamber
         - left trigger = hold for turtle
 
@@ -56,7 +56,6 @@ public class TeleOpMain extends LinearOpMode {
         - a = rezero arm
         - x = rezero slide
         - b = rezero lift
-        - y = score sample
 
     */
 
