@@ -438,7 +438,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             // Otherwise, if the arm is in the submersible position...
-            else if (robotHardware.isArmInSubmersibleHoverPosition()) {
+            else if (robotHardware.isArmInSubmersibleHoverPosition() || robotHardware.isArmInSubmersibleEnterPosition()) {
 
                 // Grab a sample.
                 Action action = new SequentialAction(
@@ -474,11 +474,11 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.disableManualDriving()),
                         new InstantAction(() -> robotHardware.openSmallClaw()),
                         new WaitForTime(200),
-                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
                         backUp,
                         new InstantAction(() -> robotHardware.openBigClaw()),
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         new WaitForHardware(robotHardware, 2000),
                         moveForward,
                         new InstantAction(() -> robotHardware.enableManualDriving())
@@ -492,8 +492,8 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Move the arm to the submersible position.
                 robotHardware.setLiftGroundPosition();
-                robotHardware.setArmSubmersibleHoverPosition();
-                robotHardware.setWristSubmersiblePosition();
+                robotHardware.setArmSubmersibleEnterPosition();
+                robotHardware.setWristWallPosition();
                 robotHardware.openBigClaw();
 
             }

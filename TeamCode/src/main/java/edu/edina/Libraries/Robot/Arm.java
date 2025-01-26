@@ -52,11 +52,14 @@ public class Arm {
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
 
+    // Submersible enter position
+    public static int SUBMERSIBLE_ENTER_POSITION = 4600;
+
     // Submersible hover position
-    public static int SUBMERSIBLE_HOVER_POSITION = 4200;
+    public static int SUBMERSIBLE_HOVER_POSITION = 4300;
 
     // Submersible grab position
-    public static int SUBMERSIBLE_GRAB_POSITION = 4800;
+    public static int SUBMERSIBLE_GRAB_POSITION = 5000;
 
     // Submersible position threshold
     public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;
@@ -377,6 +380,14 @@ public class Arm {
 
         // Determine whether the arm is in the submersible hover position.
         return targetPosition == SUBMERSIBLE_HOVER_POSITION;
+
+    }
+
+    // Determines whether the arm is in the submersible enter position.
+    public boolean isInSubmersibleEnterPosition() {
+
+        // Determine whether the arm is in the submersible enter position.
+        return targetPosition == SUBMERSIBLE_ENTER_POSITION;
 
     }
 
