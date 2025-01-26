@@ -1,7 +1,5 @@
 package edu.edina.OpModes.TeleOp;
 
-import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.TRIGGER_THRESHOLD;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -62,6 +60,9 @@ public class TeleOpMain extends LinearOpMode {
         - y = score sample
 
     */
+
+    // Trigger threshold
+    public static double TRIGGER_THRESHOLD = 0.5;
 
     // Ascending value
     private boolean ascending;
