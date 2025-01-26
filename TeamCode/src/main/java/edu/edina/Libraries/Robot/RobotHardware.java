@@ -990,7 +990,7 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Lowers the arm from the basket.
-    public Action lowerArmFromBasket(boolean horizontalSwivel) {
+    public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto) {
         Action action = new SequentialAction(
                 new InstantAction(() -> setWristSubmersiblePosition()),
                 new WaitForTime(500),
@@ -1000,10 +1000,14 @@ public class RobotHardware implements DrivingRobotHardware {
                                 new InstantAction(() -> swivelSetHorizontal()) :
                                 new InstantAction(() -> swivelSetVertical()),
                         new InstantAction(() -> setMinimumExtension()),
-                        new InstantAction(() -> setWristWallPosition()),
+                        isAuto ?
+                            new InstantAction(() -> setWristSubmersiblePosition()) :
+                            new InstantAction(() -> setWristWallPosition()),
                         new WaitForTime(500),
                         new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
-                        new InstantAction(() -> setSubmersibleExtension())
+                        isAuto ?
+                            new InstantAction(() -> setMinimumExtension()) :
+                            new InstantAction(() -> setSubmersibleExtension())
                 )
         );
         return action;
@@ -1013,7 +1017,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public Action scoreSampleAndLower(boolean horizontalSwivel) {
         Action action = new SequentialAction(
                 scoreSample(),
-                lowerArmFromBasket(horizontalSwivel)
+                lowerArmFromBasket(horizontalSwivel, false)
         );
         return action;
     }

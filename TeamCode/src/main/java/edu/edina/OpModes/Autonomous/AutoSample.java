@@ -175,7 +175,7 @@ public class AutoSample extends LinearOpMode {
 
                         // Lower the arm.
                         new SequentialAction(
-                                robotHardware.lowerArmFromBasket(horizontalSwivel),
+                                robotHardware.lowerArmFromBasket(horizontalSwivel, true),
                                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
                                 new WaitForHardware(robotHardware, 1000)
                         ),
@@ -361,7 +361,7 @@ public class AutoSample extends LinearOpMode {
                 robotHardware.scoreSample(),
 
                 // Lower the arm from the basket.
-                robotHardware.lowerArmFromBasket(true)
+                robotHardware.lowerArmFromBasket(true, true)
 
         );
 
