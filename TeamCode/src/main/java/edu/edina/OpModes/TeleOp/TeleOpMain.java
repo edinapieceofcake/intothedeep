@@ -480,7 +480,10 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         new WaitForHardware(robotHardware, 2000),
-                        moveForward,
+                        new ParallelAction(
+                                moveForward,
+                                new InstantAction(() -> robotHardware.setSubmersibleExtension())
+                        ),
                         new InstantAction(() -> robotHardware.enableManualDriving())
                 );
                 robotHardware.addAction(action);
@@ -491,10 +494,14 @@ public class TeleOpMain extends LinearOpMode {
             else {
 
                 // Move the arm to the submersible position.
-                robotHardware.setLiftGroundPosition();
-                robotHardware.setArmSubmersibleEnterPosition();
-                robotHardware.setWristWallPosition();
-                robotHardware.openBigClaw();
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.openBigClaw()),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                        new InstantAction(() -> robotHardware.setSubmersibleExtension())
+                );
+                robotHardware.addAction(action);
 
             }
 
@@ -530,6 +537,7 @@ public class TeleOpMain extends LinearOpMode {
                 }
                 else {
                     robotHardware.setWristWallPosition();
+                    robotHardware.setMinimumExtension();
                 }
 
             }

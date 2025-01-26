@@ -31,7 +31,10 @@ public class Slide2 {
     public static int BASKET_POSITION = 1800;
 
     // Maximum submersible position
-    public static int MAXIMUM_SUBMERSIBLE_POSITION = 1500;
+    public static int MAXIMUM_SUBMERSIBLE_POSITION = 1800;
+
+    // Submersible position
+    public static int SUBMERSIBLE_POSITION = 800;
 
     // Chamber position
     public static int CHAMBER_POSITION = 100;
@@ -44,7 +47,6 @@ public class Slide2 {
 
     // Busy threshold
     public static int BUSY_THRESHOLD = 150;
-    public static int INITIALIZE_POSITION = 500;
 
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
@@ -246,11 +248,12 @@ public class Slide2 {
         targetPosition = BASKET_POSITION;
 
     }
-    // Moves the slide to the initialize position.
-    public void setInitialize() {
 
-        // Move the slide to the initialize position.
-        targetPosition = INITIALIZE_POSITION;
+    // Moves the slide to the submersible position.
+    public void setSubmersible() {
+
+        // Move the slide to the submersible position.
+        targetPosition = SUBMERSIBLE_POSITION;
 
     }
 

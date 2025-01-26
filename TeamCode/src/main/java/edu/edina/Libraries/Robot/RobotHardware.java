@@ -474,7 +474,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-
     // Sets the basket extension.
     public void setBasketExtension() {
 
@@ -483,11 +482,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Sets the extension to the initialize position.
-    public void setInitializeExtension() {
+    // Sets the submersible extension.
+    public void setSubmersibleExtension() {
 
-        // Set the extension to the initialize position.
-        slide.setInitialize();
+        // Set the submersible extension.
+        slide.setSubmersible();
 
     }
 
@@ -969,8 +968,8 @@ public class RobotHardware implements DrivingRobotHardware {
         Action action = new SequentialAction(
                 new InstantAction(() -> setWristWallPosition()),
                 new InstantAction(() -> swivelSetVertical()),
-                new InstantAction(() -> setInitializeExtension()),
-                new WaitForSlide(this, 3000),
+                new InstantAction(() -> setMinimumExtension()),
+                //new WaitForSlide(this, 3000),
                 new InstantAction(() -> setLiftBasketPosition()),
                 new MoveArm(this, Arm.BASKET_POSITION, true),
                 new InstantAction(() -> setBasketExtension()),
@@ -993,17 +992,18 @@ public class RobotHardware implements DrivingRobotHardware {
     // Lowers the arm from the basket.
     public Action lowerArmFromBasket(boolean horizontalSwivel) {
         Action action = new SequentialAction(
-                new InstantAction(() -> setWristWallPosition()),
+                new InstantAction(() -> setWristSubmersiblePosition()),
                 new WaitForTime(500),
                 new SequentialAction(
                         new InstantAction(() -> setLiftGroundPosition()),
                         horizontalSwivel ?
                                 new InstantAction(() -> swivelSetHorizontal()) :
                                 new InstantAction(() -> swivelSetVertical()),
-                        new InstantAction(() -> setInitializeExtension()),
+                        new InstantAction(() -> setMinimumExtension()),
                         new InstantAction(() -> setWristWallPosition()),
                         new WaitForTime(500),
-                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true)
+                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                        new InstantAction(() -> setSubmersibleExtension())
                 )
         );
         return action;
@@ -1017,21 +1017,7 @@ public class RobotHardware implements DrivingRobotHardware {
         );
         return action;
     }
-/*
-    // Go to ground
-    public Action goToGround() {
-        // Drop the sample and move the arm to the submersible position.
-        Action action = new SequentialAction(
-            new InstantAction(() -> setLiftGroundPosition()),
-            new InstantAction(() -> setArmGroundPosition()),
-            new InstantAction(() -> lowerWrist()),
-            new InstantAction(() -> swivelSetHorizontal()),
-            new InstantAction(() -> setInitializeExtension()),
-            new WaitForHardware(this, 3000)
-        );
-        return action;
-    }
-*/
+
     // Sets debugging.
     public void setDebugging(boolean debugging) {
         this.debugging = debugging;
