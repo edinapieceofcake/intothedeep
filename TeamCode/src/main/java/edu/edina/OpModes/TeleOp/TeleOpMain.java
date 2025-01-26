@@ -1,10 +1,5 @@
 package edu.edina.OpModes.TeleOp;
 
-import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_HEADING;
-import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_TANGENT;
-import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_X;
-import static edu.edina.OpModes.Autonomous.AutoSample.BASKET_Y;
-import static edu.edina.OpModes.Autonomous.AutoSample.lastPose;
 import static edu.edina.OpModes.TeleOp.TeleOpForScrimmage.TRIGGER_THRESHOLD;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -13,6 +8,8 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Trajectory;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -23,6 +20,7 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.WaitForHardware;
 import edu.edina.Libraries.Robot.WaitForTime;
 import edu.edina.OpModes.Autonomous.AutoSample;
 
@@ -80,7 +78,7 @@ public class TeleOpMain extends LinearOpMode {
 
     // Robot hardware
     private RobotHardware robotHardware;
-    private MecanumDrive drive;
+
     private Condition autoCondition;
 
 
@@ -89,12 +87,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
-
-        // DEBUG
-        lastPose = new Pose2d(AutoSample.START_X, AutoSample.START_Y, AutoSample.START_HEADING);
-
-        // Construct a drive interface.
-        drive = new MecanumDrive(hardwareMap, lastPose);
 
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
@@ -149,15 +141,6 @@ public class TeleOpMain extends LinearOpMode {
                 handleNormalMode();
 
             }
-
-            // Update the pose estimate.
-            drive.updatePoseEstimate();
-
-            // Display the pose.
-            telemetry.addData("Pose", "====================");
-            telemetry.addData("- X", drive.pose.position.x);
-            telemetry.addData("- Y", drive.pose.position.y);
-            telemetry.addData("- Heading", Math.toDegrees(drive.pose.heading.toDouble()));
 
             // Update the robot hardware.
             robotHardware.update();
@@ -303,21 +286,8 @@ public class TeleOpMain extends LinearOpMode {
             // Clear any pending actions.
             robotHardware.clearActions();
 
-            // If the arm is in the chamber position...
-            if (robotHardware.isArmInChamberPosition()) {
-
-                // Release the specimen.
-                Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.openSmallClaw()),
-                        new WaitForTime(200),
-                        new InstantAction(() -> robotHardware.setWristWallPosition())
-                );
-                robotHardware.addAction(action);
-
-            }
-
             // Otherwise, if the arm is in the basket position...
-            else if (robotHardware.isArmInBasketPosition()) {
+            if (robotHardware.isArmInBasketPosition()) {
 
                 // Score the sample and lower the arm.
                 robotHardware.addAction(robotHardware.scoreSampleAndLower(true));
@@ -379,6 +349,25 @@ public class TeleOpMain extends LinearOpMode {
                 robotHardware.setWristWallPosition();
                 robotHardware.swivelSetHorizontal();
                 robotHardware.setMinimumExtension();
+
+            }
+
+            // If the arm is in the chamber position...
+            else if (robotHardware.isArmInChamberPosition()) {
+
+                // Release the specimen.
+                Action action = new SequentialAction(
+                        // If the arm is in the chamber position...
+                        new InstantAction(() -> robotHardware.openSmallClaw()),
+                        new WaitForTime(200),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                        new InstantAction(() -> robotHardware.setArmWallPosition(false)),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.swivelSetHorizontal())
+                );
+                robotHardware.addAction(action);
 
             }
 
@@ -488,6 +477,40 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.closeBigClaw()),
                         new WaitForTime(500),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
+                );
+                robotHardware.addAction(action);
+
+            }
+
+            // If the arm is in the chamber position...
+            else if (robotHardware.isArmInChamberPosition()) {
+
+                Pose2d startPose = new Pose2d(0, 0, Math.toRadians(270));
+                Pose2d endPose = new Pose2d(0, -7, Math.toRadians(270));
+
+                MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+
+                Action backUp = drive.actionBuilder(startPose)
+                        .strafeTo(endPose.position)
+                        .build();
+
+                Action moveForward = drive.actionBuilder(endPose)
+                        .strafeTo(startPose.position)
+                        .build();
+
+                // Go to submersible from chamber.
+                Action action = new SequentialAction(
+                        new InstantAction(() -> robotHardware.disableManualDriving()),
+                        new InstantAction(() -> robotHardware.openSmallClaw()),
+                        new WaitForTime(200),
+                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
+                        backUp,
+                        new InstantAction(() -> robotHardware.openBigClaw()),
+                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true),
+                        new WaitForHardware(robotHardware, 2000),
+                        moveForward,
+                        new InstantAction(() -> robotHardware.enableManualDriving())
                 );
                 robotHardware.addAction(action);
 
