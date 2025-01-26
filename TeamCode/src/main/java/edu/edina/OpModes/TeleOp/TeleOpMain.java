@@ -337,37 +337,35 @@ public class TeleOpMain extends LinearOpMode {
             // Clear any pending actions.
             robotHardware.clearActions();
 
-            // If the arm is in the ground or submersible position...
-            if (robotHardware.isArmInGroundPosition() || robotHardware.isArmNearSubmersiblePosition()) {
-
-                // Determine whether the arm is in the ground position.
-                boolean fromGround = robotHardware.isArmInGroundPosition();
-
-                // Move the arm to the wall position.
-                robotHardware.setLiftGroundPosition();
-                robotHardware.setArmWallPosition(fromGround);
-                robotHardware.setWristWallPosition();
-                robotHardware.swivelSetHorizontal();
-                robotHardware.setMinimumExtension();
-
-            }
+            boolean fromGound = robotHardware.isArmInGroundPosition();
 
             // If the arm is in the chamber position...
-            else if (robotHardware.isArmInChamberPosition()) {
+            if (robotHardware.isArmInChamberPosition()) {
 
                 // Release the specimen.
                 Action action = new SequentialAction(
                         // If the arm is in the chamber position...
                         new InstantAction(() -> robotHardware.openSmallClaw()),
                         new WaitForTime(200),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        new WaitForTime(500),
+                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                        new InstantAction(() -> robotHardware.setArmWallPosition(false)),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_TO_WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new InstantAction(() -> robotHardware.swivelSetHorizontal())
                 );
                 robotHardware.addAction(action);
+
+            }
+
+            // Otherwise if the arm is in the ground or submersible position...
+            else if (robotHardware.isArmNearSubmersiblePosition() || fromGound) {
+
+                // Move the arm to the wall position.
+                robotHardware.setLiftGroundPosition();
+                robotHardware.setArmWallPosition(fromGound);
+                robotHardware.setWristWallPosition();
+                robotHardware.swivelSetHorizontal();
+                robotHardware.setMinimumExtension();
 
             }
 
