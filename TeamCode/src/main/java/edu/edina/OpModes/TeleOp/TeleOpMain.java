@@ -527,7 +527,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
         }
-        if (currentGamepad2.dpad_up && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad2.dpad_up) {
 
             // Decrement the arm position.
             robotHardware.decrementArmPosition();
@@ -538,7 +538,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user tapped dpad down...
-        if (currentGamepad2.dpad_down && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad2.dpad_down) {
 
             // Increment the arm position.
             robotHardware.incrementArmPosition();
