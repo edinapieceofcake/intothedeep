@@ -42,6 +42,7 @@ public class TeleOpMain extends LinearOpMode {
         - a = toggle claw in submersible
         - y = basket
         - b = wall
+        - x = clear actions
         - right bumper = submersible
         - left bumper = toggle swivel
         - dpad left = retract slide
