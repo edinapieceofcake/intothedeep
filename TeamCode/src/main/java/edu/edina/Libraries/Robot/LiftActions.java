@@ -10,7 +10,7 @@ import edu.edina.Libraries.LinearMotion.SpringForce;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 
 public class LiftActions {
-    public static double k = -3.88;
+    public static double k = -4.2;
     public static double g = -9.70;
     public static double pMult=1;
 

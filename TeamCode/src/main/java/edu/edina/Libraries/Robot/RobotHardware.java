@@ -58,6 +58,8 @@ public class RobotHardware implements DrivingRobotHardware {
                 3 - GoBILDA 5201 series - arm_motor (has through bore encoder)
             Servos
                 3 - Servo - claw_bottom
+                4 - Servo - hang_left
+                5 - Servo - hang_right
             Digital Devices
                1 - REV Touch Sensor - lift_touch
                3 - REV Touch Sensor - arm_touch_back
