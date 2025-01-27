@@ -21,7 +21,7 @@ public class Swivel {
     public static double VERTICAL_POSITION = 0.3611;
 
     // Clip (BASED ON CLAW DIRECTION) position
-    public static double HIGH_CHAMBER_POSITION = 0.6378;
+    public static double CLIP_POSITION = 0.6378;
 
     // Servo
     private final TrackingServo servo;
@@ -90,7 +90,7 @@ public class Swivel {
     public void setClip() {
 
         // Sets the swivel to clip.
-        servo.setPosition(HIGH_CHAMBER_POSITION);
+        servo.setPosition(CLIP_POSITION);
 
     }
 
