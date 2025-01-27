@@ -813,6 +813,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Determines whether the wrist is in the submersible position.
+    public boolean isWristInSubmersiblePosition() {
+
+        // Return indicating if the wrist is in the submersible position.
+        return wrist.isInSubmersiblePosition();
+
+    }
+
     // Clears any pending actions.
     public void clearActions() {
 

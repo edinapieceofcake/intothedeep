@@ -12,7 +12,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // This represents a wrist.
 @Config
 public class Wrist {
+
     public static double WRIST_SERVO_TRAVEL_TIME = 2.5;
+
+    // Epsilon used when comparing positions
+    private static final double EPSILON = 0.0001;
 
     // Baseket position
     public static double BASKET_POSITION = 0.70;
@@ -91,12 +95,19 @@ public class Wrist {
 
     }
 
+    // Determines whether the servo is in a specified position.
+    private boolean isInPosition(double position) {
+        return Math.abs(servo2.getPosition() - position) < EPSILON;
+    }
+
     // Determines whether the wrist is in the wall position.
     public boolean isInWallPosition() {
+        return isInPosition(WALL_POSITION);
+    }
 
-        // Return the result.
-        return Math.abs(servo2.getPosition() - WALL_POSITION) < 0.0001;
-
+    // Determines whether the wrist is in the submersible position.
+    public boolean isInSubmersiblePosition() {
+        return isInPosition(SUBMERSIBLE_POSITION);
     }
 
     public Action submersibleGrab() {

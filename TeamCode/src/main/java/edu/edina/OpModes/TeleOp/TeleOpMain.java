@@ -16,7 +16,7 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.WaitForHardware;
+import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 @Config
@@ -30,7 +30,7 @@ public class TeleOpMain extends LinearOpMode {
     Gamepad 1
         - left stick = move robot
         - right stick = rotate robot
-        - a = score in basket/chamber, grab from wall
+        - a = score in basket, grab from wall
         - x = chamber
         - left trigger = hold for turtle
 
@@ -348,7 +348,7 @@ public class TeleOpMain extends LinearOpMode {
         boolean useBigClaw = robotHardware.getUseBigClaw();
 
         // If the user pressed a...
-        if (currentGamepad2.a && !previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition()) {
+        if (currentGamepad2.a && !previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition() && robotHardware.isLiftInGroundPosition()) {
 
             // If we are using the big claw...
             if(useBigClaw) {
@@ -475,7 +475,7 @@ public class TeleOpMain extends LinearOpMode {
         // Submersible
         //////////////////////////////////////////////////////////////////////
 
-        // If the user pressed right bumper...
+        // If the user pressed x...
         if (currentGamepad2.x && !previousGamepad2.x) {
 
             // If the arm is in the basket position...
@@ -486,8 +486,8 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-            // Otherwise, if the arm is in the submersible position...
-            else if (robotHardware.isArmInSubmersibleHoverPosition() || robotHardware.isArmInSubmersibleEnterPosition()) {
+            // Otherwise, if the arm and wrist are in submersible positions...
+            else if ((robotHardware.isArmInSubmersibleHoverPosition() || robotHardware.isArmInSubmersibleEnterPosition()) && robotHardware.isWristInSubmersiblePosition()) {
 
                 // Grab a sample.
                 Action action = new SequentialAction(
@@ -528,15 +528,29 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.openSmallClaw()),
                         new WaitForTime(200),
                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
-                        backUp,
-                        new InstantAction(() -> robotHardware.openBigClaw()),
-                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
-                        new WaitForHardware(robotHardware, 2000),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new ParallelAction(
+                                backUp,
+                                new SequentialAction(
+                                        new WaitForTime(800),
+                                        new InstantAction(() -> robotHardware.setLiftGroundPosition())
+                                ),
+                                new SequentialAction(
+                                        new WaitForTime(1200),
+                                        new InstantAction(() -> robotHardware.setWristWallPosition())
+                                ),
+                                new SequentialAction(
+                                        new WaitForTime(1200),
+                                        new InstantAction(() -> robotHardware.setSubmersibleExtension())
+                                ),
+                                new InstantAction(() -> robotHardware.openBigClaw()),
+                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true)
+                        ),
                         new ParallelAction(
                                 moveForward,
-                                new InstantAction(() -> robotHardware.setSubmersibleExtension())
+                                new SequentialAction(
+                                        new WaitForTime(400),
+                                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
+                                )
                         ),
                         new InstantAction(() -> robotHardware.enableManualDriving())
                 );
@@ -553,7 +567,9 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new InstantAction(() -> robotHardware.openBigClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
-                        new InstantAction(() -> robotHardware.setSubmersibleExtension())
+                        new InstantAction(() -> robotHardware.setSubmersibleExtension()),
+                        new WaitForSlide(robotHardware, 1000),
+                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                 );
                 robotHardware.addAction(action);
 
