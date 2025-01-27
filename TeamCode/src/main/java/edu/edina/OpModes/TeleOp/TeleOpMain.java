@@ -571,7 +571,7 @@ public class TeleOpMain extends LinearOpMode {
                         new ParallelAction(
                                 moveForward,
                                 new SequentialAction(
-                                        new WaitForTime(400),
+                                        new WaitForTime(600),
                                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                                 )
                         ),
