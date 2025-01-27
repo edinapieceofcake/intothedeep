@@ -39,11 +39,11 @@ public class TeleOpMain extends LinearOpMode {
         Normal Mode
         - left stick = move robot
         - right stick = rotate robot
-        - a = toggle claw in submersible
+        - a = toggle claw
         - y = basket
         - b = wall
         - x = submersible
-        - right bumper = toggle wrist in submersible
+        - right bumper = toggle wrist
         - left bumper = toggle swivel
         - left trigger = clear actions
         - dpad left = retract slide
