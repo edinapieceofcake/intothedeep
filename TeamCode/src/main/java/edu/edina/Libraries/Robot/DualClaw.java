@@ -7,10 +7,10 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class DualClaw {
-    public static double SMALL_OPEN = 0.75;
-    public static double BIG_OPEN = 0;
-    public static double SMALL_CLOSE = 0.15;
-    public static double BIG_CLOSE = 0.68;
+    public static double BIG_CLOSE = .75;
+    public static double BIG_OPEN = .22;
+    public static double SMALL_CLOSE = .15;
+    public static double SMALL_OPEN = .72;
     private RobotHardware hw;
     private Servo clawSmall, clawBig;
     private boolean smallOpen;
