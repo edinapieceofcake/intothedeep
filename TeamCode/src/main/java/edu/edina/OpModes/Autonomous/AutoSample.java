@@ -101,11 +101,30 @@ public class AutoSample extends LinearOpMode {
         // Wait for the user to lower the arm.
         robotHardware.waitForArmDown();
 
-        // Close the big claw.
-        robotHardware.closeBigClaw();
+        // Get the use big claw value.
+        boolean useBigClaw = robotHardware.getUseBigClaw();
 
-        // Open the small claw.
-        robotHardware.openSmallClaw();
+        // If we are using the big claw...
+        if(useBigClaw) {
+
+            // Close the big claw.
+            robotHardware.closeBigClaw();
+
+            // Open the small claw.
+            robotHardware.openSmallClaw();
+
+        }
+
+        // Otherwise (if we are using the small claw)...
+        else {
+
+            // Open the big claw.
+            robotHardware.openBigClaw();
+
+            // Close the small claw.
+            robotHardware.closeSmallClaw();
+
+        }
 
         // Set the wrist to the submersible position.
         robotHardware.setWristSubmersiblePosition();
@@ -164,6 +183,9 @@ public class AutoSample extends LinearOpMode {
     // Scores the current sample and then gets a spike mark sample.
     private static Action scoreCurrentSampleAndThenGetSpikeMarkSample(RobotHardware robotHardware, Action driveFromBasketToSpikeMark, Action driveFromSpikeMarkToBasket, boolean horizontalSwivel) {
 
+        // Get the use big claw value.
+        boolean useBigClaw = robotHardware.getUseBigClaw();
+
         // Construct an action.
         Action action = new SequentialAction(
 
@@ -189,7 +211,9 @@ public class AutoSample extends LinearOpMode {
                 new WaitForTime(500),
 
                 // Grab the spike mark sample.
-                new InstantAction(() -> robotHardware.closeBigClaw()),
+                useBigClaw ?
+                        new InstantAction(() -> robotHardware.closeBigClaw()) :
+                        new InstantAction(() -> robotHardware.closeSmallClaw()),
                 new WaitForTime(CLAW_MILLISECONDS),
 
                 // Drive to the basket and raise the sample.
