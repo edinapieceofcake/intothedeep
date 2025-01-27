@@ -50,7 +50,7 @@ public class AutoSample extends LinearOpMode {
 
     // Third spike mark pose
     public static double THIRD_SPIKE_MARK_X = -55;
-    public static double THIRD_SPIKE_MARK_Y = -25;
+    public static double THIRD_SPIKE_MARK_Y = -25.5;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
     /*
     // Human player pose a
@@ -70,8 +70,6 @@ public class AutoSample extends LinearOpMode {
     // Going back from human player tangent and heading
     public static double HUMAN_PLAYER_BACK_HEADING_AND_TANGENT = Math.toRadians(180);
     */
-    // Duration in milliseconds to toggle the claw
-    public static int CLAW_MILLISECONDS = 500;
 
     // Timeout in milliseconds
     public static int TIMEOUT_MILLISECONDS = 3500;
@@ -181,7 +179,7 @@ public class AutoSample extends LinearOpMode {
     }
 
     // Scores the current sample and then gets a spike mark sample.
-    private static Action scoreCurrentSampleAndThenGetSpikeMarkSample(RobotHardware robotHardware, Action driveFromBasketToSpikeMark, Action driveFromSpikeMarkToBasket, boolean horizontalSwivel) {
+    private static Action scoreCurrentSampleAndThenGetSpikeMarkSample(RobotHardware robotHardware, Action driveFromBasketToSpikeMark, Action driveFromSpikeMarkToBasket, boolean horizontalSwivel, boolean delayRaising) {
 
         // Get the use big claw value.
         boolean useBigClaw = robotHardware.getUseBigClaw();
@@ -198,7 +196,7 @@ public class AutoSample extends LinearOpMode {
                         // Lower the arm.
                         new SequentialAction(
                                 robotHardware.lowerArmFromBasket(horizontalSwivel, true),
-                                new WaitForTime(500),
+                                new WaitForTime(250),
                                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
                                 new WaitForHardware(robotHardware, 1000)
                         ),
@@ -209,13 +207,13 @@ public class AutoSample extends LinearOpMode {
                 ),
 
                 // Wait for the arm to settle.
-                new WaitForTime(500),
+                new WaitForTime(250),
 
                 // Grab the spike mark sample.
                 useBigClaw ?
                         new InstantAction(() -> robotHardware.closeBigClaw()) :
                         new InstantAction(() -> robotHardware.closeSmallClaw()),
-                new WaitForTime(CLAW_MILLISECONDS),
+                new WaitForTime(250),
 
                 // Drive to the basket and raise the sample.
                 new ParallelAction(
@@ -223,8 +221,15 @@ public class AutoSample extends LinearOpMode {
                         // Drive to the basket.
                         driveFromSpikeMarkToBasket,
 
-                        // Raise the sample to the basket.
-                        robotHardware.raiseSampleToBasket()
+                        new SequentialAction(
+
+                            new WaitForTime(delayRaising ? 500 : 0),
+
+                            // Raise the sample to the basket.
+                            robotHardware.raiseSampleToBasket()
+
+                        )
+
 
                 )
 
@@ -367,20 +372,18 @@ public class AutoSample extends LinearOpMode {
                 // Drive from the start position to the basket and move the arm so it does not hit the basket when raising.
                 new ParallelAction(
                         driveFromStartToBasket,
-                        new MoveArm(robotHardware, Arm.BASKET_POSITION, true)
+                        // Raise the preloaded sample to the basket.
+                        robotHardware.raiseSampleToBasket()
                 ),
 
-                // Raise the preloaded sample to the basket.
-                robotHardware.raiseSampleToBasket(),
-
                 // Score the preloaded sample and then get the first spike mark sample.
-                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToFirstSpikeMark, driveFromFirstSpikeMarkToBasket, true),
+                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToFirstSpikeMark, driveFromFirstSpikeMarkToBasket, true, false),
 
                 // Score the first spike mark sample and then get the second spike mark sample.
-                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToSecondSpikeMark, driveFromSecondSpikeMarkToBasket, true),
+                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToSecondSpikeMark, driveFromSecondSpikeMarkToBasket, true, false),
 
                 // Score the second spike mark sample and then get the third spike mark sample.
-                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToThirdSpikeMark, driveFromThirdSpikeMarkToBasket, false),
+                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToThirdSpikeMark, driveFromThirdSpikeMarkToBasket, false, true),
 
                 // Score the third spike mark sample.
                 robotHardware.scoreSample(),

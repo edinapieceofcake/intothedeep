@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.ftccommon.SoundPlayer;
@@ -1074,10 +1075,15 @@ public class RobotHardware implements DrivingRobotHardware {
                                 new InstantAction(() -> swivelSetVertical()),
                         new InstantAction(() -> setMinimumExtension()),
                         new WaitForTime(500),
-                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         isAuto ?
-                            new InstantAction(() -> setAutoSampleExtension()) :
-                            new InstantAction(() -> setSubmersibleExtension())
+                                new ParallelAction(
+                                        new InstantAction(() -> setAutoSampleExtension()),
+                                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true)
+                                ) :
+                                new SequentialAction(
+                                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                                        new InstantAction(() -> setSubmersibleExtension())
+                                )
                 )
         );
         return action;
