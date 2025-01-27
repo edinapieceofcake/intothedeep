@@ -495,11 +495,11 @@ public class TeleOpMain extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.openBigClaw()) :
                                 new InstantAction(() -> robotHardware.openSmallClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
-                        new WaitForTime(500),
+                        new WaitForTime(100),
                         useBigClaw ?
                                 new InstantAction(() -> robotHardware.closeBigClaw()) :
                                 new InstantAction(() -> robotHardware.closeSmallClaw()),
-                        new WaitForTime(500),
+                        new WaitForTime(100),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
                 );
                 robotHardware.addAction(action);
