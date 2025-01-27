@@ -492,6 +492,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Sets the auto sample extension.
+    public void setAutoSampleExtension() {
+
+        // Set the auto sample extension.
+        slide.setAutoSample();
+
+    }
+
     public void setChamberExtension() {
 
         // Set the chamber extension.
@@ -1071,7 +1079,7 @@ public class RobotHardware implements DrivingRobotHardware {
                         new WaitForTime(500),
                         new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         isAuto ?
-                            new InstantAction(() -> setMinimumExtension()) :
+                            new InstantAction(() -> setAutoSampleExtension()) :
                             new InstantAction(() -> setSubmersibleExtension())
                 )
         );

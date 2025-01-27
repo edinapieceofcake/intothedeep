@@ -51,6 +51,9 @@ public class Slide2 {
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
 
+    // Auto sample position
+    public static int AUTO_SAMPLE_POSITION = 500;
+
     // Controller
     private PIDController controller;
 
@@ -254,6 +257,14 @@ public class Slide2 {
 
         // Move the slide to the submersible position.
         targetPosition = SUBMERSIBLE_POSITION;
+
+    }
+
+    // Moves the slide to the auto sample position.
+    public void setAutoSample() {
+
+        // Move the slide to the auto sample position.
+        targetPosition = AUTO_SAMPLE_POSITION;
 
     }
 
