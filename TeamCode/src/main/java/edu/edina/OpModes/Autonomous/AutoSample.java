@@ -38,18 +38,18 @@ public class AutoSample extends LinearOpMode {
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = -48;
-    public static double FIRST_SPIKE_MARK_Y = -38;
+    public static double FIRST_SPIKE_MARK_Y = -37;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
 
     // Second spike mark pose
     public static double SECOND_SPIKE_MARK_X = -59;
-    public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
+    public static double SECOND_SPIKE_MARK_Y = -38;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
     //public static double SECOND_SPIKE_MARK_BEGIN_TANGENT = 180;
     //public static double SECOND_SPIKE_MARK_END_TANGENT = 90;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -54;
+    public static double THIRD_SPIKE_MARK_X = -55;
     public static double THIRD_SPIKE_MARK_Y = -25;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
     /*
@@ -198,6 +198,7 @@ public class AutoSample extends LinearOpMode {
                         // Lower the arm.
                         new SequentialAction(
                                 robotHardware.lowerArmFromBasket(horizontalSwivel, true),
+                                new WaitForTime(500),
                                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
                                 new WaitForHardware(robotHardware, 1000)
                         ),

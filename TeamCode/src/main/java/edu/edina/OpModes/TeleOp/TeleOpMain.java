@@ -446,7 +446,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad2.y && !previousGamepad2.y) {
 
             // If the arm is in the submersible position...
-            if (robotHardware.isArmNearSubmersiblePosition()) {
+            if (robotHardware.isArmNearSubmersiblePosition() && !robotHardware.isWristInSubmersiblePosition()) {
 
                 robotHardware.addAction(robotHardware.raiseSampleToBasket());
 

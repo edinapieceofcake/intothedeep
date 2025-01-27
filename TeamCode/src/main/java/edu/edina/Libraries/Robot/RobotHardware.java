@@ -1073,9 +1073,6 @@ public class RobotHardware implements DrivingRobotHardware {
                                 new InstantAction(() -> swivelSetHorizontal()) :
                                 new InstantAction(() -> swivelSetVertical()),
                         new InstantAction(() -> setMinimumExtension()),
-                        isAuto ?
-                            new InstantAction(() -> setWristSubmersiblePosition()) :
-                            new InstantAction(() -> setWristWallPosition()),
                         new WaitForTime(500),
                         new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         isAuto ?
