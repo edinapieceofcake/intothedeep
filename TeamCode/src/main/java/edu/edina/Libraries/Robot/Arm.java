@@ -67,11 +67,17 @@ public class Arm {
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
 
-    // Ground to wall position
-    public static int GROUND_TO_WALL_POSITION = 550;
+    // Ground to tall wall position
+    public static int GROUND_TO_TALL_WALL_POSITION = 500;
 
-    // Submersible to wall position
-    public static int SUBMERSIBLE_TO_WALL_POSITION = 350;
+    // Submersible to tall wall position
+    public static int SUBMERSIBLE_TO_TALL_WALL_POSITION = 400;
+
+    // Ground to short wall position
+    public static int GROUND_TO_SHORT_WALL_POSITION = 450;
+
+    // Submersible to short wall position
+    public static int SUBMERSIBLE_TO_SHORT_WALL_POSITION = 300;
 
     // Chamber position
     public static int CHAMBER_POSITION = 5000;
@@ -276,7 +282,11 @@ public class Arm {
     public boolean isInWallPosition() {
 
         // Determine whether the arm is in the wall position.
-        return targetPosition == GROUND_TO_WALL_POSITION || targetPosition == SUBMERSIBLE_TO_WALL_POSITION;
+        return
+                targetPosition == GROUND_TO_SHORT_WALL_POSITION ||
+                targetPosition == GROUND_TO_TALL_WALL_POSITION ||
+                targetPosition == SUBMERSIBLE_TO_SHORT_WALL_POSITION ||
+                targetPosition == SUBMERSIBLE_TO_TALL_WALL_POSITION;
 
     }
 

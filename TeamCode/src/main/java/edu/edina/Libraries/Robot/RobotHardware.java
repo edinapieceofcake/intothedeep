@@ -93,6 +93,7 @@ public class RobotHardware implements DrivingRobotHardware {
     private SampleSensor sampleSensor;
     private boolean turtleMode;
     private boolean useBigClaw = true;
+    private boolean tallWalls = true;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
@@ -530,6 +531,22 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Gets the use tall walls value.
+    public boolean getTallWalls() {
+
+        // Return the tall walls value.
+        return tallWalls;
+
+    }
+
+    // Toggles the tall walls value.
+    public void toggleTallWalls() {
+
+        // Toggle the tall walls value.
+        tallWalls = !tallWalls;
+
+    }
+
     // Determines whether the arm is nearly down.
     public boolean isArmNearlyDown() {
 
@@ -600,11 +617,32 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Get an arm wall position.
+    private static int getArmWallPosition(boolean fromGround, boolean tallWalls) {
+        if(tallWalls) {
+            if(fromGround) {
+                return Arm.GROUND_TO_TALL_WALL_POSITION;
+            }
+            else {
+                return Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION;
+            }
+        }
+        else {
+            if(fromGround) {
+                return Arm.GROUND_TO_SHORT_WALL_POSITION;
+            }
+            else {
+                return Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION;
+            }
+        }
+
+    }
+
     // Moves the arm to the ground to wall position.
     public void setArmWallPosition(boolean fromGround) {
 
         // Get a position.
-        int position = fromGround ? Arm.GROUND_TO_WALL_POSITION : Arm.SUBMERSIBLE_TO_WALL_POSITION;
+        int position = getArmWallPosition(fromGround, tallWalls);
 
         // Construct an action to move the arm to the wall position.
         Action action = new MoveArm(this, position, true);

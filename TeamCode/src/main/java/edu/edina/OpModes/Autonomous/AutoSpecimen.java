@@ -372,12 +372,24 @@ public class AutoSpecimen extends LinearOpMode {
 	// Lowers arm from chamber.
 	private Action lowerArmFromChamber(boolean endAtWall) {
 
+		// Get the tall walls value.
+		boolean tallWalls = robotHardware.getTallWalls();
+
+		// Get an arm position.
+		int armPosition;
+		if(endAtWall) {
+			armPosition = tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION;
+		}
+		else {
+			armPosition = Arm.GROUND_POSITION;
+		}
+
 		// Construct an action.
 		Action action = new SequentialAction(
 				new WaitForTime(500),
 				new InstantAction(() -> robotHardware.swivelSetHorizontal()),
 				new InstantAction(endAtWall ? () -> robotHardware.setWristWallPosition() : () -> robotHardware.setWristSubmersiblePosition()),
-				new MoveArm(robotHardware, endAtWall ? Arm.SUBMERSIBLE_TO_WALL_POSITION : Arm.GROUND_POSITION, false),
+				new MoveArm(robotHardware, armPosition, false),
 				new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
 		);
 

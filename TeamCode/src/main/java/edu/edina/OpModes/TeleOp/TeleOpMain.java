@@ -57,6 +57,7 @@ public class TeleOpMain extends LinearOpMode {
         - x = rezero slide
         - b = rezero lift
         - right bumper = toggle use big claw
+        - left bumper = toggle tall walls
 
     */
 
@@ -152,12 +153,19 @@ public class TeleOpMain extends LinearOpMode {
             // Get the use big claw value.
             boolean useBigClaw = robotHardware.getUseBigClaw();
 
+            // Get the tall walls value.
+            boolean tallWalls = robotHardware.getTallWalls();
+
             // Convert the use big claw value to a symbol.
             String useBigClawSymbol = getSymbol(useBigClaw);
+
+            // Convert the tall walls value to a symbol.
+            String tallWallsSymbol = getSymbol(tallWalls);
 
             // Display main telemetry.
             telemetry.addData("Main", "====================");
             telemetry.addData("- Use Big Claw", useBigClawSymbol);
+            telemetry.addData("- Tall Walls", tallWallsSymbol);
 
             // Update the robot hardware.
             robotHardware.update();
@@ -246,6 +254,17 @@ public class TeleOpMain extends LinearOpMode {
 
             // Toggle the use big claw value.
             robotHardware.toggleUseBigClaw();
+
+        }
+
+        // Toggle tall walls
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed left bumper...
+        if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
+
+            // Toggle the tall walls value.
+            robotHardware.toggleTallWalls();
 
         }
 
@@ -374,10 +393,14 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed b...
         if (currentGamepad2.b && !previousGamepad2.b) {
 
+            // Determine whether the arm is in the ground position.
             boolean fromGound = robotHardware.isArmInGroundPosition();
 
             // If the arm is in the chamber position...
             if (robotHardware.isArmInChamberPosition()) {
+
+                // Get the tall walls value.
+                boolean tallWalls = robotHardware.getTallWalls();
 
                 // Release the specimen.
                 Action action = new SequentialAction(
@@ -386,7 +409,7 @@ public class TeleOpMain extends LinearOpMode {
                         new WaitForTime(200),
                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_TO_WALL_POSITION, true),
+                        new MoveArm(robotHardware, tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new InstantAction(() -> robotHardware.swivelSetHorizontal())
                 );
