@@ -92,6 +92,7 @@ public class RobotHardware implements DrivingRobotHardware {
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
+    private boolean useBigClaw = true;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
@@ -510,6 +511,22 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Set turtle mode.
         this.turtleMode = turtleMode;
+
+    }
+
+    // Gets the use big claw value.
+    public boolean getUseBigClaw() {
+
+        // Return the use big claw value.
+        return useBigClaw;
+
+    }
+
+    // Toggles the use big claw value.
+    public void toggleUseBigClaw() {
+
+        // Toggle the use big claw value.
+        useBigClaw = !useBigClaw;
 
     }
 
@@ -983,7 +1000,9 @@ public class RobotHardware implements DrivingRobotHardware {
     // Scores a sample in the basket.
     public Action scoreSample() {
         Action action = new SequentialAction(
-                new InstantAction(() -> openBigClaw()),
+                useBigClaw ?
+                        new InstantAction(() -> openBigClaw()) :
+                        new InstantAction(() -> openSmallClaw()),
                 new WaitForTime(500)
         );
         return action;

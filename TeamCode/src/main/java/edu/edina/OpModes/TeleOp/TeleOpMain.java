@@ -56,8 +56,16 @@ public class TeleOpMain extends LinearOpMode {
         - a = rezero arm
         - x = rezero slide
         - b = rezero lift
+        - right bumper = toggle use big claw
 
     */
+
+    // Green square (see https://unicode-explorer.com/list/geometric-shapes)
+    public static final String GREEN_SQAURE = "\uD83D\uDFE9";
+
+    // Red square (see https://unicode-explorer.com/list/geometric-shapes)
+    public static final String RED_SQUARE = "\uD83D\uDFE5";
+
 
     // Trigger threshold
     public static double TRIGGER_THRESHOLD = 0.5;
@@ -141,6 +149,16 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
+            // Get the use big claw value.
+            boolean useBigClaw = robotHardware.getUseBigClaw();
+
+            // Convert the use big claw value to a symbol.
+            String useBigClawSymbol = getSymbol(useBigClaw);
+
+            // Display main telemetry.
+            telemetry.addData("Main", "====================");
+            telemetry.addData("- Use Big Claw", useBigClawSymbol);
+
             // Update the robot hardware.
             robotHardware.update();
             robotHardware.updateHardwareInteractions();
@@ -150,6 +168,11 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
+    }
+
+    // Gets a symbol.
+    private static String getSymbol(boolean value) {
+        return value ? GREEN_SQAURE : RED_SQUARE;
     }
 
     // Handles debug mode.
@@ -212,6 +235,17 @@ public class TeleOpMain extends LinearOpMode {
 
             // Start lift rezeroing.
             robotHardware.stopLiftRezeroing();
+
+        }
+
+        // Toggle use big claw
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed right bumper...
+        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
+
+            // Toggle the use big claw value.
+            robotHardware.toggleUseBigClaw();
 
         }
 
@@ -310,11 +344,27 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-            // If the user pressed a...
+        // Determine whether we are using the big claw.
+        boolean useBigClaw = robotHardware.getUseBigClaw();
+
+        // If the user pressed a...
         if (currentGamepad2.a && !previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition()) {
 
-            // Toggle the big claw.
-            robotHardware.toggleBigClaw();
+            // If we are using the big claw...
+            if(useBigClaw) {
+
+                // Toggle the big claw.
+                robotHardware.toggleBigClaw();
+
+            }
+
+            // Otherwise (if we are using the small claw)...
+            else {
+
+                // Toggle the small claw.
+                robotHardware.toggleSmallClaw();
+
+            }
 
         }
 
@@ -441,10 +491,14 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Grab a sample.
                 Action action = new SequentialAction(
-                        new InstantAction(() -> robotHardware.openBigClaw()),
+                        useBigClaw ?
+                                new InstantAction(() -> robotHardware.openBigClaw()) :
+                                new InstantAction(() -> robotHardware.openSmallClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
                         new WaitForTime(500),
-                        new InstantAction(() -> robotHardware.closeBigClaw()),
+                        useBigClaw ?
+                                new InstantAction(() -> robotHardware.closeBigClaw()) :
+                                new InstantAction(() -> robotHardware.closeSmallClaw()),
                         new WaitForTime(500),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
                 );
