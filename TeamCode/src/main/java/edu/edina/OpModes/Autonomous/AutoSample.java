@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -34,7 +35,6 @@ public class AutoSample extends LinearOpMode {
     public static double BASKET_X = -58;
     public static double BASKET_Y = -58;
     public static double BASKET_HEADING = Math.toRadians(225);
-    public static double BASKET_TANGENT = Math.toRadians(225);
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = -48;
@@ -45,23 +45,21 @@ public class AutoSample extends LinearOpMode {
     public static double SECOND_SPIKE_MARK_X = -59;
     public static double SECOND_SPIKE_MARK_Y = -38;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
-    //public static double SECOND_SPIKE_MARK_BEGIN_TANGENT = 180;
-    //public static double SECOND_SPIKE_MARK_END_TANGENT = 90;
 
     // Third spike mark pose
     public static double THIRD_SPIKE_MARK_X = -55;
     public static double THIRD_SPIKE_MARK_Y = -25.5;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
-    /*
+
     // Human player pose a
     public static double HUMAN_PLAYER_A_X = -20;
-    public static double HUMAN_PLAYER_A_Y = -60;
-    public static double HUMAN_PLAYER_A_HEADING = Math.toRadians(0);
+    public static double HUMAN_PLAYER_A_Y = -50;
+    public static double HUMAN_PLAYER_A_HEADING = Math.toRadians(180);
     public static double HUMAN_PLAYER_A_START_TANGENT = Math.toRadians(0);
     public static double HUMAN_PLAYER_A_END_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
 
     // Human player pose b
-    public static double HUMAN_PLAYER_B_X = 32;
+    public static double HUMAN_PLAYER_B_X = 38;
     public static double HUMAN_PLAYER_B_Y = HUMAN_PLAYER_A_Y;
     public static double HUMAN_PLAYER_B_HEADING = HUMAN_PLAYER_A_HEADING;
     public static double HUMAN_PLAYER_B_START_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
@@ -69,7 +67,6 @@ public class AutoSample extends LinearOpMode {
 
     // Going back from human player tangent and heading
     public static double HUMAN_PLAYER_BACK_HEADING_AND_TANGENT = Math.toRadians(180);
-    */
 
     // Timeout in milliseconds
     public static int TIMEOUT_MILLISECONDS = 3500;
@@ -227,8 +224,8 @@ public class AutoSample extends LinearOpMode {
 
     }
 
-    // Scores the current sample and then gets a spike mark sample.
-    private static Action scoreCurrentSampleAndThenGetSpikeMarkSample(RobotHardware robotHardware, Action driveFromBasketToSpikeMark, Action driveFromSpikeMarkToBasket, boolean horizontalSwivel, boolean delayRaising) {
+    // Scores the current sample and then gets the next sample.
+    private static Action scoreAndGrab(RobotHardware robotHardware, Action driveFromBasketToSample, Action driveFromSampleToBasket, boolean isWallSample, boolean isHumanSample) {
 
         // Get the use big claw value.
         boolean useBigClaw = robotHardware.getUseBigClaw();
@@ -239,19 +236,40 @@ public class AutoSample extends LinearOpMode {
                 // Score the current sample.
                 robotHardware.scoreSample(),
 
-                // Lower the arm while driving to the spike mark.
+                // Lower the arm while driving to the sample.
                 new ParallelAction(
 
                         // Lower the arm.
                         new SequentialAction(
-                                robotHardware.lowerArmFromBasket(horizontalSwivel, true),
+
+                                // Lower the arm from the basket.
+                                robotHardware.lowerArmFromBasket(!isWallSample, true),
+
+                                // Wait for the arm to settle.
                                 new WaitForTime(250),
-                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
+
+                                // If this is not the human sample, lower the arm to grab.
+                                isHumanSample ?
+                                        new SequentialAction() :
+                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
+
+                                // Wait for the hardware.
                                 new WaitForHardware(robotHardware, 1000)
+
                         ),
 
-                        // Drive to the spike mark.
-                        driveFromBasketToSpikeMark
+                        // Drive to the sample and then lower the arm to grab if appropriate.
+                        new SequentialAction(
+
+                                // Drive to the sample.
+                                driveFromBasketToSample,
+
+                                // If this is the human sample, lower the arm to grab.
+                                isHumanSample ?
+                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false) :
+                                        new SequentialAction()
+
+                        )
 
                 ),
 
@@ -268,17 +286,17 @@ public class AutoSample extends LinearOpMode {
                 new ParallelAction(
 
                         // Drive to the basket.
-                        driveFromSpikeMarkToBasket,
+                        driveFromSampleToBasket,
 
                         new SequentialAction(
 
-                            new WaitForTime(delayRaising ? 500 : 0),
+                                // If this is the wall sample, wait for a bit to clear the wall.
+                                new WaitForTime(isWallSample ? 500 : 0),
 
-                            // Raise the sample to the basket.
-                            robotHardware.raiseSampleToBasket()
+                                // Raise the sample to the basket.
+                                robotHardware.raiseSampleToBasket()
 
                         )
-
 
                 )
 
@@ -289,24 +307,6 @@ public class AutoSample extends LinearOpMode {
 
     }
 
-    /*
-    private static Action getHumanPlayerAction(RobotHardware robotHardware, Action driveFromBasketToHumanPlayer, Action driveFromHumanPlayerToBasket) {
-        // Score human player sample.
-        Action action = new SequentialAction(
-                new ParallelAction(
-                        robotHardware.scoreSampleTeleop(),
-                        driveFromBasketToHumanPlayer
-                ),
-                new InstantAction(() -> robotHardware.closeClaw()),
-                new WaitForTime(CLAW_MILLISECONDS),
-                new ParallelAction(
-                        driveFromHumanPlayerToBasket,
-                        robotHardware.raiseSample()
-                )
-        );
-        return action;
-    }
-    */
     // Gets a main action.
     private Action getMainAction() {
 
@@ -354,13 +354,13 @@ public class AutoSample extends LinearOpMode {
 
         // Construct a third spike mark pose.
         Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, THIRD_SPIKE_MARK_HEADING);
-        /*
+
         // Construct a human player pose a.
         Pose2d humanPlayerPoseA = new Pose2d(HUMAN_PLAYER_A_X, HUMAN_PLAYER_A_Y, HUMAN_PLAYER_A_HEADING);
 
         // Construct a human player pose b.
         Pose2d humanPlayerPoseB = new Pose2d(HUMAN_PLAYER_B_X, HUMAN_PLAYER_B_Y, HUMAN_PLAYER_B_HEADING);
-        */
+
         // Construct a drive interface.
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -398,7 +398,7 @@ public class AutoSample extends LinearOpMode {
         Action driveFromThirdSpikeMarkToBasket = drive.actionBuilder(thirdSpikeMarkPose)
                 .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
-        /*
+
         // Construct an action for driving from the basket to the human player.
         Action driveFromBasketToHumanPlayer = drive.actionBuilder(basketPose)
                 .setTangent(HUMAN_PLAYER_A_START_TANGENT)
@@ -414,27 +414,36 @@ public class AutoSample extends LinearOpMode {
                 .setTangent(HUMAN_PLAYER_BACK_HEADING_AND_TANGENT)
                 .splineToSplineHeading(basketPose, basketPose.heading)
                 .build();
-        */
+
         // Construct a main action.
         Action mainAction = new SequentialAction(
 
                 // Drive from the start position to the basket and move the arm so it does not hit the basket when raising.
                 new ParallelAction(
+
+                        // Drive from the start position to the basket.
                         driveFromStartToBasket,
+
                         // Raise the preloaded sample to the basket.
                         robotHardware.raiseSampleToBasket()
+
                 ),
 
                 // Score the preloaded sample and then get the first spike mark sample.
-                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToFirstSpikeMark, driveFromFirstSpikeMarkToBasket, true, false),
+                scoreAndGrab(robotHardware, driveFromBasketToFirstSpikeMark, driveFromFirstSpikeMarkToBasket, false, false),
 
                 // Score the first spike mark sample and then get the second spike mark sample.
-                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToSecondSpikeMark, driveFromSecondSpikeMarkToBasket, true, false),
+                scoreAndGrab(robotHardware, driveFromBasketToSecondSpikeMark, driveFromSecondSpikeMarkToBasket, false, false),
 
                 // Score the second spike mark sample and then get the third spike mark sample.
-                scoreCurrentSampleAndThenGetSpikeMarkSample(robotHardware, driveFromBasketToThirdSpikeMark, driveFromThirdSpikeMarkToBasket, false, true),
+                scoreAndGrab(robotHardware, driveFromBasketToThirdSpikeMark, driveFromThirdSpikeMarkToBasket, true, false),
 
-                // Score the third spike mark sample.
+                // If appropriate, score the third spike mark sample and then get the human player sample.
+                grabFifthSample ?
+                    scoreAndGrab(robotHardware, driveFromBasketToHumanPlayer, driveFromHumanPlayerToBasket, false, true) :
+                    new SequentialAction(),
+
+                // Score the last sample.
                 robotHardware.scoreSample(),
 
                 // Lower the arm from the basket.
