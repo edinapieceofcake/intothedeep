@@ -59,7 +59,7 @@ public class AutoSample extends LinearOpMode {
     public static double HUMAN_PLAYER_A_END_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
 
     // Human player pose b
-    public static double HUMAN_PLAYER_B_X = 38;
+    public static double HUMAN_PLAYER_B_X = 36;
     public static double HUMAN_PLAYER_B_Y = HUMAN_PLAYER_A_Y;
     public static double HUMAN_PLAYER_B_HEADING = HUMAN_PLAYER_A_HEADING;
     public static double HUMAN_PLAYER_B_START_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
@@ -243,7 +243,7 @@ public class AutoSample extends LinearOpMode {
                         new SequentialAction(
 
                                 // Lower the arm from the basket.
-                                robotHardware.lowerArmFromBasket(!isWallSample, true),
+                                robotHardware.lowerArmFromBasket(!isWallSample, true, false),
 
                                 // Wait for the arm to settle.
                                 new WaitForTime(250),
@@ -447,7 +447,7 @@ public class AutoSample extends LinearOpMode {
                 robotHardware.scoreSample(),
 
                 // Lower the arm from the basket.
-                robotHardware.lowerArmFromBasket(true, true)
+                robotHardware.lowerArmFromBasket(true, true, true)
 
         );
 

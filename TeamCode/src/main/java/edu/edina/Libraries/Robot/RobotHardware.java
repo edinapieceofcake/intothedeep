@@ -1070,7 +1070,12 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Lowers the arm from the basket.
-    public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto) {
+    public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean isDone) {
+
+        // Get an arm position.
+        int armPosition = isDone ? Arm.MINIMUM_POSITION : Arm.SUBMERSIBLE_ENTER_POSITION;
+
+        // Construct an action.
         Action action = new SequentialAction(
                 new InstantAction(() -> setWristSubmersiblePosition()),
                 new WaitForTime(500),
@@ -1083,23 +1088,28 @@ public class RobotHardware implements DrivingRobotHardware {
                         new WaitForTime(500),
                         isAuto ?
                                 new ParallelAction(
-                                        new InstantAction(() -> setAutoSampleExtension()),
-                                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true)
+                                        isDone ?
+                                                new InstantAction(() -> setMinimumExtension()) :
+                                                new InstantAction(() -> setAutoSampleExtension()),
+                                        new MoveArm(this, armPosition, true)
                                 ) :
                                 new SequentialAction(
-                                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                                        new MoveArm(this, armPosition, true),
                                         new InstantAction(() -> setSubmersibleExtension())
                                 )
                 )
         );
+
+        // Return the action.
         return action;
+
     }
 
     // Scores a sample in the basket an then lowers the arm.
     public Action scoreSampleAndLower(boolean horizontalSwivel) {
         Action action = new SequentialAction(
                 scoreSample(),
-                lowerArmFromBasket(horizontalSwivel, false)
+                lowerArmFromBasket(horizontalSwivel, false, false)
         );
         return action;
     }
