@@ -53,7 +53,7 @@ public class AutoSample extends LinearOpMode {
 
     // Human player pose a
     public static double HUMAN_PLAYER_A_X = -20;
-    public static double HUMAN_PLAYER_A_Y = -50;
+    public static double HUMAN_PLAYER_A_Y = -51;
     public static double HUMAN_PLAYER_A_HEADING = Math.toRadians(180);
     public static double HUMAN_PLAYER_A_START_TANGENT = Math.toRadians(0);
     public static double HUMAN_PLAYER_A_END_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
