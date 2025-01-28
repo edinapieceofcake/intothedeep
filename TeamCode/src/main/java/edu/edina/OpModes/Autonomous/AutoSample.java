@@ -1,5 +1,7 @@
 package edu.edina.OpModes.Autonomous;
 
+import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -10,6 +12,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
@@ -21,9 +24,6 @@ import edu.edina.Libraries.Robot.WaitForTime;
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSample extends LinearOpMode {
-
-    // Last pose
-    public static Pose2d lastPose;
 
     // Start pose
     public static double START_X = -35;
@@ -83,9 +83,55 @@ public class AutoSample extends LinearOpMode {
     // Robot hardware
     private RobotHardware robotHardware;
 
+    // Grab fifth sample value
+    private Boolean grabFifthSample;
+
     // Runs the op mode.
     @Override
     public void runOpMode() throws InterruptedException {
+
+        // Display launch menu.
+        //////////////////////////////////////////////////////////////////////
+
+        // Initialize gamepads.
+        Gamepad currentGamepad = new Gamepad();
+        Gamepad previousGamepad = new Gamepad();
+
+        // While we are waiting for a response...
+        while (!isStopRequested() && grabFifthSample == null) {
+
+            // Update gamepads.
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            // Prompt the user for a sample count.
+            prompt("Samples", "X = 4, B = 5");
+
+            // If the user pressed x...
+            if (currentGamepad.x && !previousGamepad.x) {
+
+                // Do not grab a fifth sample.
+                grabFifthSample = false;
+
+            }
+
+            // If the user pressed b...
+            if (currentGamepad.b && !previousGamepad.b) {
+
+                // Grab a fifth sample.
+                grabFifthSample = true;
+
+            }
+
+        }
+
+        // If stop is requested...
+        if (isStopRequested()) {
+
+            // Exit the method.
+            return;
+
+        }
 
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
@@ -141,6 +187,9 @@ public class AutoSample extends LinearOpMode {
         // Wait for start.
         //////////////////////////////////////////////////////////////////////
 
+        // Add telemetry.
+        addTelemetry();
+
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 
@@ -165,14 +214,14 @@ public class AutoSample extends LinearOpMode {
         // While the op mode is active...
         while (opModeIsActive()) {
 
+            // Add telemetry.
+            addTelemetry();
+
             // Update the robot hardware.
             robotHardware.update();
 
             // Update the telemetry.
             telemetry.update();
-
-            // Update the last pose.
-            lastPose = robotHardware.drive.pose;
 
         }
 
@@ -401,6 +450,31 @@ public class AutoSample extends LinearOpMode {
     // Determines whether the robot is close a spike mark.
     private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
         return robotPose.position.y.value() > -40;
+    }
+
+    // Prompts the user for an input.
+    private void prompt(String caption, String value) {
+        telemetry.addData(caption, value);
+        telemetry.update();
+    }
+
+    // Adds telemetry.
+    private void addTelemetry() {
+
+        // Convert the grab fifth sample value to a symbol.
+        String grabFifthSampleSymbol = getSymbol(grabFifthSample);
+
+        // Get the use big claw value.
+        boolean useBigClaw = robotHardware.getUseBigClaw();
+
+        // Convert the use big claw value to a symbol.
+        String useBigClawSymbol = getSymbol(useBigClaw);
+
+        // Display main telemetry.
+        telemetry.addData("Main", "====================");
+        telemetry.addData("- Grab Fifth Sample", grabFifthSampleSymbol);
+        telemetry.addData("- Use Big Claw", useBigClawSymbol);
+
     }
 
 }

@@ -74,6 +74,12 @@ public class RobotHardware implements DrivingRobotHardware {
                 0 - REV 2M Distance Sensor - distance_right
     */
 
+    // Green square (see https://unicode-explorer.com/list/geometric-shapes)
+    private static final String GREEN_SQAURE = "\uD83D\uDFE9";
+
+    // Red square (see https://unicode-explorer.com/list/geometric-shapes)
+    private static final String RED_SQUARE = "\uD83D\uDFE5";
+
     // Inches to back up when scoring a specimen
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
@@ -1148,6 +1154,11 @@ public class RobotHardware implements DrivingRobotHardware {
         // Return indicating if there are running actions.
         return !runningActions.isEmpty();
 
+    }
+
+    // Gets a symbol.
+    public static String getSymbol(boolean value) {
+        return value ? GREEN_SQAURE : RED_SQUARE;
     }
 
 }

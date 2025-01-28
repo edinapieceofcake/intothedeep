@@ -1,5 +1,7 @@
 package edu.edina.OpModes.TeleOp;
 
+import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -60,13 +62,6 @@ public class TeleOpMain extends LinearOpMode {
         - left bumper = toggle tall walls
 
     */
-
-    // Green square (see https://unicode-explorer.com/list/geometric-shapes)
-    public static final String GREEN_SQAURE = "\uD83D\uDFE9";
-
-    // Red square (see https://unicode-explorer.com/list/geometric-shapes)
-    public static final String RED_SQUARE = "\uD83D\uDFE5";
-
 
     // Trigger threshold
     public static double TRIGGER_THRESHOLD = 0.5;
@@ -150,22 +145,22 @@ public class TeleOpMain extends LinearOpMode {
 
             }
 
-            // Get the use big claw value.
-            boolean useBigClaw = robotHardware.getUseBigClaw();
-
             // Get the tall walls value.
             boolean tallWalls = robotHardware.getTallWalls();
-
-            // Convert the use big claw value to a symbol.
-            String useBigClawSymbol = getSymbol(useBigClaw);
 
             // Convert the tall walls value to a symbol.
             String tallWallsSymbol = getSymbol(tallWalls);
 
+            // Get the use big claw value.
+            boolean useBigClaw = robotHardware.getUseBigClaw();
+
+            // Convert the use big claw value to a symbol.
+            String useBigClawSymbol = getSymbol(useBigClaw);
+
             // Display main telemetry.
             telemetry.addData("Main", "====================");
-            telemetry.addData("- Use Big Claw", useBigClawSymbol);
             telemetry.addData("- Tall Walls", tallWallsSymbol);
+            telemetry.addData("- Use Big Claw", useBigClawSymbol);
 
             // Update the robot hardware.
             robotHardware.update();
@@ -176,11 +171,6 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-    }
-
-    // Gets a symbol.
-    private static String getSymbol(boolean value) {
-        return value ? GREEN_SQAURE : RED_SQUARE;
     }
 
     // Handles debug mode.
