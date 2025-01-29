@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -51,22 +50,11 @@ public class AutoSample extends LinearOpMode {
     public static double THIRD_SPIKE_MARK_Y = -25.5;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
 
-    // Human player pose a
-    public static double HUMAN_PLAYER_A_X = -20;
-    public static double HUMAN_PLAYER_A_Y = -51;
-    public static double HUMAN_PLAYER_A_HEADING = Math.toRadians(180);
-    public static double HUMAN_PLAYER_A_START_TANGENT = Math.toRadians(0);
-    public static double HUMAN_PLAYER_A_END_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
-
-    // Human player pose b
-    public static double HUMAN_PLAYER_B_X = 36;
-    public static double HUMAN_PLAYER_B_Y = HUMAN_PLAYER_A_Y;
-    public static double HUMAN_PLAYER_B_HEADING = HUMAN_PLAYER_A_HEADING;
-    public static double HUMAN_PLAYER_B_START_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
-    public static double HUMAN_PLAYER_B_END_TANGENT = HUMAN_PLAYER_A_START_TANGENT;
-
-    // Going back from human player tangent and heading
-    public static double HUMAN_PLAYER_BACK_HEADING_AND_TANGENT = Math.toRadians(180);
+    // Human pose
+    public static double HUMAN_X = 36;
+    public static double HUMAN_Y = -51;
+    public static double HUMAN_OUTBOUND_HEADING = Math.toRadians(0);
+    public static double HUMAN_INBOUND_HEADING = Math.toRadians(180);
 
     // Timeout in milliseconds
     public static int TIMEOUT_MILLISECONDS = 3500;
@@ -355,12 +343,6 @@ public class AutoSample extends LinearOpMode {
         // Construct a third spike mark pose.
         Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, THIRD_SPIKE_MARK_HEADING);
 
-        // Construct a human player pose a.
-        Pose2d humanPlayerPoseA = new Pose2d(HUMAN_PLAYER_A_X, HUMAN_PLAYER_A_Y, HUMAN_PLAYER_A_HEADING);
-
-        // Construct a human player pose b.
-        Pose2d humanPlayerPoseB = new Pose2d(HUMAN_PLAYER_B_X, HUMAN_PLAYER_B_Y, HUMAN_PLAYER_B_HEADING);
-
         // Construct a drive interface.
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -399,20 +381,19 @@ public class AutoSample extends LinearOpMode {
                 .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
-        // Construct an action for driving from the basket to the human player.
-        Action driveFromBasketToHumanPlayer = drive.actionBuilder(basketPose)
-                .setTangent(HUMAN_PLAYER_A_START_TANGENT)
-                .splineToSplineHeading((humanPlayerPoseA), HUMAN_PLAYER_A_END_TANGENT)
-                .setTangent(HUMAN_PLAYER_B_START_TANGENT)
-                .splineToConstantHeading(new Vector2d(humanPlayerPoseB.position.x, humanPlayerPoseB.position.y), Math.toRadians(HUMAN_PLAYER_B_END_TANGENT))
+        // Construct an human poses.
+        Pose2d humanOutboundPose = new Pose2d(HUMAN_X, HUMAN_Y, HUMAN_OUTBOUND_HEADING);
+        Pose2d humanInboundPose = new Pose2d(HUMAN_X, HUMAN_Y, HUMAN_INBOUND_HEADING);
+
+        // Construct an action for driving from the basket to the human.
+        Action driveFromBasketToHuman = drive.actionBuilder(basketPose)
+                .setReversed(true)
+                .splineTo(humanOutboundPose.position, humanOutboundPose.heading)
                 .build();
 
-        // Construct an action for driving from the human player to the basket.
-        Action driveFromHumanPlayerToBasket = drive.actionBuilder(humanPlayerPoseB)
-                .setTangent(HUMAN_PLAYER_BACK_HEADING_AND_TANGENT)
-                .splineToConstantHeading(new Vector2d(humanPlayerPoseA.position.x, humanPlayerPoseA.position.y), HUMAN_PLAYER_BACK_HEADING_AND_TANGENT)
-                .setTangent(HUMAN_PLAYER_BACK_HEADING_AND_TANGENT)
-                .splineToSplineHeading(basketPose, basketPose.heading)
+        // Construct an action for driving from the human to the basket.
+        Action driveFromHumanToBasket = drive.actionBuilder(humanInboundPose)
+                .splineTo(basketPose.position, basketPose.heading)
                 .build();
 
         // Construct a main action.
@@ -438,9 +419,9 @@ public class AutoSample extends LinearOpMode {
                 // Score the second spike mark sample and then get the third spike mark sample.
                 scoreAndGrab(robotHardware, driveFromBasketToThirdSpikeMark, driveFromThirdSpikeMarkToBasket, true, false),
 
-                // If appropriate, score the third spike mark sample and then get the human player sample.
+                // If appropriate, score the third spike mark sample and then get the human sample.
                 grabFifthSample ?
-                    scoreAndGrab(robotHardware, driveFromBasketToHumanPlayer, driveFromHumanPlayerToBasket, false, true) :
+                    scoreAndGrab(robotHardware, driveFromBasketToHuman, driveFromHumanToBasket, false, true) :
                     new SequentialAction(),
 
                 // Score the last sample.
