@@ -4,10 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -35,9 +33,6 @@ public class Lift {
 
     // Ground position
     public static int GROUND_POSITION = 0;
-
-    // Up position threshold
-    public static int RAISED_POSITION_THRESHOLD = 400;
 
     // Nearly up position
     public static int NEARLY_UP_POSITION = 1500;
@@ -334,57 +329,6 @@ public class Lift {
 
         // Move the lift to the basket position.
         targetPosition = CHAMBER_POSITION;
-
-    }
-
-    // Determines whether the lift is raised.
-    public boolean isRaised() {
-
-        // Get the lift's current position.
-        double currentPosition = getPosition();
-
-        // Determine whether the lift is raised.
-        boolean isRaised = currentPosition > RAISED_POSITION_THRESHOLD;
-
-        // Return the result.
-        return isRaised;
-
-    }
-
-    public boolean targetingScoringPos() {
-        return targetPosition > MINIMUM_POSITION;
-    }
-
-    // Determines whether the lift is in the basket position.
-    public boolean isInBasketPosition() {
-
-        // Determine whether the lift is in the basket position.
-        boolean isInBasketPosition = targetPosition == BASKET_POSITION;
-
-        // Return the result.
-        return isInBasketPosition;
-
-    }
-
-    // Determines whether the lift is in the chamber position.
-    public boolean isInChamberPosition() {
-
-        // Determine whether the lift is in the chamber position.
-        boolean isInChamberPosition = targetPosition == CHAMBER_POSITION;
-
-        // Return the result.
-        return isInChamberPosition;
-
-    }
-
-    // Determines whether the lift is in the ground position.
-    public boolean isInGroundPosition() {
-
-        // Determine whether the lift is in the ground position.
-        boolean isInGroundPosition = targetPosition == GROUND_POSITION;
-
-        // Return the result.
-        return isInGroundPosition;
 
     }
 

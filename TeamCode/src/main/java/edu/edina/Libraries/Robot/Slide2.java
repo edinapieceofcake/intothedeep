@@ -69,8 +69,6 @@ public class Slide2 {
     // Target position
     private int targetPosition;
 
-
-
     // Initializes this.
     public Slide2(RobotHardware robotHardware) {
 

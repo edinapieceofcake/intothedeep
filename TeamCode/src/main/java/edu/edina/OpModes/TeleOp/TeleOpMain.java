@@ -12,8 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import edu.edina.Libraries.Actions.Condition;
-import edu.edina.Libraries.Actions.Conditions;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
@@ -21,6 +19,16 @@ import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
 
+// Robot mode
+enum RobotMode {
+    BASKET,
+    CHAMBER,
+    INITIALIZE,
+    SUBMERSIBLE,
+    WALL
+}
+
+// Main tele op mode
 @Config
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
@@ -82,8 +90,8 @@ public class TeleOpMain extends LinearOpMode {
     // Robot hardware
     private RobotHardware robotHardware;
 
-    private Condition autoCondition;
-
+    // Robot mode
+    private RobotMode robotMode = RobotMode.INITIALIZE;
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
@@ -96,7 +104,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // Wait for the user to press start.
         waitForStart();
-        autoCondition = null;
 
         // Open the claws.
         robotHardware.openClaws();
@@ -120,8 +127,6 @@ public class TeleOpMain extends LinearOpMode {
 
         // While the op mode is active...
         while (opModeIsActive()) {
-
-            Condition sp = new Conditions.SpecimenPark(this);
 
             // Update the gamepads.
             previousGamepad1.copy(currentGamepad1);
@@ -159,12 +164,12 @@ public class TeleOpMain extends LinearOpMode {
 
             // Display main telemetry.
             telemetry.addData("Main", "====================");
+            telemetry.addData("- Mode", robotMode);
             telemetry.addData("- Tall Walls", tallWallsSymbol);
             telemetry.addData("- Use Big Claw", useBigClawSymbol);
 
             // Update the robot hardware.
             robotHardware.update();
-            robotHardware.updateHardwareInteractions();
 
             // Update the telemetry.
             telemetry.update();
@@ -175,9 +180,6 @@ public class TeleOpMain extends LinearOpMode {
 
     // Handles debug mode.
     private void handleDebugMode() {
-
-        // Set debugging to true.
-        robotHardware.setDebugging(true);
 
         // Arm rezeroing
         //////////////////////////////////////////////////////////////////////
@@ -263,12 +265,6 @@ public class TeleOpMain extends LinearOpMode {
     // Handles normal mode.
     private void handleNormalMode() {
 
-        // Set debugging to false
-        //////////////////////////////////////////////////////////////////////
-
-        // Set debugging to false
-        robotHardware.setDebugging(false);
-
         // Stop rezeroing.
         //////////////////////////////////////////////////////////////////////
 
@@ -289,8 +285,8 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed x...
         if (currentGamepad1.x && !previousGamepad1.x) {
 
-            // If the arm is in the wall position...
-            if (robotHardware.isArmInWallPosition()) {
+            // If the robot is in wall mode...
+            if (robotMode == RobotMode.WALL) {
 
                 // Move the arm to the chamber position.
                 Action action = new ParallelAction(
@@ -304,6 +300,9 @@ public class TeleOpMain extends LinearOpMode {
                         )
                 );
                 robotHardware.addAction(action);
+
+                // Set the robot mode to chamber.
+                robotMode = RobotMode.CHAMBER;
 
             }
 
@@ -320,18 +319,22 @@ public class TeleOpMain extends LinearOpMode {
         // Claw
         //////////////////////////////////////////////////////////////////////
 
+        // If the user pressed a...
         if (currentGamepad1.a && !previousGamepad1.a) {
 
-            // Otherwise, if the arm is in the basket position...
-            if (robotHardware.isArmInBasketPosition()) {
+            // If the robot is in basket mode...
+            if (robotMode == RobotMode.BASKET) {
 
                 // Score the sample and lower the arm.
                 robotHardware.addAction(robotHardware.scoreSampleAndLower(true));
 
+                // Set the robot mode to submersible.
+                robotMode = RobotMode.SUBMERSIBLE;
+
             }
 
-            // Otherwise, if the arm is in the wall position...
-            else if (robotHardware.isArmInWallPosition()) {
+            // Otherwise, if the robot is in wall mode...
+            else if (robotMode == RobotMode.WALL) {
 
                 // If the big claw is open...
                 if (robotHardware.isBigClawOpen()) {
@@ -357,21 +360,34 @@ public class TeleOpMain extends LinearOpMode {
         boolean useBigClaw = robotHardware.getUseBigClaw();
 
         // If the user pressed a...
-        if (currentGamepad2.a && !previousGamepad2.a && robotHardware.isArmNearSubmersiblePosition() && robotHardware.isLiftInGroundPosition()) {
+        if (currentGamepad2.a && !previousGamepad2.a) {
 
-            // If we are using the big claw...
-            if(useBigClaw) {
+            // If the robot is in submersible mode...
+            if(robotMode == RobotMode.SUBMERSIBLE) {
 
-                // Toggle the big claw.
-                robotHardware.toggleBigClaw();
+                // If we are using the big claw...
+                if(useBigClaw) {
+
+                    // Toggle the big claw.
+                    robotHardware.toggleBigClaw();
+
+                }
+
+                // Otherwise (if we are using the small claw)...
+                else {
+
+                    // Toggle the small claw.
+                    robotHardware.toggleSmallClaw();
+
+                }
 
             }
 
-            // Otherwise (if we are using the small claw)...
+            // Otherwise (if the robot is not in submersible mode)...
             else {
 
-                // Toggle the small claw.
-                robotHardware.toggleSmallClaw();
+                // Notify the user.
+                robotHardware.beep();
 
             }
 
@@ -383,11 +399,8 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed b...
         if (currentGamepad2.b && !previousGamepad2.b) {
 
-            // Determine whether the arm is in the ground position.
-            boolean fromGound = robotHardware.isArmInGroundPosition();
-
-            // If the arm is in the chamber position...
-            if (robotHardware.isArmInChamberPosition()) {
+            // If the robot is in chamber mode...
+            if (robotMode == RobotMode.CHAMBER) {
 
                 // Get the tall walls value.
                 boolean tallWalls = robotHardware.getTallWalls();
@@ -405,21 +418,27 @@ public class TeleOpMain extends LinearOpMode {
                 );
                 robotHardware.addAction(action);
 
+                // Set the robot mode to wall.
+                robotMode = RobotMode.WALL;
+
             }
 
-            // Otherwise if the arm is in the ground or submersible position...
-            else if (robotHardware.isArmNearSubmersiblePosition() || fromGound) {
+            // Otherwise, if the robot mode is submersible...
+            else if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Move the arm to the wall position.
                 robotHardware.setLiftGroundPosition();
-                robotHardware.setArmWallPosition(fromGound);
+                robotHardware.setArmWallPosition(robotMode == RobotMode.INITIALIZE);
                 robotHardware.setWristWallPosition();
                 robotHardware.swivelSetHorizontal();
                 robotHardware.setMinimumExtension();
 
+                // Set the robot mode to wall.
+                robotMode = RobotMode.WALL;
+
             }
 
-            // Otherwise (if the arm is in another position)...
+            // Otherwise (if the robot is in a different mode)...
             else {
 
                 // Notify the user.
@@ -435,14 +454,18 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed y...
         if (currentGamepad2.y && !previousGamepad2.y) {
 
-            // If the arm is in the submersible position...
-            if (robotHardware.isArmNearSubmersiblePosition() && !robotHardware.isWristInSubmersiblePosition()) {
+            // If the robot is in submersible mode and the wrist is up...
+            if (robotMode == RobotMode.SUBMERSIBLE && !robotHardware.isWristInSubmersiblePosition()) {
 
+                // Raise the sample to the basket.
                 robotHardware.addAction(robotHardware.raiseSampleToBasket());
+
+                // Set the robot mode to basket.
+                robotMode = RobotMode.BASKET;
 
             }
 
-            // Otherwise (if the arm is not in the submersible position)...
+            // Otherwise (if the robot is not in submersible mode)...
             else {
 
                 // Notify the user.
@@ -466,22 +489,48 @@ public class TeleOpMain extends LinearOpMode {
         // Extend slide
         //////////////////////////////////////////////////////////////////////
 
-        // If the user is holding dpad right and the arm is near the submersible position...
-        if (currentGamepad2.dpad_right && robotHardware.isArmNearSubmersiblePosition()) {
+        // If the user is holding dpad right...
+        if (currentGamepad2.dpad_right) {
 
-            // Extend the slide.
-            robotHardware.extendSlide();
+            // If the robot is in submersible mode...
+            if(robotMode == RobotMode.SUBMERSIBLE) {
+
+                // Extend the slide.
+                robotHardware.extendSlide();
+
+            }
+
+            // Otherwise (if the robot is not in submersible mode)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
 
         }
 
         // Retract slide
         //////////////////////////////////////////////////////////////////////
 
-        // If the user is holding dpad left and the arm is near the submersible position...
-        if (currentGamepad2.dpad_left && robotHardware.isArmNearSubmersiblePosition()) {
+        // If the user is holding dpad left...
+        if (currentGamepad2.dpad_left) {
 
-            // Retract the slide.
-            robotHardware.retractSlide();
+            // If the robot is in submersible mode...
+            if (robotMode == RobotMode.SUBMERSIBLE) {
+
+                // Retract the slide.
+                robotHardware.retractSlide();
+
+            }
+
+            // Otherwise (if the robot is not in submersible mode)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
 
         }
 
@@ -491,36 +540,47 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed x...
         if (currentGamepad2.x && !previousGamepad2.x) {
 
-            // If the arm is in the basket position...
-            if (robotHardware.isArmInBasketPosition()) {
+            // If the robot is in submersible mode...
+            if (robotMode == RobotMode.SUBMERSIBLE) {
 
-                // Notify the user.
-                robotHardware.beep();
+                // If the wrist is down...
+                if(robotHardware.isWristInSubmersiblePosition()) {
+
+                    // Grab a sample.
+                    Action action = new SequentialAction(
+                            useBigClaw ?
+                                    new InstantAction(() -> robotHardware.openBigClaw()) :
+                                    new InstantAction(() -> robotHardware.openSmallClaw()),
+                            new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
+                            new WaitForTime(100),
+                            useBigClaw ?
+                                    new InstantAction(() -> robotHardware.closeBigClaw()) :
+                                    new InstantAction(() -> robotHardware.closeSmallClaw()),
+                            new WaitForTime(100),
+                            new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
+                    );
+                    robotHardware.addAction(action);
+
+                }
+
+                // Otherwise (if the wrist is up)...
+                else {
+
+                    // Reach back into the submersible.
+                    Action action = new SequentialAction(
+                            new InstantAction(() -> robotHardware.openBigClaw()),
+                            new InstantAction(() -> robotHardware.setSubmersibleExtension()),
+                            new WaitForSlide(robotHardware, 1000),
+                            new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
+                    );
+                    robotHardware.addAction(action);
+
+                }
 
             }
 
-            // Otherwise, if the arm and wrist are in submersible positions...
-            else if ((robotHardware.isArmInSubmersibleHoverPosition() || robotHardware.isArmInSubmersibleEnterPosition()) && robotHardware.isWristInSubmersiblePosition()) {
-
-                // Grab a sample.
-                Action action = new SequentialAction(
-                        useBigClaw ?
-                                new InstantAction(() -> robotHardware.openBigClaw()) :
-                                new InstantAction(() -> robotHardware.openSmallClaw()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
-                        new WaitForTime(100),
-                        useBigClaw ?
-                                new InstantAction(() -> robotHardware.closeBigClaw()) :
-                                new InstantAction(() -> robotHardware.closeSmallClaw()),
-                        new WaitForTime(100),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
-                );
-                robotHardware.addAction(action);
-
-            }
-
-            // If the arm is in the chamber position...
-            else if (robotHardware.isArmInChamberPosition()) {
+            // Otherwise, if the robot is in chamber mode...
+            else if (robotMode == RobotMode.CHAMBER) {
 
                 Pose2d startPose = new Pose2d(0, 0, Math.toRadians(270));
                 Pose2d endPose = new Pose2d(0, -7, Math.toRadians(270));
@@ -569,10 +629,13 @@ public class TeleOpMain extends LinearOpMode {
                 );
                 robotHardware.addAction(action);
 
+                // Set the robot mode to submersible.
+                robotMode = RobotMode.SUBMERSIBLE;
+
             }
 
-            // Otherwise (if the arm is in another position)...
-            else {
+            // Otherwise, if the robot is in initialize mode...
+            else if(robotMode == RobotMode.INITIALIZE) {
 
                 // Move the arm to the submersible position.
                 Action action = new SequentialAction(
@@ -586,33 +649,77 @@ public class TeleOpMain extends LinearOpMode {
                 );
                 robotHardware.addAction(action);
 
+                // Set the robot mode to submersible.
+                robotMode = RobotMode.SUBMERSIBLE;
+
+            }
+
+            // Otherwise (if the robot is in another mode)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
             }
 
         }
+
+        // Decrement arm
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user is holding dpad up...
         if (currentGamepad2.dpad_up) {
 
-            // Decrement the arm position.
-            robotHardware.decrementArmPosition();
+            // If the robot is in initialize or wall mode...
+            if(robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
+
+                // Increment the arm position.
+                robotHardware.incrementArmPosition();
+
+            }
+
+            // Otherwise (if the robot is in another mode)...
+            else {
+
+                // Decrement the arm position.
+                robotHardware.decrementArmPosition();
+
+            }
 
         }
 
         // Increment arm
         //////////////////////////////////////////////////////////////////////
 
-        // If the user tapped dpad down...
+        // If the user is holding dpad down...
         if (currentGamepad2.dpad_down) {
 
-            // Increment the arm position.
-            robotHardware.incrementArmPosition();
+            // If the robot is in initialize or wall mode...
+            if(robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
+
+                // Derement the arm position.
+                robotHardware.decrementArmPosition();
+
+            }
+
+            // Otherwise (if the robot is in another mode)...
+            else {
+
+                // Increment the arm position.
+                robotHardware.incrementArmPosition();
+
+            }
 
         }
 
         // Toggle wrist in submersible
         //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed right bumper...
         if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
 
-            // If the robot is in the submersible...
-            if (robotHardware.isArmNearSubmersiblePosition() && robotHardware.isLiftInGroundPosition()) {
+            // If the robot is in submersible mode...
+            if (robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Toggle the wrist
                 if (robotHardware.isWristInWallPosition()) {
@@ -624,10 +731,13 @@ public class TeleOpMain extends LinearOpMode {
                 }
 
             }
-            // Otherwise (if the robot is not in the submersible)...
+
+            // Otherwise (if the robot is not in submersible mode)...
             else {
-                // Beep
+
+                // Notify the user.
                 robotHardware.beep();
+
             }
 
         }
@@ -635,8 +745,12 @@ public class TeleOpMain extends LinearOpMode {
         // Clear all actions
         //////////////////////////////////////////////////////////////////////
 
+        // If the user pressed left trigger...
         if (currentGamepad2.left_trigger > TRIGGER_THRESHOLD && previousGamepad2.left_trigger <= TRIGGER_THRESHOLD) {
+
+            // Clear actions.
             robotHardware.clearActions();
+
         }
 
         /*

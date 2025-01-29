@@ -1,7 +1,6 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,9 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import edu.edina.Libraries.Actions.RunToPositionAction;
-import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
 
 // This represents an arm.
 @Config
@@ -39,9 +35,6 @@ public class Arm {
 
     // Ground position
     public static int GROUND_POSITION = MINIMUM_POSITION;
-
-    // Nearly down position threshold
-    public static int NEARLY_DOWN_POSITION = 100;
 
     // Proportional coefficient
     public static double PROPORTIONAL = 0.0008;
@@ -138,10 +131,6 @@ public class Arm {
         // Initialize the arm controller.
         controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
-    }
-
-    public DcMotorEx getArmMotor() {
-        return motor;
     }
 
     // Updates this.
@@ -270,34 +259,6 @@ public class Arm {
 
     }
 
-    // Determines whether the arm is in the chamber position.
-    public boolean isInChamberPosition() {
-
-        // Determine whether the arm is in the chamber position.
-        return targetPosition == CHAMBER_POSITION;
-
-    }
-
-    // Determines whether the arm is in the wall position.
-    public boolean isInWallPosition() {
-
-        // Determine whether the arm is in the wall position.
-        return
-                targetPosition == GROUND_TO_SHORT_WALL_POSITION ||
-                targetPosition == GROUND_TO_TALL_WALL_POSITION ||
-                targetPosition == SUBMERSIBLE_TO_SHORT_WALL_POSITION ||
-                targetPosition == SUBMERSIBLE_TO_TALL_WALL_POSITION;
-
-    }
-
-    // Determines whether the arm is in the basket position.
-    public boolean isInBasketPosition() {
-
-        // Determine whether the arm is in the basket position.
-        return targetPosition == BASKET_POSITION;
-
-    }
-
     // Decrements the arm position.
     public void decrementPosition() {
 
@@ -360,17 +321,6 @@ public class Arm {
 
     }
 
-    // Determines whether the arm is nearly down.
-    public boolean isNearlyDown() {
-
-        // Determine whether the arm is nearly down.
-        boolean isNearlyDown = targetPosition <= NEARLY_DOWN_POSITION;
-
-        // Return the result.
-        return isNearlyDown;
-
-    }
-
     // Determines whether the arm is busy.
     public boolean isBusy() {
 
@@ -382,42 +332,6 @@ public class Arm {
 
         // Return indicating if the arm is busy.
         return difference >= BUSY_THRESHOLD;
-
-    }
-
-    // Determines whether the arm is in the submersible hover position.
-    public boolean isInSubmersibleHoverPosition() {
-
-        // Determine whether the arm is in the submersible hover position.
-        return targetPosition == SUBMERSIBLE_HOVER_POSITION;
-
-    }
-
-    // Determines whether the arm is in the submersible enter position.
-    public boolean isInSubmersibleEnterPosition() {
-
-        // Determine whether the arm is in the submersible enter position.
-        return targetPosition == SUBMERSIBLE_ENTER_POSITION;
-
-    }
-
-    // Determines whether the arm is near the submersible position.
-    public boolean isNearSubmersiblePosition() {
-
-        // Determine whether the arm is near the submersible position.
-        boolean isNearSubmersiblePosition = Math.abs(targetPosition - SUBMERSIBLE_HOVER_POSITION) <= SUBMERSIBLE_POSITION_THRESHOLD;
-
-        // Return the result.
-        return isNearSubmersiblePosition;
-
-    }
-
-
-    // Determines whether the arm is in the ground position.
-    public boolean isInGroundPosition() {
-
-        // Determine whether the arm is in the ground position.
-        return targetPosition == GROUND_POSITION;
 
     }
 
@@ -447,22 +361,4 @@ public class Arm {
         rezeroing = false;
     }
 
-    public Action swingToBack() {
-        return swingToPosition(180);
-    }
-
-    public Action swingToBasket() {
-        return swingToPosition(75);
-    }
-
-    public Action swingToWall() {
-        return swingToPosition(-30);
-    }
-
-    private Action swingToPosition(double target) {
-        ArmSwingMechanism asm = new ArmSwingMechanism(robotHardware.getVoltageSensor(), motor);
-        ArmForces af = new ArmForces();
-        RunToPositionAction lma = new RunToPositionAction(asm, af, target);
-        return lma;
-    }
 }

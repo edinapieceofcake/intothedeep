@@ -105,7 +105,6 @@ public class RobotHardware implements DrivingRobotHardware {
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
     private boolean allowManualDriving = true;
-    private boolean debugging;
     public RearDistanceSensor distanceSensors;
     private DcMotorEx extension;
 
@@ -277,23 +276,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Toggles the swivel.
         swivel.toggle();
-
-    }
-
-    public void updateHardwareInteractions() {
-
-        // RM: I commented out the following code because it was causing unexpected behavior during
-        // tele op I do not think toggling the wrist is necessary to keep the robot within the
-        // expansion box.
-
-        /*
-        if (arm.armWillCrossWristLimit())
-            raiseWrist();
-        else if (arm.targetingScoringPos() || arm.isInHighBar() || arm.isInLowBar())
-            lowerWrist();
-        */
-
-        //drivetrain.setAutoTurtleMode(lift.isRaised() && !debugging);
 
     }
 
@@ -562,57 +544,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the arm is nearly down.
-    public boolean isArmNearlyDown() {
-
-        // Determine whether the arm is nearly down.
-        boolean isNearlyDown = arm.isNearlyDown();
-
-        // Return the result.
-        return isNearlyDown;
-
-    }
-
-    // Determines whether the arm is near the submersible position.
-    public boolean isArmNearSubmersiblePosition() {
-
-        // Determine whether the arm is near the submersible position.
-        boolean isArmNearSubmersiblePosition = arm.isNearSubmersiblePosition();
-
-        // Return the result.
-        return isArmNearSubmersiblePosition;
-
-    }
-    /*
-    // Moves the arm to the ground position.
-    public void setArmGroundPosition() {
-
-        // Determine whether to move fast.
-        boolean fast = true;
-
-        // Construct an action to move the arm to the ground position.
-        Action action = new SequentialAction(
-                new MoveArm(this, Arm.GROUND_POSITION, fast),
-                new WaitForHardware(this, TIMEOUT_MILLISECONDS),
-                new InstantAction(() -> lowerWrist())
-        );
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-    */
-    // Moves the arm to the basket position.
-    public void setArmBasketPosition() {
-
-        // Construct an action to move the arm to the basket position.
-        Action action = new MoveArm(this, Arm.BASKET_POSITION, false);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
     // Moves the arm to the ascent position.
     public void setArmAscentPosition() {
 
@@ -726,69 +657,8 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the arm is in the submersible hover position.
-    public boolean isArmInSubmersibleHoverPosition() {
-
-        // Return indicating if the arm is in the submersible hover position.
-        return arm.isInSubmersibleHoverPosition();
-
-    }
-
-    // Determines whether the arm is in the submersible enter position.
-    public boolean isArmInSubmersibleEnterPosition() {
-
-        // Return indicating if the arm is in the submersible enter position.
-        return arm.isInSubmersibleEnterPosition();
-
-    }
-
-    // Determines whether the arm is in the basket position.
-    public boolean isArmInBasketPosition() {
-
-        // Return indicating if the arm is in the basket position.
-        return arm.isInBasketPosition();
-
-    }
-
-    // Determines whether the arm is in the wall position.
-    public boolean isArmInWallPosition() {
-
-        // Return indicating if the arm is in the wall position.
-        return arm.isInWallPosition();
-
-    }
-
-    // Determines whether the arm is in the ground position.
-    public boolean isArmInGroundPosition() {
-
-        // Return indicating if the arm is in the ground position.
-        return arm.isInGroundPosition();
-
-    }
-
-    // Determines whether the arm is in the chamber position.
-    public boolean isArmInChamberPosition() {
-
-        // Return indicating if the arm is in the chamber position.
-        return arm.isInChamberPosition();
-
-    }
-
-    // Gets the current slide extension.
-    public double getCurrentSlideExtension() {
-
-        // Return the current slide extension.
-        return 0;
-
-    }
-
     public void setWristChamberPosition() {
         wrist.setChamberPosition();
-    }
-
-
-    public BoundingBoxFailsafe getFailsafe() {
-        return null;
     }
 
     // Beeps
@@ -834,30 +704,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Determines whether the lift is in the basket position.
-    public boolean isLiftInBasketPosition() {
-
-        // Return indicating if the lift is in the basket position.
-        return lift.isInBasketPosition();
-
-    }
-
-    // Determines whether the lift is in the chamber position.
-    public boolean isLiftInChamberPosition() {
-
-        // Return indicating if the lift is in the chamber position.
-        return lift.isInChamberPosition();
-
-    }
-
-    // Determines whether the lift is in the ground position.
-    public boolean isLiftInGroundPosition() {
-
-        // Return indicating if the lift is in the ground position.
-        return lift.isInGroundPosition();
-
-    }
-
     // Determines whether the wrist is in the wall position.
     public boolean isWristInWallPosition() {
 
@@ -898,23 +744,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Set the arm's position.
         arm.setPosition(position);
-
-    }
-
-
-    // Determines whether the slide is fully retracted.
-    public boolean isSlideFullyRetracted() {
-
-        // Return indicating if the slide is fully retracted.
-        return false;
-
-    }
-
-    // Determines whether the slide is fully extended.
-    public boolean isSlideFullyExtended() {
-
-        // Return indicating if the slide is fully extended.
-        return false;
 
     }
 
@@ -1018,10 +847,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    public void stopDrivetrain() {
-        drivetrain.stop();
-    }
-
     // Disables manual driving.
     public void disableManualDriving() {
 
@@ -1114,11 +939,6 @@ public class RobotHardware implements DrivingRobotHardware {
         return action;
     }
 
-    // Sets debugging.
-    public void setDebugging(boolean debugging) {
-        this.debugging = debugging;
-    }
-
     @Override
     public Odometry getOdometry() {
         return teleOpOdometry;
@@ -1152,18 +972,6 @@ public class RobotHardware implements DrivingRobotHardware {
     @Override
     public VoltageSensor getVoltageSensor() {
         return voltageSensor;
-    }
-
-    public Lift getLift() {
-        return lift;
-    }
-
-    // Returns indicating if there are running actions.
-    public boolean hasRunningActions() {
-
-        // Return indicating if there are running actions.
-        return !runningActions.isEmpty();
-
     }
 
     // Gets a symbol.
