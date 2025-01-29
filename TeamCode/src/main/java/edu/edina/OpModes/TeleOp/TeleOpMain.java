@@ -16,17 +16,9 @@ import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.RobotMode;
 import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
-
-// Robot mode
-enum RobotMode {
-    BASKET,
-    CHAMBER,
-    INITIALIZE,
-    SUBMERSIBLE,
-    WALL
-}
 
 // Main tele op mode
 @Config
