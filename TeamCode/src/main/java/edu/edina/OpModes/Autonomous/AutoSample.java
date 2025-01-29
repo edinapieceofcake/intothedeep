@@ -56,6 +56,11 @@ public class AutoSample extends LinearOpMode {
     public static double HUMAN_OUTBOUND_HEADING = Math.toRadians(0);
     public static double HUMAN_INBOUND_HEADING = Math.toRadians(180);
 
+    // Submersible pose
+    public static double SUBMERSIBLE_X = -40;
+    public static double SUBMERSIBLE_Y = -3;
+    public static double SUBMERSIBLE_HEADING = Math.toRadians(0);
+
     // Timeout in milliseconds
     public static int TIMEOUT_MILLISECONDS = 3500;
 
@@ -343,6 +348,13 @@ public class AutoSample extends LinearOpMode {
         // Construct a third spike mark pose.
         Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, THIRD_SPIKE_MARK_HEADING);
 
+        // Construct human poses.
+        Pose2d humanOutboundPose = new Pose2d(HUMAN_X, HUMAN_Y, HUMAN_OUTBOUND_HEADING);
+        Pose2d humanInboundPose = new Pose2d(HUMAN_X, HUMAN_Y, HUMAN_INBOUND_HEADING);
+
+        // Construct a submersible pose.
+        Pose2d submersiblePose = new Pose2d(SUBMERSIBLE_X, SUBMERSIBLE_Y, SUBMERSIBLE_HEADING);
+
         // Construct a drive interface.
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -381,10 +393,6 @@ public class AutoSample extends LinearOpMode {
                 .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
-        // Construct an human poses.
-        Pose2d humanOutboundPose = new Pose2d(HUMAN_X, HUMAN_Y, HUMAN_OUTBOUND_HEADING);
-        Pose2d humanInboundPose = new Pose2d(HUMAN_X, HUMAN_Y, HUMAN_INBOUND_HEADING);
-
         // Construct an action for driving from the basket to the human.
         Action driveFromBasketToHuman = drive.actionBuilder(basketPose)
                 .setReversed(true)
@@ -394,6 +402,12 @@ public class AutoSample extends LinearOpMode {
         // Construct an action for driving from the human to the basket.
         Action driveFromHumanToBasket = drive.actionBuilder(humanInboundPose)
                 .splineTo(basketPose.position, basketPose.heading)
+                .build();
+
+        // Construct an action for driving from the basket to the submersible
+        Action driveFromBasketToSubmersible = drive.actionBuilder(basketPose)
+                .setReversed(true)
+                .splineTo(submersiblePose.position, submersiblePose.heading)
                 .build();
 
         // Construct a main action.
@@ -427,8 +441,16 @@ public class AutoSample extends LinearOpMode {
                 // Score the last sample.
                 robotHardware.scoreSample(),
 
-                // Lower the arm from the basket.
-                robotHardware.lowerArmFromBasket(true, true, true)
+                // Lower the arm and drive to the submersible.
+                new ParallelAction(
+
+                        // Lower the arm from the basket.
+                        robotHardware.lowerArmFromBasket(true, true, true),
+
+                        // Drive to the submersible.
+                        driveFromBasketToSubmersible
+
+                )
 
         );
 
@@ -437,7 +459,7 @@ public class AutoSample extends LinearOpMode {
 
     }
 
-    // Determines whether the robot is close a spike mark.
+    // Determines whether the robot is close to a spike mark.
     private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
         return robotPose.position.y.value() > -40;
     }
