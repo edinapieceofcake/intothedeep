@@ -123,7 +123,7 @@ public class TeleOpMain extends LinearOpMode {
         // Reverse the robot.
         robotHardware.setReversed(true);
 
-        robotHardware.initializeLights();
+        //robotHardware.initializeLights();
 
         // While the op mode is active...
         while (opModeIsActive()) {
@@ -351,6 +351,14 @@ public class TeleOpMain extends LinearOpMode {
                     robotHardware.openBigClaw();
 
                 }
+
+            }
+
+            // Otherwise (if the robot is in another mode)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
 
             }
 

@@ -37,8 +37,6 @@ public class RobotHardware implements DrivingRobotHardware {
                 2 - GoBILDA 5201 series - extension_motor
                 3 - GoBILDA 5201 series - left_lift_motor (has left lift encoder)
             Servos
-
-                wrist_left
                 3 - Servo - swivel
                 4 - Servo - wrist
                 5 - Servo - claw_top
@@ -64,8 +62,6 @@ public class RobotHardware implements DrivingRobotHardware {
             Digital Devices
                1 - REV Touch Sensor - lift_touch
                3 - REV Touch Sensor - arm_touch_back
-            Analog (don't know it it's here)
-                0 - Analog Input - slide_encoder
             I2C Bus 0
                 0 - REV Internal IMU (BNO055) - imu
             I2C Bus 1
