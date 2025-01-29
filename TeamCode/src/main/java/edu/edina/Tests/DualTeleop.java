@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -18,6 +19,7 @@ import edu.edina.Libraries.Robot.WaitForTime;
 import edu.edina.Libraries.Robot.Wrist;
 
 @TeleOp
+@Disabled
 public class DualTeleop extends LinearOpMode {
     private Swivel swivel;
     private Wrist wrist;

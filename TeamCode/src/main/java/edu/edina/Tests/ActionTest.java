@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,6 +20,7 @@ import edu.edina.Libraries.LinearMotion.TestMechanism;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 @TeleOp
+@Disabled
 public class ActionTest extends LinearOpMode {
     private List<Action> runningActions;
     private TestMechanism t;

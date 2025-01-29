@@ -2,6 +2,7 @@ package edu.edina.Tests;
 
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,6 +20,7 @@ import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
+@Disabled
 public class LinearMechanismTest extends LinearOpMode {
     private ILinearMechanism linearMech;
     private LinearMechanismSettings settings;
