@@ -38,6 +38,10 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Slow velocity
     public static double SLOW_VELOCITY = 15;
+    public static double SPIKE_MARK_ONE_X = 46.5;
+    public static double SPIKE_MARK_ONE_Y = -38;
+    public static double SPIKE_MARK_ONE_HEADING = Math.toRadians(270);
+
 
     // Start x coordinate
     public static double START_X = 3;
@@ -131,9 +135,17 @@ public class AutoSpecimen extends LinearOpMode {
     private Action getMainAction() {
         Pose2d startPose = new Pose2d(START_X, START_Y, Math.toRadians(270));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+
+        Pose2d chamberPose = new Pose2d(START_X, CHAMBER_Y, Math.toRadians(270));
         TrajectoryActionBuilder driveToChamber1Builder = drive.actionBuilder(startPose)
-                .strafeTo(new Vector2d(START_X, CHAMBER_Y));
+                .strafeTo(chamberPose.position);
         Action driveToChamber1 = driveToChamber1Builder.build();
+
+        Pose2d spikeMark1Pose = new Pose2d(SPIKE_MARK_ONE_X, SPIKE_MARK_ONE_Y, SPIKE_MARK_ONE_HEADING);
+        TrajectoryActionBuilder driveToSpikeMark1Builder = drive.actionBuilder(chamberPose)
+                .splineToConstantHeading(spikeMark1Pose.position, spikeMark1Pose.heading);
+        Action driveToSpikeMark1 = driveToSpikeMark1Builder.build();
+
         Action mainAction = new SequentialAction(
                 new ParallelAction(
                         new SequentialAction(
@@ -145,7 +157,24 @@ public class AutoSpecimen extends LinearOpMode {
                 new WaitForTime(300),
                 new InstantAction(() -> robotHardware.openSmallClaw()),
                 new WaitForTime(400),
-                new InstantAction(() -> robotHardware.setWristWallPosition())
+                new InstantAction(() -> robotHardware.setWristWallPosition()),
+                new ParallelAction(
+                        driveToSpikeMark1,
+                        new SequentialAction(
+                                new WaitForTime(1000),
+                                new ParallelAction(
+                                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                                        new InstantAction(() -> robotHardware.setAutoSampleExtension()),
+                                        new InstantAction(() -> robotHardware.openBigClaw()),
+                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
+                                )
+                        )
+                ),
+                new WaitForTime(1000),
+                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
+                new WaitForTime(1000),
+                new InstantAction(() -> robotHardware.closeBigClaw())
         );
 
         // Return the main action.

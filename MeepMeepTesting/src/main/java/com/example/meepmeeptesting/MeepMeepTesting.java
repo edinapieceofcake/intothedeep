@@ -128,56 +128,60 @@ public class MeepMeepTesting {
             // *****SPECIMENS*****
 
             // START COPYING
-            Pose2d beginPose = new Pose2d(0, -61.5, Math.toRadians(180));
+            Pose2d beginPose = new Pose2d(3, -60, Math.toRadians(270));
             // STOP COPYING
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
+                    .strafeTo(new Vector2d(3, -29))
+                            .setTangent(Math.toRadians(270))
+                                    .splineToConstantHeading(new Vector2d(48,-37),Math.toRadians(90))
 
                     // Drive to chamber
-                    .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
 
-                    // Plow first sample
-                    .setTangent(Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(36,-24), Math.toRadians(90))
-                    .splineToConstantHeading(new Vector2d(42,-16), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(48,-49), Math.toRadians(270))
-
-                    // Plow second sample
-                    .setTangent(Math.toRadians(270))
-                    .splineToConstantHeading(new Vector2d(52,-13), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(54,-49), Math.toRadians(270))
-
-                    // Plow third sample
-                    .setTangent(Math.toRadians(270))
-                    .splineToConstantHeading(new Vector2d(59,-13), Math.toRadians(0))
-                    .setTangent(Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(61,-15), Math.toRadians(270))
-                    .splineToConstantHeading(new Vector2d(61,-49), Math.toRadians(270))
-
-                    //.strafeTo(new Vector2d(46,-55))
-                    /*.strafeTo(new Vector2d(48,-10))
-                    .strafeTo(new Vector2d(57,-10))
-                    .strafeTo(new Vector2d(57,-55))
-                    .strafeTo(new Vector2d(57,-10))
-                    .strafeTo(new Vector2d(61,-10))
-                    .strafeTo(new Vector2d(61,-55))*/
-//                                  end here
-                                    //.strafeTo(new Vector2d(61,-50))
-                            //.strafeTo(new Vector2d(55,-50))
-                                    .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
-                    .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(2,-35), Math.toRadians(270))
-                    .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(4,-35), Math.toRadians(270))
-                    .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(6,-35), Math.toRadians(270))
-                    .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(8,-35), Math.toRadians(270))
-                    .strafeTo(new Vector2d(55,-55))
-                    .strafeToLinearHeading(new Vector2d(10,-35), Math.toRadians(270))
-
-
+//                    .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
+//
+//                    // Plow first sample
+//                    .setTangent(Math.toRadians(0))
+//                    .splineToConstantHeading(new Vector2d(36,-24), Math.toRadians(90))
+//                    .splineToConstantHeading(new Vector2d(42,-16), Math.toRadians(0))
+//                    .splineToConstantHeading(new Vector2d(48,-49), Math.toRadians(270))
+//
+//                    // Plow second sample
+//                    .setTangent(Math.toRadians(270))
+//                    .splineToConstantHeading(new Vector2d(52,-13), Math.toRadians(0))
+//                    .splineToConstantHeading(new Vector2d(54,-49), Math.toRadians(270))
+//
+//                    // Plow third sample
+//                    .setTangent(Math.toRadians(270))
+//                    .splineToConstantHeading(new Vector2d(59,-13), Math.toRadians(0))
+//                    .setTangent(Math.toRadians(0))
+//                    .splineToConstantHeading(new Vector2d(61,-15), Math.toRadians(270))
+//                    .splineToConstantHeading(new Vector2d(61,-49), Math.toRadians(270))
+//
+//                    //.strafeTo(new Vector2d(46,-55))
+//                    /*.strafeTo(new Vector2d(48,-10))
+//                    .strafeTo(new Vector2d(57,-10))
+//                    .strafeTo(new Vector2d(57,-55))
+//                    .strafeTo(new Vector2d(57,-10))
+//                    .strafeTo(new Vector2d(61,-10))
+//                    .strafeTo(new Vector2d(61,-55))*/
+////                                  end here
+//                                    //.strafeTo(new Vector2d(61,-50))
+//                            //.strafeTo(new Vector2d(55,-50))
+//                                    .strafeTo(new Vector2d(55,-55))
+//                    .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(270))
+//                    .strafeTo(new Vector2d(55,-55))
+//                    .strafeToLinearHeading(new Vector2d(2,-35), Math.toRadians(270))
+//                    .strafeTo(new Vector2d(55,-55))
+//                    .strafeToLinearHeading(new Vector2d(4,-35), Math.toRadians(270))
+//                    .strafeTo(new Vector2d(55,-55))
+//                    .strafeToLinearHeading(new Vector2d(6,-35), Math.toRadians(270))
+//                    .strafeTo(new Vector2d(55,-55))
+//                    .strafeToLinearHeading(new Vector2d(8,-35), Math.toRadians(270))
+//                    .strafeTo(new Vector2d(55,-55))
+//                    .strafeToLinearHeading(new Vector2d(10,-35), Math.toRadians(270))
+//
+//
 
                     //.splineToLinearHeading(new Pose2d(47,-10, Math.toRadians(90)), Math.toRadians(0))
                     /*.setTangent(15.0/8*Math.PI)
