@@ -137,11 +137,15 @@ public class AutoSpecimen extends LinearOpMode {
         Action mainAction = new SequentialAction(
                 new ParallelAction(
                         new SequentialAction(
-                                new WaitForTime(500),
+                                new WaitForTime(250),
                                 driveToChamber1
                         ),
                         robotHardware.raiseToChamber(false)
-                )
+                ),
+                new WaitForTime(300),
+                new InstantAction(() -> robotHardware.openSmallClaw()),
+                new WaitForTime(400),
+                new InstantAction(() -> robotHardware.setWristWallPosition())
         );
 
         // Return the main action.
