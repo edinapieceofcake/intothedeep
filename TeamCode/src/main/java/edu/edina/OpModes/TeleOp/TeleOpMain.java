@@ -281,7 +281,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.WALL) {
 
                 // Move the arm to the chamber position.
-                Action action = robotHardware.raiseToChamber(true);
+                Action action = robotHardware.raiseToChamber();
                 robotHardware.addAction(action);
 
                 // Set the robot mode to chamber.

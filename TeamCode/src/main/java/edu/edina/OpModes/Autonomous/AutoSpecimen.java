@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,17 +27,21 @@ public class AutoSpecimen extends LinearOpMode {
     public static double CHAMBER_Y = -29;
 
     // Fast velocity
-    public static double FAST_VELOCITY = 27;
+    public static double FAST_VELOCITY = 35;
+
+    // Medium velocity
+    public static double MEDIUM_VELOCITY = 23;
+
+    // Slow velocity
+    public static double SLOW_VELOCITY = 15;
 
     // Score y coordinate
     public static double SCORE_Y = -42;
 
-    // Slow velocity
-    public static double SLOW_VELOCITY = 15;
-    public static double SPIKE_MARK_ONE_X = 46.5;
-    public static double SPIKE_MARK_ONE_Y = -39;
-    public static double SPIKE_MARK_ONE_HEADING = Math.toRadians(270);
-    public static double SPIKE_MARK_ONE_END_TANGENT = Math.toRadians(90);
+    public static double FIRST_SPIKE_MARK_X = 46.5;
+    public static double FIRST_SPIKE_MARK_Y = -39.5;
+    public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
+    public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
     // Start x coordinate
     public static double START_X = 3;
@@ -127,7 +132,7 @@ public class AutoSpecimen extends LinearOpMode {
     }
     // Determines whether the robot is close to a spike mark.
     private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
-        return robotPose.position.x.value() > 30;
+        return robotPose.position.x.value() > 35;
     }
     // Gets the main action.
     private Action getMainAction() {
@@ -142,7 +147,7 @@ public class AutoSpecimen extends LinearOpMode {
             if (closeToSpikeMark) {
 
                 // Go slow.
-                return SLOW_VELOCITY;
+                return MEDIUM_VELOCITY;
 
             }
 
@@ -155,17 +160,21 @@ public class AutoSpecimen extends LinearOpMode {
             }
 
         };
+
+        // Construct a preload velocity constraint.
+        TranslationalVelConstraint preloadVelocityConstraint = new TranslationalVelConstraint(MEDIUM_VELOCITY);
+
         Pose2d startPose = new Pose2d(START_X, START_Y, Math.toRadians(270));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         Pose2d chamberPose = new Pose2d(START_X, CHAMBER_Y, Math.toRadians(270));
         TrajectoryActionBuilder driveToChamber1Builder = drive.actionBuilder(startPose)
-                .strafeTo(chamberPose.position);
+                .strafeTo(chamberPose.position, preloadVelocityConstraint);
         Action driveToChamber1 = driveToChamber1Builder.build();
 
-        Pose2d spikeMark1Pose = new Pose2d(SPIKE_MARK_ONE_X, SPIKE_MARK_ONE_Y, SPIKE_MARK_ONE_HEADING);
+        Pose2d spikeMark1Pose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
         TrajectoryActionBuilder driveToSpikeMark1Builder = drive.actionBuilder(chamberPose)
-                .splineToConstantHeading(spikeMark1Pose.position, SPIKE_MARK_ONE_END_TANGENT , spikeMarkVelocityConstraint);
+                .splineToConstantHeading(spikeMark1Pose.position, FIRST_SPIKE_MARK_END_TANGENT, spikeMarkVelocityConstraint);
         Action driveToSpikeMark1 = driveToSpikeMark1Builder.build();
 
         Action mainAction = new SequentialAction(
@@ -174,7 +183,7 @@ public class AutoSpecimen extends LinearOpMode {
                                 new WaitForTime(250),
                                 driveToChamber1
                         ),
-                        robotHardware.raiseToChamber(false)
+                        robotHardware.raiseToChamber()
                 ),
                 new WaitForTime(300),
                 new InstantAction(() -> robotHardware.openSmallClaw()),

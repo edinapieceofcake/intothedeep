@@ -676,11 +676,11 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Raises to chamber.
-    public Action raiseToChamber(boolean isAtWallPosition) {
+    public Action raiseToChamber() {
         Action action = new ParallelAction(
                 new MoveArm(this, Arm.CHAMBER_POSITION, true),
                 new SequentialAction(
-                        new WaitForTime(isAtWallPosition ? 500 : 0),
+                        new WaitForTime(500),
                         new InstantAction(() -> swivelSetClip()),
                         new InstantAction(() -> setLiftChamberPosition()),
                         new InstantAction(() -> setWristChamberPosition()),
