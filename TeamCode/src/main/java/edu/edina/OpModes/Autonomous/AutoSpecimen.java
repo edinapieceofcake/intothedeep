@@ -70,16 +70,16 @@ public class AutoSpecimen extends LinearOpMode {
 		// Wait for the user to lower the arm.
 		robotHardware.waitForArmDown();
 
-		// Close the small claw.
-		robotHardware.closeSmallClaw();
-
 		// Open the big claw.
 		robotHardware.openBigClaw();
 
-		// Initialize the wrist.
+		// Close the small claw.
+		robotHardware.closeSmallClaw();
+
+		// Set the wrist to the submersible position.
 		robotHardware.setWristSubmersiblePosition();
 
-		// Reset the swivel.
+		// Set the swivel to the horizontal position.
 		robotHardware.swivelSetHorizontal();
 
 		// If stop is requested...
