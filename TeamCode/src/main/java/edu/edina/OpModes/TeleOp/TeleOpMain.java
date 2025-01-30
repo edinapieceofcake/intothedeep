@@ -148,17 +148,10 @@ public class TeleOpMain extends LinearOpMode {
             // Convert the tall walls value to a symbol.
             String tallWallsSymbol = getSymbol(tallWalls);
 
-            // Get the use big claw value.
-            boolean useBigClaw = robotHardware.getUseBigClaw();
-
-            // Convert the use big claw value to a symbol.
-            String useBigClawSymbol = getSymbol(useBigClaw);
-
             // Display main telemetry.
             telemetry.addData("Main", "====================");
             telemetry.addData("- Mode", robotMode);
             telemetry.addData("- Tall Walls", tallWallsSymbol);
-            telemetry.addData("- Use Big Claw", useBigClawSymbol);
 
             // Update the robot hardware.
             robotHardware.update();

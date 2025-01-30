@@ -94,7 +94,6 @@ public class RobotHardware implements DrivingRobotHardware {
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
-    private boolean useBigClaw = true;
     private boolean tallWalls = true;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
@@ -507,30 +506,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Gets the use big claw value.
-    public boolean getUseBigClaw() {
-
-        // Return the use big claw value.
-        return useBigClaw;
-
-    }
-
-    // Sets the use big claw value.
-    public void setUseBigClaw(boolean useBigClaw) {
-
-        // Set the use big claw value.
-        this.useBigClaw = useBigClaw;
-
-    }
-
-    // Toggles the use big claw value.
-    public void toggleUseBigClaw() {
-
-        // Toggle the use big claw value.
-        useBigClaw = !useBigClaw;
-
-    }
-
     // Gets the use tall walls value.
     public boolean getTallWalls() {
 
@@ -872,9 +847,7 @@ public class RobotHardware implements DrivingRobotHardware {
     // Scores a sample in the basket.
     public Action scoreSample() {
         Action action = new SequentialAction(
-                useBigClaw ?
-                        new InstantAction(() -> openBigClaw()) :
-                        new InstantAction(() -> openSmallClaw()),
+                new InstantAction(() -> openBigClaw()),
                 new WaitForTime(500)
         );
         return action;

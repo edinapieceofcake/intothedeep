@@ -139,9 +139,6 @@ public class AutoSample extends LinearOpMode {
         // Get hardware.
         robotHardware = new RobotHardware(this);
 
-        // Use the big claw.
-        robotHardware.setUseBigClaw(true);
-
         // Wait for the user to lower the lift.
         robotHardware.waitForLiftDown();
 
