@@ -1,7 +1,5 @@
 package edu.edina.OpModes.Autonomous;
 
-import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -10,8 +8,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,7 +17,6 @@ import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForTime;
-import edu.edina.Libraries.Robot.WaitForHardware;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
@@ -191,7 +186,7 @@ public class AutoSpecimen extends LinearOpMode {
                                 new WaitForTime(1000),
                                 new ParallelAction(
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                                        new InstantAction(() -> robotHardware.setAutoSampleExtension()),
+                                        new InstantAction(() -> robotHardware.setAutoExtension()),
                                         new InstantAction(() -> robotHardware.openBigClaw()),
                                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
@@ -418,7 +413,7 @@ public class AutoSpecimen extends LinearOpMode {
 //        return mainAction;
 
     }
-
+	/*
     // Raises arm the arm to the chamber and drives.
     private Action raiseArmToChamberAndDrive(Action drive, boolean delayDriving, boolean moveArmFast) {
 
@@ -557,5 +552,5 @@ public class AutoSpecimen extends LinearOpMode {
         return action;
 
     }
-
+	*/
 }

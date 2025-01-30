@@ -24,7 +24,6 @@ import java.util.List;
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
-import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
 public class RobotHardware implements DrivingRobotHardware {
@@ -477,11 +476,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Sets the auto sample extension.
-    public void setAutoSampleExtension() {
+    // Sets the auto extension.
+    public void setAutoExtension() {
 
-        // Set the auto sample extension.
-        slide.setAutoSample();
+        // Set the auto extension.
+        slide.setAuto();
 
     }
 
@@ -513,6 +512,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Return the use big claw value.
         return useBigClaw;
+
+    }
+
+    // Sets the use big claw value.
+    public void setUseBigClaw(boolean useBigClaw) {
+
+        // Set the use big claw value.
+        this.useBigClaw = useBigClaw;
 
     }
 
@@ -874,10 +881,10 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Lowers the arm from the basket.
-    public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean isDone) {
+    public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean raiseArm, boolean extendSlide) {
 
         // Get an arm position.
-        int armPosition = isDone ? Arm.MINIMUM_POSITION : Arm.SUBMERSIBLE_ENTER_POSITION;
+        int armPosition = raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.MINIMUM_POSITION;
 
         // Construct an action.
         Action action = new SequentialAction(
@@ -892,9 +899,9 @@ public class RobotHardware implements DrivingRobotHardware {
                         new WaitForTime(500),
                         isAuto ?
                                 new ParallelAction(
-                                        isDone ?
-                                                new InstantAction(() -> setMinimumExtension()) :
-                                                new InstantAction(() -> setAutoSampleExtension()),
+                                        extendSlide ?
+                                                new InstantAction(() -> setAutoExtension()) :
+                                                new SequentialAction(),
                                         new MoveArm(this, armPosition, true)
                                 ) :
                                 new SequentialAction(
@@ -913,7 +920,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public Action scoreSampleAndLower(boolean horizontalSwivel) {
         Action action = new SequentialAction(
                 scoreSample(),
-                lowerArmFromBasket(horizontalSwivel, false, false)
+                lowerArmFromBasket(horizontalSwivel, false, true, true)
         );
         return action;
     }

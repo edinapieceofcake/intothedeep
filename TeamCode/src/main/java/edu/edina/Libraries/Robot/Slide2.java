@@ -1,12 +1,10 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -51,8 +49,8 @@ public class Slide2 {
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
 
-    // Auto sample position
-    public static int AUTO_SAMPLE_POSITION = 500;
+    // Auto position
+    public static int AUTO_POSITION = 500;
 
     // Controller
     private PIDController controller;
@@ -258,11 +256,11 @@ public class Slide2 {
 
     }
 
-    // Moves the slide to the auto sample position.
-    public void setAutoSample() {
+    // Moves the slide to the auto position.
+    public void setAuto() {
 
-        // Move the slide to the auto sample position.
-        targetPosition = AUTO_SAMPLE_POSITION;
+        // Move the slide to the auto position.
+        targetPosition = AUTO_POSITION;
 
     }
 
