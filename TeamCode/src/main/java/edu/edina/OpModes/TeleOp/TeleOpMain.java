@@ -300,21 +300,8 @@ public class TeleOpMain extends LinearOpMode {
             // Otherwise, if the robot is in wall mode...
             else if (robotMode == RobotMode.WALL) {
 
-                // If the big claw is open...
-                if (robotHardware.isBigClawOpen()) {
-
-                    // Toggle the small claw.
-                    robotHardware.toggleSmallClaw();
-
-                }
-
-                // Otherwise (if the big claw is closed)...
-                else {
-
-                    // Open the big claw.
-                    robotHardware.openBigClaw();
-
-                }
+                // Toggle the big claw.
+                robotHardware.toggleBigClaw();
 
             }
 

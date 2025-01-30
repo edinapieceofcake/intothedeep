@@ -655,7 +655,9 @@ public class RobotHardware implements DrivingRobotHardware {
         Action action = new ParallelAction(
                 new MoveArm(this, Arm.CHAMBER_POSITION, true),
                 new SequentialAction(
+                        new InstantAction(() -> closeSmallClaw()),
                         new WaitForTime(500),
+                        new InstantAction(() -> openBigClaw()),
                         new InstantAction(() -> swivelSetClip()),
                         new InstantAction(() -> setLiftChamberPosition()),
                         new InstantAction(() -> setWristChamberPosition()),
