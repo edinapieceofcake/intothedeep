@@ -39,9 +39,9 @@ public class AutoSpecimen extends LinearOpMode {
     // Slow velocity
     public static double SLOW_VELOCITY = 15;
     public static double SPIKE_MARK_ONE_X = 46.5;
-    public static double SPIKE_MARK_ONE_Y = -38;
+    public static double SPIKE_MARK_ONE_Y = -39;
     public static double SPIKE_MARK_ONE_HEADING = Math.toRadians(270);
-
+    public static double SPIKE_MARK_ONE_END_TANGENT = Math.toRadians(90);
 
     // Start x coordinate
     public static double START_X = 3;
@@ -130,9 +130,36 @@ public class AutoSpecimen extends LinearOpMode {
         }
 
     }
-
+    // Determines whether the robot is close to a spike mark.
+    private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
+        return robotPose.position.x.value() > 30;
+    }
     // Gets the main action.
     private Action getMainAction() {
+
+        // Construct a spike mark velocity constraint.
+        VelConstraint spikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
+
+            // Determine whether the robot is close to a spike mark.
+            boolean closeToSpikeMark = isCloseToSpikeMark(robotPose);
+
+            // If the robot is close to a spike mark...
+            if (closeToSpikeMark) {
+
+                // Go slow.
+                return SLOW_VELOCITY;
+
+            }
+
+            // Otherwise (if the robot is far from a spike mark)...
+            else {
+
+                // Go fast.
+                return FAST_VELOCITY;
+
+            }
+
+        };
         Pose2d startPose = new Pose2d(START_X, START_Y, Math.toRadians(270));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
@@ -143,7 +170,7 @@ public class AutoSpecimen extends LinearOpMode {
 
         Pose2d spikeMark1Pose = new Pose2d(SPIKE_MARK_ONE_X, SPIKE_MARK_ONE_Y, SPIKE_MARK_ONE_HEADING);
         TrajectoryActionBuilder driveToSpikeMark1Builder = drive.actionBuilder(chamberPose)
-                .splineToConstantHeading(spikeMark1Pose.position, spikeMark1Pose.heading);
+                .splineToConstantHeading(spikeMark1Pose.position, SPIKE_MARK_ONE_END_TANGENT , spikeMarkVelocityConstraint);
         Action driveToSpikeMark1 = driveToSpikeMark1Builder.build();
 
         Action mainAction = new SequentialAction(
@@ -156,7 +183,7 @@ public class AutoSpecimen extends LinearOpMode {
                 ),
                 new WaitForTime(300),
                 new InstantAction(() -> robotHardware.openSmallClaw()),
-                new WaitForTime(400),
+                new WaitForTime(500),
                 new InstantAction(() -> robotHardware.setWristWallPosition()),
                 new ParallelAction(
                         driveToSpikeMark1,
