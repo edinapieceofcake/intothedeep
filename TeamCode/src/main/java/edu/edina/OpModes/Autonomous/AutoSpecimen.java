@@ -135,8 +135,14 @@ public class AutoSpecimen extends LinearOpMode {
                 .strafeTo(new Vector2d(START_X, CHAMBER_Y));
         Action driveToChamber1 = driveToChamber1Builder.build();
         Action mainAction = new SequentialAction(
-                driveToChamber1
-                );
+                new ParallelAction(
+                        new SequentialAction(
+                                new WaitForTime(500),
+                                driveToChamber1
+                        ),
+                        robotHardware.raiseToChamber(false)
+                )
+        );
 
         // Return the main action.
         return mainAction;
@@ -299,7 +305,7 @@ public class AutoSpecimen extends LinearOpMode {
 //		//////////////////////////////////////////////////////////////////////
 //
 //		// Construct a main action.
-       // Action mainAction = new SequentialAction(
+        // Action mainAction = new SequentialAction(
 //
 //				// Drive to the chamber while raising the arm.
 //				raiseArmToChamberAndDrive(driveToChamber1, false, true),

@@ -668,36 +668,19 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Scores a specimen.
-    public void scoreSpecimen() {
-
-        // Get the hardware map.
-        HardwareMap hardwareMap = opMode.hardwareMap;
-
-        // Construct a start pose.
-        Pose2d startPose = new Pose2d(0, 0, 0);
-
-        // Construct an end pose.
-        Pose2d endPose = new Pose2d(SCORE_SPECIMEN_BACKUP_INCHES, 0, 0);
-
-        // Construct a drive interface.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
-
-        // Construct a backup action.
-        Action backup = drive.actionBuilder(startPose)
-                .strafeToLinearHeading(endPose.position, endPose.heading)
-                .build();
-
-        // Construct a score specimen action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> disableManualDriving()),
-                AutoSpecimen.scoreSpecimen(backup, this),
-                new InstantAction(() -> enableManualDriving())
+    // Raises to chamber.
+    public Action raiseToChamber(boolean isAtWallPosition) {
+        Action action = new ParallelAction(
+                new MoveArm(this, Arm.CHAMBER_POSITION, true),
+                new SequentialAction(
+                        new WaitForTime(isAtWallPosition ? 500 : 0),
+                        new InstantAction(() -> swivelSetClip()),
+                        new InstantAction(() -> setLiftChamberPosition()),
+                        new InstantAction(() -> setWristChamberPosition()),
+                        new InstantAction(() -> setChamberExtension())
+                )
         );
-
-        // Run the action.
-        runningActions.add(action);
-
+        return action;
     }
 
     // Determines whether the wrist is in the wall position.
