@@ -58,7 +58,6 @@ public class TeleOpMain extends LinearOpMode {
         - a = rezero arm
         - x = rezero slide
         - b = rezero lift
-        - right bumper = toggle use big claw
         - left bumper = toggle tall walls
 
     */
@@ -223,17 +222,6 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // Toggle use big claw
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user pressed right bumper...
-        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
-
-            // Toggle the use big claw value.
-            robotHardware.toggleUseBigClaw();
-
-        }
-
         // Toggle tall walls
         //////////////////////////////////////////////////////////////////////
 
@@ -340,30 +328,14 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        // Determine whether we are using the big claw.
-        boolean useBigClaw = robotHardware.getUseBigClaw();
-
         // If the user pressed a...
         if (currentGamepad2.a && !previousGamepad2.a) {
 
             // If the robot is in submersible mode...
             if(robotMode == RobotMode.SUBMERSIBLE) {
 
-                // If we are using the big claw...
-                if(useBigClaw) {
-
-                    // Toggle the big claw.
-                    robotHardware.toggleBigClaw();
-
-                }
-
-                // Otherwise (if we are using the small claw)...
-                else {
-
-                    // Toggle the small claw.
-                    robotHardware.toggleSmallClaw();
-
-                }
+                // Toggle the big claw.
+                robotHardware.toggleBigClaw();
 
             }
 
@@ -532,14 +504,10 @@ public class TeleOpMain extends LinearOpMode {
 
                     // Grab a sample.
                     Action action = new SequentialAction(
-                            useBigClaw ?
-                                    new InstantAction(() -> robotHardware.openBigClaw()) :
-                                    new InstantAction(() -> robotHardware.openSmallClaw()),
+                            new InstantAction(() -> robotHardware.openBigClaw()),
                             new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
                             new WaitForTime(100),
-                            useBigClaw ?
-                                    new InstantAction(() -> robotHardware.closeBigClaw()) :
-                                    new InstantAction(() -> robotHardware.closeSmallClaw()),
+                            new InstantAction(() -> robotHardware.closeBigClaw()),
                             new WaitForTime(100),
                             new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
                     );
