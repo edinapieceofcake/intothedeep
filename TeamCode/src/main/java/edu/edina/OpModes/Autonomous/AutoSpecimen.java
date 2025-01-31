@@ -45,7 +45,7 @@ public class AutoSpecimen extends LinearOpMode {
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
     public static double SECOND_SPIKE_MARK_X = 55.5;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
-    public static double HUMAN_PLAYER_Y = -49.5;
+    public static double HUMAN_Y = -49.5;
 
     // Start x coordinate
     public static double START_X = 3;
@@ -174,81 +174,50 @@ public class AutoSpecimen extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         Pose2d chamberPose = new Pose2d(START_X, CHAMBER_Y, Math.toRadians(270));
-        TrajectoryActionBuilder driveToChamber1Builder = drive.actionBuilder(startPose)
+        TrajectoryActionBuilder driveFromStartToChamberBuilder = drive.actionBuilder(startPose)
                 .strafeTo(chamberPose.position, preloadVelocityConstraint);
-        Action driveToChamber1 = driveToChamber1Builder.build();
+        Action driveFromStartToChamber = driveFromStartToChamberBuilder.build();
 
-        Pose2d spikeMark1Pose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
-        TrajectoryActionBuilder driveToSpikeMark1Builder = drive.actionBuilder(chamberPose)
-                .splineToConstantHeading(spikeMark1Pose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint);
-        Action driveToSpikeMark1 = driveToSpikeMark1Builder.build();
+        Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+        TrajectoryActionBuilder driveFromChamberToFirstSpikeMarkBuilder = drive.actionBuilder(chamberPose)
+                .splineToConstantHeading(firstSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint);
+        Action driveFromChamberToFirstSpikeMark = driveFromChamberToFirstSpikeMarkBuilder.build();
 
-        TrajectoryActionBuilder driveToHumanPlayer1Builder = drive.actionBuilder(spikeMark1Pose)
-                .strafeTo(new Vector2d(FIRST_SPIKE_MARK_X, HUMAN_PLAYER_Y));
-        Action driveToHumanPlayer1 = driveToHumanPlayer1Builder.build();
+        TrajectoryActionBuilder driveFromFirstSpikeMarkToHumanBuilder = drive.actionBuilder(firstSpikeMarkPose)
+                .strafeTo(new Vector2d(FIRST_SPIKE_MARK_X, HUMAN_Y));
+        Action driveFromFirstSpikeMarkToHuman = driveFromFirstSpikeMarkToHumanBuilder.build();
 
-        Pose2d spikeMark2Pose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
-        TrajectoryActionBuilder driveToSpikeMark2Builder = drive.actionBuilder(new Pose2d(FIRST_SPIKE_MARK_X, HUMAN_PLAYER_Y, FIRST_SPIKE_MARK_HEADING))
+        Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+        TrajectoryActionBuilder driveFromHumanToSecondSpikeMarkBuilder = drive.actionBuilder(new Pose2d(FIRST_SPIKE_MARK_X, HUMAN_Y, FIRST_SPIKE_MARK_HEADING))
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(spikeMark2Pose.position, FIRST_SPIKE_MARK_END_TANGENT);
-        Action driveToSpikeMark2 = driveToSpikeMark2Builder.build();
+                .splineToConstantHeading(secondSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT);
+        Action driveFromHumanToSecondSpikeMark = driveFromHumanToSecondSpikeMarkBuilder.build();
 
-        TrajectoryActionBuilder driveToHumanPlayer2Builder = drive.actionBuilder(spikeMark2Pose)
-                .strafeTo(new Vector2d(SECOND_SPIKE_MARK_X, HUMAN_PLAYER_Y));
-        Action driveToHumanPlayer2 = driveToHumanPlayer2Builder.build();
+        TrajectoryActionBuilder driveFromSecondSpikeMarkToHumanBuilder = drive.actionBuilder(secondSpikeMarkPose)
+                .strafeTo(new Vector2d(SECOND_SPIKE_MARK_X, HUMAN_Y));
+        Action driveFromSecondSpikeMarkToHuman = driveFromSecondSpikeMarkToHumanBuilder.build();
 
-        // Get the tall walls value.
-        boolean tallWalls = robotHardware.getTallWalls();
-
+        // Construct a main action.
         Action mainAction = new SequentialAction(
-                new ParallelAction(
-                        new SequentialAction(
-                                new WaitForTime(250),
-                                driveToChamber1
-                        ),
-                        robotHardware.raiseToChamber()
-                ),
-                new InstantAction(() -> robotHardware.openSmallClaw()),
-                new WaitForTime(200),
-                new InstantAction(() -> robotHardware.setWristWallPosition()),
-                new ParallelAction(
-                        driveToSpikeMark1,
-                        new SequentialAction(
-                                new WaitForTime(1000),
-                                new ParallelAction(
-                                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                                        new InstantAction(() -> robotHardware.setAutoExtension()),
-                                        new InstantAction(() -> robotHardware.openBigClaw()),
-                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
-                                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
-                                )
-                        )
-                ),
-                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
-                new WaitForTime(500),
-                new InstantAction(() -> robotHardware.closeBigClaw()),
-                new WaitForTime(250),
-                new ParallelAction(
-                        new MoveArm(robotHardware, tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION, true),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        driveToHumanPlayer1
-                ),
-                new InstantAction(() -> robotHardware.openBigClaw()),
-                new WaitForTime(200),
-                new ParallelAction(
-                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
-                        driveToSpikeMark2
-                ),
-                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
-                new InstantAction(() -> robotHardware.closeBigClaw()),
-                new WaitForTime(250),
-                new ParallelAction(
-                        new MoveArm(robotHardware, tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION, true),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        driveToHumanPlayer2
-                ),
-                new InstantAction(() -> robotHardware.openBigClaw())
+
+                // Score the preloaded specimen and drive to the first spike mark.
+                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, false),
+
+                // Grab the first spike mark sample.
+                grabSample(),
+
+                // Deliver the first spike mark sample to the human player.
+                deliverSample(driveFromFirstSpikeMarkToHuman),
+
+                // Drive to the second spike mark.
+                driveToSpikeMark(driveFromHumanToSecondSpikeMark, true),
+
+                // Grab the second spike mark sample.
+                grabSample(),
+
+                // Deliver the second spike mark sample to the human player.
+                deliverSample(driveFromSecondSpikeMarkToHuman)
+
         );
 
         // Return the main action.
@@ -465,6 +434,132 @@ public class AutoSpecimen extends LinearOpMode {
 //        return mainAction;
 
     }
+
+    // Scores a specimen and then drives to a destination.
+    private Action scoreAndDrive(Action driveToChamber, Action driveToDestination, boolean goToWall) {
+
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        // Get an arm position
+        int armPosition;
+        if(goToWall) {
+            armPosition = tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION;
+        }
+        else {
+            armPosition = Arm.SUBMERSIBLE_ENTER_POSITION;
+        }
+
+        // Construct an action.
+        Action action = new SequentialAction(
+
+                // Drive to the chamber while raising the specimen.
+                new ParallelAction(
+                        new SequentialAction(
+                                new WaitForTime(250),
+                                driveToChamber
+                        ),
+                        robotHardware.raiseToChamber()
+                ),
+
+                // Score the specimen.
+                new InstantAction(() -> robotHardware.openSmallClaw()),
+                new WaitForTime(200),
+                new InstantAction(() -> robotHardware.setWristWallPosition()),
+
+                // Drive to the destination while lowering the arm.
+                new ParallelAction(
+                        driveToDestination,
+                        new SequentialAction(
+                                new WaitForTime(1000),
+                                new ParallelAction(
+                                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                                        goToWall ?
+                                                new InstantAction(() -> robotHardware.setMinimumExtension()) :
+                                                new InstantAction(() -> robotHardware.setAutoExtension()),
+                                        new InstantAction(() -> robotHardware.openBigClaw()),
+                                        new MoveArm(robotHardware, armPosition, true),
+                                        goToWall ?
+                                                new InstantAction(() -> robotHardware.setWristWallPosition()) :
+                                                new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
+                                )
+                        )
+                ),
+
+                // Wait for the arm to settle.
+                new WaitForTime(200)
+
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Grabs a sample from a spike mark.
+    private Action grabSample() {
+
+        // Construct an action.
+        Action action = new SequentialAction(
+                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
+                new InstantAction(() -> robotHardware.closeBigClaw()),
+                new WaitForTime(250)
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Delivers a sample to the human player.
+    private Action deliverSample(Action driveToHuman) {
+
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        // Get an arm position.
+        int armPosition = tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION;
+
+        // Construct an action.
+        Action action = new SequentialAction(
+                new ParallelAction(
+                        new InstantAction(() -> robotHardware.setMinimumExtension()),
+                        new MoveArm(robotHardware, armPosition, true),
+                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        driveToHuman
+                ),
+                new WaitForTime(200),
+                new InstantAction(() -> robotHardware.openBigClaw()),
+                new WaitForTime(200)
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Drives to a spike mark.
+    private Action driveToSpikeMark(Action driveToSpikeMark, boolean horizontalSwivel) {
+
+        // Construct an action.
+        Action action = new SequentialAction(
+                new ParallelAction(
+                        horizontalSwivel ?
+                                new InstantAction(() -> robotHardware.swivelSetHorizontal()) :
+                                new InstantAction(() -> robotHardware.swivelSetVertical()),
+                        new InstantAction(() -> robotHardware.setAutoExtension()),
+                        new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                        driveToSpikeMark
+                ),
+                new WaitForTime(200)
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
 	/*
     // Raises arm the arm to the chamber and drives.
     private Action raiseArmToChamberAndDrive(Action drive, boolean delayDriving, boolean moveArmFast) {
