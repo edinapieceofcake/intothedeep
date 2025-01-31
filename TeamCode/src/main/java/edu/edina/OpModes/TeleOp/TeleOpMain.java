@@ -350,19 +350,33 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Release the specimen.
                 Action action = new SequentialAction(
-                        // If the arm is in the chamber position...
+
+                        // Open the small claw to release the specimen.
                         new InstantAction(() -> robotHardware.openSmallClaw()),
+
+                        // Wait a bit.
                         new WaitForTime(200),
+
+                        // Lower the wrist.
                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
+
+                        // Lower the lift.
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+
+                        // Lower the arm.
                         new MoveArm(robotHardware, tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION, true),
+
+                        // Set the wrist to the wall position.
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
-                        new InstantAction(() -> robotHardware.swivelSetHorizontal())
+
+                        // Set the swivel to horizontal.
+                        new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+
+                        // Set the robot mode to wall.
+                        new InstantAction(() -> {robotMode = RobotMode.WALL;})
+
                 );
                 robotHardware.addAction(action);
-
-                // Set the robot mode to wall.
-                robotMode = RobotMode.WALL;
 
             }
 
