@@ -34,7 +34,7 @@ public class TeleOpMain extends LinearOpMode {
         - right stick = rotate robot
         - a = score in basket, grab from wall
         - x = chamber
-        - left trigger = hold for turtle
+        - left bumper = hold for turtle
 
     Gamepad 2
 
@@ -250,7 +250,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // Enable turtle mode if appropriate.
-        robotHardware.setTurtleMode(currentGamepad1.left_trigger > TRIGGER_THRESHOLD);
+        robotHardware.setTurtleMode(currentGamepad1.left_bumper);
 
         // Chamber
         //////////////////////////////////////////////////////////////////////
