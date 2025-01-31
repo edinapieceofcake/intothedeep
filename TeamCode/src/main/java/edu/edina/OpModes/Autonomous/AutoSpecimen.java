@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,34 +23,45 @@ import edu.edina.Libraries.Robot.WaitForTime;
 @Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSpecimen extends LinearOpMode {
 
-    // Chamber y coordinate
+    // Start pose
+    public static double START_X = 3;
+    public static double START_Y = -60;
+    public static double START_HEADING = Math.toRadians(270);
+
+    // Chamber pose
+    public static double CHAMBER_X = START_X;
     public static double CHAMBER_Y = -29;
+    public static double CHAMBER_HEADING = START_HEADING;
 
-    // Fast velocity
-    public static double FAST_VELOCITY = 35;
-
-    // Medium velocity
-    public static double MEDIUM_VELOCITY = 23;
-
-    // Slow velocity
-    public static double SLOW_VELOCITY = 15;
-
-    // Score y coordinate
-    public static double SCORE_Y = -42;
-
+    // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = 46.5;
     public static double FIRST_SPIKE_MARK_Y = -39.5;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
+
+    // Second spike mark pose
     public static double SECOND_SPIKE_MARK_X = 55.5;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
-    public static double HUMAN_Y = -49.5;
+    public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
+    public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
 
-    // Start x coordinate
-    public static double START_X = 3;
+    // First drop pose
+    public static double FIRST_DROP_X = FIRST_SPIKE_MARK_X;
+    public static double FIRST_DROP_Y = -49.5;
+    public static double FIRST_DROP_HEADING = FIRST_SPIKE_MARK_HEADING;
 
-    // Start y coordinate
-    public static double START_Y = -60;
+    // Second drop pose
+    public static double SECOND_DROP_X = SECOND_SPIKE_MARK_X;
+    public static double SECOND_DROP_Y = FIRST_DROP_Y;
+    public static double SECOND_DROP_HEADING = FIRST_DROP_HEADING;
+
+    // Velocities
+    public static double FAST_VELOCITY = 35;
+    public static double MEDIUM_VELOCITY = 23;
+    public static double SLOW_VELOCITY = 15;
+
+    // Score y coordinate
+    public static double SCORE_Y = -42;
 
     // Wall x coordinate
     public static double WALL_X = 39;
@@ -143,6 +153,9 @@ public class AutoSpecimen extends LinearOpMode {
     // Gets the main action.
     private Action getMainAction() {
 
+        // Construct velocity constraints.
+        //////////////////////////////////////////////////////////////////////
+
         // Construct a first spike mark velocity constraint.
         VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
 
@@ -170,32 +183,60 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a preload velocity constraint.
         TranslationalVelConstraint preloadVelocityConstraint = new TranslationalVelConstraint(MEDIUM_VELOCITY);
 
-        Pose2d startPose = new Pose2d(START_X, START_Y, Math.toRadians(270));
+        // Construct poses.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a start pose.
+        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
+
+        // Construct a chamber pose.
+        Pose2d chamberPose = new Pose2d(CHAMBER_X, CHAMBER_Y, CHAMBER_HEADING);
+
+        // Construct a first spike mark pose.
+        Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+
+        // Construct a first drop pose.
+        Pose2d firstDropPose = new Pose2d(FIRST_DROP_X, FIRST_DROP_Y, FIRST_DROP_HEADING);
+
+        // Construct a second spike mark pose.
+        Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, SECOND_SPIKE_MARK_HEADING);
+
+        // Construct a second drop pose.
+        Pose2d secondDropPose = new Pose2d(SECOND_DROP_X, SECOND_DROP_Y, SECOND_DROP_HEADING);
+
+        // Construct trajectories.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a drive interface.
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
-        Pose2d chamberPose = new Pose2d(START_X, CHAMBER_Y, Math.toRadians(270));
+        // Construct a drive from start to chamber trajectory.
         TrajectoryActionBuilder driveFromStartToChamberBuilder = drive.actionBuilder(startPose)
                 .strafeTo(chamberPose.position, preloadVelocityConstraint);
         Action driveFromStartToChamber = driveFromStartToChamberBuilder.build();
 
-        Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+        // Construct a drive from chamber to first spike mark trajectory.
         TrajectoryActionBuilder driveFromChamberToFirstSpikeMarkBuilder = drive.actionBuilder(chamberPose)
                 .splineToConstantHeading(firstSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint);
         Action driveFromChamberToFirstSpikeMark = driveFromChamberToFirstSpikeMarkBuilder.build();
 
-        TrajectoryActionBuilder driveFromFirstSpikeMarkToHumanBuilder = drive.actionBuilder(firstSpikeMarkPose)
-                .strafeTo(new Vector2d(FIRST_SPIKE_MARK_X, HUMAN_Y));
-        Action driveFromFirstSpikeMarkToHuman = driveFromFirstSpikeMarkToHumanBuilder.build();
+        // Construct a drive from first spike mark to first drop trajectory.
+        TrajectoryActionBuilder driveFromFirstSpikeMarkToFirstDropBuilder = drive.actionBuilder(firstSpikeMarkPose)
+                .strafeTo(firstDropPose.position);
+        Action driveFromFirstSpikeMarkToFirstDrop = driveFromFirstSpikeMarkToFirstDropBuilder.build();
 
-        Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
-        TrajectoryActionBuilder driveFromHumanToSecondSpikeMarkBuilder = drive.actionBuilder(new Pose2d(FIRST_SPIKE_MARK_X, HUMAN_Y, FIRST_SPIKE_MARK_HEADING))
+        // Construct a drive from first drop to second spike mark trajectory.
+        TrajectoryActionBuilder driveFromFirstDropToSecondSpikeMarkBuilder = drive.actionBuilder(firstDropPose)
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(secondSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT);
-        Action driveFromHumanToSecondSpikeMark = driveFromHumanToSecondSpikeMarkBuilder.build();
+                .splineToConstantHeading(secondSpikeMarkPose.position, SECOND_SPIKE_MARK_END_TANGENT);
+        Action driveFromFirstDropToSecondSpikeMark = driveFromFirstDropToSecondSpikeMarkBuilder.build();
 
-        TrajectoryActionBuilder driveFromSecondSpikeMarkToHumanBuilder = drive.actionBuilder(secondSpikeMarkPose)
-                .strafeTo(new Vector2d(SECOND_SPIKE_MARK_X, HUMAN_Y));
-        Action driveFromSecondSpikeMarkToHuman = driveFromSecondSpikeMarkToHumanBuilder.build();
+        TrajectoryActionBuilder driveFromSecondSpikeMarkToSecondDropBuilder = drive.actionBuilder(secondSpikeMarkPose)
+                .strafeTo(secondDropPose.position);
+        Action driveFromSecondSpikeMarkToSecondDrop = driveFromSecondSpikeMarkToSecondDropBuilder.build();
+
+        // Construct a main action.
+        //////////////////////////////////////////////////////////////////////
 
         // Construct a main action.
         Action mainAction = new SequentialAction(
@@ -207,16 +248,16 @@ public class AutoSpecimen extends LinearOpMode {
                 grabSample(),
 
                 // Deliver the first spike mark sample to the human player.
-                deliverSample(driveFromFirstSpikeMarkToHuman),
+                deliverSample(driveFromFirstSpikeMarkToFirstDrop),
 
                 // Drive to the second spike mark.
-                driveToSpikeMark(driveFromHumanToSecondSpikeMark, true),
+                driveToSpikeMark(driveFromFirstDropToSecondSpikeMark, true),
 
                 // Grab the second spike mark sample.
                 grabSample(),
 
                 // Deliver the second spike mark sample to the human player.
-                deliverSample(driveFromSecondSpikeMarkToHuman)
+                deliverSample(driveFromSecondSpikeMarkToSecondDrop)
 
         );
 
