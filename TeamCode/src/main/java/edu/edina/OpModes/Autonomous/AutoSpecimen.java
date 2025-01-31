@@ -135,29 +135,29 @@ public class AutoSpecimen extends LinearOpMode {
 
     }
 
-    // Determines whether the robot is close to a spike mark.
-    private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
+    // Determines whether the robot is close to the first spike mark.
+    private static boolean isCloseToFirstSpikeMark(Pose2dDual robotPose) {
         return robotPose.position.x.value() > 35;
     }
 
     // Gets the main action.
     private Action getMainAction() {
 
-        // Construct a spike mark velocity constraint.
-        VelConstraint spikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
+        // Construct a first spike mark velocity constraint.
+        VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
 
-            // Determine whether the robot is close to a spike mark.
-            boolean closeToSpikeMark = isCloseToSpikeMark(robotPose);
+            // Determine whether the robot is close to the first spike mark.
+            boolean closeToFirstSpikeMark = isCloseToFirstSpikeMark(robotPose);
 
-            // If the robot is close to a spike mark...
-            if (closeToSpikeMark) {
+            // If the robot is close to the first spike mark...
+            if (closeToFirstSpikeMark) {
 
                 // Go slow.
                 return MEDIUM_VELOCITY;
 
             }
 
-            // Otherwise (if the robot is far from a spike mark)...
+            // Otherwise (if the robot is far from the first spike mark)...
             else {
 
                 // Go fast.
@@ -180,7 +180,7 @@ public class AutoSpecimen extends LinearOpMode {
 
         Pose2d spikeMark1Pose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
         TrajectoryActionBuilder driveToSpikeMark1Builder = drive.actionBuilder(chamberPose)
-                .splineToConstantHeading(spikeMark1Pose.position, FIRST_SPIKE_MARK_END_TANGENT, spikeMarkVelocityConstraint);
+                .splineToConstantHeading(spikeMark1Pose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint);
         Action driveToSpikeMark1 = driveToSpikeMark1Builder.build();
 
         TrajectoryActionBuilder driveToHumanPlayer1Builder = drive.actionBuilder(spikeMark1Pose)
@@ -190,12 +190,12 @@ public class AutoSpecimen extends LinearOpMode {
         Pose2d spikeMark2Pose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
         TrajectoryActionBuilder driveToSpikeMark2Builder = drive.actionBuilder(new Pose2d(FIRST_SPIKE_MARK_X, HUMAN_PLAYER_Y, FIRST_SPIKE_MARK_HEADING))
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(spikeMark2Pose.position, FIRST_SPIKE_MARK_END_TANGENT, spikeMarkVelocityConstraint);
+                .splineToConstantHeading(spikeMark2Pose.position, FIRST_SPIKE_MARK_END_TANGENT);
         Action driveToSpikeMark2 = driveToSpikeMark2Builder.build();
 
         TrajectoryActionBuilder driveToHumanPlayer2Builder = drive.actionBuilder(spikeMark2Pose)
                 .strafeTo(new Vector2d(SECOND_SPIKE_MARK_X, HUMAN_PLAYER_Y));
-        Action driveToHumanPlayer2 = driveToHumanPlayer1Builder.build();
+        Action driveToHumanPlayer2 = driveToHumanPlayer2Builder.build();
 
         // Get the tall walls value.
         boolean tallWalls = robotHardware.getTallWalls();
@@ -208,9 +208,8 @@ public class AutoSpecimen extends LinearOpMode {
                         ),
                         robotHardware.raiseToChamber()
                 ),
-                new WaitForTime(300),
                 new InstantAction(() -> robotHardware.openSmallClaw()),
-                new WaitForTime(500),
+                new WaitForTime(200),
                 new InstantAction(() -> robotHardware.setWristWallPosition()),
                 new ParallelAction(
                         driveToSpikeMark1,
@@ -225,17 +224,15 @@ public class AutoSpecimen extends LinearOpMode {
                                 )
                         )
                 ),
-                new WaitForTime(1000),
                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
-                new WaitForTime(1000),
-                new InstantAction(() -> robotHardware.closeBigClaw()),
                 new WaitForTime(500),
+                new InstantAction(() -> robotHardware.closeBigClaw()),
+                new WaitForTime(250),
                 new ParallelAction(
                         new MoveArm(robotHardware, tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         driveToHumanPlayer1
                 ),
-                new WaitForTime(1000),
                 new InstantAction(() -> robotHardware.openBigClaw()),
                 new WaitForTime(200),
                 new ParallelAction(
@@ -243,18 +240,16 @@ public class AutoSpecimen extends LinearOpMode {
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         driveToSpikeMark2
                 ),
-                new WaitForTime(1000),
                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
                 new InstantAction(() -> robotHardware.closeBigClaw()),
-                new WaitForTime(500),
+                new WaitForTime(250),
                 new ParallelAction(
                         new MoveArm(robotHardware, tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         driveToHumanPlayer2
                 ),
-                new WaitForTime(1000),
                 new InstantAction(() -> robotHardware.openBigClaw())
-                );
+        );
 
         // Return the main action.
         return mainAction;
