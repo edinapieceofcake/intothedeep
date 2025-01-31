@@ -17,7 +17,8 @@ public class Drivetrain {
     public static double NORMAL_MULTIPLIER = 1;
 
     // Turtle multiplier
-    public static double TURTLE_MULTIPLIER = 0.3;
+    public static double SNAIL_MULTIPLIER = 0.3;
+    public static double TURTLE_MULTIPLIER = 0.75;
 
     public final static boolean ENABLE_REVERSE = true;
 
@@ -121,8 +122,14 @@ public class Drivetrain {
             rightBackPower /= max;
         }
 
-        double multiplier = getTurtleMode() || !isDriver1InControl ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
+        double multiplier;
 
+        if(isDriver1InControl){
+            multiplier = getTurtleMode() ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
+        }
+        else {
+            multiplier = SNAIL_MULTIPLIER;
+        }
         leftFrontPower *= multiplier;
         leftBackPower *= multiplier;
         rightBackPower *= multiplier;
