@@ -69,11 +69,11 @@ public class RobotHardware implements DrivingRobotHardware {
                 0 - REV 2M Distance Sensor - distance_right
     */
 
-    // Green square (see https://unicode-explorer.com/list/geometric-shapes)
-    private static final String GREEN_SQAURE = "\uD83D\uDFE9";
-
-    // Red square (see https://unicode-explorer.com/list/geometric-shapes)
-    private static final String RED_SQUARE = "\uD83D\uDFE5";
+    // Squares (see https://unicode-explorer.com/list/geometric-shapes)
+    public static final String BLUE_SQUARE = "\uD83D\uDFE6";
+    public static final String GREEN_SQAURE = "\uD83D\uDFE9";
+    public static final String RED_SQUARE = "\uD83D\uDFE5";
+    public static final String YELLOW_SQUARE = "\uD83D\uDFE8";
 
     // Inches to back up when scoring a specimen
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
@@ -938,6 +938,11 @@ public class RobotHardware implements DrivingRobotHardware {
     // Gets a symbol.
     public static String getSymbol(boolean value) {
         return value ? GREEN_SQAURE : RED_SQUARE;
+    }
+
+    // Gets a banner.
+    public static String getBanner(String symbol) {
+        return symbol + symbol + symbol + symbol + symbol + symbol;
     }
 
 }

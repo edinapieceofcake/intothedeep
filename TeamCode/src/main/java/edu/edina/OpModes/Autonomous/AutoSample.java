@@ -1,5 +1,7 @@
 package edu.edina.OpModes.Autonomous;
 
+import static edu.edina.Libraries.Robot.RobotHardware.YELLOW_SQUARE;
+import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
 import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -505,11 +507,14 @@ public class AutoSample extends LinearOpMode {
     // Adds telemetry.
     private void addTelemetry() {
 
+        // Get a banner.
+        String banner = getBanner(YELLOW_SQUARE);
+
         // Convert the grab fifth sample value to a symbol.
         String grabFifthSampleSymbol = getSymbol(grabFifthSample);
 
         // Display main telemetry.
-        telemetry.addData("Main", "====================");
+        telemetry.addData("AutoSample", banner);
         telemetry.addData("- Grab Fifth Sample", grabFifthSampleSymbol);
 
     }

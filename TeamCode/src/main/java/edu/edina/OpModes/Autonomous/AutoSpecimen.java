@@ -1,5 +1,8 @@
 package edu.edina.OpModes.Autonomous;
 
+import static edu.edina.Libraries.Robot.RobotHardware.BLUE_SQUARE;
+import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -111,6 +114,9 @@ public class AutoSpecimen extends LinearOpMode {
         // Wait for start.
         //////////////////////////////////////////////////////////////////////
 
+        // Add telemetry.
+        addTelemetry();
+
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 
@@ -134,6 +140,9 @@ public class AutoSpecimen extends LinearOpMode {
 
         // While the op mode is active...
         while (opModeIsActive()) {
+
+            // Add telemetry.
+            addTelemetry();
 
             // Update the robot hardware.
             robotHardware.update();
@@ -741,4 +750,15 @@ public class AutoSpecimen extends LinearOpMode {
 
     }
 	*/
+    // Adds telemetry.
+    private void addTelemetry() {
+
+        // Get a banner.
+        String banner = getBanner(BLUE_SQUARE);
+
+        // Display main telemetry.
+        telemetry.addData("AutoSpecimen", banner);
+
+    }
+
 }
