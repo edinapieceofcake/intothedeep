@@ -53,12 +53,12 @@ public class AutoSample extends LinearOpMode {
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -55;
+    public static double THIRD_SPIKE_MARK_X = -55.5;
     public static double THIRD_SPIKE_MARK_Y = -25.5;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
 
     // Human pose
-    public static double HUMAN_X = 36;
+    public static double HUMAN_X = 34;
     public static double HUMAN_Y = -51;
     public static double FIRST_HUMAN_HEADING = Math.toRadians(0);
     public static double SECOND_HUMAN_HEADING = Math.toRadians(180);
