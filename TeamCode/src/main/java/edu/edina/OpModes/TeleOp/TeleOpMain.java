@@ -574,7 +574,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             // Otherwise, if the robot is in initialize mode...
-            else if(robotMode == RobotMode.INITIALIZE) {
+            else if(robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Move the arm to the submersible position.
                 Action action = new SequentialAction(
