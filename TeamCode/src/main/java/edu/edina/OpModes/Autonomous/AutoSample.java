@@ -40,7 +40,7 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_BASKET_HEADING = Math.toRadians(225);
 
     // Second basket pose
-    public static double SECOND_BASKET_X = -54;
+    public static double SECOND_BASKET_X = -58;
     public static double SECOND_BASKET_Y = -54;
     public static double SECOND_BASKET_HEADING = Math.toRadians(225);
 
@@ -55,13 +55,13 @@ public class AutoSample extends LinearOpMode {
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -55.5;
-    public static double THIRD_SPIKE_MARK_Y = -25.5;
+    public static double THIRD_SPIKE_MARK_X = -56;
+    public static double THIRD_SPIKE_MARK_Y = -25;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
 
     // Human pose
     public static double HUMAN_X = 34;
-    public static double HUMAN_Y = -51;
+    public static double HUMAN_Y = -50.5;
     public static double FIRST_HUMAN_HEADING = Math.toRadians(0);
     public static double SECOND_HUMAN_HEADING = Math.toRadians(180);
 
@@ -351,6 +351,30 @@ public class AutoSample extends LinearOpMode {
 
         };
 
+        // Construct a fifth sample velocity constraint.
+        VelConstraint fifthSampleVelocityConstraint = (robotPose, _path, _disp) -> {
+
+            // Determine whether the robot is close to the fifth sample.
+            boolean closeToFifthSample = isCloseToFifthSample(robotPose);
+
+            // If the robot is close to the fifth sample...
+            if (closeToFifthSample) {
+
+                // Go slow.
+                return SLOW_VELOCITY;
+
+            }
+
+            // Otherwise (if the robot is far from the fifth sample)...
+            else {
+
+                // Go fast.
+                return FAST_VELOCITY;
+
+            }
+
+        };
+
         // Construct a human velocity constraint.
 		TranslationalVelConstraint humanVelocityConstraint = new TranslationalVelConstraint(FAST_VELOCITY);
 
@@ -425,7 +449,7 @@ public class AutoSample extends LinearOpMode {
         // Construct an action for driving from the basket to the human.
         Action driveFromBasketToHuman = drive.actionBuilder(firstBasketPose)
                 .setReversed(true)
-                .splineTo(firstHumanPose.position, firstHumanPose.heading, humanVelocityConstraint)
+                .splineTo(firstHumanPose.position, firstHumanPose.heading, fifthSampleVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the human to the basket.
@@ -496,6 +520,11 @@ public class AutoSample extends LinearOpMode {
     // Determines whether the robot is close to the submersible.
     private static boolean isCloseToSubmersible(Pose2dDual robotPose) {
         return robotPose.position.y.value() > -25;
+    }
+
+    // Determines whether the robot is close to the fifth sample.
+    private static boolean isCloseToFifthSample(Pose2dDual robotPose) {
+        return robotPose.position.x.value() > 20;
     }
 
     // Prompts the user for an input.
