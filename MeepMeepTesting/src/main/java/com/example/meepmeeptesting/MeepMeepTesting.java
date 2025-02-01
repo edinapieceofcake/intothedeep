@@ -128,13 +128,12 @@ public class MeepMeepTesting {
             // *****SPECIMENS*****
 
             // START COPYING
-            Pose2d beginPose = new Pose2d(3, -60, Math.toRadians(270));
+            Pose2d beginPose = new Pose2d(50, -25, Math.toRadians(180));
             // STOP COPYING
 
             myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
-                    .strafeTo(new Vector2d(3, -29))
-                            .setTangent(Math.toRadians(270))
-                                    .splineToConstantHeading(new Vector2d(48,-37),Math.toRadians(90))
+                            .setTangent(Math.toRadians(180))
+                                    .splineTo(new Vector2d(46.5,-49.5),Math.toRadians(270))
 
                     // Drive to chamber
 
