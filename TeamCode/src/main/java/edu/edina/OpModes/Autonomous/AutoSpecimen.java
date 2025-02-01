@@ -2,6 +2,7 @@ package edu.edina.OpModes.Autonomous;
 
 import static edu.edina.Libraries.Robot.RobotHardware.BLUE_SQUARE;
 import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
+import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -15,6 +16,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
@@ -74,16 +76,61 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Robot hardware
     private RobotHardware robotHardware;
+    private Boolean inputTallWalls;
 
     // Runs the op mode.
     @Override
     public void runOpMode() throws InterruptedException {
+        // Display launch menu.
+        //////////////////////////////////////////////////////////////////////
+
+        // Initialize gamepads.
+        Gamepad currentGamepad = new Gamepad();
+        Gamepad previousGamepad = new Gamepad();
+
+        // While we are waiting for a response...
+        while (!isStopRequested() && inputTallWalls == null) {
+
+            // Update gamepads.
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            // Prompt the user for a walls value.
+            prompt("Walls", "X = Tall, B = Short");
+
+            // If the user pressed x...
+            if (currentGamepad.x && !previousGamepad.x) {
+
+                // Use tall walls.
+                inputTallWalls = true;
+
+            }
+
+            // If the user pressed b...
+            if (currentGamepad.b && !previousGamepad.b) {
+
+                // Use short walls.
+                inputTallWalls = false;
+
+            }
+
+        }
+
+        // If stop is requested...
+        if (isStopRequested()) {
+
+            // Exit the method.
+            return;
+
+        }
 
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
+        // What walls are we using?
+        robotHardware.setTallWalls(inputTallWalls);
 
         // Wait for the user to lower the lift.
         robotHardware.waitForLiftDown();
@@ -756,9 +803,18 @@ public class AutoSpecimen extends LinearOpMode {
         // Get a banner.
         String banner = getBanner(BLUE_SQUARE);
 
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        String tallWallsSymbol = getSymbol(tallWalls);
+
         // Display main telemetry.
         telemetry.addData("AutoSpecimen", banner);
+        telemetry.addData("- Tall Walls", tallWallsSymbol);
 
+    }
+    private void prompt(String caption, String value) {
+        telemetry.addData(caption, value);
+        telemetry.update();
     }
 
 }

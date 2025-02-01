@@ -521,6 +521,12 @@ public class RobotHardware implements DrivingRobotHardware {
         tallWalls = !tallWalls;
 
     }
+    public void setTallWalls(boolean tallWalls) {
+
+        // Sets the tall walls value.
+        this.tallWalls = tallWalls;
+
+    }
 
     // Moves the arm to the ascent position.
     public void setArmAscentPosition() {
