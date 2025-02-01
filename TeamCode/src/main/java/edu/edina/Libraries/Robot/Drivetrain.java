@@ -18,7 +18,7 @@ public class Drivetrain {
 
     // Turtle multiplier
     public static double SNAIL_MULTIPLIER = 0.3;
-    public static double TURTLE_MULTIPLIER = 0.75;
+    public static double TURTLE_MULTIPLIER = 0.55;
 
     public final static boolean ENABLE_REVERSE = true;
 
