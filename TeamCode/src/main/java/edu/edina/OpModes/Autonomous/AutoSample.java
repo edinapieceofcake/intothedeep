@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
+import edu.edina.Libraries.Robot.GrabHumanSample;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.SampleType;
@@ -85,8 +86,8 @@ public class AutoSample extends LinearOpMode {
     // Robot hardware
     private RobotHardware robotHardware;
 
-    // Grab fifth sample value
-    private Boolean grabFifthSample;
+    // Grab human sample value
+    private GrabHumanSample grabHumanSample;
 
     // Runs the op mode.
     @Override
@@ -109,25 +110,33 @@ public class AutoSample extends LinearOpMode {
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            // If the grab fifth sample value is missing...
-            if(grabFifthSample == null) {
+            // If the grab human sample value is missing...
+            if(grabHumanSample == null) {
 
-                // Prompt the user for a sample count.
-                prompt(telemetry, "Samples", "X = 4, B = 5");
+                // Prompt the user for a grab human sample value.
+                prompt(telemetry, "Grab Human Sample", "X = Beginning, A = End, B = Never");
 
                 // If the user pressed x...
                 if (currentGamepad.x && !previousGamepad.x) {
 
-                    // Do not grab a fifth sample.
-                    grabFifthSample = false;
+                    // Grab the human sample at the beginning.
+                    grabHumanSample = GrabHumanSample.BEGINNING;
+
+                }
+
+                // If the user pressed a...
+                if (currentGamepad.a && !previousGamepad.a) {
+
+                    // Grab the human sample at the end.
+                    grabHumanSample = GrabHumanSample.END;
 
                 }
 
                 // If the user pressed b...
                 if (currentGamepad.b && !previousGamepad.b) {
 
-                    // Grab a fifth sample.
-                    grabFifthSample = true;
+                    // Do not gab the human sample.
+                    grabHumanSample = GrabHumanSample.NEVER;
 
                 }
 
@@ -397,21 +406,21 @@ public class AutoSample extends LinearOpMode {
 
         };
 
-        // Construct a fifth sample velocity constraint.
-        VelConstraint fifthSampleVelocityConstraint = (robotPose, _path, _disp) -> {
+        // Construct a human sample velocity constraint.
+        VelConstraint humanSampleVelocityConstraint = (robotPose, _path, _disp) -> {
 
-            // Determine whether the robot is close to the fifth sample.
-            boolean closeToFifthSample = isCloseToFifthSample(robotPose);
+            // Determine whether the robot is close to the human sample.
+            boolean closeToHumanSample = isCloseToHumanSample(robotPose);
 
-            // If the robot is close to the fifth sample...
-            if (closeToFifthSample) {
+            // If the robot is close to the human sample...
+            if (closeToHumanSample) {
 
                 // Go slow.
                 return SLOW_VELOCITY;
 
             }
 
-            // Otherwise (if the robot is far from the fifth sample)...
+            // Otherwise (if the robot is far from the human sample)...
             else {
 
                 // Go fast.
@@ -495,7 +504,7 @@ public class AutoSample extends LinearOpMode {
         // Construct an action for driving from the basket to the human.
         Action driveFromBasketToHuman = drive.actionBuilder(firstBasketPose)
                 .setReversed(true)
-                .splineTo(firstHumanPose.position, firstHumanPose.heading, fifthSampleVelocityConstraint)
+                .splineTo(firstHumanPose.position, firstHumanPose.heading, humanSampleVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the human to the basket.
@@ -523,7 +532,12 @@ public class AutoSample extends LinearOpMode {
 
                 ),
 
-                // Score the preloaded sample and then get the first spike mark sample.
+                // If appropriate, score the preloaded sample and then get the human sample.
+                grabHumanSample == GrabHumanSample.BEGINNING ?
+                        scoreAndGrab(robotHardware, driveFromBasketToHuman, driveFromHumanToBasket, SampleType.HUMAN) :
+                        new SequentialAction(),
+
+                // Score the current sample and then get the first spike mark sample.
                 scoreAndGrab(robotHardware, driveFromBasketToFirstSpikeMark, driveFromFirstSpikeMarkToBasket, SampleType.NORMAL),
 
                 // Score the first spike mark sample and then get the second spike mark sample.
@@ -533,7 +547,7 @@ public class AutoSample extends LinearOpMode {
                 scoreAndGrab(robotHardware, driveFromBasketToThirdSpikeMark, driveFromThirdSpikeMarkToBasket, SampleType.WALL),
 
                 // If appropriate, score the third spike mark sample and then get the human sample.
-                grabFifthSample ?
+                grabHumanSample == GrabHumanSample.END ?
                     scoreAndGrab(robotHardware, driveFromBasketToHuman, driveFromHumanToBasket, SampleType.HUMAN) :
                     new SequentialAction(),
 
@@ -568,8 +582,8 @@ public class AutoSample extends LinearOpMode {
         return robotPose.position.y.value() > -25;
     }
 
-    // Determines whether the robot is close to the fifth sample.
-    private static boolean isCloseToFifthSample(Pose2dDual robotPose) {
+    // Determines whether the robot is close to the human sample.
+    private static boolean isCloseToHumanSample(Pose2dDual robotPose) {
         return robotPose.position.x.value() > 20;
     }
 
@@ -579,9 +593,6 @@ public class AutoSample extends LinearOpMode {
         // Get a banner.
         String banner = getBanner(YELLOW_SQUARE);
 
-        // Construct a grab fifth sample string.
-        String grabFifthSampleString = grabFifthSample ? "Yes" : "No";
-
         // Get the tall walls value.
         boolean tallWalls = robotHardware.getTallWalls();
 
@@ -590,7 +601,7 @@ public class AutoSample extends LinearOpMode {
 
         // Display main telemetry.
         telemetry.addData("AutoSample", banner);
-        telemetry.addData("- Grab Fifth Sample", grabFifthSampleString);
+        telemetry.addData("- Grab Human Sample", grabHumanSample);
         telemetry.addData("- Walls", walls);
 
     }
