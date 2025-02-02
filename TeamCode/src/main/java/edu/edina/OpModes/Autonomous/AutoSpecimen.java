@@ -2,7 +2,6 @@ package edu.edina.OpModes.Autonomous;
 
 import static edu.edina.Libraries.Robot.RobotHardware.BLUE_SQUARE;
 import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
-import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
 import static edu.edina.Libraries.Robot.RobotHardware.prompt;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -641,12 +640,12 @@ public class AutoSpecimen extends LinearOpMode {
         // Get the tall walls value.
         boolean tallWalls = robotHardware.getTallWalls();
 
-        // Convert the tall walls value to a symbol.
-        String tallWallsSymbol = getSymbol(tallWalls);
+        // Construct a walls string.
+        String walls = tallWalls ? "Tall" : "Short";
 
         // Display main telemetry.
         telemetry.addData("AutoSpecimen", banner);
-        telemetry.addData("- Tall Walls", tallWallsSymbol);
+        telemetry.addData("- Walls", walls);
 
     }
 

@@ -1,7 +1,5 @@
 package edu.edina.OpModes.TeleOp;
 
-import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -144,13 +142,13 @@ public class TeleOpMain extends LinearOpMode {
             // Get the tall walls value.
             boolean tallWalls = robotHardware.getTallWalls();
 
-            // Convert the tall walls value to a symbol.
-            String tallWallsSymbol = getSymbol(tallWalls);
+            // Construct a walls string.
+            String walls = tallWalls ? "Tall" : "Short";
 
             // Display main telemetry.
             telemetry.addData("Main", "====================");
             telemetry.addData("- Mode", robotMode);
-            telemetry.addData("- Tall Walls", tallWallsSymbol);
+            telemetry.addData("- Walls", walls);
 
             // Update the robot hardware.
             robotHardware.update();

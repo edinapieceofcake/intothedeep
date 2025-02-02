@@ -943,11 +943,6 @@ public class RobotHardware implements DrivingRobotHardware {
         return voltageSensor;
     }
 
-    // Gets a symbol.
-    public static String getSymbol(boolean value) {
-        return value ? GREEN_SQAURE : RED_SQUARE;
-    }
-
     // Gets a banner.
     public static String getBanner(String symbol) {
         return symbol + symbol + symbol + symbol + symbol + symbol;

@@ -2,7 +2,6 @@ package edu.edina.OpModes.Autonomous;
 
 import static edu.edina.Libraries.Robot.RobotHardware.YELLOW_SQUARE;
 import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
-import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
 import static edu.edina.Libraries.Robot.RobotHardware.prompt;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -580,19 +579,19 @@ public class AutoSample extends LinearOpMode {
         // Get a banner.
         String banner = getBanner(YELLOW_SQUARE);
 
-        // Convert the grab fifth sample value to a symbol.
-        String grabFifthSampleSymbol = getSymbol(grabFifthSample);
+        // Construct a grab fifth sample string.
+        String grabFifthSampleString = grabFifthSample ? "Yes" : "No";
 
         // Get the tall walls value.
         boolean tallWalls = robotHardware.getTallWalls();
 
-        // Convert the tall walls value to a symbol.
-        String tallWallsSymbol = getSymbol(tallWalls);
+        // Construct a walls string.
+        String walls = tallWalls ? "Tall" : "Short";
 
         // Display main telemetry.
         telemetry.addData("AutoSample", banner);
-        telemetry.addData("- Grab Fifth Sample", grabFifthSampleSymbol);
-        telemetry.addData("- Tall Walls", tallWallsSymbol);
+        telemetry.addData("- Grab Fifth Sample", grabFifthSampleString);
+        telemetry.addData("- Walls", walls);
 
     }
 
