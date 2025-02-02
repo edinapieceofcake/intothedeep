@@ -22,9 +22,9 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     private static final int ADDRESS = 0x60;
     private static final byte NEOPIXEL_MODULE_BASE = 0xe, PIN = 0xf;
     private static final byte SPEED_400KHZ = 0x0, SPEED_800KHZ = 0x1;
-    public static final short NUM_PIXELS = 18, NUM_BYTES = 3 * NUM_PIXELS;
+    public static final short NUM_PIXELS = 42, NUM_BYTES = 3 * NUM_PIXELS;
     private static final int MAX_PIXEL_BYTE_BATCH = 24;
-    private static final int WRITE_DELAY_MS = 25;
+    private static final int WRITE_DELAY_MS = 5;
     private final BufferExchange bufExch;
     private AtomicInteger numWrites;
     private Timer timer;
@@ -99,7 +99,7 @@ public class NeoPixelDriverDevice extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         RobotLog.ii(LogTag, "set NeoPixel pin to 0x%x", setPinCmd[0]);
 
         byte[] setSpeedCmd = new byte[]{
-                SPEED_400KHZ
+                SPEED_800KHZ
         };
 
         write(NeoPixelSubModule.SPEED, setSpeedCmd);
