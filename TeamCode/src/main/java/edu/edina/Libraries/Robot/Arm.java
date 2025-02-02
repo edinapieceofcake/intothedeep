@@ -64,7 +64,7 @@ public class Arm {
     public static int GROUND_TO_TALL_WALL_POSITION = 500;
 
     // Submersible to tall wall position
-    public static int SUBMERSIBLE_TO_TALL_WALL_POSITION = 400;
+    public static int SUBMERSIBLE_TO_TALL_WALL_POSITION = 350;
 
     // Ground to short wall position
     public static int GROUND_TO_SHORT_WALL_POSITION = 450;

@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -50,7 +51,7 @@ public class AutoSpecimen extends LinearOpMode {
     public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = 51;
+    public static double THIRD_SPIKE_MARK_X = 52;
     public static double THIRD_SPIKE_MARK_Y = -25.5;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(180);
     public static double THIRD_SPIKE_MARK_END_TANGENT = Math.toRadians(0);
@@ -73,6 +74,8 @@ public class AutoSpecimen extends LinearOpMode {
     // Pick up pose
     public static double PICK_UP_X = THIRD_DROP_X;
     public static double PICK_UP_Y = -62;
+    public static double PICK_UP_Y_TWO = -65;
+    public static double PICK_UP_Y_THREE = -68;
     public static double PICK_UP_HEADING = FIRST_DROP_HEADING;
     public static double PICK_UP_TANGENT = Math.toRadians(270);
 
@@ -83,23 +86,23 @@ public class AutoSpecimen extends LinearOpMode {
     public static double CHAMBER_Y = -27;
 
     // First chamber pose
-    public static double FIRST_CHAMBER_X = -2;
+    public static double FIRST_CHAMBER_X = -1.5;
     public static double FIRST_CHAMBER_Y = CHAMBER_Y;
     public static double FIRST_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Second chamber pose
-    public static double SECOND_CHAMBER_X = -5;
+    public static double SECOND_CHAMBER_X = -4.5;
     public static double SECOND_CHAMBER_Y = CHAMBER_Y;
     public static double SECOND_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Third chamber pose
-    public static double THIRD_CHAMBER_X = -8;
-    public static double THIRD_CHAMBER_Y = CHAMBER_Y;
+    public static double THIRD_CHAMBER_X = -7.5;
+    public static double THIRD_CHAMBER_Y = CHAMBER_Y + 2;
     public static double THIRD_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Fourth chamber pose
-    public static double FOURTH_CHAMBER_X = -11;
-    public static double FOURTH_CHAMBER_Y = CHAMBER_Y;
+    public static double FOURTH_CHAMBER_X = -10.5;
+    public static double FOURTH_CHAMBER_Y = CHAMBER_Y + 2;
     public static double FOURTH_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Velocities
@@ -266,7 +269,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Determines whether the robot is close to the pick up.
     private static boolean isCloseToPickUp(Pose2dDual robotPose) {
-        return robotPose.position.x.value() < -50;
+        return robotPose.position.y.value() < -50;
     }
 
     // Gets the main action.
@@ -380,6 +383,12 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a pick up pose.
         Pose2d pickUpPose = new Pose2d(PICK_UP_X, PICK_UP_Y, PICK_UP_HEADING);
 
+        // Construct a pick up pose two.
+        Pose2d pickUpPoseTwo = new Pose2d(PICK_UP_X, PICK_UP_Y_TWO, PICK_UP_HEADING);
+
+        // Construct a pick up pose three.
+        Pose2d pickUpPoseThree = new Pose2d(PICK_UP_X, PICK_UP_Y_THREE, PICK_UP_HEADING);
+
         // Construct a first chamber pose.
         Pose2d firstChamberPose = new Pose2d(FIRST_CHAMBER_X, FIRST_CHAMBER_Y, FIRST_CHAMBER_HEADING);
 
@@ -462,11 +471,11 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from second chamber to pick up trajectory.
         Action driveFromSecondChamberToPickUp = drive.actionBuilder(secondChamberPose)
                 .setTangent(PICK_UP_TANGENT)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint)
+                .splineToConstantHeading(pickUpPoseTwo.position, PICK_UP_TANGENT, pickUpVelocityConstraint)
                 .build();
 
         // Construct a drive from pick up to third chamber trajectory.
-        Action driveFromPickUpToThirdChamber = drive.actionBuilder(pickUpPose)
+        Action driveFromPickUpToThirdChamber = drive.actionBuilder(pickUpPoseTwo)
                 .setTangent(CHAMBER_TANGENT)
                 .splineToConstantHeading(thirdChamberPose.position, CHAMBER_TANGENT, chamberVelocityConstraint)
                 .build();
@@ -474,11 +483,11 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from third chamber to pick up trajectory.
         Action driveFromThirdChamberToPickUp = drive.actionBuilder(thirdChamberPose)
                 .setTangent(PICK_UP_TANGENT)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint)
+                .splineToConstantHeading(pickUpPoseThree.position, PICK_UP_TANGENT, pickUpVelocityConstraint)
                 .build();
 
         // Construct a drive from pick up to fourth chamber trajectory.
-        Action driveFromPickUpToFourthChamber = drive.actionBuilder(pickUpPose)
+        Action driveFromPickUpToFourthChamber = drive.actionBuilder(pickUpPoseThree)
                 .setTangent(CHAMBER_TANGENT)
                 .splineToConstantHeading(fourthChamberPose.position, CHAMBER_TANGENT, chamberVelocityConstraint)
                 .build();
