@@ -114,20 +114,12 @@ public class AutoSample extends LinearOpMode {
             if(grabHumanSample == null) {
 
                 // Prompt the user for a grab human sample value.
-                prompt(telemetry, "Grab Human Sample", "X = Beginning, A = End, B = Never");
+                prompt(telemetry, "Grab Human Sample", "X = End, B = Never");
 
                 // If the user pressed x...
                 if (currentGamepad.x && !previousGamepad.x) {
 
                     // Grab the human sample at the beginning.
-                    grabHumanSample = GrabHumanSample.BEGINNING;
-
-                }
-
-                // If the user pressed a...
-                if (currentGamepad.a && !previousGamepad.a) {
-
-                    // Grab the human sample at the end.
                     grabHumanSample = GrabHumanSample.END;
 
                 }
