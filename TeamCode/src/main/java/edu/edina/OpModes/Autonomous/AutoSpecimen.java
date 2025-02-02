@@ -343,92 +343,92 @@ public class AutoSpecimen extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         // Construct a drive from start to chamber trajectory.
-        TrajectoryActionBuilder driveFromStartToChamberBuilder = drive.actionBuilder(startPose)
-                .strafeTo(chamberPose.position, preloadVelocityConstraint);
-        Action driveFromStartToChamber = driveFromStartToChamberBuilder.build();
+        Action driveFromStartToChamber = drive.actionBuilder(startPose)
+                .strafeTo(chamberPose.position, preloadVelocityConstraint)
+                .build();
 
         // Construct a drive from chamber to first spike mark trajectory.
-        TrajectoryActionBuilder driveFromChamberToFirstSpikeMarkBuilder = drive.actionBuilder(chamberPose)
-                .splineToConstantHeading(firstSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint);
-        Action driveFromChamberToFirstSpikeMark = driveFromChamberToFirstSpikeMarkBuilder.build();
+        Action driveFromChamberToFirstSpikeMark = drive.actionBuilder(chamberPose)
+                .splineToConstantHeading(firstSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint)
+                .build();
 
         // Construct a drive from first spike mark to first drop trajectory.
-        TrajectoryActionBuilder driveFromFirstSpikeMarkToFirstDropBuilder = drive.actionBuilder(firstSpikeMarkPose)
-                .strafeTo(firstDropPose.position);
-        Action driveFromFirstSpikeMarkToFirstDrop = driveFromFirstSpikeMarkToFirstDropBuilder.build();
+        Action driveFromFirstSpikeMarkToFirstDrop = drive.actionBuilder(firstSpikeMarkPose)
+                .strafeTo(firstDropPose.position)
+                .build();
 
         // Construct a drive from first drop to second spike mark trajectory.
-        TrajectoryActionBuilder driveFromFirstDropToSecondSpikeMarkBuilder = drive.actionBuilder(firstDropPose)
+        Action driveFromFirstDropToSecondSpikeMark = drive.actionBuilder(firstDropPose)
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(secondSpikeMarkPose.position, SECOND_SPIKE_MARK_END_TANGENT);
-        Action driveFromFirstDropToSecondSpikeMark = driveFromFirstDropToSecondSpikeMarkBuilder.build();
+                .splineToConstantHeading(secondSpikeMarkPose.position, SECOND_SPIKE_MARK_END_TANGENT)
+                .build();
 
         // Construct a drive from second spike mark to second drop trajectory.
-        TrajectoryActionBuilder driveFromSecondSpikeMarkToSecondDropBuilder = drive.actionBuilder(secondSpikeMarkPose)
-                .strafeTo(secondDropPose.position);
-        Action driveFromSecondSpikeMarkToSecondDrop = driveFromSecondSpikeMarkToSecondDropBuilder.build();
+        Action driveFromSecondSpikeMarkToSecondDrop = drive.actionBuilder(secondSpikeMarkPose)
+                .strafeTo(secondDropPose.position)
+                .build();
 
         // Construct a drive from second drop to third spike mark trajectory.
-        TrajectoryActionBuilder driveFromSecondDropToThirdSpikeMarkBuilder = drive.actionBuilder(secondDropPose)
+        Action driveFromSecondDropToThirdSpikeMark = drive.actionBuilder(secondDropPose)
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(thirdSpikeMarkPose.position, THIRD_SPIKE_MARK_END_TANGENT);
-        Action driveFromSecondDropToThirdSpikeMark = driveFromSecondDropToThirdSpikeMarkBuilder.build();
+                .splineToConstantHeading(thirdSpikeMarkPose.position, THIRD_SPIKE_MARK_END_TANGENT)
+                .build();
 
         // Construct a drive from third spike mark to third drop trajectory.
-        TrajectoryActionBuilder driveFromThirdSpikeMarkToThirdDropBuilder = drive.actionBuilder(thirdSpikeMarkPose)
-                .strafeTo(thirdDropPose.position);
-        Action driveFromThirdSpikeMarkToThirdDrop = driveFromThirdSpikeMarkToThirdDropBuilder.build();
+        Action driveFromThirdSpikeMarkToThirdDrop = drive.actionBuilder(thirdSpikeMarkPose)
+                .strafeTo(thirdDropPose.position)
+                .build();
 
         // Construct a drive from third drop to pick up trajectory.
-        TrajectoryActionBuilder driveFromThirdDropToPickUpBuilder = drive.actionBuilder(thirdDropPose)
-                .strafeTo(pickUpPose.position);
-        Action driveFromThirdDropToPickUp = driveFromThirdDropToPickUpBuilder.build();
+        Action driveFromThirdDropToPickUp = drive.actionBuilder(thirdDropPose)
+                .strafeTo(pickUpPose.position)
+                .build();
 
         // Construct a drive from pick up to first chamber trajectory.
-        TrajectoryActionBuilder driveFromPickUpToFirstChamberBuilder = drive.actionBuilder(pickUpPose)
+        Action driveFromPickUpToFirstChamber = drive.actionBuilder(pickUpPose)
                 .setTangent(CHAMBER_START_TANGENT)
-				.splineToConstantHeading(firstChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromPickUpToFirstChamber = driveFromPickUpToFirstChamberBuilder.build();
+				.splineToConstantHeading(firstChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
         // Construct a drive from first chamber to pick up trajectory.
-        TrajectoryActionBuilder driveFromFirstChamberToPickUpBuilder = drive.actionBuilder(firstChamberPose)
+        Action driveFromFirstChamberToPickUp = drive.actionBuilder(firstChamberPose)
                 .setTangent(PICK_UP_START_TANGENT)
-				.splineToConstantHeading(pickUpPose.position, PICK_UP_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromFirstChamberToPickUp = driveFromFirstChamberToPickUpBuilder.build();
+				.splineToConstantHeading(pickUpPose.position, PICK_UP_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
         // Construct a drive from pick up to second chamber trajectory.
-        TrajectoryActionBuilder driveFromPickUpToSecondChamberBuilder = drive.actionBuilder(pickUpPose)
+        Action driveFromPickUpToSecondChamber = drive.actionBuilder(pickUpPose)
                 .setTangent(CHAMBER_START_TANGENT)
-                .splineToConstantHeading(secondChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromPickUpToSecondChamber = driveFromPickUpToSecondChamberBuilder.build();
+                .splineToConstantHeading(secondChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
         // Construct a drive from second chamber to pick up trajectory.
-        TrajectoryActionBuilder driveFromSecondChamberToPickUpBuilder = drive.actionBuilder(secondChamberPose)
+        Action driveFromSecondChamberToPickUp = drive.actionBuilder(secondChamberPose)
                 .setTangent(PICK_UP_START_TANGENT)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromSecondChamberToPickUp = driveFromSecondChamberToPickUpBuilder.build();
+                .splineToConstantHeading(pickUpPose.position, PICK_UP_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
         // Construct a drive from pick up to third chamber trajectory.
-        TrajectoryActionBuilder driveFromPickUpToThirdChamberBuilder = drive.actionBuilder(pickUpPose)
+        Action driveFromPickUpToThirdChamber = drive.actionBuilder(pickUpPose)
                 .setTangent(CHAMBER_START_TANGENT)
-                .splineToConstantHeading(thirdChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromPickUpToThirdChamber = driveFromPickUpToThirdChamberBuilder.build();
+                .splineToConstantHeading(thirdChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
         // Construct a drive from third chamber to pick up trajectory.
-        TrajectoryActionBuilder driveFromThirdChamberToPickUpBuilder = drive.actionBuilder(thirdChamberPose)
+        Action driveFromThirdChamberToPickUp = drive.actionBuilder(thirdChamberPose)
                 .setTangent(PICK_UP_START_TANGENT)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromThirdChamberToPickUp = driveFromThirdChamberToPickUpBuilder.build();
+                .splineToConstantHeading(pickUpPose.position, PICK_UP_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
         // Construct a drive from pick up to fourth chamber trajectory.
-        TrajectoryActionBuilder driveFromPickUpToFourthChamberBuilder = drive.actionBuilder(pickUpPose)
+        Action driveFromPickUpToFourthChamber = drive.actionBuilder(pickUpPose)
                 .setTangent(CHAMBER_START_TANGENT)
-                .splineToConstantHeading(fourthChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint);
-        Action driveFromPickUpToFourthChamber = driveFromPickUpToFourthChamberBuilder.build();
+                .splineToConstantHeading(fourthChamberPose.position, CHAMBER_END_TANGENT, chamberVelocityConstraint)
+                .build();
 
-        // Construct a drive no where trajectory.
-        TrajectoryActionBuilder driveNoWhereBuilder = drive.actionBuilder(fourthChamberPose);
-        Action driveNowhere = driveNoWhereBuilder.build();
+        // Construct a drive nowhere trajectory.
+        Action driveNowhere = drive.actionBuilder(fourthChamberPose)
+                .build();
 
         // Construct a main action.
         //////////////////////////////////////////////////////////////////////
