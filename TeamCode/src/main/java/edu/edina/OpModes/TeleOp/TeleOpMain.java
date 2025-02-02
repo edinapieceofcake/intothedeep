@@ -595,7 +595,6 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.openBigClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         new InstantAction(() -> robotHardware.setSubmersibleExtension()),
-                        new WaitForTime(400),
                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                 );
                 robotHardware.addAction(action);
