@@ -118,41 +118,57 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Robot hardware
     private RobotHardware robotHardware;
-    private Boolean inputTallWalls;
 
     // Runs the op mode.
     @Override
     public void runOpMode() throws InterruptedException {
+
         // Display launch menu.
         //////////////////////////////////////////////////////////////////////
+
+        // Initialize an input tall walls value.
+        Boolean inputTallWalls = null;
 
         // Initialize gamepads.
         Gamepad currentGamepad = new Gamepad();
         Gamepad previousGamepad = new Gamepad();
 
         // While we are waiting for a response...
-        while (!isStopRequested() && inputTallWalls == null) {
+        while (!isStopRequested()) {
 
             // Update gamepads.
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            // Prompt the user for a walls value.
-            prompt("Walls", "X = Tall, B = Short");
+            // If the tall walls value is missing...
+            if(inputTallWalls == null) {
 
-            // If the user pressed x...
-            if (currentGamepad.x && !previousGamepad.x) {
+                // Prompt the user for a walls value.
+                prompt("Walls", "X = Tall, B = Short");
 
-                // Use tall walls.
-                inputTallWalls = true;
+                // If the user pressed x...
+                if (currentGamepad.x && !previousGamepad.x) {
+
+                    // Use tall walls.
+                    inputTallWalls = true;
+
+                }
+
+                // If the user pressed b...
+                if (currentGamepad.b && !previousGamepad.b) {
+
+                    // Use short walls.
+                    inputTallWalls = false;
+
+                }
 
             }
 
-            // If the user pressed b...
-            if (currentGamepad.b && !previousGamepad.b) {
+            // Otherwise (if we are done)...
+            else {
 
-                // Use short walls.
-                inputTallWalls = false;
+                // Hide the launch menu.
+                break;
 
             }
 
@@ -166,12 +182,16 @@ public class AutoSpecimen extends LinearOpMode {
 
         }
 
+        // Indicate that the robot is initializing.
+        robotHardware.log("Initializing...");
+
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
-        // What walls are we using?
+
+        // Set the tall walls value.
         robotHardware.setTallWalls(inputTallWalls);
 
         // Wait for the user to lower the lift.

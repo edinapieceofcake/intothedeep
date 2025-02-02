@@ -95,33 +95,73 @@ public class AutoSample extends LinearOpMode {
         // Display launch menu.
         //////////////////////////////////////////////////////////////////////
 
+        // Initialize an input tall walls value.
+        Boolean inputTallWalls = null;
+
         // Initialize gamepads.
         Gamepad currentGamepad = new Gamepad();
         Gamepad previousGamepad = new Gamepad();
 
         // While we are waiting for a response...
-        while (!isStopRequested() && grabFifthSample == null) {
+        while (!isStopRequested()) {
 
             // Update gamepads.
             previousGamepad.copy(currentGamepad);
             currentGamepad.copy(gamepad1);
 
-            // Prompt the user for a sample count.
-            prompt("Samples", "X = 4, B = 5");
+            // If the grab fifth sample value is missing...
+            if(grabFifthSample == null) {
 
-            // If the user pressed x...
-            if (currentGamepad.x && !previousGamepad.x) {
+                // Prompt the user for a sample count.
+                prompt("Samples", "X = 4, B = 5");
 
-                // Do not grab a fifth sample.
-                grabFifthSample = false;
+                // If the user pressed x...
+                if (currentGamepad.x && !previousGamepad.x) {
+
+                    // Do not grab a fifth sample.
+                    grabFifthSample = false;
+
+                }
+
+                // If the user pressed b...
+                if (currentGamepad.b && !previousGamepad.b) {
+
+                    // Grab a fifth sample.
+                    grabFifthSample = true;
+
+                }
 
             }
 
-            // If the user pressed b...
-            if (currentGamepad.b && !previousGamepad.b) {
+            // Otherwise, if the tall walls value is missing...
+            else if(inputTallWalls == null) {
 
-                // Grab a fifth sample.
-                grabFifthSample = true;
+                // Prompt the user for a walls value.
+                prompt("Walls", "X = Tall, B = Short");
+
+                // If the user pressed x...
+                if (currentGamepad.x && !previousGamepad.x) {
+
+                    // Use tall walls.
+                    inputTallWalls = true;
+
+                }
+
+                // If the user pressed b...
+                if (currentGamepad.b && !previousGamepad.b) {
+
+                    // Use short walls.
+                    inputTallWalls = false;
+
+                }
+
+            }
+
+            // Otherwise (if we are done)...
+            else {
+
+                // Hide the launch menu.
+                break;
 
             }
 
@@ -135,11 +175,17 @@ public class AutoSample extends LinearOpMode {
 
         }
 
+        // Indicate that the robot is initializing.
+        robotHardware.log("Initializing...");
+
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
+
+        // Set the tall walls value.
+        robotHardware.setTallWalls(inputTallWalls);
 
         // Wait for the user to lower the lift.
         robotHardware.waitForLiftDown();

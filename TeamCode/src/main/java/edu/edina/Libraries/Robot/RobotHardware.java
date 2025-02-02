@@ -94,7 +94,7 @@ public class RobotHardware implements DrivingRobotHardware {
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
-    private boolean tallWalls = true;
+    private static boolean tallWalls = true;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
@@ -521,9 +521,11 @@ public class RobotHardware implements DrivingRobotHardware {
         tallWalls = !tallWalls;
 
     }
+
+    // Sets the tall walls value.
     public void setTallWalls(boolean tallWalls) {
 
-        // Sets the tall walls value.
+        // Set the tall walls value.
         this.tallWalls = tallWalls;
 
     }
