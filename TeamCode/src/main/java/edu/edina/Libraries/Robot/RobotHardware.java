@@ -953,4 +953,10 @@ public class RobotHardware implements DrivingRobotHardware {
         return symbol + symbol + symbol + symbol + symbol + symbol;
     }
 
+    // Prompts the user for an input.
+    public static void prompt(Telemetry telemetry, String caption, String value) {
+        telemetry.addData(caption, value);
+        telemetry.update();
+    }
+
 }

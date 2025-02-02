@@ -3,6 +3,7 @@ package edu.edina.OpModes.Autonomous;
 import static edu.edina.Libraries.Robot.RobotHardware.YELLOW_SQUARE;
 import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
 import static edu.edina.Libraries.Robot.RobotHardware.getSymbol;
+import static edu.edina.Libraries.Robot.RobotHardware.prompt;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -113,7 +114,7 @@ public class AutoSample extends LinearOpMode {
             if(grabFifthSample == null) {
 
                 // Prompt the user for a sample count.
-                prompt("Samples", "X = 4, B = 5");
+                prompt(telemetry, "Samples", "X = 4, B = 5");
 
                 // If the user pressed x...
                 if (currentGamepad.x && !previousGamepad.x) {
@@ -137,7 +138,7 @@ public class AutoSample extends LinearOpMode {
             else if(inputTallWalls == null) {
 
                 // Prompt the user for a walls value.
-                prompt("Walls", "X = Tall, B = Short");
+                prompt(telemetry, "Walls", "X = Tall, B = Short");
 
                 // If the user pressed x...
                 if (currentGamepad.x && !previousGamepad.x) {
@@ -573,12 +574,6 @@ public class AutoSample extends LinearOpMode {
         return robotPose.position.x.value() > 20;
     }
 
-    // Prompts the user for an input.
-    private void prompt(String caption, String value) {
-        telemetry.addData(caption, value);
-        telemetry.update();
-    }
-
     // Adds telemetry.
     private void addTelemetry() {
 
@@ -588,9 +583,16 @@ public class AutoSample extends LinearOpMode {
         // Convert the grab fifth sample value to a symbol.
         String grabFifthSampleSymbol = getSymbol(grabFifthSample);
 
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        // Convert the tall walls value to a symbol.
+        String tallWallsSymbol = getSymbol(tallWalls);
+
         // Display main telemetry.
         telemetry.addData("AutoSample", banner);
         telemetry.addData("- Grab Fifth Sample", grabFifthSampleSymbol);
+        telemetry.addData("- Tall Walls", tallWallsSymbol);
 
     }
 
