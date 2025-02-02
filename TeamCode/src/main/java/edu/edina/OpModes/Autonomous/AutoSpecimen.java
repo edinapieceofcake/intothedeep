@@ -171,14 +171,14 @@ public class AutoSpecimen extends LinearOpMode {
 
         }
 
-        // Indicate that the robot is initializing.
-        robotHardware.log("Initializing...");
-
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
+
+        // Indicate that the robot is initializing.
+        robotHardware.log("Initializing...");
 
         // Set the tall walls value.
         robotHardware.setTallWalls(inputTallWalls);
