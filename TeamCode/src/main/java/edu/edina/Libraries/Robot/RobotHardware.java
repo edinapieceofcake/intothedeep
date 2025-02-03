@@ -933,6 +933,10 @@ public class RobotHardware implements DrivingRobotHardware {
         return extension;
     }
 
+    public Slide2 getSlide() {
+        return slide;
+    }
+
     @Override
     public Drivetrain getDrivetrain() {
         return drivetrain;
@@ -953,5 +957,4 @@ public class RobotHardware implements DrivingRobotHardware {
         telemetry.addData(caption, value);
         telemetry.update();
     }
-
 }

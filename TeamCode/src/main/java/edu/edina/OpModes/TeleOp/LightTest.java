@@ -3,6 +3,7 @@ package edu.edina.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.Light;
@@ -20,7 +21,7 @@ public class LightTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleSensor sampleSensor = new SampleSensor(hardwareMap);
         light = new Light(hardwareMap, sampleSensor);
-
+        
         waitForStart();
 
         ElapsedTime t = new ElapsedTime();

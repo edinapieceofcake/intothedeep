@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -124,5 +125,9 @@ public class Swivel {
                 new InstantAction(() -> servo.setPosition(0.3611)),
                 new WaitForTime(100)
         );
+    }
+
+    public void turnOff() {
+        servo.turnOff();
     }
 }

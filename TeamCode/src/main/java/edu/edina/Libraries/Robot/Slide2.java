@@ -307,4 +307,7 @@ public class Slide2 {
 
     }
 
+    public void turnOff() {
+        extensionMotor.setMotorDisable();
+    }
 }

@@ -361,4 +361,7 @@ public class Arm {
         rezeroing = false;
     }
 
+    public void turnOff() {
+        motor.setMotorDisable();
+    }
 }

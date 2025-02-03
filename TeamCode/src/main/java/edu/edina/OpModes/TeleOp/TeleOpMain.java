@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import edu.edina.Libraries.Actions.Ascent;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
@@ -317,7 +318,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad2.a && !previousGamepad2.a) {
 
             // If the robot is in submersible mode...
-            if(robotMode == RobotMode.SUBMERSIBLE) {
+            if (robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Toggle the big claw.
                 robotHardware.toggleBigClaw();
@@ -371,7 +372,9 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
 
                         // Set the robot mode to wall.
-                        new InstantAction(() -> {robotMode = RobotMode.WALL;})
+                        new InstantAction(() -> {
+                            robotMode = RobotMode.WALL;
+                        })
 
                 );
                 robotHardware.addAction(action);
@@ -448,7 +451,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad2.dpad_right) {
 
             // If the robot is in submersible mode...
-            if(robotMode == RobotMode.SUBMERSIBLE) {
+            if (robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Extend the slide.
                 robotHardware.extendSlide();
@@ -499,7 +502,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.SUBMERSIBLE) {
 
                 // If the wrist is down...
-                if(robotHardware.isWristInSubmersiblePosition()) {
+                if (robotHardware.isWristInSubmersiblePosition()) {
 
                     // Grab a sample.
                     Action action = new SequentialAction(
@@ -586,7 +589,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             // Otherwise, if the robot is in initialize mode...
-            else if(robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
+            else if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Move the arm to the submersible position.
                 Action action = new SequentialAction(
@@ -621,7 +624,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad2.dpad_up) {
 
             // If the robot is in initialize or wall mode...
-            if(robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
+            if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Increment the arm position.
                 robotHardware.incrementArmPosition();
@@ -645,7 +648,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad2.dpad_down) {
 
             // If the robot is in initialize or wall mode...
-            if(robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
+            if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Derement the arm position.
                 robotHardware.decrementArmPosition();
@@ -674,8 +677,7 @@ public class TeleOpMain extends LinearOpMode {
                 // Toggle the wrist
                 if (robotHardware.isWristInWallPosition()) {
                     robotHardware.setWristSubmersiblePosition();
-                }
-                else {
+                } else {
                     robotHardware.setWristWallPosition();
                     robotHardware.setMinimumExtension();
                 }
@@ -703,34 +705,48 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        /*
-        // Ascend
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user pressed back...
-        if (currentGamepad.back && !previousGamepad.back) {
-
-            // If we are ascending...
-            if (ascending) {
-
-                // Ascend.
-                robotHardware.ascend();
-
-            }
-
-            // Otherwise (if we are not ascending)...
-            else {
-
-                // Descend.
-                robotHardware.descend();
-
-            }
-
-            // Toggle the ascending value.
-            ascending = !ascending;
-
+        if (currentGamepad1.back && !previousGamepad1.back && robotMode == RobotMode.SUBMERSIBLE) {
+            robotHardware.setMinimumExtension();
+            robotHardware.setArmSubmersibleEnterPosition();
+            robotHardware.incrementArmPosition();
+            ascent();
         }
-        */
     }
 
+    // It is important to not call robotHardware.update() because we turn off the hardware,
+    // and it will cause several exceptions.
+    //////////////////////////////////////////////////////////////////////////
+    public void ascent() {
+        Ascent a = new Ascent(robotHardware);
+        robotHardware.addAction(new SequentialAction(
+                a.turnOffServos(),
+                new ParallelAction(
+                        a.raiseLift(),
+                        new SequentialAction(
+                                new WaitForTime(200),
+                                a.moveArmToAllowLiftsToRaise()
+                        )
+                ),
+                a.lowerHook(),
+                new WaitForTime(200), // 200 normal, testing without servo
+                a.turnOffHook(),
+                new ParallelAction(
+                        a.lowerLift(),
+                        a.moveArmToAllowLiftsToLower()
+                ),
+                a.waitForHook(),
+                new ParallelAction(
+                        a.hang(),
+                        a.engageHook()
+                )
+        ));
+
+        while (opModeIsActive()) {
+            robotHardware.runActions();
+
+            robotHardware.getArm().update();
+            robotHardware.getSlide().update();
+            robotHardware.drivetrain.update();
+        }
+    }
 }

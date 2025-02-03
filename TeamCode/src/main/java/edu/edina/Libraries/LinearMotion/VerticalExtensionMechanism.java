@@ -20,7 +20,8 @@ public class VerticalExtensionMechanism implements ILinearMechanism {
     private final DcMotorEx left;
     private final DcMotorEx right;
 
-    private static final double INCH_MULT = 14 / 1589.0 ;
+//    public static final double INCH_MULT = 14 / 1589.0 ;
+    public static final double INCH_MULT = 1;
 
     public static double KS = 6.9467e-02;
     public static double KV = 3.8799e-02;

@@ -130,4 +130,8 @@ public class Wrist {
                 new WaitForTime(200)
         );
     }
+
+    public void turnOff() {
+        servo.turnOff();
+    }
 }

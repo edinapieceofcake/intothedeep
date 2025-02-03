@@ -5,6 +5,8 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
+
 @Config
 public class DualClaw {
     public static double BIG_CLOSE = .75;
@@ -65,5 +67,10 @@ public class DualClaw {
 
     public boolean isBigOpen() {
         return bigOpen;
+    }
+
+    public void turnOff() {
+        ((ServoImplEx) clawSmall).setPwmDisable();
+        ((ServoImplEx) clawBig).setPwmDisable();
     }
 }
