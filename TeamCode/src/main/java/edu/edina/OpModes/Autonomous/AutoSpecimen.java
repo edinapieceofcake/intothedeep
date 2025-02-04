@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
@@ -35,7 +34,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Preload chamber pose
     public static double PRELOAD_CHAMBER_X = START_X;
-    public static double PRELOAD_CHAMBER_Y = -27;
+    public static double PRELOAD_CHAMBER_Y = -29;
     public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
 
     // First spike mark pose
@@ -62,15 +61,14 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Pick up pose
     public static double PICK_UP_X = SECOND_DROP_X;
-    public static double PICK_UP_Y = -62;
+    public static double PICK_UP_Y = -61;
     public static double PICK_UP_HEADING = FIRST_DROP_HEADING;
     public static double PICK_UP_TANGENT = Math.toRadians(270);
 
-    // Chamber tangent
+    // Chamber values
     public static double CHAMBER_TANGENT = Math.toRadians(90);
-
-    // Chamber x separation
-    public static double CHAMBER_X_SEPARATION = 2.5;
+    public static double CHAMBER_X_SEPARATION = 1;
+    public static double CHAMBER_X_CLOSE = 15;
 
     // First chamber pose
     public static double FIRST_CHAMBER_X = PRELOAD_CHAMBER_X - CHAMBER_X_SEPARATION;
@@ -244,21 +242,6 @@ public class AutoSpecimen extends LinearOpMode {
 
     }
 
-    // Determines whether the robot is close to the first spike mark.
-    private static boolean isCloseToFirstSpikeMark(Pose2dDual robotPose) {
-        return robotPose.position.x.value() > 35;
-    }
-
-    // Determines whether the robot is close to the chamber.
-    private static boolean isCloseToChamber(Pose2dDual robotPose) {
-        return robotPose.position.x.value() < 20;
-    }
-
-    // Determines whether the robot is close to the pick up.
-    private static boolean isCloseToPickUp(Pose2dDual robotPose) {
-        return robotPose.position.y.value() < -50;
-    }
-
     // Gets the main action.
     private Action getMainAction(MecanumDrive drive, Pose2d startPose) {
 
@@ -266,79 +249,18 @@ public class AutoSpecimen extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // Construct a first spike mark velocity constraint.
-        VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
+        VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() > 35 ? MEDIUM_VELOCITY : FAST_VELOCITY;
 
-            // Determine whether the robot is close to the first spike mark.
-            boolean closeToFirstSpikeMark = isCloseToFirstSpikeMark(robotPose);
-
-            // If the robot is close to the first spike mark...
-            if (closeToFirstSpikeMark) {
-
-                // Go slow.
-                return MEDIUM_VELOCITY;
-
-            }
-
-            // Otherwise (if the robot is far from the first spike mark)...
-            else {
-
-                // Go fast.
-                return FAST_VELOCITY;
-
-            }
-
-        };
-
-        // Construct a chamber velocity constraint.
-        VelConstraint chamberVelocityConstraint = (robotPose, _path, _disp) -> {
-
-            // Determine whether the robot is close to the chamber.
-            boolean closeToChamber = isCloseToChamber(robotPose);
-
-            // If the robot is close to the chamber...
-            if (closeToChamber) {
-
-                // Go slow.
-                return MEDIUM_VELOCITY;
-
-            }
-
-            // Otherwise (if the robot is far from the first chamber)...
-            else {
-
-                // Go fast.
-                return FAST_VELOCITY;
-
-            }
-
-        };
+        // Construct a chamber velocity constraints.
+        VelConstraint firstChamberVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() < FIRST_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint secondChamberVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() < SECOND_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint thirdChamberVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() < THIRD_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
 
         // Construct a preload velocity constraint.
         TranslationalVelConstraint preloadVelocityConstraint = new TranslationalVelConstraint(MEDIUM_VELOCITY);
 
         // Construct a pick up velocity constraint.
-        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) -> {
-
-            // Determine whether the robot is close to the pick up.
-            boolean closeToPickUp = isCloseToPickUp(robotPose);
-
-            // If the robot is close to the pick up...
-            if (closeToPickUp) {
-
-                // Go slow.
-                return MEDIUM_VELOCITY;
-
-            }
-
-            // Otherwise (if the robot is far from the first pick up)...
-            else {
-
-                // Go fast.
-                return FAST_VELOCITY;
-
-            }
-
-        };
+        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.y.value() < -50 ? MEDIUM_VELOCITY : FAST_VELOCITY;
 
         // Construct poses.
         //////////////////////////////////////////////////////////////////////
@@ -411,7 +333,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from pick up to first chamber trajectory.
         TrajectoryActionBuilder driveFromPickUpToFirstChamberBuilder = driveFromSecondDropToPickUpBuilder.endTrajectory().fresh()
                 .setTangent(CHAMBER_TANGENT)
-				.splineToConstantHeading(firstChamberPose.position, CHAMBER_TANGENT, chamberVelocityConstraint);
+				.splineToConstantHeading(firstChamberPose.position, CHAMBER_TANGENT, firstChamberVelocityConstraint);
         Action driveFromPickUpToFirstChamber = driveFromPickUpToFirstChamberBuilder.build();
 
         // Construct a drive from first chamber to pick up trajectory.
@@ -423,7 +345,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from pick up to second chamber trajectory.
         TrajectoryActionBuilder driveFromPickUpToSecondChamberBuilder = driveFromFirstChamberToPickUpBuilder.endTrajectory().fresh()
                 .setTangent(CHAMBER_TANGENT)
-                .splineToConstantHeading(secondChamberPose.position, CHAMBER_TANGENT, chamberVelocityConstraint);
+                .splineToConstantHeading(secondChamberPose.position, CHAMBER_TANGENT, secondChamberVelocityConstraint);
         Action driveFromPickUpToSecondChamber = driveFromPickUpToSecondChamberBuilder.build();
 
         // Construct a drive from second chamber to pick up trajectory.
@@ -435,7 +357,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from pick up to third chamber trajectory.
         TrajectoryActionBuilder driveFromPickUpToThirdChamberBuilder = driveFromSecondChamberToPickUpBuilder.endTrajectory().fresh()
                 .setTangent(CHAMBER_TANGENT)
-                .splineToConstantHeading(thirdChamberPose.position, CHAMBER_TANGENT, chamberVelocityConstraint);
+                .splineToConstantHeading(thirdChamberPose.position, CHAMBER_TANGENT, thirdChamberVelocityConstraint);
         Action driveFromPickUpToThirdChamber = driveFromPickUpToThirdChamberBuilder.build();
 
         // Construct a drive nowhere trajectory.
