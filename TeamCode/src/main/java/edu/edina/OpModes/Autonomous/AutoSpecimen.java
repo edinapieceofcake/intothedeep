@@ -61,7 +61,8 @@ public class AutoSpecimen extends LinearOpMode {
     public static double FIRST_DROP_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Second drop pose
-    public static double SECOND_DROP_X = SECOND_SPIKE_MARK_X;
+    //public static double SECOND_DROP_X = SECOND_SPIKE_MARK_X;
+    public static double SECOND_DROP_X = 40;
     public static double SECOND_DROP_Y = FIRST_DROP_Y;
     public static double SECOND_DROP_HEADING = FIRST_DROP_HEADING;
 
@@ -80,7 +81,7 @@ public class AutoSpecimen extends LinearOpMode {
     public static double CHAMBER_TANGENT = Math.toRadians(90);
 
     // Chamber x separation
-    public static double CHAMBER_X_SEPARATION = 2;
+    public static double CHAMBER_X_SEPARATION = 2.5;
 
     // First chamber pose
     public static double FIRST_CHAMBER_X = PRELOAD_CHAMBER_X - CHAMBER_X_SEPARATION;
@@ -521,15 +522,15 @@ public class AutoSpecimen extends LinearOpMode {
                 deliverSample(driveFromSecondSpikeMarkToSecondDrop),
 
                 // Drive to the third spike mark.
-                driveToSpikeMark(driveFromSecondDropToThirdSpikeMark, false),
+                //driveToSpikeMark(driveFromSecondDropToThirdSpikeMark, false),
 
                 // Grab the third spike mark sample.
-                grabSample(),
+                //grabSample(),
 
                 // Deliver the third spike mark sample to the human player.
-                deliverSample(driveFromThirdSpikeMarkToThirdDrop),
+                //deliverSample(driveFromThirdSpikeMarkToThirdDrop),
 
-                // Drive to pick up
+                // Drive to pick up.
                 new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                 new ParallelAction(
                         new MoveArm(robotHardware, tallWalls ? Arm.GROUND_TO_TALL_WALL_POSITION : Arm.GROUND_TO_SHORT_WALL_POSITION, true),
@@ -550,10 +551,10 @@ public class AutoSpecimen extends LinearOpMode {
                 scoreAndDrive(driveFromPickUpToSecondChamber, driveFromSecondChamberToPickUp, wallArmPosition),
 
                 // Pick up specimen
-                pickUpSpecimen(),
+                //pickUpSpecimen(),
 
                 // Score the third specimen and drive to the wall.
-                scoreAndDrive(driveFromPickUpToThirdChamber, driveFromThirdChamberToPickUp, wallArmPosition),
+                //scoreAndDrive(driveFromPickUpToThirdChamber, driveFromThirdChamberToPickUp, wallArmPosition),
 
                 // Pick up specimen
                 pickUpSpecimen(),
