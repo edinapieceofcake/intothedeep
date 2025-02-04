@@ -35,7 +35,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Preload chamber pose
     public static double PRELOAD_CHAMBER_X = START_X;
-    public static double PRELOAD_CHAMBER_Y = -29;
+    public static double PRELOAD_CHAMBER_Y = -27;
     public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
 
     // First spike mark pose
@@ -57,7 +57,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // First drop pose
     public static double FIRST_DROP_X = FIRST_SPIKE_MARK_X;
-    public static double FIRST_DROP_Y = -49.5;
+    public static double FIRST_DROP_Y = -51;
     public static double FIRST_DROP_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Second drop pose
@@ -105,7 +105,6 @@ public class AutoSpecimen extends LinearOpMode {
     // Velocities
     public static double FAST_VELOCITY = 35;
     public static double MEDIUM_VELOCITY = 23;
-    public static double SLOW_VELOCITY = 15;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -315,7 +314,7 @@ public class AutoSpecimen extends LinearOpMode {
             if (closeToChamber) {
 
                 // Go slow.
-                return SLOW_VELOCITY;
+                return MEDIUM_VELOCITY;
 
             }
 
@@ -342,7 +341,7 @@ public class AutoSpecimen extends LinearOpMode {
             if (closeToPickUp) {
 
                 // Go slow.
-                return SLOW_VELOCITY;
+                return MEDIUM_VELOCITY;
 
             }
 
