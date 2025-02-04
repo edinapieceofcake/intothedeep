@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -289,6 +290,29 @@ public class RobotHardware implements DrivingRobotHardware {
     // Updates this.
     public void update() {
 
+        // Update telemetry.
+        //////////////////////////////////////////////////////////////////////
+
+        // Update the pose estimate.
+        drive.updatePoseEstimate();
+
+        // Get the robot's pose.
+        Pose2d pose = drive.pose;
+        Vector2d position = pose.position;
+        double x = Math.round(position.x);
+        double y = Math.round(position.y);
+        double headingRadians = drive.pose.heading.toDouble();
+        double headingDegrees = Math.round(Math.toDegrees(headingRadians));
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
+
+        // Update the telemetry.
+        telemetry.addData("Robot", "====================");
+        telemetry.addData("- X", y);
+        telemetry.addData("- Y", x);
+        telemetry.addData("- Heading", headingDegrees);
+
         // Update hardware.
         //////////////////////////////////////////////////////////////////////
 
@@ -326,8 +350,6 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     public void runActions() {
-        // Update actions.
-        //////////////////////////////////////////////////////////////////////
 
         // Road Runner Docs - Teleop Actions
         // https://rr.brott.dev/docs/v1-0/guides/teleop-actions/
@@ -359,6 +381,7 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Update the dashboard.
         dashboard.sendTelemetryPacket(packet);
+
     }
 
     // Decrements the arm position.
