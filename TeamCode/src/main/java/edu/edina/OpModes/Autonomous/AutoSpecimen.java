@@ -454,7 +454,7 @@ public class AutoSpecimen extends LinearOpMode {
         Action mainAction = new SequentialAction(
 
                 // Score the preloaded specimen and drive to the first spike mark.
-                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.SUBMERSIBLE_ENTER_POSITION),
+                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.SUBMERSIBLE_ENTER_POSITION, true),
 
                 // Grab the first spike mark sample.
                 grabSample(),
@@ -483,19 +483,19 @@ public class AutoSpecimen extends LinearOpMode {
                 pickUpSpecimen(),
 
                 // Score the first specimen and drive to the wall.
-                scoreAndDrive(driveFromPickUpToFirstChamber, driveFromFirstChamberToPickUp, wallArmPosition),
+                scoreAndDrive(driveFromPickUpToFirstChamber, driveFromFirstChamberToPickUp, wallArmPosition, false),
 
                 // Pick up specimen
                 pickUpSpecimen(),
 
                 // Score the second specimen and drive to the wall.
-                scoreAndDrive(driveFromPickUpToSecondChamber, driveFromSecondChamberToPickUp, wallArmPosition),
+                scoreAndDrive(driveFromPickUpToSecondChamber, driveFromSecondChamberToPickUp, wallArmPosition, false),
 
                 // Pick up specimen
                 pickUpSpecimen(),
 
                 // Score the third specimen.
-                scoreAndDrive(driveFromPickUpToThirdChamber, driveNowhere, Arm.MINIMUM_POSITION)
+                scoreAndDrive(driveFromPickUpToThirdChamber, driveNowhere, Arm.MINIMUM_POSITION, false)
 
         );
 
@@ -505,7 +505,7 @@ public class AutoSpecimen extends LinearOpMode {
     }
 
     // Scores a specimen and then drives to a destination.
-    private Action scoreAndDrive(Action driveToChamber, Action driveToDestination, int finalArmPosition) {
+    private Action scoreAndDrive(Action driveToChamber, Action driveToDestination, int finalArmPosition, boolean isPreload) {
 
         // Construct an action.
         Action action = new SequentialAction(
@@ -528,7 +528,7 @@ public class AutoSpecimen extends LinearOpMode {
                 new ParallelAction(
                         driveToDestination,
                         new SequentialAction(
-                                new WaitForTime(1000),
+                                new WaitForTime(isPreload ? 1000 : 800),
                                 new ParallelAction(
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
                                         finalArmPosition == Arm.SUBMERSIBLE_ENTER_POSITION ?
