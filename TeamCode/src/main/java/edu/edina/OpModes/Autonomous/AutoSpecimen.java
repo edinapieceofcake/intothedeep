@@ -61,7 +61,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Pick up pose
     public static double PICK_UP_X = SECOND_DROP_X;
-    public static double PICK_UP_Y = -61;
+    public static double PICK_UP_Y = -62;
     public static double PICK_UP_HEADING = FIRST_DROP_HEADING;
     public static double PICK_UP_TANGENT = Math.toRadians(270);
 
