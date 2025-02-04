@@ -12,7 +12,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -179,8 +178,11 @@ public class AutoSpecimen extends LinearOpMode {
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
 
+        // Construct a start pose.
+        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
+
         // Get hardware.
-        robotHardware = new RobotHardware(this);
+        robotHardware = new RobotHardware(this, startPose);
 
         // Indicate that the robot is initializing.
         robotHardware.log("Initializing...");
@@ -235,8 +237,11 @@ public class AutoSpecimen extends LinearOpMode {
         // Disable manual driving.
         robotHardware.disableManualDriving();
 
+        // Get a drive interface.
+        MecanumDrive drive = robotHardware.getDrive();
+
         // Get the main action.
-        Action mainAction = getMainAction();
+        Action mainAction = getMainAction(drive, startPose);
 
         // Add the main action to the robot hardware.
         robotHardware.addAction(mainAction);
@@ -273,7 +278,7 @@ public class AutoSpecimen extends LinearOpMode {
     }
 
     // Gets the main action.
-    private Action getMainAction() {
+    private Action getMainAction(MecanumDrive drive, Pose2d startPose) {
 
         // Construct velocity constraints.
         //////////////////////////////////////////////////////////////////////
@@ -356,9 +361,6 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct poses.
         //////////////////////////////////////////////////////////////////////
 
-        // Construct a start pose.
-        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
-
         // Construct a chamber pose.
         Pose2d chamberPose = new Pose2d(PRELOAD_CHAMBER_X, PRELOAD_CHAMBER_Y, PRELOAD_CHAMBER_HEADING);
 
@@ -403,9 +405,6 @@ public class AutoSpecimen extends LinearOpMode {
 
         // Construct trajectories.
         //////////////////////////////////////////////////////////////////////
-
-        // Construct a drive interface.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         // Construct a drive from start to chamber trajectory.
         Action driveFromStartToChamber = drive.actionBuilder(startPose)

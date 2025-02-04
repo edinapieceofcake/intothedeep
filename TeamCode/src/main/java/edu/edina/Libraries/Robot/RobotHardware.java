@@ -78,19 +78,19 @@ public class RobotHardware implements DrivingRobotHardware {
     // Inches to back up when scoring a specimen
     public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
-    private final LinearOpMode opMode;
-    private final Slide2 slide;
-    public final IMU imu;
-    private final Odometry teleOpOdometry;
-    public final Localizer odometry;
-    public final MecanumDrive drive;
-    public final VoltageSensor voltageSensor;
-    public final Drivetrain drivetrain;
-    private final Wrist wrist;
-    private final DualClaw claw;
-    private final Swivel swivel;
-    private final Arm arm;
-    private final Lift lift;
+    private LinearOpMode opMode;
+    private Slide2 slide;
+    public IMU imu;
+    private Odometry teleOpOdometry;
+    public Localizer odometry;
+    public MecanumDrive drive;
+    public VoltageSensor voltageSensor;
+    public Drivetrain drivetrain;
+    private Wrist wrist;
+    private DualClaw claw;
+    private Swivel swivel;
+    private Arm arm;
+    private Lift lift;
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
@@ -103,6 +103,15 @@ public class RobotHardware implements DrivingRobotHardware {
     private DcMotorEx extension;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
+        Pose2d startPose = new Pose2d(0, 0, 0);
+        initialize(opMode, startPose);
+    }
+
+    public RobotHardware(LinearOpMode opMode, Pose2d startPose) throws InterruptedException {
+        initialize(opMode, startPose);
+    }
+
+    private void initialize(LinearOpMode opMode, Pose2d startPose) throws InterruptedException {
 
         // Remember the op mode.
         this.opMode = opMode;
@@ -152,7 +161,7 @@ public class RobotHardware implements DrivingRobotHardware {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, startPose);
 
         odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 
@@ -957,4 +966,10 @@ public class RobotHardware implements DrivingRobotHardware {
         telemetry.addData(caption, value);
         telemetry.update();
     }
+
+    // Returns a drive interface.
+    public MecanumDrive getDrive() {
+        return drive;
+    }
+
 }

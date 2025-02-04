@@ -179,8 +179,11 @@ public class AutoSample extends LinearOpMode {
         // Initialize the robot.
         //////////////////////////////////////////////////////////////////////
 
+        // Construct a start pose.
+        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
+
         // Get hardware.
-        robotHardware = new RobotHardware(this);
+        robotHardware = new RobotHardware(this, startPose);
 
         // Indicate that the robot is initializing.
         robotHardware.log("Initializing...");
@@ -235,8 +238,11 @@ public class AutoSample extends LinearOpMode {
         // Disable manual driving.
         robotHardware.disableManualDriving();
 
+        // Get a drive interface.
+        MecanumDrive drive = robotHardware.getDrive();
+
         // Set the main action.
-        Action mainAction = getMainAction();
+        Action mainAction = getMainAction(drive, startPose);
 
         // Add the action to the robot hardware.
         robotHardware.addAction(mainAction);
@@ -345,7 +351,7 @@ public class AutoSample extends LinearOpMode {
     }
 
     // Gets a main action.
-    private Action getMainAction() {
+    private Action getMainAction(MecanumDrive drive, Pose2d startPose) {
 
         // Construct velocity constraints.
         //////////////////////////////////////////////////////////////////////
@@ -428,9 +434,6 @@ public class AutoSample extends LinearOpMode {
         // Construct trajectories.
         //////////////////////////////////////////////////////////////////////
 
-        // Construct a start pose.
-        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
-
         // Construct a first basket pose.
         Pose2d firstBasketPose = new Pose2d(FIRST_BASKET_X, FIRST_BASKET_Y, FIRST_BASKET_HEADING);
 
@@ -454,9 +457,6 @@ public class AutoSample extends LinearOpMode {
 
         // Construct a submersible pose.
         Pose2d submersiblePose = new Pose2d(SUBMERSIBLE_X, SUBMERSIBLE_Y, SUBMERSIBLE_HEADING);
-
-        // Construct a drive interface.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         // Construct an action for driving from the start to the basket.
         Action driveFromStartToBasket = drive.actionBuilder(startPose)
