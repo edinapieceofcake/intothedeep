@@ -235,7 +235,7 @@ public class TeleOpMain extends LinearOpMode {
     }
 
     // Handles normal mode.
-    private void handleNormalMode() {
+    private void handleNormalMode() throws InterruptedException {
 
         // Stop rezeroing.
         //////////////////////////////////////////////////////////////////////
@@ -716,10 +716,10 @@ public class TeleOpMain extends LinearOpMode {
     // It is important to not call robotHardware.update() because we turn off the hardware,
     // and it will cause several exceptions.
     //////////////////////////////////////////////////////////////////////////
-    public void ascent() {
+    public void ascent() throws InterruptedException {
         Ascent a = new Ascent(robotHardware);
         robotHardware.addAction(new SequentialAction(
-                a.turnOffServos(),
+                new InstantAction(a::turnOffServos),
                 new ParallelAction(
                         a.raiseLift(),
                         new SequentialAction(
@@ -742,11 +742,15 @@ public class TeleOpMain extends LinearOpMode {
         ));
 
         while (opModeIsActive()) {
-            robotHardware.runActions();
-
-            robotHardware.getArm().update();
-            robotHardware.getSlide().update();
-            robotHardware.drivetrain.update();
+            if (a.getAbort() || (currentGamepad1.x && !previousGamepad1.x)) {
+                a.turnOnServos();
+                return;
+            } else {
+                robotHardware.runActions();
+                robotHardware.getArm().update();
+                robotHardware.getSlide().update();
+                robotHardware.drivetrain.update();
+            }
         }
     }
 }

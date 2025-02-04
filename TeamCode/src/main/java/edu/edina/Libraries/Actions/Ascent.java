@@ -17,7 +17,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.WaitForTime;
 
 @Config
 public class Ascent {
@@ -55,12 +54,16 @@ public class Ascent {
         hangTime = new ElapsedTime();
     }
 
-    public Action turnOffServos() {
-        return new InstantAction(() -> {
-            hw.getDualClaw().turnOff();
-            hw.getSwivel().turnOff();
-            hw.getWrist().turnOff();
-        });
+    public void turnOffServos() {
+        hw.getDualClaw().turnOff();
+        hw.getSwivel().turnOff();
+        hw.getWrist().turnOff();
+    }
+
+    public void turnOnServos() {
+        hw.getDualClaw().turnOn();
+        hw.getSwivel().turnOn();
+        hw.getWrist().turnOn();
     }
 
     public Action lowerHook() {
@@ -72,15 +75,17 @@ public class Ascent {
 
     public Action raiseLift() {
         int minPos = initPos + SERVO_DROP_POS;
-        return liftMotionAction(minPos, RAISE_POWER_ADDON);
+        RampVariable rampVariable = new RampVariable(3, 0.05, RAISE_POWER_ADDON);
+        return liftMotionAction(minPos, rampVariable);
     }
 
     public Action lowerLift() {
         int hookOnThresh = initPos + SERVO_HOOK_POS;
-        return liftMotionAction(hookOnThresh, DOWNWARD_POWER_ADDON);
+        RampVariable rampVariable = new RampVariable(-3, DOWNWARD_POWER_ADDON, -.05);
+        return liftMotionAction(hookOnThresh, rampVariable);
     }
 
-    private Action liftMotionAction(int cutoff, double powerConst) {
+    private Action liftMotionAction(int cutoff, RampVariable rampVariable) {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -90,9 +95,11 @@ public class Ascent {
 
                 double feedfwd = LIFT_FEEDFORWARD_1 * p + LIFT_FEEDFORWARD_2;
 
-                if ((powerConst > 0 && p < cutoff) || (powerConst < 0 && p > cutoff)) {
-                    RobotLog.ii(tag, "lift pos %d, power %f", p, powerConst + feedfwd);
-                    setPower(powerConst + feedfwd);
+                double addonPower = rampVariable.getCurrValue();
+
+                if ((addonPower > 0 && p < cutoff) || (addonPower < 0 && p > cutoff)) {
+                    RobotLog.ii(tag, "lift pos %d, power %f", p, addonPower + feedfwd);
+                    setPower(addonPower + feedfwd);
                     return true;
                 } else {
                     setPower(feedfwd);
@@ -113,10 +120,11 @@ public class Ascent {
     }
 
     public Action waitForHook() {
+        ContinuousBooleanTest currentTest = new ContinuousBooleanTest(20);
+
         Action initAction = new InstantAction(() -> {
             setPower(DOWNWARD_POWER_RAW);
         });
-        Action wait = new WaitForTime(20);
         Action hookDetect = new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -125,7 +133,10 @@ public class Ascent {
 
                 RobotLog.ii(tag, "pos = %d, current = %f", pos, current);
 
-                if (current > HOOK_AMP_LIMIT) {
+                boolean aboveAmpLimit = current > HOOK_AMP_LIMIT;
+                boolean continuouslyAboveAmpLimit = currentTest.update(aboveAmpLimit);
+
+                if (continuouslyAboveAmpLimit) {
                     return false;
                 } else {
                     if (pos < initPos + SERVO_DROP_POS / 2) {
@@ -140,14 +151,14 @@ public class Ascent {
 
         return new SequentialAction(
                 initAction,
-                wait,
                 hookDetect
         );
     }
 
     public Action hang() {
-        Action startHang = new InstantAction(hangTime::reset);
-        Action hang = new Action() {
+        RampVariable hangRamp = new RampVariable(-HANG_POWER_RAMP, -1, -0.05);
+
+        return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 if (abort) {
@@ -157,13 +168,11 @@ public class Ascent {
                 } else {
                     RobotLog.ii(tag, "hanging");
                     hw.getSlide().setPosition(1000);
-                    setPower(-HANG_POWER_RAMP * hangTime.seconds());
+                    setPower(hangRamp.getCurrValue());
                     return true;
                 }
             }
         };
-
-        return new SequentialAction(startHang, hang);
     }
 
     private void setPower(double power) {
@@ -194,5 +203,9 @@ public class Ascent {
             hangRight.setPosition(1);
             hangLeft.setPosition(0);
         });
+    }
+
+    public boolean getAbort() {
+        return abort;
     }
 }

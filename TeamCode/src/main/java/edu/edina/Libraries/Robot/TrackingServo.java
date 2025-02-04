@@ -43,4 +43,7 @@ public class TrackingServo {
     public void turnOff() {
         ((ServoImplEx) s).setPwmDisable();
     }
+    public void turnOn() {
+        ((ServoImplEx) s).setPwmEnable();
+    }
 }

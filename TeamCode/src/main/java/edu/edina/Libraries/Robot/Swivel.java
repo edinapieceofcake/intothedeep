@@ -130,4 +130,8 @@ public class Swivel {
     public void turnOff() {
         servo.turnOff();
     }
+
+    public void turnOn() {
+        servo.turnOn();
+    }
 }

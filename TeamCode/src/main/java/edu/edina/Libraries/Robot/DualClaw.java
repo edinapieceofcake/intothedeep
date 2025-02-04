@@ -73,4 +73,9 @@ public class DualClaw {
         ((ServoImplEx) clawSmall).setPwmDisable();
         ((ServoImplEx) clawBig).setPwmDisable();
     }
+
+    public void turnOn() {
+        ((ServoImplEx) clawSmall).setPwmEnable();
+        ((ServoImplEx) clawBig).setPwmEnable();
+    }
 }

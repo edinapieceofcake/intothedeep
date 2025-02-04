@@ -360,8 +360,4 @@ public class Arm {
         // Stop rezeroing.
         rezeroing = false;
     }
-
-    public void turnOff() {
-        motor.setMotorDisable();
-    }
 }
