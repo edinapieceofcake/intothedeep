@@ -521,7 +521,7 @@ public class AutoSpecimen extends LinearOpMode {
 
                 // Score the specimen.
                 new InstantAction(() -> robotHardware.openSmallClaw()),
-                new WaitForTime(200),
+                new WaitForTime(100),
                 new InstantAction(() -> robotHardware.setWristWallPosition()),
 
                 // Drive to the destination while lowering the arm.
@@ -545,7 +545,7 @@ public class AutoSpecimen extends LinearOpMode {
                 ),
 
                 // Wait for the arm to settle.
-                new WaitForTime(200)
+                new WaitForTime(100)
 
         );
 
