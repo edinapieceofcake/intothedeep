@@ -86,8 +86,8 @@ public class AutoSpecimen extends LinearOpMode {
     public static double THIRD_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Velocities
-    public static double FAST_VELOCITY = 35;
-    public static double MEDIUM_VELOCITY = 23;
+    public static double FAST_VELOCITY = 38;
+    public static double MEDIUM_VELOCITY = 26;
 
     // Robot hardware
     private RobotHardware robotHardware;
