@@ -1011,6 +1011,9 @@ public class RobotHardware implements DrivingRobotHardware {
     // Gets the arm correction.
     public int getArmCorrection() { return arm.getCorrection(); }
 
+    // Sets the arm correction.
+    public void setArmCorrection(int armCorrection) { arm.setCorrection(armCorrection); }
+
     // Gets the submersible extension length.
     public SubmersibleExtensionLength getSubmersibleExtensionLength() { return submersibleExtensionLength; }
 

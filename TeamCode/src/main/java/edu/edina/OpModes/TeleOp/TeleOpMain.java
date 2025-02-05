@@ -35,6 +35,7 @@ public class TeleOpMain extends LinearOpMode {
         - a = score in basket, grab from wall
         - x = chamber
         - left bumper = hold for turtle
+        - back = toggle ascend
 
     Gamepad 2
 
@@ -52,13 +53,15 @@ public class TeleOpMain extends LinearOpMode {
         - dpad right = extend slide
         - dpad up = raise arm
         - dpad down = lower arm
-        - back = toggle ascend (unimplemented)
 
         Debug Mode (hold right trigger)
         - a = rezero arm
         - x = rezero slide
         - b = rezero lift
         - left bumper = toggle tall walls
+        - dpad left = toggle big claw
+        - dpad right = toggle small claw
+        - dpad up = clear arm correction
 
     */
 
@@ -234,6 +237,39 @@ public class TeleOpMain extends LinearOpMode {
 
             // Toggle the tall walls value.
             robotHardware.toggleTallWalls();
+
+        }
+
+        // Toggle big claw
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed dpad left...
+        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left) {
+
+            // Toggle the big claw.
+            robotHardware.toggleBigClaw();
+
+        }
+
+        // Toggle small claw
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed dpad right...
+        if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right) {
+
+            // Toggle the small claw.
+            robotHardware.toggleSmallClaw();
+
+        }
+
+        // Clear arm correction
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed dpad up...
+        if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up) {
+
+            // Clear the arm correction.
+            robotHardware.setArmCorrection(0);
 
         }
 

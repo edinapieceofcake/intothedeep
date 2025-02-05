@@ -392,4 +392,12 @@ public class Arm {
 
     }
 
+    // Sets the correction.
+    public void setCorrection(int correction) {
+
+        // Set the correction.
+        this.correction = correction;
+
+    }
+
 }
