@@ -16,6 +16,7 @@ import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.RobotMode;
+import edu.edina.Libraries.Robot.SubmersibleExtensionLength;
 import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
 
@@ -146,9 +147,13 @@ public class TeleOpMain extends LinearOpMode {
             // Construct a walls string.
             String walls = tallWalls ? "Tall" : "Short";
 
+            // Get the submersible extension length.
+            SubmersibleExtensionLength submersibleExtensionLength = robotHardware.getSubmersibleExtensionLength();
+
             // Display main telemetry.
             telemetry.addData("Main", "====================");
             telemetry.addData("- Mode", robotMode);
+            telemetry.addData("- Submersible Extension Length", submersibleExtensionLength);
             telemetry.addData("- Walls", walls);
 
             // Update the robot hardware.
@@ -447,22 +452,58 @@ public class TeleOpMain extends LinearOpMode {
         // Extend slide
         //////////////////////////////////////////////////////////////////////
 
-        // If the user is holding dpad right...
-        if (currentGamepad2.dpad_right) {
+        // If the user pressed dpad right...
+        if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right) {
+
+            // Get an input submersible extension length.
+            SubmersibleExtensionLength inputSubmersibleExtensionLength = robotHardware.getSubmersibleExtensionLength();
+
+            // Initialize an output submersible extension length.
+            SubmersibleExtensionLength outputSubmersibleExtensionLength;
+
+            // If the length is short...
+            if(inputSubmersibleExtensionLength == SubmersibleExtensionLength.SHORT) {
+
+                // Make the length medium.
+                outputSubmersibleExtensionLength = SubmersibleExtensionLength.MEDIUM;
+
+            }
+
+            // Otherwise, if the length is medium...
+            else if(inputSubmersibleExtensionLength == SubmersibleExtensionLength.MEDIUM) {
+
+                // Make the length long.
+                outputSubmersibleExtensionLength = SubmersibleExtensionLength.LONG;
+
+            }
+
+            // Otherwise, if the length is long...
+            else if(inputSubmersibleExtensionLength == SubmersibleExtensionLength.LONG) {
+
+                // Notify the user.
+                robotHardware.beep();
+
+                // Exit the method.
+                return;
+
+            }
+
+            // Otherwise (if the length is unrecognized)...
+            else {
+
+                // Complain.
+                throw new InterruptedException("The submersible extension length is unrecognized.");
+
+            }
+
+            // Update the submersible extension length.
+            robotHardware.setSubmersibleExtensionLength(outputSubmersibleExtensionLength);
 
             // If the robot is in submersible mode...
             if (robotMode == RobotMode.SUBMERSIBLE) {
 
-                // Extend the slide.
-                robotHardware.extendSlide();
-
-            }
-
-            // Otherwise (if the robot is not in submersible mode)...
-            else {
-
-                // Notify the user.
-                robotHardware.beep();
+                // Adjust the extension.
+                robotHardware.setSubmersibleExtension();
 
             }
 
@@ -471,22 +512,58 @@ public class TeleOpMain extends LinearOpMode {
         // Retract slide
         //////////////////////////////////////////////////////////////////////
 
-        // If the user is holding dpad left...
-        if (currentGamepad2.dpad_left) {
+        // If the user pressed dpad left...
+        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left) {
+
+            // Get an input submersible extension length.
+            SubmersibleExtensionLength inputSubmersibleExtensionLength = robotHardware.getSubmersibleExtensionLength();
+
+            // Initialize an output submersible extension length.
+            SubmersibleExtensionLength outputSubmersibleExtensionLength;
+
+            // If the length is short...
+            if(inputSubmersibleExtensionLength == SubmersibleExtensionLength.SHORT) {
+
+                // Notify the user.
+                robotHardware.beep();
+
+                // Exit the method.
+                return;
+
+            }
+
+            // Otherwise, if the length is medium...
+            else if(inputSubmersibleExtensionLength == SubmersibleExtensionLength.MEDIUM) {
+
+                // Make the length short.
+                outputSubmersibleExtensionLength = SubmersibleExtensionLength.SHORT;
+
+            }
+
+            // Otherwise, if the length is long...
+            else if(inputSubmersibleExtensionLength == SubmersibleExtensionLength.LONG) {
+
+                // Make the length medium.
+                outputSubmersibleExtensionLength = SubmersibleExtensionLength.MEDIUM;
+
+            }
+
+            // Otherwise (if the length is unrecognized)...
+            else {
+
+                // Complain.
+                throw new InterruptedException("The submersible extension length is unrecognized.");
+
+            }
+
+            // Update the submersible extension length.
+            robotHardware.setSubmersibleExtensionLength(outputSubmersibleExtensionLength);
 
             // If the robot is in submersible mode...
             if (robotMode == RobotMode.SUBMERSIBLE) {
 
-                // Retract the slide.
-                robotHardware.retractSlide();
-
-            }
-
-            // Otherwise (if the robot is not in submersible mode)...
-            else {
-
-                // Notify the user.
-                robotHardware.beep();
+                // Adjust the extension.
+                robotHardware.setSubmersibleExtension();
 
             }
 
