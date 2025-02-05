@@ -627,7 +627,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Increment the arm position.
-                robotHardware.incrementArmPosition();
+                robotHardware.incrementArmPosition(true);
 
             }
 
@@ -635,7 +635,7 @@ public class TeleOpMain extends LinearOpMode {
             else {
 
                 // Decrement the arm position.
-                robotHardware.decrementArmPosition();
+                robotHardware.decrementArmPosition(true);
 
             }
 
@@ -651,7 +651,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Derement the arm position.
-                robotHardware.decrementArmPosition();
+                robotHardware.decrementArmPosition(true);
 
             }
 
@@ -659,7 +659,7 @@ public class TeleOpMain extends LinearOpMode {
             else {
 
                 // Increment the arm position.
-                robotHardware.incrementArmPosition();
+                robotHardware.incrementArmPosition(true);
 
             }
 
@@ -708,7 +708,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad1.back && !previousGamepad1.back && robotMode == RobotMode.SUBMERSIBLE) {
             robotHardware.setMinimumExtension();
             robotHardware.setArmSubmersibleEnterPosition();
-            robotHardware.incrementArmPosition();
+            robotHardware.incrementArmPosition(false);
             ascent();
         }
     }

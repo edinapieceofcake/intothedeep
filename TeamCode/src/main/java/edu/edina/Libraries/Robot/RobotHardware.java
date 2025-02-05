@@ -385,18 +385,18 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Decrements the arm position.
-    public void decrementArmPosition() {
+    public void decrementArmPosition(boolean isCorrection) {
 
         // Decrement the arm position.
-        arm.decrementPosition();
+        arm.decrementPosition(isCorrection);
 
     }
 
     // Increments the arm position.
-    public void incrementArmPosition() {
+    public void incrementArmPosition(boolean isCorrection) {
 
         // Increment the arm position.
-        arm.incrementPosition();
+        arm.incrementPosition(isCorrection);
 
     }
 
@@ -998,5 +998,8 @@ public class RobotHardware implements DrivingRobotHardware {
     public MecanumDrive getDrive() {
         return drive;
     }
+
+    // Gets the arm correction.
+    public int getArmCorrection() { return arm.getCorrection(); }
 
 }
