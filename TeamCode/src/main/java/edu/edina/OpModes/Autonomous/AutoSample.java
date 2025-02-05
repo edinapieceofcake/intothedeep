@@ -35,34 +35,29 @@ public class AutoSample extends LinearOpMode {
     public static double START_Y = -61;
     public static double START_HEADING = Math.toRadians(180);
 
-    // First basket pose
-    public static double FIRST_BASKET_X = -58;
-    public static double FIRST_BASKET_Y = -58;
-    public static double FIRST_BASKET_HEADING = Math.toRadians(225);
-
-    // Second basket pose
-    public static double SECOND_BASKET_X = -58;
-    public static double SECOND_BASKET_Y = -54;
-    public static double SECOND_BASKET_HEADING = Math.toRadians(225);
+    // Basket pose
+    public static double BASKET_X = -58;
+    public static double BASKET_Y = -58;
+    public static double BASKET_HEADING = Math.toRadians(225);
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = -48;
-    public static double FIRST_SPIKE_MARK_Y = -37;
+    public static double FIRST_SPIKE_MARK_Y = -37.5;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = -59;
-    public static double SECOND_SPIKE_MARK_Y = -38;
+    public static double SECOND_SPIKE_MARK_X = -58;
+    public static double SECOND_SPIKE_MARK_Y = -38.5;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -56;
-    public static double THIRD_SPIKE_MARK_Y = -25;
+    public static double THIRD_SPIKE_MARK_X = -54;
+    public static double THIRD_SPIKE_MARK_Y = -26;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
 
     // Human pose
-    public static double HUMAN_X = 34;
-    public static double HUMAN_Y = -50.5;
+    public static double HUMAN_X = 36.5;
+    public static double HUMAN_Y = -51.5;
     public static double FIRST_HUMAN_HEADING = Math.toRadians(0);
     public static double SECOND_HUMAN_HEADING = Math.toRadians(180);
 
@@ -434,11 +429,8 @@ public class AutoSample extends LinearOpMode {
         // Construct trajectories.
         //////////////////////////////////////////////////////////////////////
 
-        // Construct a first basket pose.
-        Pose2d firstBasketPose = new Pose2d(FIRST_BASKET_X, FIRST_BASKET_Y, FIRST_BASKET_HEADING);
-
-        // Construct a second basket pose.
-        Pose2d secondBasketPose = new Pose2d(SECOND_BASKET_X, SECOND_BASKET_Y, SECOND_BASKET_HEADING);
+        // Construct a basket pose.
+        Pose2d basketPose = new Pose2d(BASKET_X, BASKET_Y, BASKET_HEADING);
 
         // Construct a first spike mark pose.
         Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
@@ -460,52 +452,52 @@ public class AutoSample extends LinearOpMode {
 
         // Construct an action for driving from the start to the basket.
         Action driveFromStartToBasket = drive.actionBuilder(startPose)
-                .strafeToLinearHeading(firstBasketPose.position, firstBasketPose.heading)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
         // Construct an action for driving from the basket to the first spike mark.
-        Action driveFromBasketToFirstSpikeMark = drive.actionBuilder(firstBasketPose)
+        Action driveFromBasketToFirstSpikeMark = drive.actionBuilder(basketPose)
                 .strafeToLinearHeading(firstSpikeMarkPose.position, firstSpikeMarkPose.heading, spikeMarkVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the first spike mark to the basket.
         Action driveFromFirstSpikeMarkToBasket = drive.actionBuilder(firstSpikeMarkPose)
-                .strafeToLinearHeading(firstBasketPose.position, firstBasketPose.heading)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
         // Construct an action for driving from the first and a half spike mark to the second spike mark.
-        Action driveFromBasketToSecondSpikeMark = drive.actionBuilder(firstBasketPose)
+        Action driveFromBasketToSecondSpikeMark = drive.actionBuilder(basketPose)
                 .strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading, spikeMarkVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the second spike mark to the basket.
         Action driveFromSecondSpikeMarkToBasket = drive.actionBuilder(secondSpikeMarkPose)
-                .strafeToLinearHeading(firstBasketPose.position, firstBasketPose.heading)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
         // Construct an action for driving from the basket to the third spike mark.
-        Action driveFromBasketToThirdSpikeMark = drive.actionBuilder(firstBasketPose)
+        Action driveFromBasketToThirdSpikeMark = drive.actionBuilder(basketPose)
                 .strafeToLinearHeading(thirdSpikeMarkPose.position, thirdSpikeMarkPose.heading, spikeMarkVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the third spike mark to the basket.
         Action driveFromThirdSpikeMarkToBasket = drive.actionBuilder(thirdSpikeMarkPose)
-                .strafeToLinearHeading(firstBasketPose.position, firstBasketPose.heading)
+                .strafeToLinearHeading(basketPose.position, basketPose.heading)
                 .build();
 
         // Construct an action for driving from the basket to the human.
-        Action driveFromBasketToHuman = drive.actionBuilder(firstBasketPose)
+        Action driveFromBasketToHuman = drive.actionBuilder(basketPose)
                 .setReversed(true)
                 .splineTo(firstHumanPose.position, firstHumanPose.heading, humanSampleVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the human to the basket.
         Action driveFromHumanToBasket = drive.actionBuilder(secondHumanPose)
-                .splineTo(secondBasketPose.position, secondBasketPose.heading, humanVelocityConstraint)
+                .splineTo(basketPose.position, basketPose.heading, humanVelocityConstraint)
                 .build();
 
         // Construct an action for driving from the basket to the submersible
-        Action driveFromBasketToSubmersible = drive.actionBuilder(secondBasketPose)
+        Action driveFromBasketToSubmersible = drive.actionBuilder(basketPose)
                 .setReversed(true)
                 .splineTo(submersiblePose.position, submersiblePose.heading, submersibleVelocityConstraint)
                 .build();
