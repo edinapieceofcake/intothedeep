@@ -91,6 +91,8 @@ public class TeleOpMain extends LinearOpMode {
         // Get hardware.
         robotHardware = new RobotHardware(this);
 
+        robotHardware.initializeLights();
+
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
 

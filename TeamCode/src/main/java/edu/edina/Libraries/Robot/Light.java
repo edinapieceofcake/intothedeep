@@ -24,7 +24,7 @@ public class Light {
         this.sampleSensor = sampleSensor;
         LIGHT_MULT = 0.07;
         chaseDirs = new int[] {1, 1, 1};
-        currPixNums = new int[] {0, 21, 42};
+        currPixNums = new int[] {0, 42};
     }
 
     public void update(boolean wave, boolean sample) {
@@ -73,21 +73,21 @@ public class Light {
         if (on) {
             byte r, g, b;
             if (sampleColor == SampleColor.RED) {
-                r = (byte) 70;
+                r = (byte) 130;
                 g = (byte) 0;
                 b = (byte) 0;
             } else if (sampleColor == SampleColor.BLUE) {
                 r = (byte) 0;
                 g = (byte) 0;
-                b = (byte) 70;
+                b = (byte) 130;
             } else if (sampleColor == SampleColor.YELLOW) {
-                r = (byte) 70;
-                g = (byte) 70;
+                r = (byte) 130;
+                g = (byte) 130;
                 b = (byte) 0;
             } else {
-                r = (byte) 50;
-                g = (byte) 50;
-                b = (byte) 50;
+                r = (byte) 90;
+                g = (byte) 90;
+                b = (byte) 90;
             }
 
             chase(r, g, b);
