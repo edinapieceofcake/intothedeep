@@ -68,27 +68,43 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Chamber values
     public static double CHAMBER_TANGENT = Math.toRadians(90);
-    public static double CHAMBER_X_SEPARATION = 1;
+    public static double CHAMBER_X_SEPARATION = 3;
     public static double CHAMBER_X_CLOSE = 15;
 
+    // Approacc first chamber pose
+    public static double APPROACH_FIRST_CHAMBER_X = PRELOAD_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double APPROACH_FIRST_CHAMBER_Y = -39;
+    public static double APPROACH_FIRST_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+
     // First chamber pose
-    public static double FIRST_CHAMBER_X = PRELOAD_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double FIRST_CHAMBER_X = APPROACH_FIRST_CHAMBER_X;
     public static double FIRST_CHAMBER_Y = PRELOAD_CHAMBER_Y;
-    public static double FIRST_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+    public static double FIRST_CHAMBER_HEADING = APPROACH_FIRST_CHAMBER_HEADING;
+
+    // Approach second chamber pose
+    public static double APPROACH_SECOND_CHAMBER_X = FIRST_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double APPROACH_SECOND_CHAMBER_Y = APPROACH_FIRST_CHAMBER_Y;
+    public static double APPROACH_SECOND_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Second chamber pose
-    public static double SECOND_CHAMBER_X = FIRST_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double SECOND_CHAMBER_X = APPROACH_SECOND_CHAMBER_X;
     public static double SECOND_CHAMBER_Y = PRELOAD_CHAMBER_Y;
-    public static double SECOND_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+    public static double SECOND_CHAMBER_HEADING = APPROACH_SECOND_CHAMBER_HEADING;
+
+    // Approach third chamber pose
+    public static double APPROACH_THIRD_CHAMBER_X = SECOND_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double APPROACH_THIRD_CHAMBER_Y = APPROACH_FIRST_CHAMBER_Y;
+    public static double APPROACH_THIRD_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
 
     // Third chamber pose
-    public static double THIRD_CHAMBER_X = SECOND_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double THIRD_CHAMBER_X = APPROACH_THIRD_CHAMBER_X;
     public static double THIRD_CHAMBER_Y = PRELOAD_CHAMBER_Y;
-    public static double THIRD_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+    public static double THIRD_CHAMBER_HEADING = APPROACH_THIRD_CHAMBER_HEADING;
 
     // Velocities
     public static double FAST_VELOCITY = 38;
     public static double MEDIUM_VELOCITY = 26;
+    public static double SLOW_VELOCITY = 20;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -267,7 +283,7 @@ public class AutoSpecimen extends LinearOpMode {
 
         // Construct a pick up velocity constraint.
         VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) ->
-                robotPose.position.y.value() < -50 ? MEDIUM_VELOCITY : FAST_VELOCITY;
+                robotPose.position.y.value() < -50 ? SLOW_VELOCITY : FAST_VELOCITY;
 
         // Construct poses.
         //////////////////////////////////////////////////////////////////////
@@ -290,11 +306,20 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a pick up pose.
         Pose2d pickUpPose = new Pose2d(PICK_UP_X, PICK_UP_Y, PICK_UP_HEADING);
 
+        // Construct an approach first chamber pose.
+        Pose2d approachFirstChamberPose = new Pose2d(APPROACH_FIRST_CHAMBER_X, APPROACH_FIRST_CHAMBER_Y, APPROACH_FIRST_CHAMBER_HEADING);
+
         // Construct a first chamber pose.
         Pose2d firstChamberPose = new Pose2d(FIRST_CHAMBER_X, FIRST_CHAMBER_Y, FIRST_CHAMBER_HEADING);
 
+        // Construct an approach second chamber pose.
+        Pose2d approachSecondChamberPose = new Pose2d(APPROACH_SECOND_CHAMBER_X, APPROACH_SECOND_CHAMBER_Y, APPROACH_SECOND_CHAMBER_HEADING);
+
         // Construct a second chamber pose.
         Pose2d secondChamberPose = new Pose2d(SECOND_CHAMBER_X, SECOND_CHAMBER_Y, SECOND_CHAMBER_HEADING);
+
+        // Construct an approach third chamber pose.
+        Pose2d approachThirdChamberPose = new Pose2d(APPROACH_THIRD_CHAMBER_X, APPROACH_THIRD_CHAMBER_Y, APPROACH_THIRD_CHAMBER_HEADING);
 
         // Construct a third chamber pose.
         Pose2d thirdChamberPose = new Pose2d(THIRD_CHAMBER_X, THIRD_CHAMBER_Y, THIRD_CHAMBER_HEADING);
@@ -330,6 +355,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from pick up to first chamber trajectory.
         TrajectoryActionBuilder driveFromPickUpToFirstChamberBuilder = driveFromSecondSpikeMarkToPickUpBuilder.endTrajectory().fresh()
                 .setTangent(CHAMBER_TANGENT)
+                .splineToConstantHeading(approachFirstChamberPose.position, CHAMBER_TANGENT, firstChamberVelocityConstraint)
                 .splineToConstantHeading(firstChamberPose.position, CHAMBER_TANGENT, firstChamberVelocityConstraint);
         Action driveFromPickUpToFirstChamber = driveFromPickUpToFirstChamberBuilder.build();
 
@@ -343,6 +369,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from pick up to second chamber trajectory.
         TrajectoryActionBuilder driveFromPickUpToSecondChamberBuilder = driveFromFirstChamberToPickUpBuilder.endTrajectory().fresh()
                 .setTangent(CHAMBER_TANGENT)
+                .splineToConstantHeading(approachSecondChamberPose.position, CHAMBER_TANGENT, secondChamberVelocityConstraint)
                 .splineToConstantHeading(secondChamberPose.position, CHAMBER_TANGENT, secondChamberVelocityConstraint);
         Action driveFromPickUpToSecondChamber = driveFromPickUpToSecondChamberBuilder.build();
 
@@ -356,6 +383,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct a drive from pick up to third chamber trajectory.
         TrajectoryActionBuilder driveFromPickUpToThirdChamberBuilder = driveFromSecondChamberToPickUpBuilder.endTrajectory().fresh()
                 .setTangent(CHAMBER_TANGENT)
+                .splineToConstantHeading(approachThirdChamberPose.position, CHAMBER_TANGENT, thirdChamberVelocityConstraint)
                 .splineToConstantHeading(thirdChamberPose.position, CHAMBER_TANGENT, thirdChamberVelocityConstraint);
         Action driveFromPickUpToThirdChamber = driveFromPickUpToThirdChamberBuilder.build();
 
