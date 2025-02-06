@@ -37,11 +37,8 @@ public class MoveArm implements Action {
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
 
-        // Get the arm correction.
-        int armCorrection = robotHardware.getArmCorrection();
-
         // Get the target position.
-        this.targetPosition = targetPosition + armCorrection;
+        this.targetPosition = targetPosition;
 
         // Get an appropriate increment.
         increment = fast ? FAST_INCREMENT : SLOW_INCREMENT;

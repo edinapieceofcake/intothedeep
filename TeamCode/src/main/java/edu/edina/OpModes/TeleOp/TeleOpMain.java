@@ -61,7 +61,6 @@ public class TeleOpMain extends LinearOpMode {
         - left bumper = toggle tall walls
         - dpad left = toggle big claw
         - dpad right = toggle small claw
-        - dpad up = clear arm correction
 
     */
 
@@ -259,17 +258,6 @@ public class TeleOpMain extends LinearOpMode {
 
             // Toggle the small claw.
             robotHardware.toggleSmallClaw();
-
-        }
-
-        // Clear arm correction
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user pressed dpad up...
-        if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up) {
-
-            // Clear the arm correction.
-            robotHardware.setArmCorrection(0);
 
         }
 
@@ -740,7 +728,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Increment the arm position.
-                robotHardware.incrementArmPosition(true);
+                robotHardware.incrementArmPosition();
 
             }
 
@@ -748,7 +736,7 @@ public class TeleOpMain extends LinearOpMode {
             else {
 
                 // Decrement the arm position.
-                robotHardware.decrementArmPosition(true);
+                robotHardware.decrementArmPosition();
 
             }
 
@@ -764,7 +752,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.WALL) {
 
                 // Derement the arm position.
-                robotHardware.decrementArmPosition(true);
+                robotHardware.decrementArmPosition();
 
             }
 
@@ -772,7 +760,7 @@ public class TeleOpMain extends LinearOpMode {
             else {
 
                 // Increment the arm position.
-                robotHardware.incrementArmPosition(true);
+                robotHardware.incrementArmPosition();
 
             }
 
@@ -821,7 +809,7 @@ public class TeleOpMain extends LinearOpMode {
         if (currentGamepad1.back && !previousGamepad1.back && robotMode == RobotMode.SUBMERSIBLE) {
             robotHardware.setMinimumExtension();
             robotHardware.setArmSubmersibleEnterPosition();
-            robotHardware.incrementArmPosition(false);
+            robotHardware.incrementArmPosition();
             ascent();
         }
     }

@@ -386,18 +386,18 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Decrements the arm position.
-    public void decrementArmPosition(boolean isCorrection) {
+    public void decrementArmPosition() {
 
         // Decrement the arm position.
-        arm.decrementPosition(isCorrection);
+        arm.decrementPosition();
 
     }
 
     // Increments the arm position.
-    public void incrementArmPosition(boolean isCorrection) {
+    public void incrementArmPosition() {
 
         // Increment the arm position.
-        arm.incrementPosition(isCorrection);
+        arm.incrementPosition();
 
     }
 
@@ -1007,12 +1007,6 @@ public class RobotHardware implements DrivingRobotHardware {
     public MecanumDrive getDrive() {
         return drive;
     }
-
-    // Gets the arm correction.
-    public int getArmCorrection() { return arm.getCorrection(); }
-
-    // Sets the arm correction.
-    public void setArmCorrection(int armCorrection) { arm.setCorrection(armCorrection); }
 
     // Gets the submersible extension length.
     public SubmersibleExtensionLength getSubmersibleExtensionLength() { return submersibleExtensionLength; }

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // This represents an arm.
 @Config
 public class Arm {
+
     // Derivative coefficient
     public static double DERIVATIVE = 0.00005;
 
@@ -83,9 +84,6 @@ public class Arm {
 
     // Controller
     private PIDController controller;
-
-    // Correction
-    private int correction;
 
     // Motor
     private final DcMotorEx motor;
@@ -207,7 +205,6 @@ public class Arm {
         // Display arm telemetry.
         telemetry.addData("Arm", "====================");
         telemetry.addData("- Busy", isBusy);
-        telemetry.addData("- Correction", correction);
         telemetry.addData("- Current Degrees", currentDegrees);
         telemetry.addData("- Current Position", currentPosition);
         telemetry.addData("- Front Down", currentFrontDown);
@@ -261,13 +258,10 @@ public class Arm {
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Clear the correction.
-        correction = 0;
-
     }
 
     // Decrements the arm position.
-    public void decrementPosition(boolean isCorrection) {
+    public void decrementPosition() {
 
         // If the arm is fully lowered...
         if (targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
@@ -283,18 +277,10 @@ public class Arm {
         // Decrement the arm position.
         targetPosition -= POSITION_INCREMENT;
 
-        // If this is a correction...
-        if(isCorrection) {
-
-            // Decrement the correction.
-            correction -= POSITION_INCREMENT;
-
-        }
-
     }
 
     // Increments the arm position.
-    public void incrementPosition(boolean isCorrection) {
+    public void incrementPosition() {
 
         // If the arm is fully raised...
         if (targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
@@ -309,14 +295,6 @@ public class Arm {
 
         // Increment the arm position.
         targetPosition += POSITION_INCREMENT;
-
-        // If this is a correction...
-        if(isCorrection) {
-
-            // Increment the correction.
-            correction += POSITION_INCREMENT;
-
-        }
 
     }
 
@@ -382,22 +360,6 @@ public class Arm {
 
         // Stop rezeroing.
         rezeroing = false;
-    }
-
-    // Gets the correction.
-    public int getCorrection() {
-
-        // Return the correction.
-        return correction;
-
-    }
-
-    // Sets the correction.
-    public void setCorrection(int correction) {
-
-        // Set the correction.
-        this.correction = correction;
-
     }
 
 }
