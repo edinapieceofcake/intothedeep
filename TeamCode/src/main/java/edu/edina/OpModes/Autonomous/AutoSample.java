@@ -41,18 +41,24 @@ public class AutoSample extends LinearOpMode {
     public static double BASKET_HEADING = Math.toRadians(225);
 
     // First spike mark pose
-    public static double FIRST_SPIKE_MARK_X = -48;
-    public static double FIRST_SPIKE_MARK_Y = -37.5;
+    public static double FIRST_SPIKE_MARK_X_END = -48;
+    public static double FIRST_SPIKE_MARK_Y_END = -37.5;
+    public static double FIRST_SPIKE_MARK_X_BEGINNING = -48;
+    public static double FIRST_SPIKE_MARK_Y_BEGINNING = -34;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = -58;
-    public static double SECOND_SPIKE_MARK_Y = -38.5;
+    public static double SECOND_SPIKE_MARK_X_END = -58;
+    public static double SECOND_SPIKE_MARK_Y_END = -39.5;
+    public static double SECOND_SPIKE_MARK_X_BEGINNING = -58;
+    public static double SECOND_SPIKE_MARK_Y_BEGINNING = -36;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
-    public static double THIRD_SPIKE_MARK_X = -54;
-    public static double THIRD_SPIKE_MARK_Y = -25.5;
+    public static double THIRD_SPIKE_MARK_X_END = -54;
+    public static double THIRD_SPIKE_MARK_Y_END = -25.5;
+    public static double THIRD_SPIKE_MARK_X_BEGINNING = -54;
+    public static double THIRD_SPIKE_MARK_Y_BEGINNING = -21;
     public static double THIRD_SPIKE_MARK_HEADING = Math.toRadians(0);
 
     // Human pose
@@ -109,13 +115,21 @@ public class AutoSample extends LinearOpMode {
             if(grabHumanSample == null) {
 
                 // Prompt the user for a grab human sample value.
-                prompt(telemetry, "Grab Human Sample", "X = End, B = Never");
+                prompt(telemetry, "Grab Human Sample", "X = End, A = Beginning, B = Never");
 
                 // If the user pressed x...
                 if (currentGamepad.x && !previousGamepad.x) {
 
-                    // Grab the human sample at the beginning.
+                    // Grab the human sample at the end.
                     grabHumanSample = GrabHumanSample.END;
+
+                }
+
+                // If the user pressed a...
+                if (currentGamepad.a && !previousGamepad.a) {
+
+                    // Grab the human sample at the beginning.
+                    grabHumanSample = GrabHumanSample.BEGINNING;
 
                 }
 
@@ -432,14 +446,22 @@ public class AutoSample extends LinearOpMode {
         // Construct a basket pose.
         Pose2d basketPose = new Pose2d(BASKET_X, BASKET_Y, BASKET_HEADING);
 
+        // Get spike mark locations.
+        double firstSpikeMarkX = grabHumanSample == GrabHumanSample.BEGINNING ? FIRST_SPIKE_MARK_X_BEGINNING : FIRST_SPIKE_MARK_X_END;
+        double firstSpikeMarkY = grabHumanSample == GrabHumanSample.BEGINNING ? FIRST_SPIKE_MARK_Y_BEGINNING : FIRST_SPIKE_MARK_Y_END;
+        double secondSpikeMarkX = grabHumanSample == GrabHumanSample.BEGINNING ? SECOND_SPIKE_MARK_X_BEGINNING : SECOND_SPIKE_MARK_X_END;
+        double secondSpikeMarkY = grabHumanSample == GrabHumanSample.BEGINNING ? SECOND_SPIKE_MARK_Y_BEGINNING : SECOND_SPIKE_MARK_Y_END;
+        double thirdSpikeMarkX = grabHumanSample == GrabHumanSample.BEGINNING ? THIRD_SPIKE_MARK_X_BEGINNING : THIRD_SPIKE_MARK_X_END;
+        double thirdSpikeMarkY = grabHumanSample == GrabHumanSample.BEGINNING ? THIRD_SPIKE_MARK_Y_BEGINNING : THIRD_SPIKE_MARK_Y_END;
+
         // Construct a first spike mark pose.
-        Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+        Pose2d firstSpikeMarkPose = new Pose2d(firstSpikeMarkX, firstSpikeMarkY, FIRST_SPIKE_MARK_HEADING);
 
         // Construct a second spike mark pose.
-        Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, SECOND_SPIKE_MARK_HEADING);
+        Pose2d secondSpikeMarkPose = new Pose2d(secondSpikeMarkX, secondSpikeMarkY, SECOND_SPIKE_MARK_HEADING);
 
         // Construct a third spike mark pose.
-        Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, THIRD_SPIKE_MARK_HEADING);
+        Pose2d thirdSpikeMarkPose = new Pose2d(thirdSpikeMarkX, thirdSpikeMarkY, THIRD_SPIKE_MARK_HEADING);
 
         // Construct a first human pose.
         Pose2d firstHumanPose = new Pose2d(HUMAN_X, HUMAN_Y, FIRST_HUMAN_HEADING);
