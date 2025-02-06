@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.VelConstraint;
@@ -393,55 +392,16 @@ public class AutoSample extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // Construct a spike mark velocity constraint.
-        VelConstraint spikeMarkVelocityConstraint = (robotPose, _path, _disp) -> {
-
-            // Determine whether the robot is close to a spike mark.
-            boolean closeToSpikeMark = isCloseToSpikeMark(robotPose);
-
-            // If the robot is close to a spike mark...
-            if (closeToSpikeMark) {
-
-                // Go slow.
-                return SLOW_VELOCITY;
-
-            }
-
-            // Otherwise (if the robot is far from a spike mark)...
-            else {
-
-                // Go fast.
-                return MEDIUM_VELOCITY;
-
-            }
-
-        };
+        VelConstraint spikeMarkVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.y.value() > -40 ? SLOW_VELOCITY : MEDIUM_VELOCITY;
 
         // Construct a human sample velocity constraint.
-        VelConstraint humanSampleVelocityConstraint = (robotPose, _path, _disp) -> {
-
-            // Determine whether the robot is close to the human sample.
-            boolean closeToHumanSample = isCloseToHumanSample(robotPose);
-
-            // If the robot is close to the human sample...
-            if (closeToHumanSample) {
-
-                // Go slow.
-                return SLOW_VELOCITY;
-
-            }
-
-            // Otherwise (if the robot is far from the human sample)...
-            else {
-
-                // Go fast.
-                return FAST_VELOCITY;
-
-            }
-
-        };
+        VelConstraint humanSampleVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() > 20 ? SLOW_VELOCITY : FAST_VELOCITY;
 
         // Construct a human velocity constraint.
-		TranslationalVelConstraint humanVelocityConstraint = new TranslationalVelConstraint(FAST_VELOCITY);
+		TranslationalVelConstraint humanVelocityConstraint =
+                new TranslationalVelConstraint(FAST_VELOCITY);
 
         // Construct trajectories.
         //////////////////////////////////////////////////////////////////////
@@ -588,21 +548,6 @@ public class AutoSample extends LinearOpMode {
         // Return the main action.
         return mainAction;
 
-    }
-
-    // Determines whether the robot is close to a spike mark.
-    private static boolean isCloseToSpikeMark(Pose2dDual robotPose) {
-        return robotPose.position.y.value() > -40;
-    }
-
-    // Determines whether the robot is close to the submersible.
-    private static boolean isCloseToSubmersible(Pose2dDual robotPose) {
-        return robotPose.position.y.value() > -25;
-    }
-
-    // Determines whether the robot is close to the human sample.
-    private static boolean isCloseToHumanSample(Pose2dDual robotPose) {
-        return robotPose.position.x.value() > 20;
     }
 
     // Adds telemetry.

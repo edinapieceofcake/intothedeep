@@ -249,18 +249,24 @@ public class AutoSpecimen extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // Construct a first spike mark velocity constraint.
-        VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() > 35 ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() > 35 ? MEDIUM_VELOCITY : FAST_VELOCITY;
 
         // Construct a chamber velocity constraints.
-        VelConstraint firstChamberVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() < FIRST_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
-        VelConstraint secondChamberVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() < SECOND_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
-        VelConstraint thirdChamberVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.x.value() < THIRD_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint firstChamberVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() < FIRST_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint secondChamberVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() < SECOND_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint thirdChamberVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() < THIRD_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
 
         // Construct a preload velocity constraint.
-        TranslationalVelConstraint preloadVelocityConstraint = new TranslationalVelConstraint(MEDIUM_VELOCITY);
+        TranslationalVelConstraint preloadVelocityConstraint =
+                new TranslationalVelConstraint(MEDIUM_VELOCITY);
 
         // Construct a pick up velocity constraint.
-        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) -> robotPose.position.y.value() < -50 ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.y.value() < -50 ? MEDIUM_VELOCITY : FAST_VELOCITY;
 
         // Construct poses.
         //////////////////////////////////////////////////////////////////////
