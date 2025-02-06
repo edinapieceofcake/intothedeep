@@ -396,9 +396,6 @@ public class AutoSpecimen extends LinearOpMode {
         // Get the tall walls value.
         boolean tallWalls = robotHardware.getTallWalls();
 
-        // Get an wall arm position
-        int wallArmPosition = tallWalls ? Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION : Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION;
-
         // Construct a main action.
         Action mainAction = new SequentialAction(
 
@@ -412,7 +409,7 @@ public class AutoSpecimen extends LinearOpMode {
                 new ParallelAction(
                         driveFromFirstSpikeMarkToDropToSecondSpikeMark,
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
-                        new MoveArm(robotHardware, wallArmPosition, true),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new SequentialAction(
                                 new WaitForTime(1000),
@@ -428,7 +425,7 @@ public class AutoSpecimen extends LinearOpMode {
                 new ParallelAction(
                         driveFromSecondSpikeMarkToPickUp,
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
-                        new MoveArm(robotHardware, wallArmPosition, true),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition()),
                         new SequentialAction(
                                 new WaitForTime(800),
@@ -440,19 +437,19 @@ public class AutoSpecimen extends LinearOpMode {
                 pickUpSpecimen(),
 
                 // Score the first specimen and drive to the wall.
-                scoreAndDrive(driveFromPickUpToFirstChamber, driveFromFirstChamberToPickUp, wallArmPosition, false),
+                scoreAndDrive(driveFromPickUpToFirstChamber, driveFromFirstChamberToPickUp, Arm.WALL_POSITION, false),
 
                 // Pick up specimen.
                 pickUpSpecimen(),
 
                 // Score the second specimen and drive to the wall.
-                scoreAndDrive(driveFromPickUpToSecondChamber, driveFromSecondChamberToPickUp, wallArmPosition, false),
+                scoreAndDrive(driveFromPickUpToSecondChamber, driveFromSecondChamberToPickUp, Arm.WALL_POSITION, false),
 
                 // Pick up specimen.
                 pickUpSpecimen(),
 
                 // Score the third specimen.
-                scoreAndDrive(driveFromPickUpToThirdChamber, driveNowhere, Arm.MINIMUM_POSITION, false)
+                scoreAndDrive(driveFromPickUpToThirdChamber, driveNowhere, Arm.WALL_POSITION, false)
 
         );
 
@@ -494,7 +491,7 @@ public class AutoSpecimen extends LinearOpMode {
                                         new InstantAction(() -> robotHardware.openBigClaw()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new MoveArm(robotHardware, finalArmPosition, true),
-                                        finalArmPosition == Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION || finalArmPosition == Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION ?
+                                        finalArmPosition == Arm.WALL_POSITION ?
                                                 new InstantAction(() -> robotHardware.setWristWallPosition()) :
                                                 new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                                 )

@@ -19,23 +19,20 @@ public class Arm {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
+    // Ground position
+    public static int GROUND_POSITION = 0;
+
     // Basket position
-    public static int BASKET_POSITION = 2200;
+    public static int BASKET_POSITION = 1800;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
 
     // Initial degrees below horizontal (determined experimentally)
-    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 30;
+    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 11;
 
     // Maximum position
-    public static int MAXIMUM_POSITION = 5000;
-
-    // Minimum position
-    public static int MINIMUM_POSITION = 0;
-
-    // Ground position
-    public static int GROUND_POSITION = MINIMUM_POSITION;
+    public static int MAXIMUM_POSITION = 4500;
 
     // Proportional coefficient
     public static double PROPORTIONAL = 0.0008;
@@ -47,37 +44,25 @@ public class Arm {
     public static double REZEROING_POWER = -0.3;
 
     // Submersible enter position
-    public static int SUBMERSIBLE_ENTER_POSITION = 4600;
+    public static int SUBMERSIBLE_ENTER_POSITION = 4200;
 
     // Submersible hover position
-    public static int SUBMERSIBLE_HOVER_POSITION = 4300;
+    public static int SUBMERSIBLE_HOVER_POSITION = 3900;
 
     // Submersible grab position
-    public static int SUBMERSIBLE_GRAB_POSITION = 5000;
-
-    // Submersible position threshold
-    public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;
+    public static int SUBMERSIBLE_GRAB_POSITION = 4500;
 
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
 
-    // Ground to tall wall position
-    public static int GROUND_TO_TALL_WALL_POSITION = 500;
-
-    // Submersible to tall wall position
-    public static int SUBMERSIBLE_TO_TALL_WALL_POSITION = 350;
-
-    // Ground to short wall position
-    public static int GROUND_TO_SHORT_WALL_POSITION = 450;
-
-    // Submersible to short wall position
-    public static int SUBMERSIBLE_TO_SHORT_WALL_POSITION = 300;
+    // Wall position
+    public static int WALL_POSITION = -400;
 
     // Chamber position
-    public static int CHAMBER_POSITION = 5000;
+    public static int CHAMBER_POSITION = 4700;
 
     // Ascent position
-    public static int ASCENT_POSITION = 700;
+    public static int ASCENT_POSITION = 200;
 
     // Busy threshold
     public static int BUSY_THRESHOLD = 600;
@@ -100,9 +85,6 @@ public class Arm {
     // Touch sensor
     private final TouchSensor touchFront;
     private final TouchSensor touchBack;
-
-    // Previous front down value
-    private boolean previousFrontDown;
 
     // Initializes this.
     public Arm(RobotHardware robotHardware) {
@@ -175,18 +157,15 @@ public class Arm {
         // Reset the arm if appropriate
         //////////////////////////////////////////////////////////////////////
 
-        // Determine whether the arm is down.
-        boolean currentFrontDown = touchFront.isPressed();
+        boolean frontDown = touchFront.isPressed();
 
-        // If the arm is down...
-        if (currentFrontDown && !previousFrontDown) {
+        // If we finished lowering the arm...
+        if (targetPosition == WALL_POSITION && frontDown) {
 
             // Reset the arm motor.
             reset();
 
         }
-
-        previousFrontDown = currentFrontDown;
 
         boolean backDown = touchBack.isPressed();
 
@@ -207,7 +186,7 @@ public class Arm {
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
         telemetry.addData("- Current Position", currentPosition);
-        telemetry.addData("- Front Down", currentFrontDown);
+        telemetry.addData("- Front Down", frontDown);
         telemetry.addData("- Back Down", backDown);
         telemetry.addData("- Feedforward", feedForward);
         telemetry.addData("- PID", pid);
@@ -258,13 +237,16 @@ public class Arm {
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+        // Set the target position to the ground position.
+        targetPosition = GROUND_POSITION;
+
     }
 
     // Decrements the arm position.
     public void decrementPosition() {
 
         // If the arm is fully lowered...
-        if (targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+        if (targetPosition - POSITION_INCREMENT < WALL_POSITION) {
 
             // Notify the user.
             robotHardware.beep();

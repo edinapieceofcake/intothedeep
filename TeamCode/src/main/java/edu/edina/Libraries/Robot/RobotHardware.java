@@ -581,35 +581,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Get an arm wall position.
-    private static int getArmWallPosition(boolean fromGround, boolean tallWalls) {
-        if(tallWalls) {
-            if(fromGround) {
-                return Arm.GROUND_TO_TALL_WALL_POSITION;
-            }
-            else {
-                return Arm.SUBMERSIBLE_TO_TALL_WALL_POSITION;
-            }
-        }
-        else {
-            if(fromGround) {
-                return Arm.GROUND_TO_SHORT_WALL_POSITION;
-            }
-            else {
-                return Arm.SUBMERSIBLE_TO_SHORT_WALL_POSITION;
-            }
-        }
-
-    }
-
     // Moves the arm to the ground to wall position.
     public void setArmWallPosition(boolean fromGround) {
 
-        // Get a position.
-        int position = getArmWallPosition(fromGround, tallWalls);
-
         // Construct an action to move the arm to the wall position.
-        Action action = new MoveArm(this, position, true);
+        Action action = new MoveArm(this, Arm.WALL_POSITION, true);
 
         // Run the action.
         runningActions.add(action);
@@ -903,7 +879,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean raiseArm, boolean extendSlide) {
 
         // Get an arm position.
-        int armPosition = raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.MINIMUM_POSITION;
+        int armPosition = raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.WALL_POSITION;
 
         // Construct an action.
         Action action = new SequentialAction(

@@ -214,6 +214,7 @@ public class Lift {
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+        // Set the target position to the ground position.
         targetPosition = GROUND_POSITION;
 
     }
