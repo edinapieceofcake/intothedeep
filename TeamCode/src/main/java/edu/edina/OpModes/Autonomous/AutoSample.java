@@ -67,13 +67,15 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_HUMAN_HEADING = Math.toRadians(0);
     public static double SECOND_HUMAN_HEADING = Math.toRadians(180);
 
-    // Submersible pose
-    public static double SUBMERSIBLE_X = -40;
-    public static double SUBMERSIBLE_Y = -3;
-    public static double SUBMERSIBLE_HEADING = Math.toRadians(0);
+    // Rungs pose
+    public static double RUNGS_X = -35;
+    public static double RUNGS_Y = -9;
+    public static double RUNGS_HEADING = Math.toRadians(0);
 
-    // Timeout in milliseconds
-    public static int TIMEOUT_MILLISECONDS = 3500;
+    // Chamber pose
+    public static double CHAMBER_X = -15;
+    public static double CHAMBER_Y = -40;
+    public static double CHAMBER_HEADING = Math.toRadians(90);
 
     // Fast velocity
     public static double FAST_VELOCITY = 40;
@@ -89,6 +91,7 @@ public class AutoSample extends LinearOpMode {
 
     // Grab human sample value
     private GrabHumanSample grabHumanSample;
+    private Boolean rungsPark;
 
     // Runs the op mode.
     @Override
@@ -115,29 +118,53 @@ public class AutoSample extends LinearOpMode {
             if(grabHumanSample == null) {
 
                 // Prompt the user for a grab human sample value.
-                prompt(telemetry, "Grab Human Sample", "X = End, A = Beginning, B = Never");
+                prompt(telemetry, "Grab Human Sample", "X = Beginning, A = End, B = Never");
 
                 // If the user pressed x...
                 if (currentGamepad.x && !previousGamepad.x) {
-
-                    // Grab the human sample at the end.
-                    grabHumanSample = GrabHumanSample.END;
-
-                }
-
-                // If the user pressed a...
-                if (currentGamepad.a && !previousGamepad.a) {
 
                     // Grab the human sample at the beginning.
                     grabHumanSample = GrabHumanSample.BEGINNING;
 
                 }
 
-                // If the user pressed b...
-                if (currentGamepad.b && !previousGamepad.b) {
+                // Otherwise, if the user pressed a...
+                else if (currentGamepad.a && !previousGamepad.a) {
+
+                    // Grab the human sample at the end.
+                    grabHumanSample = GrabHumanSample.END;
+
+                }
+
+                // Otherwise, if the user pressed b...
+                else if (currentGamepad.b && !previousGamepad.b) {
 
                     // Do not gab the human sample.
                     grabHumanSample = GrabHumanSample.NEVER;
+
+                }
+
+            }
+
+            // Otherwise, if the rungs park value is missing...
+            else if(rungsPark == null) {
+
+                // Prompt the user for a park value.
+                prompt(telemetry, "Park", "X = Chamber, B = Rungs");
+
+                // If the user pressed x...
+                if (currentGamepad.x && !previousGamepad.x) {
+
+                    // Park at the chamber.
+                    rungsPark = false;
+
+                }
+
+                // Otherwise, if the user pressed b...
+                else if (currentGamepad.b && !previousGamepad.b) {
+
+                    // Park at the rungs.
+                    rungsPark = true;
 
                 }
 
@@ -157,8 +184,8 @@ public class AutoSample extends LinearOpMode {
 
                 }
 
-                // If the user pressed b...
-                if (currentGamepad.b && !previousGamepad.b) {
+                // Otherwise, if the user pressed b...
+                else if (currentGamepad.b && !previousGamepad.b) {
 
                     // Use short walls.
                     inputTallWalls = false;
@@ -389,30 +416,6 @@ public class AutoSample extends LinearOpMode {
 
         };
 
-        // Construct a submersible velocity constraint.
-        VelConstraint submersibleVelocityConstraint = (robotPose, _path, _disp) -> {
-
-            // Determine whether the robot is close to the submersible.
-            boolean closeToSubmersible = isCloseToSubmersible(robotPose);
-
-            // If the robot is close to the submersible...
-            if (closeToSubmersible) {
-
-                // Go slow.
-                return MEDIUM_VELOCITY;
-
-            }
-
-            // Otherwise (if the robot is far from the submersible)...
-            else {
-
-                // Go fast.
-                return FAST_VELOCITY;
-
-            }
-
-        };
-
         // Construct a human sample velocity constraint.
         VelConstraint humanSampleVelocityConstraint = (robotPose, _path, _disp) -> {
 
@@ -469,8 +472,11 @@ public class AutoSample extends LinearOpMode {
         // Construct a second human pose.
         Pose2d secondHumanPose = new Pose2d(HUMAN_X, HUMAN_Y, SECOND_HUMAN_HEADING);
 
-        // Construct a submersible pose.
-        Pose2d submersiblePose = new Pose2d(SUBMERSIBLE_X, SUBMERSIBLE_Y, SUBMERSIBLE_HEADING);
+        // Construct a rungs pose.
+        Pose2d rungsPose = new Pose2d(RUNGS_X, RUNGS_Y, RUNGS_HEADING);
+
+        // Construct a chamber pose.
+        Pose2d chamberPose = new Pose2d(CHAMBER_X, CHAMBER_Y, CHAMBER_HEADING);
 
         // Construct an action for driving from the start to the basket.
         Action driveFromStartToBasket = drive.actionBuilder(startPose)
@@ -518,10 +524,16 @@ public class AutoSample extends LinearOpMode {
                 .splineTo(basketPose.position, basketPose.heading, humanVelocityConstraint)
                 .build();
 
-        // Construct an action for driving from the basket to the submersible
-        Action driveFromBasketToSubmersible = drive.actionBuilder(basketPose)
+        // Construct an action for driving from the basket to the rungs.
+        Action driveFromBasketToRungs = drive.actionBuilder(basketPose)
                 .setReversed(true)
-                .splineTo(submersiblePose.position, submersiblePose.heading, submersibleVelocityConstraint)
+                .splineTo(rungsPose.position, rungsPose.heading)
+                .build();
+
+        // Construct an action for driving from the basket to the chamber.
+        Action driveFromBasketToChamber = drive.actionBuilder(basketPose)
+                .setReversed(true)
+                .splineTo(chamberPose.position, chamberPose.heading)
                 .build();
 
         // Construct a main action.
@@ -560,14 +572,14 @@ public class AutoSample extends LinearOpMode {
                 // Score the last sample.
                 robotHardware.scoreSample(),
 
-                // Lower the arm and drive to the submersible.
+                // Lower the arm and park.
                 new ParallelAction(
 
                         // Lower the arm from the basket.
                         robotHardware.lowerArmFromBasket(true, true, false, false),
 
-                        // Drive to the submersible.
-                        driveFromBasketToSubmersible
+                        // Park.
+                        rungsPark ? driveFromBasketToRungs : driveFromBasketToChamber
 
                 )
 
@@ -603,12 +615,16 @@ public class AutoSample extends LinearOpMode {
         boolean tallWalls = robotHardware.getTallWalls();
 
         // Construct a walls string.
-        String walls = tallWalls ? "Tall" : "Short";
+        String wallsString = tallWalls ? "Tall" : "Short";
+
+        // Construct a park string.
+        String parkString = rungsPark ? "Rungs" : "Chamber";
 
         // Display main telemetry.
         telemetry.addData("AutoSample", banner);
         telemetry.addData("- Grab Human Sample", grabHumanSample);
-        telemetry.addData("- Walls", walls);
+        telemetry.addData("- Park", parkString);
+        telemetry.addData("- Walls", wallsString);
 
     }
 

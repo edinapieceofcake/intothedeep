@@ -127,8 +127,8 @@ public class AutoSpecimen extends LinearOpMode {
 
                 }
 
-                // If the user pressed b...
-                if (currentGamepad.b && !previousGamepad.b) {
+                // Otherwise, if the user pressed b...
+                else if (currentGamepad.b && !previousGamepad.b) {
 
                     // Use short walls.
                     inputTallWalls = false;
