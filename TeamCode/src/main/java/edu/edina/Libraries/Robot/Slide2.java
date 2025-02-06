@@ -19,6 +19,7 @@ public class Slide2 {
     public static double FEEDFORWARD = 0.1;
 
     public static double AMPS = -1;
+
     // Integral coefficient
     public static double INTEGRAL = 0;
 
@@ -28,14 +29,11 @@ public class Slide2 {
     // Basket position
     public static int BASKET_POSITION = 1800;
 
-    // Submersible long position
-    public static int SUBMERSIBLE_LONG_POSITION = 1800;
+    // Maximum submersible position
+    public static int MAXIMUM_SUBMERSIBLE_POSITION = 1800;
 
-    // Submersible medium position
-    public static int SUBMERSIBLE_MEDIUM_POSITION = 1150;
-
-    // Submersible short position
-    public static int SUBMERSIBLE_SHORT_POSITION = 500;
+    // Submersible position
+    public static int SUBMERSIBLE_POSITION = 800;
 
     // Chamber position
     public static int CHAMBER_POSITION = 100;
@@ -200,7 +198,7 @@ public class Slide2 {
     public void raise() {
 
         // If the slide is fully raised...
-        if (targetPosition + POSITION_INCREMENT > SUBMERSIBLE_LONG_POSITION) {
+        if (targetPosition + POSITION_INCREMENT > MAXIMUM_SUBMERSIBLE_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -251,27 +249,11 @@ public class Slide2 {
 
     }
 
-    // Moves the slide to the submersible short position.
-    public void setSubmersibleShort() {
+    // Moves the slide to the submersible position.
+    public void setSubmersible() {
 
-        // Move the slide to the submersible short position.
-        targetPosition = SUBMERSIBLE_SHORT_POSITION;
-
-    }
-
-    // Moves the slide to the submersible medium position.
-    public void setSubmersibleMedium() {
-
-        // Move the slide to the submersible medium position.
-        targetPosition = SUBMERSIBLE_MEDIUM_POSITION;
-
-    }
-
-    // Moves the slide to the submersible long position.
-    public void setSubmersibleLong() {
-
-        // Move the slide to the submersible long position.
-        targetPosition = SUBMERSIBLE_LONG_POSITION;
+        // Move the slide to the submersible position.
+        targetPosition = SUBMERSIBLE_POSITION;
 
     }
 

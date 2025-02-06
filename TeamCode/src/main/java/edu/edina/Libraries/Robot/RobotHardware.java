@@ -95,7 +95,6 @@ public class RobotHardware implements DrivingRobotHardware {
     private Light light;
     private SampleSensor sampleSensor;
     private boolean turtleMode;
-    private SubmersibleExtensionLength submersibleExtensionLength = SubmersibleExtensionLength.MEDIUM;
     private static boolean tallWalls = true;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
@@ -504,15 +503,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public void setSubmersibleExtension() {
 
         // Set the submersible extension.
-        if(submersibleExtensionLength == SubmersibleExtensionLength.SHORT) {
-            slide.setSubmersibleShort();
-        }
-        else if(submersibleExtensionLength == SubmersibleExtensionLength.MEDIUM) {
-            slide.setSubmersibleMedium();
-        }
-        else if(submersibleExtensionLength == SubmersibleExtensionLength.LONG) {
-            slide.setSubmersibleLong();
-        }
+        slide.setSubmersible();
 
     }
 
@@ -1007,11 +998,5 @@ public class RobotHardware implements DrivingRobotHardware {
     public MecanumDrive getDrive() {
         return drive;
     }
-
-    // Gets the submersible extension length.
-    public SubmersibleExtensionLength getSubmersibleExtensionLength() { return submersibleExtensionLength; }
-
-    // Sets the submersible extension length.
-    public void setSubmersibleExtensionLength(SubmersibleExtensionLength submersibleExtensionLength) { this.submersibleExtensionLength = submersibleExtensionLength; }
 
 }
