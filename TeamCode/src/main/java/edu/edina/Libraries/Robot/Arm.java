@@ -23,7 +23,7 @@ public class Arm {
     public static int GROUND_POSITION = 0;
 
     // Basket position
-    public static int BASKET_POSITION = 1800;
+    public static int BASKET_POSITION = 1850;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
