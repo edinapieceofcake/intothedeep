@@ -175,16 +175,27 @@ public class Slide2 {
 
     }
 
-    public double getPosition() {
-        double extensionPosition = extensionMotor.getCurrentPosition();
-        return extensionPosition;
+    // Gets the slide's current position.
+    public int getCurrentPosition() {
+
+        // Return the slide's current position.
+        return extensionMotor.getCurrentPosition();
+
+    }
+
+    // Gets the slide's target position.
+    public int getTargetPosition() {
+
+        // Return the slide's target position.
+        return targetPosition;
+
     }
 
     // Determines whether the slide is busy.
     public boolean isBusy() {
 
         // Get the slide's current position.
-        double currentPosition = getPosition();
+        double currentPosition = getCurrentPosition();
 
         // Get the position difference.
         double difference = Math.abs(currentPosition - targetPosition);
@@ -273,8 +284,8 @@ public class Slide2 {
 
     }
 
-    // Sets the slide's position.
-    public void setPosition(int targetPosition) {
+    // Sets the slide's target position.
+    public void setTargetPosition(int targetPosition) {
 
         // Set the target position.
         this.targetPosition = targetPosition;

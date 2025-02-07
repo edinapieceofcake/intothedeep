@@ -507,6 +507,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Sets the extension's target position.
+    public void setExtensionTargetPosition(int targetPosition) {
+
+        // Sets the extension's target position.
+        slide.setTargetPosition(targetPosition);
+
+    }
+
     // Sets the auto extension.
     public void setAutoExtension() {
 
@@ -972,7 +980,18 @@ public class RobotHardware implements DrivingRobotHardware {
 
     // Returns a drive interface.
     public MecanumDrive getDrive() {
+
+        // Return the drive interface.
         return drive;
+
+    }
+
+    // Gets the extension's target position.
+    public int getExtensionTargetPosition() {
+
+        // Return the extension's target position.
+        return slide.getTargetPosition();
+
     }
 
 }

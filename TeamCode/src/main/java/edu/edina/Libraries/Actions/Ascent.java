@@ -167,7 +167,7 @@ public class Ascent {
                     return false;
                 } else {
                     RobotLog.ii(tag, "hanging");
-                    hw.getSlide().setPosition(1000);
+                    hw.getSlide().setTargetPosition(1000);
                     setPower(hangRamp.getCurrValue());
                     return true;
                 }

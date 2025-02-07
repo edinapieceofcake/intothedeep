@@ -16,7 +16,6 @@ import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.RobotMode;
-import edu.edina.Libraries.Robot.WaitForSlide;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 // Main tele op mode
@@ -45,7 +44,6 @@ public class TeleOpMain extends LinearOpMode {
         - y = basket
         - b = wall
         - x = submersible
-        - right bumper = toggle wrist
         - left bumper = toggle swivel
         - left trigger = clear actions
         - dpad left = retract slide
@@ -84,6 +82,9 @@ public class TeleOpMain extends LinearOpMode {
 
     // Robot mode
     private RobotMode robotMode = RobotMode.INITIALIZE;
+
+    // Previous extension target position
+    private int previousExtensionTargetPosition;
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
@@ -530,13 +531,18 @@ public class TeleOpMain extends LinearOpMode {
                 // If the wrist is down...
                 if (robotHardware.isWristInSubmersiblePosition()) {
 
-                    // Grab a sample.
+                    // Remember the extension's target position.
+                    previousExtensionTargetPosition = robotHardware.getExtensionTargetPosition();
+
+                    // Grab a sample and retract.
                     Action action = new SequentialAction(
                             new InstantAction(() -> robotHardware.openBigClaw()),
                             new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
                             new WaitForTime(100),
                             new InstantAction(() -> robotHardware.closeBigClaw()),
                             new WaitForTime(100),
+                            new InstantAction(() -> robotHardware.setWristWallPosition(true)),
+                            new InstantAction(() -> robotHardware.setMinimumExtension()),
                             new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
                     );
                     robotHardware.addAction(action);
@@ -549,8 +555,7 @@ public class TeleOpMain extends LinearOpMode {
                     // Reach back into the submersible.
                     Action action = new SequentialAction(
                             new InstantAction(() -> robotHardware.openBigClaw()),
-                            new InstantAction(() -> robotHardware.setSubmersibleExtension()),
-                            new WaitForSlide(robotHardware, 1000),
+                            new InstantAction(() -> robotHardware.setExtensionTargetPosition(previousExtensionTargetPosition)),
                             new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                     );
                     robotHardware.addAction(action);
@@ -686,35 +691,6 @@ public class TeleOpMain extends LinearOpMode {
 
                 // Increment the arm position.
                 robotHardware.incrementArmPosition();
-
-            }
-
-        }
-
-        // Toggle wrist in submersible
-        //////////////////////////////////////////////////////////////////////
-
-        // If the user pressed right bumper...
-        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
-
-            // If the robot is in submersible mode...
-            if (robotMode == RobotMode.SUBMERSIBLE) {
-
-                // Toggle the wrist
-                if (robotHardware.isWristInWallPosition()) {
-                    robotHardware.setWristSubmersiblePosition();
-                } else {
-                    robotHardware.setWristWallPosition(true);
-                    robotHardware.setMinimumExtension();
-                }
-
-            }
-
-            // Otherwise (if the robot is not in submersible mode)...
-            else {
-
-                // Notify the user.
-                robotHardware.beep();
 
             }
 
