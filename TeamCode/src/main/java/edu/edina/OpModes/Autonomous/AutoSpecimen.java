@@ -414,7 +414,7 @@ public class AutoSpecimen extends LinearOpMode {
                         driveFromFirstSpikeMarkToDropToSecondSpikeMark,
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                         new MoveArm(robotHardware, Arm.WALL_POSITION, true),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
                                 new WaitForTime(1000),
                                 new InstantAction(() -> robotHardware.openBigClaw()),
@@ -431,7 +431,7 @@ public class AutoSpecimen extends LinearOpMode {
                         driveFromSecondSpikeMarkToPickUp,
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
                         new MoveArm(robotHardware, Arm.WALL_POSITION, true),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
                                 new WaitForTime(800),
                                 new InstantAction(() -> robotHardware.openBigClaw())
@@ -466,6 +466,9 @@ public class AutoSpecimen extends LinearOpMode {
     // Scores a specimen and then drives to a destination.
     private Action scoreAndDrive(Action driveToChamber, Action driveToDestination, int finalArmPosition, boolean isPreload) {
 
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
         // Construct an action.
         Action action = new SequentialAction(
 
@@ -481,7 +484,7 @@ public class AutoSpecimen extends LinearOpMode {
                 // Score the specimen.
                 new InstantAction(() -> robotHardware.openSmallClaw()),
                 new WaitForTime(100),
-                new InstantAction(() -> robotHardware.setWristWallPosition()),
+                new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
 
                 // Drive to the destination while lowering the arm.
                 new ParallelAction(
@@ -497,7 +500,7 @@ public class AutoSpecimen extends LinearOpMode {
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new MoveArm(robotHardware, finalArmPosition, true),
                                         finalArmPosition == Arm.WALL_POSITION ?
-                                                new InstantAction(() -> robotHardware.setWristWallPosition()) :
+                                                new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)) :
                                                 new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                                 )
                         )

@@ -221,10 +221,10 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Sets the wrist to wall position.
-    public void setWristWallPosition() {
+    public void setWristWallPosition(boolean tall) {
 
         // Sets the wrist to wall position.
-        wrist.setWallPosition();
+        wrist.setWallPosition(tall);
 
     }
 
@@ -852,7 +852,7 @@ public class RobotHardware implements DrivingRobotHardware {
     // Raises a sample to the basket.
     public Action raiseSampleToBasket() {
         Action action = new SequentialAction(
-                new InstantAction(() -> setWristWallPosition()),
+                new InstantAction(() -> setWristWallPosition(true)),
                 new InstantAction(() -> swivelSetVertical()),
                 new InstantAction(() -> setMinimumExtension()),
                 //new WaitForSlide(this, 3000),

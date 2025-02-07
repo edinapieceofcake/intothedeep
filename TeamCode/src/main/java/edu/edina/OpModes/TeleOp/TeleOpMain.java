@@ -367,11 +367,11 @@ public class TeleOpMain extends LinearOpMode {
         // If the user pressed b...
         if (currentGamepad2.b && !previousGamepad2.b) {
 
+            // Get the tall walls value.
+            boolean tallWalls = robotHardware.getTallWalls();
+
             // If the robot is in chamber mode...
             if (robotMode == RobotMode.CHAMBER) {
-
-                // Get the tall walls value.
-                boolean tallWalls = robotHardware.getTallWalls();
 
                 // Release the specimen.
                 Action action = new SequentialAction(
@@ -392,7 +392,7 @@ public class TeleOpMain extends LinearOpMode {
                         new MoveArm(robotHardware, Arm.WALL_POSITION, true),
 
                         // Set the wrist to the wall position.
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
 
                         // Set the swivel to horizontal.
                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
@@ -413,7 +413,7 @@ public class TeleOpMain extends LinearOpMode {
                 // Move the arm to the wall position.
                 robotHardware.setLiftGroundPosition();
                 robotHardware.setArmWallPosition(robotMode == RobotMode.INITIALIZE);
-                robotHardware.setWristWallPosition();
+                robotHardware.setWristWallPosition(tallWalls);
                 robotHardware.swivelSetHorizontal();
                 robotHardware.setMinimumExtension();
 
@@ -589,7 +589,7 @@ public class TeleOpMain extends LinearOpMode {
                                 ),
                                 new SequentialAction(
                                         new WaitForTime(1200),
-                                        new InstantAction(() -> robotHardware.setWristWallPosition())
+                                        new InstantAction(() -> robotHardware.setWristWallPosition(true))
                                 ),
                                 new SequentialAction(
                                         new WaitForTime(1600),
@@ -620,7 +620,7 @@ public class TeleOpMain extends LinearOpMode {
                 // Move the arm to the submersible position.
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                        new InstantAction(() -> robotHardware.setWristWallPosition()),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(true)),
                         new InstantAction(() -> robotHardware.openBigClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
                         new InstantAction(() -> robotHardware.setSubmersibleExtension()),
@@ -704,7 +704,7 @@ public class TeleOpMain extends LinearOpMode {
                 if (robotHardware.isWristInWallPosition()) {
                     robotHardware.setWristSubmersiblePosition();
                 } else {
-                    robotHardware.setWristWallPosition();
+                    robotHardware.setWristWallPosition(true);
                     robotHardware.setMinimumExtension();
                 }
 

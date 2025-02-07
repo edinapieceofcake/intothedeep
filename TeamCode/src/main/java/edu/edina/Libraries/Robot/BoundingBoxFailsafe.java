@@ -123,7 +123,7 @@ public class BoundingBoxFailsafe {
     private double getWristPosDeg() {
         double p = wrist.getEstimatedPosition();
         double deg = interp(p,
-                Wrist.WALL_POSITION, Wrist.BASKET_POSITION,
+                Wrist.TALL_WALL_POSITION, Wrist.BASKET_POSITION,
                 WRIST_DOWN_POSITION_DEG, WRIST_UP_POSITION_DEG);
         return deg;
     }

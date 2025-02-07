@@ -24,11 +24,14 @@ public class Wrist {
     // Chamber position
     public static double CHAMBER_POSITION = 0.82;
 
+    // Short wall position
+    public static double SHORT_WALL_POSITION = 0.52;
+
     // Submersible position
     public static double SUBMERSIBLE_POSITION = 0.16;
 
-    // Wall position
-    public static double WALL_POSITION = 0.48;
+    // Tall wall position
+    public static double TALL_WALL_POSITION = 0.48;
 
     // Servo
     private final TrackingServo servo;
@@ -64,10 +67,10 @@ public class Wrist {
     }
 
     // Set the wrist to wall position.
-    public void setWallPosition() {
+    public void setWallPosition(boolean tall) {
 
         // Sets the wrist to wall position.
-        servo.setPosition(WALL_POSITION);
+        servo.setPosition(tall ? TALL_WALL_POSITION : SHORT_WALL_POSITION);
 
     }
 
@@ -102,7 +105,7 @@ public class Wrist {
 
     // Determines whether the wrist is in the wall position.
     public boolean isInWallPosition() {
-        return isInPosition(WALL_POSITION);
+        return isInPosition(TALL_WALL_POSITION) || isInPosition(SHORT_WALL_POSITION);
     }
 
     // Determines whether the wrist is in the submersible position.
