@@ -39,7 +39,7 @@ public class Slide2 {
     public static int CHAMBER_POSITION = 100;
 
     // Position increment
-    public static int POSITION_INCREMENT = 50;
+    public static int POSITION_INCREMENT = 75;
 
     // Proportional coefficient
     public static double PROPORTIONAL = 0.002;
