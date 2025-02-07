@@ -34,7 +34,7 @@ public class TeleOpMain extends LinearOpMode {
         - a = score in basket, grab from wall
         - x = chamber
         - left bumper = hold for turtle
-        - back = toggle ascend
+        - right trigger = toggle ascend
 
     Gamepad 2
 
@@ -731,12 +731,33 @@ public class TeleOpMain extends LinearOpMode {
 
         }
 
-        if (currentGamepad1.back && !previousGamepad1.back && robotMode == RobotMode.SUBMERSIBLE) {
-            robotHardware.setMinimumExtension();
-            robotHardware.setArmSubmersibleEnterPosition();
-            robotHardware.incrementArmPosition();
-            ascent();
+        // Ascend
+        //////////////////////////////////////////////////////////////////////
+
+        // If the user pressed right trigger...
+        if (currentGamepad1.right_trigger > TRIGGER_THRESHOLD && previousGamepad1.right_trigger <= TRIGGER_THRESHOLD) {
+
+            // If the robot is in submersible mode...
+            if(robotMode == RobotMode.SUBMERSIBLE) {
+
+                // Toggle ascent.
+                robotHardware.setMinimumExtension();
+                robotHardware.setArmSubmersibleEnterPosition();
+                robotHardware.incrementArmPosition();
+                ascent();
+
+            }
+
+            // Otherwise (if the robot is not in submersible mode)...
+            else {
+
+                // Notify the user.
+                robotHardware.beep();
+
+            }
+
         }
+
     }
 
     // It is important to not call robotHardware.update() because we turn off the hardware,
