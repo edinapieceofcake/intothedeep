@@ -563,7 +563,7 @@ public class TeleOpMain extends LinearOpMode {
             else if (robotMode == RobotMode.CHAMBER) {
 
                 Pose2d startPose = new Pose2d(0, 0, Math.toRadians(270));
-                Pose2d endPose = new Pose2d(0, -7, Math.toRadians(270));
+                Pose2d endPose = new Pose2d(0, -7.5, Math.toRadians(270));
 
                 MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
