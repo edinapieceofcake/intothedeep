@@ -62,7 +62,8 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Pick up pose
     public static double PICK_UP_X = APPROACH_PICK_UP_X;
-    public static double PICK_UP_Y = -62;
+    public static double FIRST_PICK_UP_Y = -62;
+    public static double SECOND_PICK_UP_Y = -64;
     public static double PICK_UP_HEADING = DROP_HEADING;
     public static double PICK_UP_TANGENT = Math.toRadians(270);
 
@@ -265,9 +266,17 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct velocity constraints.
         //////////////////////////////////////////////////////////////////////
 
+        // Construct a preload velocity constraint.
+        TranslationalVelConstraint preloadVelocityConstraint =
+                new TranslationalVelConstraint(SLOW_VELOCITY);
+
         // Construct a first spike mark velocity constraint.
         VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) ->
                 robotPose.position.x.value() > 35 ? MEDIUM_VELOCITY : FAST_VELOCITY;
+
+        // Construct a pick up velocity constraint.
+        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.y.value() < -50 ? SLOW_VELOCITY : FAST_VELOCITY;
 
         // Construct a chamber velocity constraints.
         VelConstraint firstChamberVelocityConstraint = (robotPose, _path, _disp) ->
@@ -276,14 +285,6 @@ public class AutoSpecimen extends LinearOpMode {
                 robotPose.position.x.value() < SECOND_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
         VelConstraint thirdChamberVelocityConstraint = (robotPose, _path, _disp) ->
                 robotPose.position.x.value() < THIRD_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
-
-        // Construct a preload velocity constraint.
-        TranslationalVelConstraint preloadVelocityConstraint =
-                new TranslationalVelConstraint(MEDIUM_VELOCITY);
-
-        // Construct a pick up velocity constraint.
-        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) ->
-                robotPose.position.y.value() < -50 ? SLOW_VELOCITY : FAST_VELOCITY;
 
         // Construct poses.
         //////////////////////////////////////////////////////////////////////
@@ -303,8 +304,11 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct an approach pick up pose.
         Pose2d approachPickUpPose = new Pose2d(APPROACH_PICK_UP_X, APPROACH_PICK_UP_Y, APPROACH_PICK_UP_HEADING);
 
-        // Construct a pick up pose.
-        Pose2d pickUpPose = new Pose2d(PICK_UP_X, PICK_UP_Y, PICK_UP_HEADING);
+        // Construct a first pick up pose.
+        Pose2d firstPickUpPose = new Pose2d(PICK_UP_X, FIRST_PICK_UP_Y, PICK_UP_HEADING);
+
+        // Construct a second pick up pose.
+        Pose2d secondPickUpPose = new Pose2d(PICK_UP_X, SECOND_PICK_UP_Y, PICK_UP_HEADING);
 
         // Construct an approach first chamber pose.
         Pose2d approachFirstChamberPose = new Pose2d(APPROACH_FIRST_CHAMBER_X, APPROACH_FIRST_CHAMBER_Y, APPROACH_FIRST_CHAMBER_HEADING);
@@ -349,7 +353,7 @@ public class AutoSpecimen extends LinearOpMode {
         TrajectoryActionBuilder driveFromSecondSpikeMarkToPickUpBuilder = driveFromFirstSpikeMarkToDropToSecondSpikeMarkBuilder.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
                 .splineToConstantHeading(approachPickUpPose.position, APPROACH_PICK_UP_TANGENT, pickUpVelocityConstraint)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
+                .splineToConstantHeading(firstPickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
         Action driveFromSecondSpikeMarkToPickUp = driveFromSecondSpikeMarkToPickUpBuilder.build();
 
         // Construct a drive from pick up to first chamber trajectory.
@@ -363,7 +367,7 @@ public class AutoSpecimen extends LinearOpMode {
         TrajectoryActionBuilder driveFromFirstChamberToPickUpBuilder = driveFromPickUpToFirstChamberBuilder.endTrajectory().fresh()
                 .setTangent(PICK_UP_TANGENT)
                 .splineToConstantHeading(approachPickUpPose.position, APPROACH_PICK_UP_TANGENT, pickUpVelocityConstraint)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
+                .splineToConstantHeading(firstPickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
         Action driveFromFirstChamberToPickUp = driveFromFirstChamberToPickUpBuilder.build();
 
         // Construct a drive from pick up to second chamber trajectory.
@@ -377,7 +381,7 @@ public class AutoSpecimen extends LinearOpMode {
         TrajectoryActionBuilder driveFromSecondChamberToPickUpBuilder = driveFromPickUpToSecondChamberBuilder.endTrajectory().fresh()
                 .setTangent(PICK_UP_TANGENT)
                 .splineToConstantHeading(approachPickUpPose.position, APPROACH_PICK_UP_TANGENT, pickUpVelocityConstraint)
-                .splineToConstantHeading(pickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
+                .splineToConstantHeading(secondPickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
         Action driveFromSecondChamberToPickUp = driveFromSecondChamberToPickUpBuilder.build();
 
         // Construct a drive from pick up to third chamber trajectory.
@@ -400,7 +404,7 @@ public class AutoSpecimen extends LinearOpMode {
         Action mainAction = new SequentialAction(
 
                 // Score the preloaded specimen and drive to the first spike mark.
-                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.SUBMERSIBLE_HOVER_POSITION, true),
 
                 // Grab the first spike mark sample.
                 grabSample(),
@@ -415,6 +419,7 @@ public class AutoSpecimen extends LinearOpMode {
                                 new WaitForTime(1000),
                                 new InstantAction(() -> robotHardware.openBigClaw()),
                                 new WaitForTime(400),
+                                new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
                                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
                                 new InstantAction(() -> robotHardware.closeBigClaw()),
                                 new WaitForTime(250)
