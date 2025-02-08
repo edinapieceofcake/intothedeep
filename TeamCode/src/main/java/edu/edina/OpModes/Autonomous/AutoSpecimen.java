@@ -38,13 +38,13 @@ public class AutoSpecimen extends LinearOpMode {
     public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
 
     // First spike mark pose
-    public static double FIRST_SPIKE_MARK_X = 47;
-    public static double FIRST_SPIKE_MARK_Y = -39.5;
+    public static double FIRST_SPIKE_MARK_X = 46.5;
+    public static double FIRST_SPIKE_MARK_Y = -40.5;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = 57;
+    public static double SECOND_SPIKE_MARK_X = 56.5;
     public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
     public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
@@ -70,7 +70,7 @@ public class AutoSpecimen extends LinearOpMode {
     // Chamber values
     public static double CHAMBER_TANGENT = Math.toRadians(90);
     public static double CHAMBER_X_SEPARATION = 3;
-    public static double CHAMBER_X_CLOSE = 15;
+    public static double CHAMBER_X_CLOSE = 13;
 
     // Approacc first chamber pose
     public static double APPROACH_FIRST_CHAMBER_X = PRELOAD_CHAMBER_X - CHAMBER_X_SEPARATION;
@@ -105,7 +105,7 @@ public class AutoSpecimen extends LinearOpMode {
     // Velocities
     public static double FAST_VELOCITY = 38;
     public static double MEDIUM_VELOCITY = 26;
-    public static double SLOW_VELOCITY = 18;
+    public static double SLOW_VELOCITY = 20;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -276,7 +276,7 @@ public class AutoSpecimen extends LinearOpMode {
 
         // Construct a pick up velocity constraint.
         VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) ->
-                robotPose.position.y.value() < -50 ? SLOW_VELOCITY : FAST_VELOCITY;
+                robotPose.position.y.value() < -52 ? SLOW_VELOCITY : FAST_VELOCITY;
 
         // Construct a chamber velocity constraints.
         VelConstraint firstChamberVelocityConstraint = (robotPose, _path, _disp) ->
@@ -525,6 +525,7 @@ public class AutoSpecimen extends LinearOpMode {
         // Construct an action.
         Action action = new SequentialAction(
                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
+                new WaitForTime(100),
                 new InstantAction(() -> robotHardware.closeBigClaw()),
                 new WaitForTime(250)
         );
