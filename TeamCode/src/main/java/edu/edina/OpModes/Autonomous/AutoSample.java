@@ -74,7 +74,7 @@ public class AutoSample extends LinearOpMode {
     // Chamber pose
     public static double CHAMBER_X = -15;
     public static double CHAMBER_Y = -40;
-    public static double CHAMBER_HEADING = Math.toRadians(90);
+    public static double CHAMBER_HEADING = Math.toRadians(0);
 
     // Fast velocity
     public static double FAST_VELOCITY = 40;
