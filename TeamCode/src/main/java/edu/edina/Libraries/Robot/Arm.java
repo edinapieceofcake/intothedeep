@@ -52,6 +52,9 @@ public class Arm {
     // Submersible grab position
     public static int SUBMERSIBLE_GRAB_POSITION = 4500;
 
+    // Auto specimen position
+    public static int AUTO_SPECIMEN_POSITION = 3500;
+
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
 

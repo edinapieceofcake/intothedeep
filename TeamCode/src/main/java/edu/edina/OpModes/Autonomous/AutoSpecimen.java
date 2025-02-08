@@ -45,7 +45,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Second spike mark pose
     public static double SECOND_SPIKE_MARK_X = 56.5;
-    public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
+    public static double SECOND_SPIKE_MARK_Y = -35;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
     public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
 
@@ -105,7 +105,7 @@ public class AutoSpecimen extends LinearOpMode {
     // Velocities
     public static double FAST_VELOCITY = 38;
     public static double MEDIUM_VELOCITY = 26;
-    public static double SLOW_VELOCITY = 20;
+    public static double SLOW_VELOCITY = 18;
 
     // Robot hardware
     private RobotHardware robotHardware;
@@ -404,7 +404,7 @@ public class AutoSpecimen extends LinearOpMode {
         Action mainAction = new SequentialAction(
 
                 // Score the preloaded specimen and drive to the first spike mark.
-                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.SUBMERSIBLE_HOVER_POSITION, true),
+                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.AUTO_SPECIMEN_POSITION, true),
 
                 // Grab the first spike mark sample.
                 grabSample(),
@@ -418,7 +418,7 @@ public class AutoSpecimen extends LinearOpMode {
                         new SequentialAction(
                                 new WaitForTime(1000),
                                 new InstantAction(() -> robotHardware.openBigClaw()),
-                                new WaitForTime(400),
+                                new WaitForTime(200),
                                 new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
                                 new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
                                 new InstantAction(() -> robotHardware.closeBigClaw()),
