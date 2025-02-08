@@ -38,14 +38,14 @@ public class AutoSpecimen extends LinearOpMode {
     public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
 
     // First spike mark pose
-    public static double FIRST_SPIKE_MARK_X = 46.5;
+    public static double FIRST_SPIKE_MARK_X = 47;
     public static double FIRST_SPIKE_MARK_Y = -39.5;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
     // Second spike mark pose
-    public static double SECOND_SPIKE_MARK_X = 56.5;
-    public static double SECOND_SPIKE_MARK_Y = -35;
+    public static double SECOND_SPIKE_MARK_X = 57;
+    public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
     public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
 
@@ -420,11 +420,14 @@ public class AutoSpecimen extends LinearOpMode {
                                 new InstantAction(() -> robotHardware.openBigClaw()),
                                 new WaitForTime(200),
                                 new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
-                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
-                                new InstantAction(() -> robotHardware.closeBigClaw()),
-                                new WaitForTime(250)
+                                new InstantAction(() -> robotHardware.setAutoExtension()),
+                                new MoveArm(robotHardware, Arm.AUTO_SPECIMEN_POSITION, true),
+                                new WaitForTime(100)
                         )
                 ),
+
+                // Grab the first spike mark sample.
+                grabSample(),
 
                 // Deliver the second spike mark sample and drive to the pick up location.
                 new ParallelAction(
@@ -493,9 +496,9 @@ public class AutoSpecimen extends LinearOpMode {
                                 new WaitForTime(isPreload ? 1000 : 800),
                                 new ParallelAction(
                                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
-                                        finalArmPosition == Arm.SUBMERSIBLE_ENTER_POSITION ?
-                                                new InstantAction(() -> robotHardware.setAutoExtension()) :
-                                                new InstantAction(() -> robotHardware.setMinimumExtension()),
+                                        finalArmPosition == Arm.WALL_POSITION ?
+                                                new InstantAction(() -> robotHardware.setMinimumExtension()) :
+                                                new InstantAction(() -> robotHardware.setAutoExtension()),
                                         new InstantAction(() -> robotHardware.openBigClaw()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
                                         new MoveArm(robotHardware, finalArmPosition, true),
