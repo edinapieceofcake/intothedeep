@@ -25,7 +25,7 @@ public class Wrist {
     public static double CHAMBER_POSITION = 0.82;
 
     // Short wall position
-    public static double SHORT_WALL_POSITION = 0.52;
+    public static double SHORT_WALL_POSITION = 0.5;
 
     // Submersible position
     public static double SUBMERSIBLE_POSITION = 0.16;

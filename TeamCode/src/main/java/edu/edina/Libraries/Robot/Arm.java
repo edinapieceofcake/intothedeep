@@ -47,7 +47,7 @@ public class Arm {
     public static int SUBMERSIBLE_ENTER_POSITION = 4200;
 
     // Submersible hover position
-    public static int SUBMERSIBLE_HOVER_POSITION = 3900;
+    public static int SUBMERSIBLE_HOVER_POSITION = SUBMERSIBLE_ENTER_POSITION;
 
     // Submersible grab position
     public static int SUBMERSIBLE_GRAB_POSITION = 4500;
