@@ -39,7 +39,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = 46.5;
-    public static double FIRST_SPIKE_MARK_Y = -38.5;
+    public static double FIRST_SPIKE_MARK_Y = -39;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
@@ -436,7 +436,7 @@ public class AutoSpecimen extends LinearOpMode {
                         new MoveArm(robotHardware, Arm.WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
-                                new WaitForTime(800),
+                                new WaitForTime(900),
                                 new InstantAction(() -> robotHardware.openBigClaw())
                         )
                 ),
