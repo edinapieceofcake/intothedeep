@@ -81,7 +81,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     private LinearOpMode opMode;
     private Slide2 slide;
-    public IMU imu;
     private Odometry teleOpOdometry;
     public Localizer odometry;
     public MecanumDrive drive;
@@ -165,12 +164,6 @@ public class RobotHardware implements DrivingRobotHardware {
         drive = new MecanumDrive(hardwareMap, startPose);
 
         odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
-
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
 
         distanceSensors = new RearDistanceSensor(hardwareMap);
 

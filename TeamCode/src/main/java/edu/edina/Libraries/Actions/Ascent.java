@@ -23,8 +23,8 @@ public class Ascent {
     private static final String tag = "Ascent";
     private boolean abort;
 
-    public static int SERVO_DROP_POS = 1150;
-    public static int LIFT_REVERSE_POS = 1250;
+    public static int LIFT_REVERSE_POS = 1150;
+    public static int SERVO_DROP_POS = 850;
     public static int SERVO_HOOK_POS = 1050;
     public static double LIFT_FEEDFORWARD_1 = 0.0002;
     public static double LIFT_FEEDFORWARD_2 = 0.06;
@@ -39,6 +39,7 @@ public class Ascent {
     private DcMotorEx leftLift, rightLift;
     private RobotHardware hw;
     private int initPos;
+    private int liftPos;
     private final ElapsedTime hangTime;
 
     public Ascent(RobotHardware hw) {
@@ -49,7 +50,8 @@ public class Ascent {
         rightLift = hw.getOpMode().hardwareMap.get(DcMotorEx.class, "right_lift_motor");
         rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
         initialVolt = hw.getVoltageSensor().getVoltage();
-        initPos = getLiftPos();
+        initPos = readAndGetLiftPos();
+        liftPos = initPos;
         abort = false;
         hangTime = new ElapsedTime();
     }
@@ -74,7 +76,7 @@ public class Ascent {
     }
 
     public Action raiseLift() {
-        int minPos = initPos + SERVO_DROP_POS;
+        int minPos = initPos + LIFT_REVERSE_POS;
         RampVariable rampVariable = new RampVariable(3, 0.05, RAISE_POWER_ADDON);
         return liftMotionAction(minPos, rampVariable);
     }
@@ -89,7 +91,7 @@ public class Ascent {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                int p = getLiftPos();
+                int p = readAndGetLiftPos();
 
                 RobotLog.ii(tag, "lift pos %d", p);
 
@@ -129,7 +131,7 @@ public class Ascent {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 double current = getCurrent();
-                int pos = getLiftPos();
+                int pos = readAndGetLiftPos();
 
                 RobotLog.ii(tag, "pos = %d, current = %f", pos, current);
 
@@ -139,7 +141,7 @@ public class Ascent {
                 if (continuouslyAboveAmpLimit) {
                     return false;
                 } else {
-                    if (pos < initPos + SERVO_DROP_POS / 2) {
+                    if (pos < initPos + LIFT_REVERSE_POS / 2) {
                         abort = true;
                         return false;
                     } else {
@@ -156,7 +158,7 @@ public class Ascent {
     }
 
     public Action hang() {
-        RampVariable hangRamp = new RampVariable(-HANG_POWER_RAMP, -1, -0.05);
+        RampVariable hangRamp = new RampVariable(-HANG_POWER_RAMP, -1, -0.25);
 
         return new Action() {
             @Override
@@ -167,9 +169,21 @@ public class Ascent {
                     return false;
                 } else {
                     RobotLog.ii(tag, "hanging");
-                    hw.getSlide().setTargetPosition(1000);
                     setPower(hangRamp.getCurrValue());
                     return true;
+                }
+            }
+        };
+    }
+
+    public Action checkLiftHeight() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (getLastLiftPos() < initPos + SERVO_DROP_POS) {
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };
@@ -181,8 +195,13 @@ public class Ascent {
         rightLift.setPower(actualPower);
     }
 
-    private int getLiftPos() {
-        return (leftLift.getCurrentPosition() - rightLift.getCurrentPosition()) / 2;
+    private int readAndGetLiftPos() {
+        liftPos = (leftLift.getCurrentPosition() - rightLift.getCurrentPosition()) / 2;
+        return liftPos;
+    }
+
+    private int getLastLiftPos() {
+        return liftPos;
     }
 
     public Action turnOffHook() {

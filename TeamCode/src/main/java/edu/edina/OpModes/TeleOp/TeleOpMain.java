@@ -748,11 +748,14 @@ public class TeleOpMain extends LinearOpMode {
                         new SequentialAction(
                                 new WaitForTime(200),
                                 a.moveArmToAllowLiftsToRaise()
+                        ),
+                        new SequentialAction(
+                                a.checkLiftHeight(),
+                                a.lowerHook(),
+                                new WaitForTime(200), // 200 normal, testing without servo
+                                a.turnOffHook()
                         )
                 ),
-                a.lowerHook(),
-                new WaitForTime(200), // 200 normal, testing without servo
-                a.turnOffHook(),
                 new ParallelAction(
                         a.lowerLift(),
                         a.moveArmToAllowLiftsToLower()
@@ -765,6 +768,11 @@ public class TeleOpMain extends LinearOpMode {
         ));
 
         while (opModeIsActive()) {
+            previousGamepad1.copy(currentGamepad1);
+            currentGamepad1.copy(gamepad1);
+            previousGamepad2.copy(currentGamepad2);
+            currentGamepad2.copy(gamepad2);
+
             if (a.getAbort() || (currentGamepad1.x && !previousGamepad1.x)) {
                 a.turnOnServos();
                 return;
