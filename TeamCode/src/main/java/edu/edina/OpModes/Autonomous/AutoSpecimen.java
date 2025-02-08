@@ -34,12 +34,12 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Preload chamber pose
     public static double PRELOAD_CHAMBER_X = START_X;
-    public static double PRELOAD_CHAMBER_Y = -29;
+    public static double PRELOAD_CHAMBER_Y = -31;
     public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = 46.5;
-    public static double FIRST_SPIKE_MARK_Y = -40.5;
+    public static double FIRST_SPIKE_MARK_Y = -38.5;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
@@ -89,7 +89,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Second chamber pose
     public static double SECOND_CHAMBER_X = APPROACH_SECOND_CHAMBER_X;
-    public static double SECOND_CHAMBER_Y = PRELOAD_CHAMBER_Y;
+    public static double SECOND_CHAMBER_Y = FIRST_CHAMBER_Y;
     public static double SECOND_CHAMBER_HEADING = APPROACH_SECOND_CHAMBER_HEADING;
 
     // Approach third chamber pose
@@ -99,7 +99,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Third chamber pose
     public static double THIRD_CHAMBER_X = APPROACH_THIRD_CHAMBER_X;
-    public static double THIRD_CHAMBER_Y = PRELOAD_CHAMBER_Y;
+    public static double THIRD_CHAMBER_Y = FIRST_CHAMBER_Y;
     public static double THIRD_CHAMBER_HEADING = APPROACH_THIRD_CHAMBER_HEADING;
 
     // Velocities
