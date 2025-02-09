@@ -23,7 +23,7 @@ public class Arm {
     public static int GROUND_POSITION = 0;
 
     // Basket position
-    public static int BASKET_POSITION = 1850;
+    public static int BASKET_POSITION = 1800;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
@@ -62,7 +62,7 @@ public class Arm {
     public static int WALL_POSITION = -400;
 
     // Chamber position
-    public static int CHAMBER_POSITION = 4700;
+    public static int CHAMBER_POSITION = 4600;
 
     // Ascent position
     public static int ASCENT_POSITION = 200;

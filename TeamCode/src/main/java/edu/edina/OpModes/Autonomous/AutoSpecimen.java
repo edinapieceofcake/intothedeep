@@ -34,7 +34,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Preload chamber pose
     public static double PRELOAD_CHAMBER_X = START_X;
-    public static double PRELOAD_CHAMBER_Y = -31;
+    public static double PRELOAD_CHAMBER_Y = -29;
     public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
 
     // First spike mark pose
@@ -79,7 +79,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // First chamber pose
     public static double FIRST_CHAMBER_X = APPROACH_FIRST_CHAMBER_X;
-    public static double FIRST_CHAMBER_Y = PRELOAD_CHAMBER_Y;
+    public static double FIRST_CHAMBER_Y = -31;
     public static double FIRST_CHAMBER_HEADING = APPROACH_FIRST_CHAMBER_HEADING;
 
     // Approach second chamber pose
@@ -436,7 +436,7 @@ public class AutoSpecimen extends LinearOpMode {
                         new MoveArm(robotHardware, Arm.WALL_POSITION, true),
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
-                                new WaitForTime(900),
+                                new WaitForTime(1000),
                                 new InstantAction(() -> robotHardware.openBigClaw())
                         )
                 ),

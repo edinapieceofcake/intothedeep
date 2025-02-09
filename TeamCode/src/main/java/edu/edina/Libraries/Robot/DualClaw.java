@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 @Config
 public class DualClaw {
     public static double BIG_CLOSE = .75;
-    public static double BIG_OPEN = .25;
+    public static double BIG_OPEN = .28;
     public static double SMALL_CLOSE = .23;
     public static double SMALL_OPEN = .78;
     private RobotHardware hw;
