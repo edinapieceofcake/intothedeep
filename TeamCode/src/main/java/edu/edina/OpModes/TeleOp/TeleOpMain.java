@@ -390,7 +390,7 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
 
                         // Lower the arm.
-                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.FAST_INCREMENT),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.MEDIUM_INCREMENT),
 
                         // Set the wrist to the wall position.
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
