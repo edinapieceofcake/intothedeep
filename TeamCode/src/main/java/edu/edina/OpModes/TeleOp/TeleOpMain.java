@@ -40,7 +40,6 @@ public class TeleOpMain extends LinearOpMode {
         Normal Mode
         - left stick = move robot
         - right stick = rotate robot
-        - a = toggle claw
         - y = basket
         - b = wall
         - x = submersible
@@ -332,27 +331,6 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             // Otherwise (if the robot is in another mode)...
-            else {
-
-                // Notify the user.
-                robotHardware.beep();
-
-            }
-
-        }
-
-        // If the user pressed a...
-        if (currentGamepad2.a && !previousGamepad2.a) {
-
-            // If the robot is in submersible mode...
-            if (robotMode == RobotMode.SUBMERSIBLE) {
-
-                // Toggle the big claw.
-                robotHardware.toggleBigClaw();
-
-            }
-
-            // Otherwise (if the robot is not in submersible mode)...
             else {
 
                 // Notify the user.
