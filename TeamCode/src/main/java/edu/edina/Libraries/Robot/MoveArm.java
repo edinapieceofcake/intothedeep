@@ -52,7 +52,7 @@ public class MoveArm implements Action {
         if (!initialized) {
 
             // Get the arm's current position.
-            currentPosition = robotHardware.getCurrentArmPosition();
+            currentPosition = robotHardware.getCorrectedArmPosition();
 
             // If we are lowering the arm...
             if(currentPosition > targetPosition) {

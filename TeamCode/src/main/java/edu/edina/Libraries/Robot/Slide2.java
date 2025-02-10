@@ -35,6 +35,9 @@ public class Slide2 {
     // Submersible position
     public static int SUBMERSIBLE_POSITION = 800;
 
+    // Submersible button position
+    public static int SUBMERSIBLE_BUTTON_POSITION = 20;
+
     // Chamber position
     public static int CHAMBER_POSITION = 100;
 
@@ -265,6 +268,14 @@ public class Slide2 {
 
         // Move the slide to the submersible position.
         targetPosition = SUBMERSIBLE_POSITION;
+
+    }
+
+    // Moves the slide to the submersible button position.
+    public void setSubmersibleButton() {
+
+        // Move the slide to the submersible button position.
+        targetPosition = SUBMERSIBLE_BUTTON_POSITION;
 
     }
 

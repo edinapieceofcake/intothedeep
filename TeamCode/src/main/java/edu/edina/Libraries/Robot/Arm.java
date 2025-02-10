@@ -44,13 +44,16 @@ public class Arm {
     public static double REZEROING_POWER = -0.3;
 
     // Submersible enter position
-    public static int SUBMERSIBLE_ENTER_POSITION = 4200;
+    public static int SUBMERSIBLE_ENTER_POSITION = 4100;
 
     // Submersible hover position
     public static int SUBMERSIBLE_HOVER_POSITION = SUBMERSIBLE_ENTER_POSITION;
 
     // Submersible grab position
     public static int SUBMERSIBLE_GRAB_POSITION = 4500;
+
+    // Submersible button position
+    public static int SUBMERSIBLE_BUTTON_POSITION = 4700;
 
     // Auto specimen position
     public static int AUTO_SPECIMEN_POSITION = 4000;
@@ -88,6 +91,9 @@ public class Arm {
     // Touch sensor
     private final TouchSensor touchFront;
     private final TouchSensor touchBack;
+
+    // Position correction
+    private int positionCorrection;
 
     // Initializes this.
     public Arm(RobotHardware robotHardware) {
@@ -130,10 +136,10 @@ public class Arm {
 
         // Determine the appropriate arm power.
         controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
-        int currentPosition = motor.getCurrentPosition();
-        double currentDegrees = getDegrees(currentPosition);
+        int correctedPosition = getCorrectedPosition();
+        double currentDegrees = getDegrees(correctedPosition);
         double currentRadians = Math.toRadians(currentDegrees);
-        double pid = controller.calculate(currentPosition, targetPosition);
+        double pid = controller.calculate(correctedPosition, targetPosition);
         double targetDegrees = getDegrees(targetPosition);
         double feedForward = Math.cos(currentRadians) * FEEDFORWARD;
         double power = pid + feedForward;
@@ -160,6 +166,7 @@ public class Arm {
         // Reset the arm if appropriate
         //////////////////////////////////////////////////////////////////////
 
+        // Determine whether the front button is down.
         boolean frontDown = touchFront.isPressed();
 
         // If we finished lowering the arm...
@@ -170,7 +177,19 @@ public class Arm {
 
         }
 
+        // Determine whether the back button is down.
         boolean backDown = touchBack.isPressed();
+
+        // If the back button is down...
+        if(backDown) {
+
+            // Get the uncorrected position.
+            int uncorrectedPosition = getUncorrectedPosition();
+
+            // Update the position correction.
+            positionCorrection = MAXIMUM_POSITION - uncorrectedPosition;
+
+        }
 
         // Display arm telemetry.
         //////////////////////////////////////////////////////////////////////
@@ -188,10 +207,11 @@ public class Arm {
         telemetry.addData("Arm", "====================");
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
-        telemetry.addData("- Current Position", currentPosition);
+        telemetry.addData("- Current Position", correctedPosition);
         telemetry.addData("- Front Down", frontDown);
         telemetry.addData("- Back Down", backDown);
         telemetry.addData("- Feedforward", feedForward);
+        telemetry.addData("- Position Correction", positionCorrection);
         telemetry.addData("- PID", pid);
         telemetry.addData("- Power", power);
         telemetry.addData("- Target Degrees", targetDegrees);
@@ -243,6 +263,9 @@ public class Arm {
         // Set the target position to the ground position.
         targetPosition = GROUND_POSITION;
 
+        // Reset the position correction.
+        positionCorrection = 0;
+
     }
 
     // Decrements the arm position.
@@ -283,8 +306,20 @@ public class Arm {
 
     }
 
-    public int getCurrentPosition() {
+    // Gets the corrected position.
+    public int getCorrectedPosition() {
+
+        // Return the corrected position.
+        return getUncorrectedPosition() + positionCorrection;
+
+    }
+
+    // Gets the uncorrected position.
+    private int getUncorrectedPosition() {
+
+        // Return the uncorrected position.
         return motor.getCurrentPosition();
+
     }
 
     public void overridePower(double power) {
@@ -311,7 +346,7 @@ public class Arm {
     public boolean isBusy() {
 
         // Get the arm's current position.
-        int currentPosition = motor.getCurrentPosition();
+        int currentPosition = getCorrectedPosition();
 
         // Get the position difference.
         int difference = Math.abs(currentPosition - targetPosition);

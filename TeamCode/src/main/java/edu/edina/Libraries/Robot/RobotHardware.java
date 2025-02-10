@@ -460,6 +460,14 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    // Sets the submersible button extension.
+    public void setSubmersibleButtonExtension() {
+
+        // Set the submersible button extension.
+        slide.setSubmersibleButton();
+
+    }
+
     // Sets the extension's target position.
     public void setExtensionTargetPosition(int targetPosition) {
 
@@ -637,11 +645,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Gets the arm's current position.
-    public int getCurrentArmPosition() {
+    // Gets the arm's corrected position.
+    public int getCorrectedArmPosition() {
 
         // Return the arm's current position.
-        return arm.getCurrentPosition();
+        return arm.getCorrectedPosition();
 
     }
 
@@ -772,9 +780,6 @@ public class RobotHardware implements DrivingRobotHardware {
     // Lowers the arm from the basket.
     public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean raiseArm, boolean extendSlide) {
 
-        // Get an arm position.
-        int armPosition = raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.WALL_POSITION;
-
         // Construct an action.
         Action action = new SequentialAction(
                 new InstantAction(() -> setWristSubmersiblePosition()),
@@ -791,12 +796,20 @@ public class RobotHardware implements DrivingRobotHardware {
                                         extendSlide ?
                                                 new InstantAction(() -> setAutoExtension()) :
                                                 new SequentialAction(),
-                                        new MoveArm(this, armPosition, MoveArm.FAST_INCREMENT)
+                                        new MoveArm(this, raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.WALL_POSITION, MoveArm.FAST_INCREMENT)
                                 ) :
-                                new SequentialAction(
-                                        new MoveArm(this, armPosition, MoveArm.FAST_INCREMENT),
-                                        new InstantAction(() -> setSubmersibleExtension())
-                                )
+                                raiseArm ?
+                                        new SequentialAction(
+                                                new InstantAction(() -> setSubmersibleButtonExtension()),
+                                                new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, MoveArm.FAST_INCREMENT),
+                                                new WaitForTime(300),
+                                                new InstantAction(() -> setSubmersibleExtension()),
+                                                new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT)
+                                        ) :
+                                        new SequentialAction(
+                                                new MoveArm(this, Arm.WALL_POSITION, MoveArm.FAST_INCREMENT),
+                                                new InstantAction(() -> setSubmersibleExtension())
+                                        )
                 )
         );
 

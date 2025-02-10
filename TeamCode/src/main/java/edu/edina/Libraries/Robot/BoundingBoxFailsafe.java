@@ -108,7 +108,7 @@ public class BoundingBoxFailsafe {
     }
 
     private double getArmPosition() {
-        double p = arm.getCurrentPosition();
+        double p = arm.getCorrectedPosition();
         return p / Arm.TICKS_PER_DEGREE - Arm.INITIAL_DEGREES_BELOW_HORIZONTAL;
     }
 

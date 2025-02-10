@@ -113,12 +113,12 @@ public class Ascent {
 
     public Action moveArmToAllowLiftsToRaise() {
         Arm a = hw.getArm();
-        return new InstantAction(() -> a.setPosition(a.getCurrentPosition() + 800));
+        return new InstantAction(() -> a.setPosition(a.getCorrectedPosition() + 800));
     }
 
     public Action moveArmToAllowLiftsToLower() {
         Arm a = hw.getArm();
-        return new InstantAction(() -> a.setPosition(a.getCurrentPosition() - 750));
+        return new InstantAction(() -> a.setPosition(a.getCorrectedPosition() - 750));
     }
 
     public Action waitForHook() {
