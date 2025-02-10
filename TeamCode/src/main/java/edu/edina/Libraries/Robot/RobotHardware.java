@@ -755,7 +755,7 @@ public class RobotHardware implements DrivingRobotHardware {
                 new InstantAction(() -> setBasketExtension()),
                 new WaitForTime(500),
                 new InstantAction(() -> setWristBasketPosition()),
-                new WaitForHardware(this, 3000)
+                new WaitForHardware(this, 2000)
         );
         return action;
     }
