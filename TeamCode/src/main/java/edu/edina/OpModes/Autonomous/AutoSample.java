@@ -331,7 +331,7 @@ public class AutoSample extends LinearOpMode {
                                 // If this is not the human sample, lower the arm to grab.
                                 isHumanSample ?
                                         new SequentialAction() :
-                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
+                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, MoveArm.SLOW_INCREMENT),
 
                                 // Wait for the hardware.
                                 new WaitForHardware(robotHardware, 1000)
@@ -346,7 +346,7 @@ public class AutoSample extends LinearOpMode {
 
                                 // If this is the human sample, lower the arm to grab.
                                 isHumanSample ?
-                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false) :
+                                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, MoveArm.SLOW_INCREMENT) :
                                         new SequentialAction()
 
                         )

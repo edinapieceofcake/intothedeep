@@ -390,7 +390,7 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
 
                         // Lower the arm.
-                        new MoveArm(robotHardware, Arm.WALL_POSITION, true),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.FAST_INCREMENT),
 
                         // Set the wrist to the wall position.
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
@@ -412,11 +412,14 @@ public class TeleOpMain extends LinearOpMode {
             else if (robotMode == RobotMode.INITIALIZE || robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Move the arm to the wall position.
-                robotHardware.setLiftGroundPosition();
-                robotHardware.setArmWallPosition(robotMode == RobotMode.INITIALIZE);
-                robotHardware.setWristWallPosition(tallWalls);
-                robotHardware.swivelSetHorizontal();
-                robotHardware.setMinimumExtension();
+                Action action = new ParallelAction(
+                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.FAST_INCREMENT),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
+                        new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+                        new InstantAction(() -> robotHardware.setMinimumExtension())
+                );
+                robotHardware.addAction(action);
 
                 // Set the robot mode to wall.
                 robotMode = RobotMode.WALL;
@@ -537,13 +540,13 @@ public class TeleOpMain extends LinearOpMode {
                     // Grab a sample and retract.
                     Action action = new SequentialAction(
                             new InstantAction(() -> robotHardware.openBigClaw()),
-                            new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, false),
+                            new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, MoveArm.SLOW_INCREMENT),
                             new WaitForTime(100),
                             new InstantAction(() -> robotHardware.closeBigClaw()),
                             new WaitForTime(100),
                             new InstantAction(() -> robotHardware.setWristWallPosition(true)),
                             new InstantAction(() -> robotHardware.setMinimumExtension()),
-                            new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, true)
+                            new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, MoveArm.FAST_INCREMENT)
                     );
                     robotHardware.addAction(action);
 
@@ -601,7 +604,7 @@ public class TeleOpMain extends LinearOpMode {
                                         new InstantAction(() -> robotHardware.setSubmersibleExtension())
                                 ),
                                 new InstantAction(() -> robotHardware.openBigClaw()),
-                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true)
+                                new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT)
                         ),
                         new ParallelAction(
                                 moveForward,
@@ -627,7 +630,7 @@ public class TeleOpMain extends LinearOpMode {
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
                         new InstantAction(() -> robotHardware.setWristWallPosition(true)),
                         new InstantAction(() -> robotHardware.openBigClaw()),
-                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, true),
+                        new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT),
                         new InstantAction(() -> robotHardware.setSubmersibleExtension()),
                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                 );

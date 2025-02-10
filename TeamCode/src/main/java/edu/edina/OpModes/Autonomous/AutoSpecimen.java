@@ -413,7 +413,7 @@ public class AutoSpecimen extends LinearOpMode {
                 new ParallelAction(
                         driveFromFirstSpikeMarkToDropToSecondSpikeMark,
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
-                        new MoveArm(robotHardware, Arm.WALL_POSITION, true),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.MEDIUM_INCREMENT),
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
                                 new WaitForTime(1000),
@@ -421,7 +421,7 @@ public class AutoSpecimen extends LinearOpMode {
                                 new WaitForTime(200),
                                 new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
                                 new InstantAction(() -> robotHardware.setAutoExtension()),
-                                new MoveArm(robotHardware, Arm.AUTO_SPECIMEN_POSITION, true),
+                                new MoveArm(robotHardware, Arm.AUTO_SPECIMEN_POSITION, MoveArm.MEDIUM_INCREMENT),
                                 new WaitForTime(100)
                         )
                 ),
@@ -433,7 +433,7 @@ public class AutoSpecimen extends LinearOpMode {
                 new ParallelAction(
                         driveFromSecondSpikeMarkToPickUp,
                         new InstantAction(() -> robotHardware.setMinimumExtension()),
-                        new MoveArm(robotHardware, Arm.WALL_POSITION, true),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.MEDIUM_INCREMENT),
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
                                 new WaitForTime(1000),
@@ -501,7 +501,7 @@ public class AutoSpecimen extends LinearOpMode {
                                                 new InstantAction(() -> robotHardware.setAutoExtension()),
                                         new InstantAction(() -> robotHardware.openBigClaw()),
                                         new InstantAction(() -> robotHardware.swivelSetHorizontal()),
-                                        new MoveArm(robotHardware, finalArmPosition, true),
+                                        new MoveArm(robotHardware, finalArmPosition, MoveArm.MEDIUM_INCREMENT),
                                         finalArmPosition == Arm.WALL_POSITION ?
                                                 new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)) :
                                                 new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
@@ -524,7 +524,7 @@ public class AutoSpecimen extends LinearOpMode {
 
         // Construct an action.
         Action action = new SequentialAction(
-                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, true),
+                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, MoveArm.MEDIUM_INCREMENT),
                 new WaitForTime(100),
                 new InstantAction(() -> robotHardware.closeBigClaw()),
                 new WaitForTime(250)

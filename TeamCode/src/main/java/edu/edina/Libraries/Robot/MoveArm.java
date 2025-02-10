@@ -10,10 +10,9 @@ import com.acmerobotics.roadrunner.Action;
 @Config
 public class MoveArm implements Action {
 
-    // Fast increment
-    public static int FAST_INCREMENT = 200;
-
-    // Slow increment
+    // Increments
+    public static int FAST_INCREMENT = 400;
+    public static int MEDIUM_INCREMENT = 200;
     public static int SLOW_INCREMENT = 75;
 
     // Current position
@@ -32,16 +31,16 @@ public class MoveArm implements Action {
     private int targetPosition;
 
     // Initializes this.
-    public MoveArm(RobotHardware robotHardware, int targetPosition, boolean fast) {
+    public MoveArm(RobotHardware robotHardware, int targetPosition, int increment) {
 
         // Remember the robot hardware.
         this.robotHardware = robotHardware;
 
-        // Get the target position.
+        // Remember the target position.
         this.targetPosition = targetPosition;
 
-        // Get an appropriate increment.
-        increment = fast ? FAST_INCREMENT : SLOW_INCREMENT;
+        // Remember the increment.
+        this.increment = increment;
 
     }
 

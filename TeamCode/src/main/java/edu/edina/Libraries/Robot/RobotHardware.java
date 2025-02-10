@@ -72,12 +72,7 @@ public class RobotHardware implements DrivingRobotHardware {
 
     // Squares (see https://unicode-explorer.com/list/geometric-shapes)
     public static final String BLUE_SQUARE = "\uD83D\uDFE6";
-    public static final String GREEN_SQAURE = "\uD83D\uDFE9";
-    public static final String RED_SQUARE = "\uD83D\uDFE5";
     public static final String YELLOW_SQUARE = "\uD83D\uDFE8";
-
-    // Inches to back up when scoring a specimen
-    public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
 
     private LinearOpMode opMode;
     private Slide2 slide;
@@ -261,13 +256,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Sets the swivel to clip without a delay.
-    public void swivelSetClipNoDelay() {
-
-        swivel.setClip();
-
-    }
-
     // Toggles the swivel.
     public void toggleSwivel() {
 
@@ -406,10 +394,6 @@ public class RobotHardware implements DrivingRobotHardware {
         claw.openBig();
     }
 
-    public boolean isBigClawOpen() {
-        return claw.isBigOpen();
-    }
-
     public void openSmallClaw() {
         claw.openSmall();
     }
@@ -428,35 +412,11 @@ public class RobotHardware implements DrivingRobotHardware {
         claw.toggleBig();
     }
 
-    // Raises the lift.
-    public void raiseLift() {
-
-        // Raise the lift.
-        lift.raise();
-
-    }
-
-    // Lowers the lift.
-    public void lowerLift() {
-
-        // Lower the lift.
-        lift.lower();
-
-    }
-
     // Gets the op mode.
     public LinearOpMode getOpMode() {
 
         // Return the op mode.
         return opMode;
-
-    }
-
-    // Sets the slide's position.
-    public void setSlidePosition(double position) {
-
-        // Set the slide's position.
-//        slide.setPosition(position);
 
     }
 
@@ -523,14 +483,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Toggles turtle mode.
-    public void toggleTurtleMode() {
-
-        // Toggle turtle mode.
-        turtleMode = !turtleMode;
-
-    }
-
     // Sets turtle mode.
     public void setTurtleMode(boolean turtleMode) {
 
@@ -563,41 +515,11 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Moves the arm to the ascent position.
-    public void setArmAscentPosition() {
-
-        // Moves the arm to the ascent position.
-        arm.setAscentPosition();
-
-    }
-
-    // Moves the arm to the chamber position.
-    public void setArmChamberPosition() {
-
-        // Construct an action to move the arm to the chamber position.
-        Action action = new MoveArm(this, Arm.CHAMBER_POSITION, true);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the ground to wall position.
-    public void setArmWallPosition(boolean fromGround) {
-
-        // Construct an action to move the arm to the wall position.
-        Action action = new MoveArm(this, Arm.WALL_POSITION, true);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
     // Moves the arm to the submersible enter position.
     public void setArmSubmersibleEnterPosition() {
 
         // Construct an action to move the arm to the submersible enter position.
-        Action action = new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, true);
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT);
 
         // Run the action.
         runningActions.add(action);
@@ -670,7 +592,7 @@ public class RobotHardware implements DrivingRobotHardware {
     // Raises to chamber.
     public Action raiseToChamber() {
         Action action = new ParallelAction(
-                new MoveArm(this, Arm.CHAMBER_POSITION, true),
+                new MoveArm(this, Arm.CHAMBER_POSITION, MoveArm.MEDIUM_INCREMENT),
                 new SequentialAction(
                         new WaitForTime(250),
                         new InstantAction(() -> closeSmallClaw()),
@@ -744,34 +666,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Set the lift's position.
         lift.setPosition(position);
-
-    }
-
-    // Ascends the robot.
-    public void ascend() {
-
-        // Construct an ascend action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> setArmAscentPosition()),
-                new Ascend(this)
-        );
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Descends the robot.
-    public void descend() {
-
-        // Construct a descend action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> setArmAscentPosition()),
-                new Descend(this)
-        );
-
-        // Run the action.
-        runningActions.add(action);
 
     }
 
@@ -856,9 +750,8 @@ public class RobotHardware implements DrivingRobotHardware {
                 new InstantAction(() -> setWristWallPosition(true)),
                 new InstantAction(() -> swivelSetVertical()),
                 new InstantAction(() -> setMinimumExtension()),
-                //new WaitForSlide(this, 3000),
                 new InstantAction(() -> setLiftBasketPosition()),
-                new MoveArm(this, Arm.BASKET_POSITION, true),
+                new MoveArm(this, Arm.BASKET_POSITION, MoveArm.FAST_INCREMENT),
                 new InstantAction(() -> setBasketExtension()),
                 new WaitForTime(500),
                 new InstantAction(() -> setWristBasketPosition()),
@@ -898,10 +791,10 @@ public class RobotHardware implements DrivingRobotHardware {
                                         extendSlide ?
                                                 new InstantAction(() -> setAutoExtension()) :
                                                 new SequentialAction(),
-                                        new MoveArm(this, armPosition, true)
+                                        new MoveArm(this, armPosition, MoveArm.FAST_INCREMENT)
                                 ) :
                                 new SequentialAction(
-                                        new MoveArm(this, armPosition, true),
+                                        new MoveArm(this, armPosition, MoveArm.FAST_INCREMENT),
                                         new InstantAction(() -> setSubmersibleExtension())
                                 )
                 )
