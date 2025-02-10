@@ -24,7 +24,7 @@ public class Light {
         this.sampleSensor = sampleSensor;
         LIGHT_MULT = 0.07;
         chaseDirs = new int[] {1, 1};
-        currPixNums = new int[] {0, 42};
+        currPixNums = new int[] {0, 16};
     }
 
     public void update(boolean wave, boolean sample) {
@@ -73,21 +73,21 @@ public class Light {
         if (on) {
             byte r, g, b;
             if (sampleColor == SampleColor.RED) {
-                r = (byte) 200;
+                r = (byte) 150;
                 g = (byte) 0;
                 b = (byte) 0;
             } else if (sampleColor == SampleColor.BLUE) {
                 r = (byte) 0;
                 g = (byte) 0;
-                b = (byte) 200;
+                b = (byte) 150;
             } else if (sampleColor == SampleColor.YELLOW) {
-                r = (byte) 200;
-                g = (byte) 200;
+                r = (byte) 150;
+                g = (byte) 150;
                 b = (byte) 0;
             } else {
-                r = (byte) 180;
-                g = (byte) 180;
-                b = (byte) 180;
+                r = (byte) 120;
+                g = (byte) 120;
+                b = (byte) 120;
             }
 
             chase(r, g, b);
@@ -95,7 +95,7 @@ public class Light {
     }
 
     public void chase(byte r, byte g, byte b) {
-        if (t2.milliseconds() > 20) {
+        if (t2.milliseconds() > 50) {
             t2.reset();
 
             pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
