@@ -73,21 +73,21 @@ public class Light {
         if (on) {
             byte r, g, b;
             if (sampleColor == SampleColor.RED) {
-                r = (byte) 150;
+                r = (byte) 80;
                 g = (byte) 0;
                 b = (byte) 0;
             } else if (sampleColor == SampleColor.BLUE) {
                 r = (byte) 0;
                 g = (byte) 0;
-                b = (byte) 150;
+                b = (byte) 80;
             } else if (sampleColor == SampleColor.YELLOW) {
-                r = (byte) 150;
-                g = (byte) 150;
+                r = (byte) 80;
+                g = (byte) 80;
                 b = (byte) 0;
             } else {
-                r = (byte) 120;
-                g = (byte) 120;
-                b = (byte) 120;
+                r = (byte) 70;
+                g = (byte) 70;
+                b = (byte) 70;
             }
 
             chase(r, g, b);
