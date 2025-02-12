@@ -173,6 +173,14 @@ public class RobotHardware implements DrivingRobotHardware {
         light = new Light(opMode.hardwareMap, sampleSensor);
     }
 
+    public void turnOnWave() {
+        light.update(true, false);
+    }
+
+    public void turnOffWave() {
+        light.update(false, true);
+    }
+
     // Waits for the user to lower the lift.
     public void waitForLiftDown() {
 

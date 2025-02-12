@@ -46,21 +46,13 @@ public class Light {
             for (int n = 0; n < numPixel; n++) {
                 int blueByte = n * 3 + 2;
                 x = n * a;
-                pixArray[blueByte] = toByte(Math.sin(blueTime + x), -1, 1, 10, 200);
+                pixArray[blueByte] = toByte(Math.sin(blueTime + x), -1, 1, 10, 140);
             }
 
             for (int n = 0; n < numPixel; n++) {
                 int greenByte = n * 3;
                 x = greenFrequency * n;
-                pixArray[greenByte] = toByte(Math.sin(blueTime + x), -1, 1, 0, 150);
-            }
-
-            //pixel before and after white
-            int firstPixel = numPixel / 2;
-
-            for (int n = 0; n < 3; n++) {
-                pixArray[(byte) ((firstPixel - 3) * 3 + n)] = (byte) (255 * LIGHT_MULT);
-                pixArray[(byte) ((firstPixel + 2) * 3 + n)] = (byte) (255 * LIGHT_MULT);
+                pixArray[greenByte] = toByte(Math.sin(blueTime + x), -1, 1, 0, 90);
             }
         }
     }
@@ -95,7 +87,7 @@ public class Light {
     }
 
     public void chase(byte r, byte g, byte b) {
-        if (t2.milliseconds() > 50) {
+        if (t2.milliseconds() > 70) {
             t2.reset();
 
             pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];

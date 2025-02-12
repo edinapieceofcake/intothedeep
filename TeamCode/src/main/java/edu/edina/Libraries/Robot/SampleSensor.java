@@ -1,8 +1,8 @@
 package edu.edina.Libraries.Robot;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SampleSensor {
     private NormalizedColorSensor colorSensor;
+    private NormalizedRGBA rgb;
     private float[] hsvValues;
     private SampleColor sampleColor;
 
@@ -22,14 +23,14 @@ public class SampleSensor {
     public SampleColor detectSampleColor() {
         colorSensor.setGain(2);
 
-        NormalizedRGBA colors = colorSensor.getNormalizedColors();
-        Color.colorToHSV(colors.toColor(), hsvValues);
+        rgb = colorSensor.getNormalizedColors();
+        Color.colorToHSV(rgb.toColor(), hsvValues);
 
-        if ((hsvValues[0] < 10 || hsvValues[0] > 340) && hsvValues[1] > 0.350) {
+        if ((hsvValues[0] < 60 && hsvValues[0] >= 0) && hsvValues[1] > 0.55) {
             sampleColor = SampleColor.RED;
-        } else if ((hsvValues[0] < 70 && hsvValues[0] > 10) && hsvValues[1] > 0.400) {
+        } else if ((hsvValues[0] < 120 && hsvValues[0] >= 60) && hsvValues[1] > 0.55 && hsvValues[2] > 0.006) {
             sampleColor = SampleColor.YELLOW;
-        } else if ((hsvValues[0] < 230 && hsvValues[0] > 175) && hsvValues[1] > 0.300) {
+        } else if ((hsvValues[0] < 255 && hsvValues[0] > 175) && hsvValues[1] > 0.55) {
             sampleColor = SampleColor.BLUE;
         } else {
             sampleColor = SampleColor.NOTHING;
@@ -39,7 +40,8 @@ public class SampleSensor {
     }
 
     public void addTelemetry(Telemetry telemetry) {
-        telemetry.addData("sample sensor", "HSV: %f, %f, %f", hsvValues[0], hsvValues[1], hsvValues[2]);
-        telemetry.addData("sample sensor", "last color: %s", sampleColor);
+        telemetry.addData("color sensor", "r=%.3f, g=%.3f, b=%.3f", rgb.red, rgb.green, rgb.blue);
+        telemetry.addData("color sensor", "h=%.0f, s=%.3f, v=%.3f", hsvValues[0], hsvValues[1], hsvValues[2]);
+        telemetry.addData("sample detected", "%s", sampleColor);
     }
 }
