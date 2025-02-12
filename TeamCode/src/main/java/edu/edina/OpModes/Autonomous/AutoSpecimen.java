@@ -436,7 +436,7 @@ public class AutoSpecimen extends LinearOpMode {
                         new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.MEDIUM_INCREMENT),
                         new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
                         new SequentialAction(
-                                new WaitForTime(1000),
+                                new WaitForTime(1100),
                                 new InstantAction(() -> robotHardware.openBigClaw())
                         )
                 ),
