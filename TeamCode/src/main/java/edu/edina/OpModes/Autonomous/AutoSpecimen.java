@@ -99,7 +99,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // Third chamber pose
     public static double THIRD_CHAMBER_X = APPROACH_THIRD_CHAMBER_X;
-    public static double THIRD_CHAMBER_Y = FIRST_CHAMBER_Y;
+    public static double THIRD_CHAMBER_Y = -29;
     public static double THIRD_CHAMBER_HEADING = APPROACH_THIRD_CHAMBER_HEADING;
 
     // Velocities
