@@ -372,7 +372,7 @@ public class AutoSample extends LinearOpMode {
                                 new WaitForTime(isWallSample ? 500 : 0),
 
                                 // Raise the sample to the basket.
-                                robotHardware.raiseSampleToBasket()
+                                robotHardware.raiseSampleToBasket(false)
 
                         )
 
@@ -506,7 +506,7 @@ public class AutoSample extends LinearOpMode {
                         driveFromStartToBasket,
 
                         // Raise the preloaded sample to the basket.
-                        robotHardware.raiseSampleToBasket()
+                        robotHardware.raiseSampleToBasket(false)
 
                 ),
 

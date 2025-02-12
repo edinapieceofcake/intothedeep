@@ -96,7 +96,6 @@ public class RobotHardware implements DrivingRobotHardware {
     private boolean allowManualDriving = true;
     public RearDistanceSensor distanceSensors;
     private DcMotorEx extension;
-    private int lowerCount = 0;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
         Pose2d startPose = new Pose2d(0, 0, 0);
@@ -764,8 +763,15 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Raises a sample to the basket.
-    public Action raiseSampleToBasket() {
+    public Action raiseSampleToBasket(boolean rezero) {
         Action action = new SequentialAction(
+                rezero ?
+                        new SequentialAction(
+                                new InstantAction(() -> setSubmersibleButtonExtension()),
+                                new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, MoveArm.FAST_INCREMENT),
+                                new WaitForTime(200)
+                        ) :
+                        new SequentialAction(),
                 new InstantAction(() -> setWristWallPosition(true)),
                 new InstantAction(() -> swivelSetVertical()),
                 new InstantAction(() -> setMinimumExtension()),
@@ -811,13 +817,6 @@ public class RobotHardware implements DrivingRobotHardware {
                                 ) :
                                 raiseArm ?
                                         new SequentialAction(
-                                                lowerCount % 3 == 0 ?
-                                                        new SequentialAction(
-                                                                new InstantAction(() -> setSubmersibleButtonExtension()),
-                                                                new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, MoveArm.FAST_INCREMENT),
-                                                                new WaitForTime(300)
-                                                        ) :
-                                                        new SequentialAction(),
                                                 new InstantAction(() -> setSubmersibleExtension()),
                                                 new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT)
                                         ) :
@@ -827,8 +826,6 @@ public class RobotHardware implements DrivingRobotHardware {
                                         )
                 )
         );
-
-        lowerCount++;
 
         // Return the action.
         return action;

@@ -424,7 +424,7 @@ public class TeleOpMain extends LinearOpMode {
             if (robotMode == RobotMode.SUBMERSIBLE && !robotHardware.isWristInSubmersiblePosition()) {
 
                 // Raise the sample to the basket.
-                robotHardware.addAction(robotHardware.raiseSampleToBasket());
+                robotHardware.addAction(robotHardware.raiseSampleToBasket(true));
 
                 // Set the robot mode to basket.
                 robotMode = RobotMode.BASKET;
