@@ -10,12 +10,16 @@ import edu.edina.Libraries.Robot.SampleSensor;
 public class LightRunningTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Light light = new Light(hardwareMap, new SampleSensor(hardwareMap));
+        SampleSensor sampleSensor = new SampleSensor(hardwareMap);
+        Light light = new Light(hardwareMap, sampleSensor);
 
         waitForStart();
 
         while (opModeIsActive()) {
             light.update(false, true);
+
+            sampleSensor.addTelemetry(telemetry);
+            telemetry.update();
         }
     }
 }
