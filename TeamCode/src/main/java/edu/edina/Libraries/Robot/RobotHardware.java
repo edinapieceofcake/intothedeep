@@ -791,6 +791,9 @@ public class RobotHardware implements DrivingRobotHardware {
     // Lowers the arm from the basket.
     public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean raiseArm, boolean extendSlide) {
 
+        // Get an arm increment.
+        int armIncrement = isAuto ? MoveArm.MEDIUM_INCREMENT : MoveArm.FAST_INCREMENT;
+
         // Construct an action.
         Action action = new SequentialAction(
                 new InstantAction(() -> setWristSubmersiblePosition()),
@@ -807,22 +810,22 @@ public class RobotHardware implements DrivingRobotHardware {
                                         extendSlide ?
                                                 new InstantAction(() -> setAutoExtension()) :
                                                 new SequentialAction(),
-                                        new MoveArm(this, raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.WALL_POSITION, MoveArm.FAST_INCREMENT)
+                                        new MoveArm(this, raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.WALL_POSITION, armIncrement)
                                 ) :
                                 raiseArm ?
                                         new SequentialAction(
                                                 lowerCount % 3 == 0 ?
                                                         new SequentialAction(
                                                                 new InstantAction(() -> setSubmersibleButtonExtension()),
-                                                                new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, MoveArm.FAST_INCREMENT),
+                                                                new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, armIncrement),
                                                                 new WaitForTime(300)
                                                         ) :
                                                         new SequentialAction(),
                                                 new InstantAction(() -> setSubmersibleExtension()),
-                                                new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT)
+                                                new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, armIncrement)
                                         ) :
                                         new SequentialAction(
-                                                new MoveArm(this, Arm.WALL_POSITION, MoveArm.FAST_INCREMENT),
+                                                new MoveArm(this, Arm.WALL_POSITION, armIncrement),
                                                 new InstantAction(() -> setSubmersibleExtension())
                                         )
                 )
