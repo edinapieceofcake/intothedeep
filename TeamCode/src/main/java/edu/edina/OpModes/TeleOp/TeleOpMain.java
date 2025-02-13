@@ -698,6 +698,7 @@ public class TeleOpMain extends LinearOpMode {
             if(robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Toggle ascent.
+                robotHardware.turnOnWave();
                 robotHardware.setMinimumExtension();
                 robotHardware.setArmSubmersibleEnterPosition();
                 robotHardware.incrementArmPosition();
@@ -755,6 +756,7 @@ public class TeleOpMain extends LinearOpMode {
             currentGamepad2.copy(gamepad2);
 
             if (a.getAbort() || (currentGamepad1.x && !previousGamepad1.x)) {
+                robotHardware.turnOffWave();
                 a.turnOnServos();
                 return;
             } else {
