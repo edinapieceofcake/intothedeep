@@ -796,23 +796,51 @@ public class RobotHardware implements DrivingRobotHardware {
 
         // Construct an action.
         Action action = new SequentialAction(
+
+                // Raise the wrist so it does not catch on the basket.
                 new InstantAction(() -> setWristSubmersiblePosition()),
+
+                // Wait for a bit.
                 new WaitForTime(500),
+
+                // Lower the arm.
                 new SequentialAction(
+
+                        // Lower the lift.
                         new InstantAction(() -> setLiftGroundPosition()),
+
+                        // Reset the swivel.
                         horizontalSwivel ?
                                 new InstantAction(() -> swivelSetHorizontal()) :
                                 new InstantAction(() -> swivelSetVertical()),
+
+                        // Retract the extension.
                         new InstantAction(() -> setMinimumExtension()),
+
+                        // Wait for a bit.
                         new WaitForTime(500),
+
+                        // Switch based on the auto value.
                         isAuto ?
+
+                                // If we are in auto...
+
+                                // Update the slide and arm.
                                 new ParallelAction(
                                         extendSlide ?
                                                 new InstantAction(() -> setAutoExtension()) :
                                                 new SequentialAction(),
                                         new MoveArm(this, raiseArm ? Arm.SUBMERSIBLE_ENTER_POSITION : Arm.WALL_POSITION, armIncrement)
                                 ) :
+
+                                // Otherwise (if we are in tele op)...
+
+                                // Switch based on the raise arm value.
                                 raiseArm ?
+
+                                        // If we are raising the arm to the submersible position...
+
+                                        // Update the slide and arm.
                                         new SequentialAction(
                                                 lowerCount % 3 == 0 ?
                                                         new SequentialAction(
@@ -824,11 +852,17 @@ public class RobotHardware implements DrivingRobotHardware {
                                                 new InstantAction(() -> setSubmersibleExtension()),
                                                 new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, armIncrement)
                                         ) :
+
+                                        // Otherwise (if we are lower the arm to the wall position)...
+
+                                        // Update the slide and arm.
                                         new SequentialAction(
                                                 new MoveArm(this, Arm.WALL_POSITION, armIncrement),
                                                 new InstantAction(() -> setSubmersibleExtension())
                                         )
+
                 )
+
         );
 
         // Increment the lower count.
