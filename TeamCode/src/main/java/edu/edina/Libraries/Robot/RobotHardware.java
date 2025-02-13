@@ -783,7 +783,7 @@ public class RobotHardware implements DrivingRobotHardware {
     public Action scoreSample() {
         Action action = new SequentialAction(
                 new InstantAction(() -> openBigClaw()),
-                new WaitForTime(500)
+                new WaitForTime(300)
         );
         return action;
     }
