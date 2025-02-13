@@ -801,7 +801,7 @@ public class RobotHardware implements DrivingRobotHardware {
                 new InstantAction(() -> setWristSubmersiblePosition()),
 
                 // Wait for a bit.
-                new WaitForTime(500),
+                new WaitForTime(300),
 
                 // Lower the arm.
                 new SequentialAction(
