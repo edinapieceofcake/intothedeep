@@ -43,14 +43,14 @@ public class AutoSample extends LinearOpMode {
     public static double FIRST_SPIKE_MARK_X_END = -48;
     public static double FIRST_SPIKE_MARK_Y_END = -37.5;
     public static double FIRST_SPIKE_MARK_X_BEGINNING = -48;
-    public static double FIRST_SPIKE_MARK_Y_BEGINNING = -35;
+    public static double FIRST_SPIKE_MARK_Y_BEGINNING = -34;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
 
     // Second spike mark pose
     public static double SECOND_SPIKE_MARK_X_END = -58;
     public static double SECOND_SPIKE_MARK_Y_END = -39.5;
     public static double SECOND_SPIKE_MARK_X_BEGINNING = -58;
-    public static double SECOND_SPIKE_MARK_Y_BEGINNING = -36;
+    public static double SECOND_SPIKE_MARK_Y_BEGINNING = -35;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
 
     // Third spike mark pose
@@ -320,7 +320,7 @@ public class AutoSample extends LinearOpMode {
                         new SequentialAction(
 
                                 // Lower the arm from the basket.
-                                robotHardware.lowerArmFromBasket(!isWallSample, true, true, !isWallSample),
+                                robotHardware.lowerArmFromBasket(!isWallSample, true, false, !isWallSample),
 
                                 // If this the wall sample, finish extending the slide.
                                 new InstantAction(() -> robotHardware.setAutoExtension()),
@@ -536,7 +536,7 @@ public class AutoSample extends LinearOpMode {
                 new ParallelAction(
 
                         // Lower the arm from the basket.
-                        robotHardware.lowerArmFromBasket(true, true, false, false),
+                        robotHardware.lowerArmFromBasket(true, true, true, false),
 
                         // Park.
                         rungsPark ? driveFromBasketToRungs : driveFromBasketToChamber

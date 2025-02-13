@@ -36,7 +36,7 @@ public class Slide2 {
     public static int SUBMERSIBLE_POSITION = 800;
 
     // Submersible button position
-    public static int SUBMERSIBLE_BUTTON_POSITION = 20;
+    public static int SUBMERSIBLE_BUTTON_POSITION = 5;
 
     // Chamber position
     public static int CHAMBER_POSITION = 100;
