@@ -30,29 +30,28 @@ public class RobotHardware implements DrivingRobotHardware {
     Control Hub Portal
         Control Hub
             Motors
-                0 - GoBILDA 5201 series - left_back_drive (encoder port returns 0 and -1)
-                1 - GoBILDA 5201 series - left_front_drive (has left odometry encoder (A))
-                2 - GoBILDA 5201 series - extension_motor
-                3 - GoBILDA 5201 series - left_lift_motor (has left lift encoder)
+                0 - GoBILDA 5202/3/4 series - extension_motor (encoder port returns 0 and -1)
+                1 - GoBILDA 5202/3/4 series - left_front_drive (has left odometry encoder (A))
+                2 - GoBILDA 5202/3/4 series - left_back_drive
+                3 - GoBILDA 5202/3/4 series - left_lift_motor (has left lift encoder)
             Servos
                 3 - Servo - swivel
                 4 - Servo - wrist
                 5 - Servo - claw_top
             Digital Devices
                 5 - REV Touch Sensor - arm_touch_front
-            I2C Bus 2
-                0 - Neopixel Driver - neopixel_driver
+            I2C Bus 0
+                0 - REV internal IMU (BNO055)
+            I2C Bus 1
+                0 - NeoPixel Driver - neopixel_driver
             I2C Bus 3
-                0 - REV Color/Range Sensor - sensor_color
-            Analog
-                0 - Analog Input - wrist_left_encoder
-                1 - Analog Input - wrist_right_encoder
+                0 - REV Color Sensor V3 - sensor_color
         Expansion Hub 2
             Motors
-                0 - GoBILDA 5201 series - right_lift_motor (has right lift encoder)
-                1 - GoBILDA 5201 series - right_back_drive  (has right odometry encoder (B))
-                2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)  (has front odometry encoder (C))
-                3 - GoBILDA 5201 series - arm_motor (has through bore encoder)
+                0 - GoBILDA 5202/3/4 series - right_lift_motor (has right lift encoder)
+                1 - GoBILDA 5202/3/4 series - right_back_drive  (has right odometry encoder (B))
+                2 - GoBILDA 5202/3/4 series - right_front_drive (encoder port has bent pin)  (has front odometry encoder (C))
+                3 - GoBILDA 5202/3/4 series - arm_motor (has through bore encoder)
             Servos
                 3 - Servo - claw_bottom
                 4 - Servo - hang_left
@@ -60,8 +59,6 @@ public class RobotHardware implements DrivingRobotHardware {
             Digital Devices
                1 - REV Touch Sensor - lift_touch
                3 - REV Touch Sensor - arm_touch_back
-            I2C Bus 0
-                0 - REV Internal IMU (BNO055) - imu
             I2C Bus 1
                 0 - REV 2M Distance Sensor - distance_left
             I2C Bus 2
