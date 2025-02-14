@@ -469,14 +469,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
-    // Sets the submersible button extension.
-    public void setSubmersibleButtonExtension() {
-
-        // Set the submersible button extension.
-        slide.setSubmersibleButton();
-
-    }
-
     // Sets the extension's target position.
     public void setExtensionTargetPosition(int targetPosition) {
 
@@ -854,7 +846,6 @@ public class RobotHardware implements DrivingRobotHardware {
 
                                                 // If we are rezeroing, rezero and then move to the submersible position.
                                                 new SequentialAction(
-                                                        new InstantAction(() -> setSubmersibleButtonExtension()),
                                                         new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, armIncrement),
                                                         new WaitForTime(300),
                                                         new InstantAction(() -> setSubmersibleExtension()),
