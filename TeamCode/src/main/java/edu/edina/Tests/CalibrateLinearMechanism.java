@@ -27,6 +27,7 @@ import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
+@Disabled
 public class CalibrateLinearMechanism extends LinearOpMode {
     private static final String LOG_TAG = "linear cal";
     double powerStep = 0.02;

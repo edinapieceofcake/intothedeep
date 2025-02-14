@@ -1,5 +1,6 @@
 package edu.edina.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -8,6 +9,7 @@ import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.SampleSensor;
 
 @TeleOp
+@Disabled
 public class LightRunningTest extends LinearOpMode {
     private Gamepad currentGamepad1 = new Gamepad();
 
