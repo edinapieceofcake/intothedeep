@@ -575,6 +575,10 @@ public class RobotHardware implements DrivingRobotHardware {
 
     }
 
+    public Light getLight() {
+        return light;
+    }
+
     // Checks if the arm is busy.
     public boolean isArmBusy() {
 

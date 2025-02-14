@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import edu.edina.Libraries.Actions.Ascent;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
+import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.RobotMode;
@@ -63,6 +64,8 @@ public class TeleOpMain extends LinearOpMode {
     // Trigger threshold
     public static double TRIGGER_THRESHOLD = 0.5;
 
+    private Light light;
+
     // Ascending value
     private boolean ascending;
 
@@ -92,6 +95,8 @@ public class TeleOpMain extends LinearOpMode {
         robotHardware = new RobotHardware(this);
 
         robotHardware.initializeLights();
+
+        light = robotHardware.getLight();
 
         // Prompt the user to press start.
         robotHardware.log("Waiting for start...");
@@ -754,6 +759,8 @@ public class TeleOpMain extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             previousGamepad2.copy(currentGamepad2);
             currentGamepad2.copy(gamepad2);
+
+            light.update(true, false);
 
             if (a.getAbort() || (currentGamepad1.x && !previousGamepad1.x)) {
                 robotHardware.turnOffWave();
