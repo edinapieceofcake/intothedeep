@@ -39,7 +39,7 @@ public class AutoSpecimen extends LinearOpMode {
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = 46.5;
-    public static double FIRST_SPIKE_MARK_Y = -39;
+    public static double FIRST_SPIKE_MARK_Y = -40;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
@@ -103,9 +103,9 @@ public class AutoSpecimen extends LinearOpMode {
     public static double THIRD_CHAMBER_HEADING = APPROACH_THIRD_CHAMBER_HEADING;
 
     // Velocities
-    public static double FAST_VELOCITY = 38;
-    public static double MEDIUM_VELOCITY = 26;
-    public static double SLOW_VELOCITY = 20;
+    public static double FAST_VELOCITY = 39;
+    public static double MEDIUM_VELOCITY = 27;
+    public static double SLOW_VELOCITY = 21;
 
     // Robot hardware
     private RobotHardware robotHardware;
