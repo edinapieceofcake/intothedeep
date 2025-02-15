@@ -62,7 +62,7 @@ public class AutoSample extends LinearOpMode {
 
     // Human pose
     public static double HUMAN_X = 36.5;
-    public static double HUMAN_Y = -54.5;
+    public static double HUMAN_Y = -55;
     public static double FIRST_HUMAN_HEADING = Math.toRadians(0);
     public static double SECOND_HUMAN_HEADING = Math.toRadians(180);
 

@@ -647,6 +647,13 @@ public class TeleOpMain extends LinearOpMode {
                 robotHardware.incrementArmPosition();
 
             }
+            else if (robotMode == RobotMode.BASKET) {
+                if (robotHardware.getCorrectedArmPosition() > 1600) {
+                    robotHardware.decrementArmPosition();
+                }else {
+                    robotHardware.beep();
+                }
+            }
 
             // Otherwise (if the robot is in another mode)...
             else {
