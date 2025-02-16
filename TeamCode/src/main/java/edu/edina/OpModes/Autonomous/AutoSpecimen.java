@@ -39,13 +39,13 @@ public class AutoSpecimen extends LinearOpMode {
 
     // First spike mark pose
     public static double FIRST_SPIKE_MARK_X = 46.5;
-    public static double FIRST_SPIKE_MARK_Y = -40;
+    public static double FIRST_SPIKE_MARK_Y = -41;
     public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
     public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
 
     // Second spike mark pose
     public static double SECOND_SPIKE_MARK_X = 56.5;
-    public static double SECOND_SPIKE_MARK_Y = FIRST_SPIKE_MARK_Y;
+    public static double SECOND_SPIKE_MARK_Y = -40;
     public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
     public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
 
