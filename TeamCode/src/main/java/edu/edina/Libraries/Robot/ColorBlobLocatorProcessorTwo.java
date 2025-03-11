@@ -7,8 +7,7 @@ import androidx.annotation.ColorInt;
 import com.qualcomm.robotcore.util.SortOrder;
 
 import org.firstinspires.ftc.vision.VisionProcessor;
-import org.firstinspires.ftc.vision.opencv.ColorRange;
-import org.firstinspires.ftc.vision.opencv.ImageRegion;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.RotatedRect;
@@ -62,9 +61,9 @@ public abstract class ColorBlobLocatorProcessorTwo implements VisionProcessor
      */
     public static class Builder
     {
-        private ColorRange colorRange;
+        private ColorRangeTwo colorRange;
         private ColorBlobLocatorProcessorTwo.ContourMode contourMode;
-        private ImageRegion imageRegion = ImageRegion.entireFrame();
+        private ImageRegionTwo imageRegion = ImageRegionTwo.entireFrame();
         private int erodeSize = -1;
         private int dilateSize = -1;
         private boolean drawContours = false;
@@ -124,7 +123,7 @@ public abstract class ColorBlobLocatorProcessorTwo implements VisionProcessor
          * @param colorRange the color range used to find blobs
          * @return Builder object, to allow for method chaining
          */
-        public ColorBlobLocatorProcessorTwo.Builder setTargetColorRange(ColorRange colorRange)
+        public ColorBlobLocatorProcessorTwo.Builder setTargetColorRange(ColorRangeTwo colorRange)
         {
             this.colorRange = colorRange;
             return this;
@@ -148,7 +147,7 @@ public abstract class ColorBlobLocatorProcessorTwo implements VisionProcessor
          * @param roi region of interest
          * @return Builder object, to allow for method chaining
          */
-        public ColorBlobLocatorProcessorTwo.Builder setRoi(ImageRegion roi)
+        public ColorBlobLocatorProcessorTwo.Builder setRoi(ImageRegionTwo roi)
         {
             this.imageRegion = roi;
             return this;
