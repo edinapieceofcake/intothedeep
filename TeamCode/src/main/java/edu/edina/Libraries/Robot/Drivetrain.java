@@ -42,6 +42,8 @@ public class Drivetrain {
 
     private boolean reversed;
 
+    private DcMotorEx[] motors;
+
     // Initializes this.
     public Drivetrain(LinearOpMode opMode) {
 
@@ -64,10 +66,12 @@ public class Drivetrain {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
 
         // Set the motor zero power behavior.
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        motors = new DcMotorEx[] {leftBack, leftFront, rightBack, rightFront};
     }
 
     // Updates this.
@@ -79,6 +83,16 @@ public class Drivetrain {
         Gamepad currentGamepad;
 
         boolean isDriver1InControl = Math.abs(gamepad1.left_stick_x) + Math.abs(gamepad1.left_stick_y) + Math.abs(gamepad1.right_stick_x) > 0.1;
+
+        if (gamepad1.left_trigger > 0.6) {
+            for (DcMotorEx motor : motors) {
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+        } else {
+            for (DcMotorEx motor : motors) {
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+        }
 
         if (isDriver1InControl) {
             currentGamepad = gamepad1;
