@@ -8,15 +8,15 @@ public class LConstants {
         ThreeWheelConstants.forwardTicksToInches = .001989436789;
         ThreeWheelConstants.strafeTicksToInches = .001989436789;
         ThreeWheelConstants.turnTicksToInches = .001989436789;
-        ThreeWheelConstants.leftY = 1;
-        ThreeWheelConstants.rightY = -1;
-        ThreeWheelConstants.strafeX = -2.5;
-        ThreeWheelConstants.leftEncoder_HardwareMapName = "leftFront";
-        ThreeWheelConstants.rightEncoder_HardwareMapName = "rightRear";
-        ThreeWheelConstants.strafeEncoder_HardwareMapName = "rightFront";
+        ThreeWheelConstants.leftY = 6.953125;
+        ThreeWheelConstants.rightY = -6.953125;
+        ThreeWheelConstants.strafeX = -6.46875;
+        ThreeWheelConstants.leftEncoder_HardwareMapName = "left_front_drive";
+        ThreeWheelConstants.rightEncoder_HardwareMapName = "right_back_drive";
+        ThreeWheelConstants.strafeEncoder_HardwareMapName = "right_front_drive";
         ThreeWheelConstants.leftEncoderDirection = Encoder.REVERSE;
         ThreeWheelConstants.rightEncoderDirection = Encoder.REVERSE;
-        ThreeWheelConstants.strafeEncoderDirection = Encoder.FORWARD;
+        ThreeWheelConstants.strafeEncoderDirection = Encoder.REVERSE;
     }
 }
 
