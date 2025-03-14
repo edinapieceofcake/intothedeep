@@ -1,5 +1,6 @@
 package edu.edina.Tests;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -8,14 +9,20 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
-import edu.edina.Libraries.Robot.RobotHardware;
 
+@Config
 @TeleOp
 public class OdoCompareTest extends LinearOpMode {
+    public static double angularScalar = 0.99173554;
+    public static double linearScalar = 1.04712042;
+
     @Override
     public void runOpMode() throws InterruptedException {
         Drivetrain dt = new Drivetrain(this);
@@ -24,6 +31,12 @@ public class OdoCompareTest extends LinearOpMode {
         if (!otos.calibrateImu()) {
             telemetry.addLine("failed to calibrate OTOS IMU");
         }
+
+        otos.setAngularUnit(AngleUnit.DEGREES);
+        otos.setLinearUnit(DistanceUnit.INCH);
+        otos.setAngularScalar(angularScalar);
+        otos.setLinearScalar(linearScalar);
+        otos.setOffset(new SparkFunOTOS.Pose2D(6.4, 1.6, 180));
 
         SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
         SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
@@ -42,7 +55,7 @@ public class OdoCompareTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             SparkFunOTOS.Pose2D opticalPose = otos.getPosition();
-            opticalPose = new SparkFunOTOS.Pose2D(-opticalPose.x, -opticalPose.y, opticalPose.h);
+            opticalPose = new SparkFunOTOS.Pose2D(opticalPose.x, opticalPose.y, opticalPose.h);
 
             Twist2dDual<Time> twist = localizer.update();
             deadwheelPose = deadwheelPose.plus(twist.value());
