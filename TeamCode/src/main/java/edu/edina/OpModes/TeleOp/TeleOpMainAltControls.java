@@ -22,7 +22,7 @@ import edu.edina.Libraries.Robot.WaitForTime;
 // Main tele op mode
 @Config
 @TeleOp
-public class TeleOpMain extends LinearOpMode {
+public class TeleOpMainAltControls extends LinearOpMode {
 
     /*
 
@@ -286,7 +286,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed x...
-        if (currentGamepad1.x && !previousGamepad1.x) {
+        if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
 
             // If the robot is in wall mode...
             if (robotMode == RobotMode.WALL) {
@@ -314,7 +314,7 @@ public class TeleOpMain extends LinearOpMode {
         //////////////////////////////////////////////////////////////////////
 
         // If the user pressed a...
-        if (currentGamepad1.a && !previousGamepad1.a) {
+        if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
 
             // If the robot is in basket mode...
             if (robotMode == RobotMode.BASKET) {
