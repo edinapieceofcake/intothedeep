@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import edu.edina.Libraries.Robot.Odometry;
 
+// FIXME: 3/15/25 get rid of me
 public class OpticalOdometry implements Odometry {
     public final SparkFunOTOS myOtos;
     private SparkFunOTOS.Pose2D pos, vel, acc;

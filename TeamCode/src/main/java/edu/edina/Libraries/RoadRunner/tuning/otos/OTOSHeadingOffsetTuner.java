@@ -11,7 +11,6 @@ import edu.edina.Libraries.Robot.Odometry;
 
 @TeleOp
 @Disabled
-//@Disabled
 public class OTOSHeadingOffsetTuner extends LinearOpMode {
 
     @Override
