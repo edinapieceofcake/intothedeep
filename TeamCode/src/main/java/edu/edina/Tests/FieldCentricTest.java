@@ -1,5 +1,6 @@
 package edu.edina.Tests;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
@@ -11,10 +12,12 @@ import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.OpticalOdometry;
 
+@Config
 @TeleOp
 public class FieldCentricTest extends LinearOpMode {
     private Drivetrain dt;
     public static double VEC_TRACK_ANGLE = 30;
+    public static double MAX_PURSUIT_INCHES = 10;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -36,20 +39,23 @@ public class FieldCentricTest extends LinearOpMode {
             Vector2d c = new Vector2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x);
 
             if (angleBetweenDeg(c, vel) < VEC_TRACK_ANGLE) {
+                telemetry.addLine("vector tracking");
                 Vector2d p1 = currPose.position;
                 Vector2d q0 = refPose.position;
                 Vector2d q1 = project(p1.minus(q0), c).plus(q0);
 
                 refPose = new Pose2d(q1, refPose.heading);
             } else {
+                telemetry.addLine("NOT vector tracking");
                 refPose = currPose;
             }
 
-            Vector2d pursuitPoint = refPose.position.plus(c);
+            Vector2d pursuitPoint = refPose.position.plus(c.times(MAX_PURSUIT_INCHES));
 
             Vector2d relPursuitPoint = FieldToRobot.toRobotRel(currPose, pursuitPoint);
+            Vector2d drivePower = relPursuitPoint.times(c.norm());
 
-            dt.update(relPursuitPoint.x, -relPursuitPoint.y, gamepad1.right_stick_x);
+            dt.update(drivePower.x, -drivePower.y, gamepad1.right_stick_x);
 
             telemetry.addData("c", "(%.1f, %.1f)", c.x, c.y);
             telemetry.addData("pose", "(%.1f, %.1f) %f", currPose.position.x, currPose.position.y,
@@ -62,7 +68,7 @@ public class FieldCentricTest extends LinearOpMode {
         }
     }
 
-    public Vector2d project(Vector2d v, Vector2d onto) {
+    private Vector2d project(Vector2d v, Vector2d onto) {
         double o2 = onto.dot(onto);
         if (o2 == 0)
             return v;
@@ -70,11 +76,13 @@ public class FieldCentricTest extends LinearOpMode {
             return onto.times(v.dot(onto) / o2);
     }
 
-    public Vector2d normalize(Vector2d v) {
-        return v.div(v.norm());
+    private Vector2d normalize(Vector2d v) {
+        double norm = v.norm();
+        if (norm == 0) return v;
+        else return v.div(norm);
     }
 
-    public double angleBetweenDeg(Vector2d v0, Vector2d v1) {
+    private double angleBetweenDeg(Vector2d v0, Vector2d v1) {
         double rad = Math.acos(normalize(v0).dot(normalize(v1)));
         return Math.toDegrees(rad);
     }
