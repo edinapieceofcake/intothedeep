@@ -15,6 +15,7 @@ import java.util.List;
 
 import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
 import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
+import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
 import edu.edina.Libraries.LinearMotion.TestMechanism;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
@@ -24,10 +25,10 @@ import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.Robot.MecanumLinearMechanism;
 import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
-@Disabled
 public class CalibrateLinearMechanism extends LinearOpMode {
     private static final String LOG_TAG = "linear cal";
     double powerStep = 0.02;
@@ -39,7 +40,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
-        linearMech = new VerticalExtensionMechanism(new RobotHardware(this));
+        linearMech = new MecanumLinearMechanism(hardwareMap);
 
         waitForStart();
 
@@ -315,13 +316,14 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             double dist = 0;
 
             while (opModeIsActive()) {
-                if (!gamepad1.dpad_up) throw new RuntimeException("test aborted");
+                if (!gamepad1.dpad_up)
+                    throw new RuntimeException("test aborted");
 
                 t = timer.seconds();
 
                 DualNum<Time> u = linearMech.getPositionAndVelocity(false);
                 dist = u.get(0) - startPos;
-                if (dist >= settings.accelCalibrationDist * 1.1) {
+                if (dist >= settings.accelCalibrationDist) {
                     break;
                 }
 
@@ -339,7 +341,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
             telemetry.addData("ka", "%.4e", ka);
             telemetry.addData("test complete", "time=%.2f (nominal=%.2f)", t, nominalTime);
-            telemetry.addData("target dist", settings.accelCalibrationDist);
+            telemetry.addData("dist", "target %.2f, actual %.2f", settings.accelCalibrationDist, dist);
             telemetry.addData("intended accel", intendedAccel);
             telemetry.addData("actual accel", actualA);
             telemetry.addData("ratio (goal is 1)", "%.4f", actualA / intendedAccel);
