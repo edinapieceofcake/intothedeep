@@ -311,7 +311,7 @@ public class RobotHardware implements DrivingRobotHardware {
         if (allowManualDriving) {
 
             // Update the drivetrain.
-            drivetrain.update();
+            drivetrain.update2();
 
         }
 
