@@ -329,9 +329,8 @@ public class TeleOpMain extends LinearOpMode {
 
             // Otherwise, if the robot is in wall mode...
             else if (robotMode == RobotMode.WALL) {
-
                 // Toggle the big claw.
-                robotHardware.toggleBigClaw();
+                robotHardware.toggleSmallClaw();
 
             }
 
@@ -522,11 +521,11 @@ public class TeleOpMain extends LinearOpMode {
 
                     // Grab a sample and retract.
                     Action action = new SequentialAction(
-                            new InstantAction(() -> robotHardware.openBigClaw()),
+                            new InstantAction(() -> robotHardware.openSmallClaw()),
                             new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, MoveArm.SLOW_INCREMENT),
                             new WaitForTime(100),
-                            new InstantAction(() -> robotHardware.closeBigClaw()),
-                            new WaitForTime(100),
+                            new InstantAction(() -> robotHardware.closeSmallClaw()),
+                            new WaitForTime(50),
                             new InstantAction(() -> robotHardware.setWristWallPosition(true)),
                             new InstantAction(() -> robotHardware.setMinimumExtension()),
                             new MoveArm(robotHardware, Arm.SUBMERSIBLE_HOVER_POSITION, MoveArm.FAST_INCREMENT)
@@ -540,7 +539,7 @@ public class TeleOpMain extends LinearOpMode {
 
                     // Reach back into the submersible.
                     Action action = new SequentialAction(
-                            new InstantAction(() -> robotHardware.openBigClaw()),
+                            new InstantAction(() -> robotHardware.openSmallClaw()),
                             new InstantAction(() -> robotHardware.setExtensionTargetPosition(previousExtensionTargetPosition)),
                             new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
                     );
@@ -612,7 +611,7 @@ public class TeleOpMain extends LinearOpMode {
                 Action action = new SequentialAction(
                         new InstantAction(() -> robotHardware.setLiftGroundPosition()),
                         new InstantAction(() -> robotHardware.setWristWallPosition(true)),
-                        new InstantAction(() -> robotHardware.openBigClaw()),
+                        new InstantAction(() -> robotHardware.openSmallClaw()),
                         new MoveArm(robotHardware, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT),
                         new InstantAction(() -> robotHardware.setSubmersibleExtension()),
                         new InstantAction(() -> robotHardware.setWristSubmersiblePosition())

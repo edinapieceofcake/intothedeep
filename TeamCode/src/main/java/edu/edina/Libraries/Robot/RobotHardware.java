@@ -604,10 +604,10 @@ public class RobotHardware implements DrivingRobotHardware {
         Action action = new ParallelAction(
                 new MoveArm(this, Arm.CHAMBER_POSITION, MoveArm.MEDIUM_INCREMENT),
                 new SequentialAction(
-                        new WaitForTime(250),
-                        new InstantAction(() -> closeSmallClaw()),
-                        new WaitForTime(500),
-                        new InstantAction(() -> openBigClaw())
+//                        new WaitForTime(250),
+                        new InstantAction(() -> closeSmallClaw())
+//                        new WaitForTime(500),
+//                        new InstantAction(() -> openBigClaw())
                 ),
                 new SequentialAction(
                         new WaitForTime(500),
@@ -773,7 +773,7 @@ public class RobotHardware implements DrivingRobotHardware {
     // Scores a sample in the basket.
     public Action scoreSample() {
         Action action = new SequentialAction(
-                new InstantAction(() -> openBigClaw()),
+                new InstantAction(() -> openSmallClaw()),
                 new WaitForTime(200)
         );
         return action;

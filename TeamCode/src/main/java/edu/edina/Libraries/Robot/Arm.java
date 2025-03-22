@@ -50,7 +50,7 @@ public class Arm {
     public static int SUBMERSIBLE_HOVER_POSITION = SUBMERSIBLE_ENTER_POSITION;
 
     // Submersible grab position
-    public static int SUBMERSIBLE_GRAB_POSITION = 4500;
+    public static int SUBMERSIBLE_GRAB_POSITION = 4400;
 
     // Submersible button position
     public static int SUBMERSIBLE_BUTTON_POSITION = 4700;

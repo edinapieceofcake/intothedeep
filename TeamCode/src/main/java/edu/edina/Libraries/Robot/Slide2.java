@@ -27,7 +27,7 @@ public class Slide2 {
     public static int MINIMUM_POSITION = -200;
 
     // Basket position
-    public static int BASKET_POSITION = 1800;
+    public static int BASKET_POSITION = 1850;
 
     // Maximum submersible position
     public static int MAXIMUM_SUBMERSIBLE_POSITION = 1800;
