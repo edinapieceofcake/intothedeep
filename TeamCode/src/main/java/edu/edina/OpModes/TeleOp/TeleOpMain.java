@@ -776,7 +776,7 @@ public class TeleOpMain extends LinearOpMode {
                 robotHardware.runActions();
                 robotHardware.getArm().update();
                 robotHardware.getSlide().update();
-                robotHardware.drivetrain.update();
+                robotHardware.drivetrain.update2();
             }
         }
     }

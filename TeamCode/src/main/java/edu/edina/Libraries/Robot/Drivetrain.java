@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -19,15 +20,18 @@ import edu.edina.Libraries.Angle;
 // This represents a drivetrain.
 @Config
 public class Drivetrain {
+    public static double ALIGNMENT_NORM_MIN = 10;
 
     // Normal multiplier
     public static double NORMAL_MULTIPLIER = 1;
     public static double YAW_PRIORITY = 0.5;
 
+    private final String tag = "Drivetrain";
+
     public static double VEC_TRACK_ANGLE = 30;
     public static double MAX_PURSUIT_INCHES = 10;
     public static double YAW_DEADZONE = 0.1;
-    public static double HEADING_P_COEF = 0.5;
+    public static double HEADING_P_COEF = 2;
 
     // Turtle multiplier
     public static double SNAIL_MULTIPLIER = 0.3;
@@ -86,7 +90,7 @@ public class Drivetrain {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        motors = new DcMotorEx[] {leftBack, leftFront, rightBack, rightFront};
+        motors = new DcMotorEx[]{leftBack, leftFront, rightBack, rightFront};
 
         odo = new OpticalOdometry(hardwareMap);
         currPose = odo.getCurrentPose();
@@ -113,6 +117,8 @@ public class Drivetrain {
 
         Vector2d vel = poseDual.position.drop(1).value();
 
+        RobotLog.ii(tag, "vel = (%.1f, %.1f)", vel.x, vel.y);
+
         Vector2d c = new Vector2d(-opMode.gamepad1.left_stick_y, -opMode.gamepad1.left_stick_x);
 
         Vector2d newRefPos;
@@ -126,25 +132,49 @@ public class Drivetrain {
 
         double yawPower;
         Rotation2d newRefHead;
+
+        //if turning robot change heading and update target
+        //if not pushing stick then maintain target heading
         if (Math.abs(opMode.gamepad1.right_stick_x) > YAW_DEADZONE) {
             yawPower = opMode.gamepad1.right_stick_x;
             newRefHead = currPose.heading;
         } else {
             double radDiff = Angle.radianDiff(currPose.heading.toDouble(), refPose.heading.toDouble());
             yawPower = HEADING_P_COEF * radDiff;
-            newRefHead = refPose.heading;
+            double norm = vel.norm();
+            if (opMode.gamepad1.b && norm > ALIGNMENT_NORM_MIN) {
+                Vector2d unitVel = vel.div(norm);
+                newRefHead = new Rotation2d(unitVel.x, unitVel.y);
+
+                if (Math.abs(Angle.radianDiff(newRefHead, currPose.heading)) > (Math.PI / 2)) {
+                    newRefHead = newRefHead.plus(Math.PI);
+                }
+            } else {
+                newRefHead = refPose.heading;
+            }
         }
+
+        RobotLog.ii(tag, "ref heading = %.1f act heading = %.1f",
+                Math.toDegrees(newRefHead.toDouble()),
+                Math.toDegrees(currPose.heading.toDouble())
+        );
 
         refPose = new Pose2d(newRefPos, newRefHead);
 
         Vector2d pursuitPoint = refPose.position.plus(c.times(MAX_PURSUIT_INCHES));
 
         Vector2d relPursuitPoint = FieldToRobot.toRobotRel(currPose, pursuitPoint);
+        double relNorm = relPursuitPoint.norm();
+        if (relNorm > 0)
+            relPursuitPoint = relPursuitPoint.div(relNorm);
         Vector2d drivePower = relPursuitPoint.times(c.norm());
 
         double axial = drivePower.x;
         double lateral = -drivePower.y;
-        double yaw = yawPower;
+        double yaw = yawPower < -1 ? -1 : (yawPower > 1 ? 1 : yawPower);
+
+        RobotLog.ii(tag, "powers axial = %.2f, lateral = %.2f, yaw = %.2f, c.x = %.2f, c.y = %.2f",
+                axial, lateral, yaw, c.x, c.y);
 
         double r = Math.max(Math.abs(axial + lateral), Math.abs(axial - lateral));
         double a = Math.abs(yaw);
@@ -178,8 +208,7 @@ public class Drivetrain {
 
         if (isDriver1InControl) {
             currentGamepad = gamepad1;
-        }
-        else {
+        } else {
             currentGamepad = gamepad2;
         }
 
@@ -220,10 +249,9 @@ public class Drivetrain {
 
         double multiplier;
 
-        if(isDriver1InControl){
+        if (isDriver1InControl) {
             multiplier = getTurtleMode() ? TURTLE_MULTIPLIER : NORMAL_MULTIPLIER;
-        }
-        else {
+        } else {
             multiplier = SNAIL_MULTIPLIER;
         }
         leftFrontPower *= multiplier;
@@ -242,7 +270,7 @@ public class Drivetrain {
         update(axial, lateral, yaw, true);
     }
 
-        // Sets the turtle mode value.
+    // Sets the turtle mode value.
     public void setTurtleMode(boolean turtleMode) {
 
         // Set the turtle mode value.
