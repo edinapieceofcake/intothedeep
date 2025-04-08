@@ -1,18 +1,17 @@
 package edu.edina.Libraries.Robot;
 
-import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.ftccommon.SoundPlayer;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -21,76 +20,95 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.RoadRunner.Localizer;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
-import edu.edina.OpModes.Autonomous.AutoSample;
-import edu.edina.OpModes.Autonomous.AutoSpecimen;
 
 @Config
-public class RobotHardware {
+public class RobotHardware implements DrivingRobotHardware {
     /*
     Control Hub Portal
         Control Hub
             Motors
-                0 - GoBILDA 5201 series - right_lift_motor (has right lift encoder)
-                1 - GoBILDA 5201 series - front_encoder (is front odometry encoder)
-                2 - GoBILDA 5201 series - left_back_drive (encoder port returns 0 and -1)
-                3 - GoBILDA 5201 series - left_front_drive (has left odometry encoder)
+                0 - GoBILDA 5202/3/4 series - extension_motor (encoder port returns 0 and -1)
+                1 - GoBILDA 5202/3/4 series - left_front_drive (has left odometry encoder (A))
+                2 - GoBILDA 5202/3/4 series - left_back_drive
+                3 - GoBILDA 5202/3/4 series - left_lift_motor (has left lift encoder)
             Servos
-                0 - GoBILDA torque servo - wrist_left
-                1 - GoBILDA torque servo - claw_servo
+                3 - Servo - swivel
+                4 - Servo - wrist
+                5 - Servo - claw_top
             Digital Devices
-                5 - REV Touch Sensor - arm_touch
-                7 - REV Touch Sensor - lift_touch
-            I2C
-                3 - Neopixel Driver - neopixel_driver
-            Analog
-                0 - Axon Micro+ ServoE - wrist_left_encoder
-                1 - Axon Micro+ ServoF - wrist_right_encoder
+                5 - REV Touch Sensor - arm_touch_front
+            I2C Bus 0
+                0 - REV internal IMU (BNO055)
+            I2C Bus 1
+                0 - NeoPixel Driver - neopixel_driver
+            I2C Bus 3
+                0 - REV Color Sensor V3 - sensor_color
         Expansion Hub 2
             Motors
-                0 - GoBILDA 5201 series - left_lift_motor (has left lift encoder)
-                1 - GoBILDA 5201 series - arm_motor (has through bore encoder)
-                2 - GoBILDA 5201 series - right_front_drive (encoder port has bent pin)
-                3 - GoBILDA 5201 series - right_back_drive (has right odometry encoder)
+                0 - GoBILDA 5202/3/4 series - right_lift_motor (has right lift encoder)
+                1 - GoBILDA 5202/3/4 series - right_back_drive  (has right odometry encoder (B))
+                2 - GoBILDA 5202/3/4 series - right_front_drive (encoder port has bent pin)  (has front odometry encoder (C))
+                3 - GoBILDA 5202/3/4 series - arm_motor (has through bore encoder)
             Servos
-                2 - CRServo Axon Mini+ - slide_servo
-            Analog
-                0 - Axon Mini+ Encoder - slide_encoder
+                3 - Servo - claw_bottom
+                4 - Servo - hang_left
+                5 - Servo - hang_right
+            Digital Devices
+               1 - REV Touch Sensor - lift_touch
+               3 - REV Touch Sensor - arm_touch_back
+            I2C Bus 1
+                0 - REV 2M Distance Sensor - distance_left
+            I2C Bus 2
+                0 - REV 2M Distance Sensor - distance_right
     */
 
-    // Inches to back up when scoring a specimen
-    public static int SCORE_SPECIMEN_BACKUP_INCHES = 7;
+    // Squares (see https://unicode-explorer.com/list/geometric-shapes)
+    public static final String BLUE_SQUARE = "\uD83D\uDFE6";
+    public static final String YELLOW_SQUARE = "\uD83D\uDFE8";
 
-    private final LinearOpMode opMode;
-    public final IMU imu;
-    public ThreeDeadWheelLocalizer odometry;
-    public final MecanumDrive drive;
-    public final VoltageSensor voltageSensor;
-    private Drivetrain drivetrain;
-    private final Wrist wrist;
-    private final Arm arm;
-    private final Claw claw;
-    private final Lift lift;
-    private final Slide slide;
-    private final BoundingBoxFailsafe failsafe;
-    //private Light light;
-    //private SampleSensor sampleSensor;
+    private LinearOpMode opMode;
+    private Slide2 slide;
+    private Odometry teleOpOdometry;
+    public Localizer odometry;
+    public MecanumDrive drive;
+    public VoltageSensor voltageSensor;
+    public Drivetrain drivetrain;
+    private Wrist wrist;
+    private DualClaw claw;
+    private Swivel swivel;
+    private Arm arm;
+    private Lift lift;
+    private Light light;
+    private SampleSensor sampleSensor;
     private boolean turtleMode;
+    private static boolean tallWalls = true;
     private int beepSoundId;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dashboard;
     private boolean allowManualDriving = true;
+    public RearDistanceSensor distanceSensors;
+    private DcMotorEx extension;
+    private int lowerCount = 0;
 
     public RobotHardware(LinearOpMode opMode) throws InterruptedException {
+        Pose2d startPose = new Pose2d(0, 0, 0);
+        initialize(opMode, startPose);
+    }
+
+    public RobotHardware(LinearOpMode opMode, Pose2d startPose) throws InterruptedException {
+        initialize(opMode, startPose);
+    }
+
+    private void initialize(LinearOpMode opMode, Pose2d startPose) throws InterruptedException {
 
         // Remember the op mode.
         this.opMode = opMode;
 
         // Get the hardware map.
         HardwareMap hardwareMap = opMode.hardwareMap;
-
-        //sampleSensor = new SampleSensor(hardwareMap);
 
         // Get an FTC dashboard instance.
         dashboard = FtcDashboard.getInstance();
@@ -113,35 +131,49 @@ public class RobotHardware {
         arm = new Arm(this);
 
         // Initialize the claw.
-        claw = new Claw(this);
+        claw = new DualClaw(this);
 
         // Initialize the lift.
         lift = new Lift(this);
 
         // Initialize the slide.
-        slide = new Slide(this);
+        slide = new Slide2(this);
 
         // Initialize the wrist.
         wrist = new Wrist(hardwareMap, opMode.telemetry);
 
+        // Initialize the swivel.
+        swivel = new Swivel(hardwareMap, opMode.telemetry);
+
         // Initialize the drivetrain.
         drivetrain = new Drivetrain(opMode);
 
-        failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
+//        failsafe = new BoundingBoxFailsafe(wrist, arm, lift, slide);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, startPose);
 
         odometry = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
 
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
+        distanceSensors = new RearDistanceSensor(hardwareMap);
 
-        //light = new Light(hardwareMap, sampleSensor);
+        teleOpOdometry = new LocalizerOdometry(odometry);
+
+        extension = hardwareMap.get(DcMotorEx.class, "extension_motor");
+    }
+
+    public void initializeLights() {
+        sampleSensor = new SampleSensor(opMode.hardwareMap);
+        light = new Light(opMode.hardwareMap, sampleSensor);
+    }
+
+    public void turnOnWave() {
+        light.update(true, false);
+    }
+
+    public void turnOffWave() {
+        light.update(false, true);
     }
 
     // Waits for the user to lower the lift.
@@ -180,52 +212,59 @@ public class RobotHardware {
 
     }
 
-    // Toggles the wrist.
-    public void toggleWrist() {
+    // Sets the wrist to wall position.
+    public void setWristWallPosition(boolean tall) {
 
-        // Toggle the wrist.
-        wrist.toggle();
-
-    }
-
-    // Raises the wrist.
-    public void raiseWrist() {
-
-        // Raise the wrist.
-        wrist.raise();
+        // Sets the wrist to wall position.
+        wrist.setWallPosition(tall);
 
     }
 
-    // Initializes the wrist.
-    public void initializeWrist() {
+    // Sets the wrist to basket position.
+    public void setWristBasketPosition() {
 
-        // Raise the wrist.
-        wrist.initialize();
-
-    }
-
-    // Lowers the wrist.
-    public void lowerWrist() {
-
-        // Lowers the wrist.
-        wrist.lower();
+        // Sets the wrist to basket position.
+        wrist.setBasketPosition();
 
     }
 
-    public void updateHardwareInteractions() {
+    // Sets the wrist to submersible position.
+    public void setWristSubmersiblePosition() {
 
-        // RM: I commented out the following code because it was causing unexpected behavior during
-        // tele op I do not think toggling the wrist is necessary to keep the robot within the
-        // expansion box.
+        // Sets the wrist to submersible position.
+        wrist.setSubmersiblePosition();
 
-        /*
-        if (arm.armWillCrossWristLimit())
-            raiseWrist();
-        else if (arm.targetingScoringPos() || arm.isInHighBar() || arm.isInLowBar())
-            lowerWrist();
-        */
+    }
 
-        drivetrain.setAutoTurtleMode(lift.isRaised());
+    // Sets the swivel to horizontal.
+    public void swivelSetHorizontal() {
+
+        // Sets the swivel to horizontal.
+        swivel.setHorizontal();
+
+    }
+
+    // Sets the swivel to vertical.
+    public void swivelSetVertical() {
+
+        // Sets the swivel to horizontal.
+        swivel.setVertical();
+
+    }
+
+    // Sets the swivel to clip.
+    public void swivelSetClip() {
+
+        // Construct an action to set swivel to clip position after a delay.
+        swivel.setClip();
+
+    }
+
+    // Toggles the swivel.
+    public void toggleSwivel() {
+
+        // Toggles the swivel.
+        swivel.toggle();
 
     }
 
@@ -236,6 +275,29 @@ public class RobotHardware {
     // Updates this.
     public void update() {
 
+        // Update telemetry.
+        //////////////////////////////////////////////////////////////////////
+
+        // Update the pose estimate.
+        drive.updatePoseEstimate();
+
+        // Get the robot's pose.
+        Pose2d pose = drive.pose;
+        Vector2d position = pose.position;
+        double x = Math.round(position.x);
+        double y = Math.round(position.y);
+        double headingRadians = drive.pose.heading.toDouble();
+        double headingDegrees = Math.round(Math.toDegrees(headingRadians));
+
+        // Get the telemetry.
+        Telemetry telemetry = opMode.telemetry;
+
+        // Update the telemetry.
+        telemetry.addData("Robot", "====================");
+        telemetry.addData("- X", y);
+        telemetry.addData("- Y", x);
+        telemetry.addData("- Heading", headingDegrees);
+
         // Update hardware.
         //////////////////////////////////////////////////////////////////////
 
@@ -245,14 +307,11 @@ public class RobotHardware {
         // Update the arm.
         arm.update();
 
-        // Update the claw.
-        claw.update();
-
         // If manual driving is allowed...
-        if(allowManualDriving) {
+        if (allowManualDriving) {
 
             // Update the drivetrain.
-            drivetrain.update();
+            drivetrain.update2();
 
         }
 
@@ -265,11 +324,17 @@ public class RobotHardware {
         // Update the wrist.
         wrist.update();
 
-        // Update the light.
-        //light.update();
+        // Update the swivel.
+        swivel.update();
 
-        // Update actions.
-        //////////////////////////////////////////////////////////////////////
+        // Update the light.
+        if (light != null)
+            light.update(false, true);
+
+        runActions();
+    }
+
+    public void runActions() {
 
         // Road Runner Docs - Teleop Actions
         // https://rr.brott.dev/docs/v1-0/guides/teleop-actions/
@@ -320,44 +385,37 @@ public class RobotHardware {
 
     }
 
-    // Toggles the updateHardwareInteractions.
-    public void toggleClaw() {
+    // Opens the claws.
+    public void openClaws() {
 
-        // Toggle the claw.
-        claw.toggle();
-
-    }
-
-    // Opens the claw.
-    public void openClaw() {
-
-        // Open the claw.
-        claw.open();
+        // Open the claws.
+        openBigClaw();
+        openSmallClaw();
 
     }
 
-    // Closes the claw.
-    public void closeClaw() {
-
-        // Close the claw.
-        claw.close();
-
+    public void openBigClaw() {
+        claw.openBig();
     }
 
-    // Raises the lift.
-    public void raiseLift() {
-
-        // Raise the lift.
-        lift.raise();
-
+    public void openSmallClaw() {
+        claw.openSmall();
     }
 
-    // Lowers the lift.
-    public void lowerLift() {
+    public void closeSmallClaw() {
+        claw.closeSmall();
+    }
 
-        // Lower the lift.
-        lift.lower();
+    public void closeBigClaw() {
+        claw.closeBig();
+    }
 
+    public void toggleSmallClaw() {
+        claw.toggleSmall();
+    }
+
+    public void toggleBigClaw() {
+        claw.toggleBig();
     }
 
     // Gets the op mode.
@@ -368,19 +426,11 @@ public class RobotHardware {
 
     }
 
-    // Sets the slide's position.
-    public void setSlidePosition(double position) {
-
-        // Set the slide's position.
-        slide.setPosition(position);
-
-    }
-
     // Retracts the slide.
     public void retractSlide() {
 
         // Retract the slide.
-        slide.retract();
+        slide.lower();
 
     }
 
@@ -388,7 +438,7 @@ public class RobotHardware {
     public void extendSlide() {
 
         // Extend the slide.
-        slide.extend();
+        slide.raise();
 
     }
 
@@ -396,31 +446,46 @@ public class RobotHardware {
     public void setMinimumExtension() {
 
         // Set the minimum extension.
-        slide.setMinimumExtension();
+        slide.setMinimum();
 
     }
 
-    // Sets the low basket extension.
-    public void setLowBasketExtension() {
+    // Sets the basket extension.
+    public void setBasketExtension() {
 
-        // Set the low basket extension.
-        slide.setLowBasketExtension();
-
-    }
-
-    // Sets the high basket extension.
-    public void setHighBasketExtension() {
-
-        // Set the high basket extension.
-        slide.setHighBasketExtension();
+        // Set the basket extension.
+        slide.setBasket();
 
     }
 
-    // Toggles turtle mode.
-    public void toggleTurtleMode() {
+    // Sets the submersible extension.
+    public void setSubmersibleExtension() {
 
-        // Toggle turtle mode.
-        turtleMode = !turtleMode;
+        // Set the submersible extension.
+        slide.setSubmersible();
+
+    }
+
+    // Sets the extension's target position.
+    public void setExtensionTargetPosition(int targetPosition) {
+
+        // Sets the extension's target position.
+        slide.setTargetPosition(targetPosition);
+
+    }
+
+    // Sets the auto extension.
+    public void setAutoExtension() {
+
+        // Set the auto extension.
+        slide.setAuto();
+
+    }
+
+    public void setChamberExtension() {
+
+        // Set the chamber extension.
+        slide.setChamber();
 
     }
 
@@ -431,108 +496,36 @@ public class RobotHardware {
         this.turtleMode = turtleMode;
 
     }
-//
-//    public boolean wristCanBeExtended() {
-//        return arm.isForward();
-//    }
 
-    // Determines whether the arm is nearly down.
-    public boolean isArmNearlyDown() {
+    // Gets the use tall walls value.
+    public boolean getTallWalls() {
 
-        // Determine whether the arm is nearly down.
-        boolean isNearlyDown = arm.isNearlyDown();
-
-        // Return the result.
-        return isNearlyDown;
+        // Return the tall walls value.
+        return tallWalls;
 
     }
 
-    // Determines whether the arm is near the submersible position.
-    public boolean isArmNearSubmersiblePosition() {
+    // Toggles the tall walls value.
+    public void toggleTallWalls() {
 
-        // Determine whether the arm is near the submersible position.
-        boolean isArmNearSubmersiblePosition = arm.isNearSubmersiblePosition();
-
-        // Return the result.
-        return isArmNearSubmersiblePosition;
+        // Toggle the tall walls value.
+        tallWalls = !tallWalls;
 
     }
 
-    // Moves the arm to the ground position.
-    public void setArmGroundPosition() {
+    // Sets the tall walls value.
+    public void setTallWalls(boolean tallWalls) {
 
-        // Determine whether to move fast.
-        boolean fast = arm.isNearSubmersiblePosition();
-
-        // Construct an action to move the arm to the ground position.
-        Action action = new SequentialAction(
-                new MoveArm(this, Arm.GROUND_POSITION, fast),
-                new WaitForHardware(this, TIMEOUT_MILLISECONDS),
-                new InstantAction(() -> lowerWrist())
-        );
-
-        // Run the action.
-        runningActions.add(action);
+        // Set the tall walls value.
+        this.tallWalls = tallWalls;
 
     }
 
-    // Moves the arm to the low basket position.
-    public void setArmLowBasketPosition() {
+    // Moves the arm to the submersible enter position.
+    public void setArmSubmersibleEnterPosition() {
 
-        // Construct an action to move the arm to the low basket position.
-        Action action = new MoveArm(this, Arm.LOW_BASKET_POSITION, false);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the ascent position.
-    public void setArmAscentPosition() {
-
-        // Moves the arm to the ascent position.
-        arm.setAscentPosition();
-
-    }
-
-    // Moves the arm to the high basket position.
-    public void setArmHighBasketPosition() {
-
-        // Construct an action to move the arm to the high basket position.
-        Action action = new MoveArm(this, Arm.HIGH_BASKET_POSITION, false);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the high chamber position.
-    public void setArmHighChamberPosition() {
-
-        // Construct an action to move the arm to the high chamber position.
-        Action action = new MoveArm(this, Arm.HIGH_CHAMBER_POSITION, true);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the low chamber position.
-    public void setArmLowChamberPosition() {
-
-        // Construct an action to move the arm to the low chamber position.
-        Action action = new MoveArm(this, Arm.LOW_CHAMBER_POSITION, true);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Moves the arm to the submersible position.
-    public void setArmSubmersiblePosition() {
-
-        // Construct an action to move the arm to the submersible position.
-        Action action = new MoveArm(this, Arm.SUBMERSIBLE_POSITION, true);
+        // Construct an action to move the arm to the submersible enter position.
+        Action action = new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, MoveArm.FAST_INCREMENT);
 
         // Run the action.
         runningActions.add(action);
@@ -547,11 +540,19 @@ public class RobotHardware {
 
     }
 
-    // Moves the lift to the high basket position.
-    public void setLiftHighBasketPosition() {
+    // Moves the lift to the basket position.
+    public void setLiftBasketPosition() {
 
-        // Move the lift to the high basket position.
-        lift.setHighBasketPosition();
+        // Move the lift to the basket position.
+        lift.setBasketPosition();
+
+    }
+
+    // Moves the lift to the chamber position.
+    public void setLiftChamberPosition() {
+
+        // Move the lift to the chamber position.
+        lift.setChamberPosition();
 
     }
 
@@ -561,6 +562,10 @@ public class RobotHardware {
         // Checks if the lift is busy.
         return lift.isBusy();
 
+    }
+
+    public Light getLight() {
+        return light;
     }
 
     // Checks if the arm is busy.
@@ -579,60 +584,8 @@ public class RobotHardware {
 
     }
 
-    // Determines whether the arm is in the submersible position.
-    public boolean isArmInSubmersiblePosition() {
-
-        // Return indicating if the arm is in the submersible position.
-        return arm.isInSubmersiblePosition();
-
-    }
-
-    // Determines whether the arm is in the low basket position.
-    public boolean isArmInLowBasketPosition() {
-
-        // Return indicating if the arm is in the low basket position.
-        return arm.isInLowBasketPosition();
-
-    }
-
-    // Determines whether the arm is in the high basket position.
-    public boolean isArmInHighBasketPosition() {
-
-        // Return indicating if the arm is in the high basket position.
-        return arm.isInHighBasketPosition();
-
-    }
-
-    // Determines whether the arm is in the ground position.
-    public boolean isArmInGroundPosition() {
-
-        // Return indicating if the arm is in the ground position.
-        return arm.isInGroundPosition();
-
-    }
-
-    // Determines whether the arm is in the high chamber position.
-    public boolean isArmInHighChamberPosition() {
-
-        // Return indicating if the arm is in the high chamber position.
-        return arm.isInHighChamberPosition();
-
-    }
-
-    // Gets the current slide extension.
-    public double getCurrentSlideExtension() {
-
-        // Return the current slide extension.
-        return slide.getCurrentExtension();
-
-    }
-
-    public void moveWristToHighChamberScore() {
-        wrist.scoreHighChamber();
-    }
-
-    public BoundingBoxFailsafe getFailsafe() {
-        return failsafe;
+    public void setWristChamberPosition() {
+        wrist.setChamberPosition();
     }
 
     // Beeps
@@ -646,73 +599,40 @@ public class RobotHardware {
 
     }
 
-    // Scores a specimen.
-    public void scoreSpecimen() {
-
-        // Get the hardware map.
-        HardwareMap hardwareMap = opMode.hardwareMap;
-
-        // Construct a start pose.
-        Pose2d startPose = new Pose2d(0, 0, 0);
-
-        // Construct an end pose.
-        Pose2d endPose = new Pose2d(SCORE_SPECIMEN_BACKUP_INCHES, 0, 0);
-
-        // Construct a drive interface.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
-
-        // Construct a backup action.
-        Action backup = drive.actionBuilder(startPose)
-                .strafeToLinearHeading(endPose.position, endPose.heading)
-                .build();
-
-        // Construct a score specimen action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> disableManualDriving()),
-                AutoSpecimen.scoreSpecimen(backup,this),
-                new InstantAction(() -> enableManualDriving())
+    // Raises to chamber.
+    public Action raiseToChamber() {
+        Action action = new ParallelAction(
+                new MoveArm(this, Arm.CHAMBER_POSITION, MoveArm.MEDIUM_INCREMENT),
+                new SequentialAction(
+//                        new WaitForTime(250),
+                        new InstantAction(() -> closeSmallClaw())
+//                        new WaitForTime(500),
+//                        new InstantAction(() -> openBigClaw())
+                ),
+                new SequentialAction(
+                        new WaitForTime(500),
+                        new InstantAction(() -> swivelSetClip()),
+                        new InstantAction(() -> setLiftChamberPosition()),
+                        new InstantAction(() -> setWristChamberPosition()),
+                        new InstantAction(() -> setChamberExtension())
+                )
         );
+        return action;
+    }
 
-        // Run the action.
-        runningActions.add(action);
+    // Determines whether the wrist is in the wall position.
+    public boolean isWristInWallPosition() {
+
+        // Return indicating if the wrist is in the wall position.
+        return wrist.isInWallPosition();
 
     }
 
-    // Scores a sample.
-    public void scoreSample() {
+    // Determines whether the wrist is in the submersible position.
+    public boolean isWristInSubmersiblePosition() {
 
-        // Construct a score sample action.
-        Action action = AutoSample.scoreSample(this);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Raises a sample.
-    public void raiseSample() {
-
-        // Construct a raise sample action.
-        Action action = AutoSample.raiseSampleTeleOp(this);
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Determines whether the lift is in the high basket position.
-    public boolean isLiftInHighBasketPosition() {
-
-        // Return indicating if the lift is in the high basket position.
-        return lift.isInHighBasketPosition();
-
-    }
-
-    // Determines whether the lift is in the ground position.
-    public boolean isLiftInGroundPosition() {
-
-        // Return indicating if the lift is in the ground position.
-        return lift.isInGroundPosition();
+        // Return indicating if the wrist is in the submersible position.
+        return wrist.isInSubmersiblePosition();
 
     }
 
@@ -727,11 +647,11 @@ public class RobotHardware {
 
     }
 
-    // Gets the arm's current position.
-    public int getCurrentArmPosition() {
+    // Gets the arm's corrected position.
+    public int getCorrectedArmPosition() {
 
         // Return the arm's current position.
-        return arm.getCurrentPosition();
+        return arm.getCorrectedPosition();
 
     }
 
@@ -743,27 +663,11 @@ public class RobotHardware {
 
     }
 
-    // Determines whether the slide is fully retracted.
-    public boolean isSlideFullyRetracted() {
-
-        // Return indicating if the slide is fully retracted.
-        return slide.isFullyRetracted();
-
-    }
-
-    // Determines whether the slide is fully extended.
-    public boolean isSlideFullyExtended() {
-
-        // Return indicating if the slide is fully extended.
-        return slide.isFullyExtended();
-
-    }
-
     // Gets the lift's current position.
     public int getCurrentLiftPosition() {
 
         // Return the lift's current position.
-        return (int)lift.getPosition();
+        return (int) lift.getPosition();
 
     }
 
@@ -772,34 +676,6 @@ public class RobotHardware {
 
         // Set the lift's position.
         lift.setPosition(position);
-
-    }
-
-    // Ascends the robot.
-    public void ascend() {
-
-        // Construct an ascend action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> setArmAscentPosition()),
-                new Ascend(this)
-        );
-
-        // Run the action.
-        runningActions.add(action);
-
-    }
-
-    // Descends the robot.
-    public void descend() {
-
-        // Construct a descend action.
-        Action action = new SequentialAction(
-                new InstantAction(() -> setArmAscentPosition()),
-                new Descend(this)
-        );
-
-        // Run the action.
-        runningActions.add(action);
 
     }
 
@@ -875,6 +751,202 @@ public class RobotHardware {
 
         // Enable manual driving.
         allowManualDriving = true;
+
+    }
+
+    // Raises a sample to the basket.
+    public Action raiseSampleToBasket() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> setWristWallPosition(true)),
+                new InstantAction(() -> swivelSetVertical()),
+                new InstantAction(() -> setMinimumExtension()),
+                new InstantAction(() -> setLiftBasketPosition()),
+                new MoveArm(this, Arm.BASKET_POSITION, MoveArm.FAST_INCREMENT),
+                new InstantAction(() -> setBasketExtension()),
+                new WaitForTime(500),
+                new InstantAction(() -> setWristBasketPosition()),
+                new WaitForHardware(this, 2000)
+        );
+        return action;
+    }
+
+    // Scores a sample in the basket.
+    public Action scoreSample() {
+        Action action = new SequentialAction(
+                new InstantAction(() -> openSmallClaw()),
+                new WaitForTime(200)
+        );
+        return action;
+    }
+
+    // Lowers the arm from the basket.
+    public Action lowerArmFromBasket(boolean horizontalSwivel, boolean isAuto, boolean finishedAuto, boolean extendSlide) {
+
+        // Get an arm increment.
+        int armIncrement = isAuto ? MoveArm.MEDIUM_INCREMENT : MoveArm.FAST_INCREMENT;
+
+        // Determine whether to rezero.
+        boolean rezero = lowerCount % 3 == 0;
+
+        // Construct an action.
+        Action action = new SequentialAction(
+
+                // Raise the wrist so it does not catch on the basket when lowering the arm.
+                new InstantAction(() -> setWristSubmersiblePosition()),
+
+                // Wait for a bit.
+                new WaitForTime(300),
+
+                // Lower the arm.
+                new SequentialAction(
+
+                        // If we are in tele op, move the wrist to the wall position to avoid hitting the lower panel when entering the submersible.
+                        isAuto ?
+                                new SequentialAction() :
+                                new InstantAction(() -> setWristWallPosition(true)),
+
+                        // Lower the lift.
+                        new InstantAction(() -> setLiftGroundPosition()),
+
+                        // Reset the swivel.
+                        horizontalSwivel ?
+                                new InstantAction(() -> swivelSetHorizontal()) :
+                                new InstantAction(() -> swivelSetVertical()),
+
+                        // Retract the extension.
+                        new InstantAction(() -> setMinimumExtension()),
+
+                        // Wait for a bit.
+                        new WaitForTime(400),
+
+                        // Switch based on the auto value.
+                        isAuto ?
+
+                                // If we are in auto, update the extension and arm.
+                                new ParallelAction(
+
+                                        // Extend the slide if appropriate.
+                                        extendSlide ?
+                                                new InstantAction(() -> setAutoExtension()) :
+                                                new SequentialAction(),
+
+                                        // Move the arm.
+                                        new MoveArm(this, finishedAuto ? Arm.WALL_POSITION : Arm.SUBMERSIBLE_ENTER_POSITION, armIncrement)
+
+                                ) :
+
+                                // Otherwise (if we are in tele op), update the extension and arm.
+                                new SequentialAction(
+
+                                        // Switch based on the rezero value.
+                                        rezero ?
+
+                                                // If we are rezeroing, rezero and then move to the submersible position.
+                                                new SequentialAction(
+                                                        new MoveArm(this, Arm.SUBMERSIBLE_BUTTON_POSITION, armIncrement),
+                                                        new WaitForTime(300),
+                                                        new InstantAction(() -> setSubmersibleExtension()),
+                                                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, armIncrement)
+                                                ) :
+
+                                                // Otherwise (if we are not rezeroing), move to the submersible position.
+                                                new ParallelAction(
+                                                        new SequentialAction(
+                                                                new WaitForTime(200),
+                                                                new InstantAction(() -> setSubmersibleExtension())
+                                                        ),
+                                                        new MoveArm(this, Arm.SUBMERSIBLE_ENTER_POSITION, armIncrement)
+                                                )
+
+                                ),
+
+                        // Move the wrist to the submersible position.
+                        new InstantAction(() -> setWristSubmersiblePosition())
+
+                )
+
+        );
+
+        // Increment the lower count.
+        lowerCount++;
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Scores a sample in the basket an then lowers the arm.
+    public Action scoreSampleAndLower(boolean horizontalSwivel) {
+        Action action = new SequentialAction(
+                scoreSample(),
+                lowerArmFromBasket(horizontalSwivel, false, false, true)
+        );
+        return action;
+    }
+
+    @Override
+    public Odometry getOdometry() {
+        return teleOpOdometry;
+    }
+
+    public Arm getArm() {
+        return arm;
+    }
+
+    public Wrist getWrist() {
+        return wrist;
+    }
+
+    public DualClaw getDualClaw() {
+        return claw;
+    }
+
+    public Swivel getSwivel() {
+        return swivel;
+    }
+
+    public DcMotorEx getExtension() {
+        return extension;
+    }
+
+    public Slide2 getSlide() {
+        return slide;
+    }
+
+    @Override
+    public Drivetrain getDrivetrain() {
+        return drivetrain;
+    }
+
+    @Override
+    public VoltageSensor getVoltageSensor() {
+        return voltageSensor;
+    }
+
+    // Gets a banner.
+    public static String getBanner(String symbol) {
+        return symbol + symbol + symbol + symbol + symbol + symbol;
+    }
+
+    // Prompts the user for an input.
+    public static void prompt(Telemetry telemetry, String caption, String value) {
+        telemetry.addData(caption, value);
+        telemetry.update();
+    }
+
+    // Returns a drive interface.
+    public MecanumDrive getDrive() {
+
+        // Return the drive interface.
+        return drive;
+
+    }
+
+    // Gets the extension's target position.
+    public int getExtensionTargetPosition() {
+
+        // Return the extension's target position.
+        return slide.getTargetPosition();
 
     }
 

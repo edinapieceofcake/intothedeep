@@ -1,8 +1,15 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.LinearMotion.Units;
+import kotlin.NotImplementedError;
 
 public class ArmLift implements ILinearMechanism {
     private HardwareMap hardwareMap;
@@ -16,6 +23,8 @@ public class ArmLift implements ILinearMechanism {
     private double avgPos = 0.0;
 
     private static final LinearMechanismSettings settings = new LinearMechanismSettings(
+            "arm",
+            Units.INCHES,
             0,
             0,
             0,
@@ -50,6 +59,11 @@ public class ArmLift implements ILinearMechanism {
         } else {
             return avgPos * inchesPerP;
         }
+    }
+
+    @Override
+    public DualNum<Time> getPositionAndVelocity(boolean raw) {
+        throw new NotImplementedError();
     }
 
     @Override

@@ -1,5 +1,9 @@
 package edu.edina.Libraries.PurePursuit;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.Vector2d;
 
 import java.util.*;
@@ -17,6 +21,10 @@ public class PurePursuit {
 
     public Vector2d getPursuitPoint() {
         return new Vector2d(pursuitPoint.x, pursuitPoint.y);
+    }
+
+    public Vector2d[] getPath() {
+        return path;
     }
 
     public void nextPursuitPoint(Vector2d location, double radius) {
@@ -41,6 +49,21 @@ public class PurePursuit {
                 nextPursuit(location, radius, 0, path.length);
             }
         }
+    }
+
+    @NonNull
+    @SuppressLint("DefaultLocale")
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        for (Vector2d v : path) {
+            if (s.length() > 0)
+                s.append(", ");
+
+            s.append(String.format("(%.1f, %.1f)", v.x, v.y));
+        }
+
+        return s.toString();
     }
 
     private boolean nextPursuit(Vector2d location, double radius, double minT, double maxT) {

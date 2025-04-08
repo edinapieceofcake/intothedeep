@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,9 +14,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import edu.edina.Libraries.Robot.Matrix2d;
 import edu.edina.Libraries.Robot.RobotHardware;
-import edu.edina.Libraries.Robot.SparkFunOTOS;
-import edu.edina.Libraries.Robot.SparkFunOTOSCorrected;
-
 
 @TeleOp
 @Disabled
@@ -43,7 +41,7 @@ public class OdometryMultiTest extends LinearOpMode {
 
         Matrix2d otosCalMatrix = calOutputActual.mult(calOutputOtos.invert());
 
-        myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sensor_otos");
+        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         myOtos.setLinearUnit(DistanceUnit.INCH);
         myOtos.setAngularUnit(AngleUnit.DEGREES);
 
@@ -116,8 +114,6 @@ public class OdometryMultiTest extends LinearOpMode {
             */
             Twist2dDual<Time> t = hw.odometry.update();
             pos3DW = pos3DW.plus(t.value());
-
-            yawIMU = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             telemetry.addData("imu heading", "", yawIMU);
             telemetry.addData("3DW x, y, heading", "%.2f, %.2f, %.2f", pos3DW.position.x, pos3DW.position.y, Math.toDegrees(pos3DW.heading.toDouble()));

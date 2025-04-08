@@ -23,13 +23,16 @@ public class Lift {
     public static double INTEGRAL = 0;
 
     // Maximum position
-    public static int MAXIMUM_POSITION = 1800;
+    public static int MAXIMUM_POSITION = 2000;
+
+    // Chamber position
+    public static int CHAMBER_POSITION = 1900;
 
     // Minimum position
-    public static int MINIMUM_POSITION = 0;
+    public static int MINIMUM_POSITION = -400;
 
-    // Up position threshold
-    public static int RAISED_POSITION_THRESHOLD = 400;
+    // Ground position
+    public static int GROUND_POSITION = 0;
 
     // Nearly up position
     public static int NEARLY_UP_POSITION = 1500;
@@ -43,8 +46,8 @@ public class Lift {
     // Busy threshold
     public static int BUSY_THRESHOLD = 150;
 
-    // High basket position
-    public static int HIGH_BASKET_POSITION = MAXIMUM_POSITION;
+    // Basket position
+    public static int BASKET_POSITION = MAXIMUM_POSITION;
 
     // Descend position
     public static int DESCEND_POSITION = 1500;
@@ -100,7 +103,7 @@ public class Lift {
         rightMotor = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
 
         // Set the right motor's direction.
-        rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Reset the motors.
         reset();
@@ -124,7 +127,7 @@ public class Lift {
 
         // Determine the appropriate lift power.
         controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
-        int currentPosition = leftMotor.getCurrentPosition();
+        int currentPosition = getPosition();
         double pid = controller.calculate(currentPosition, targetPosition);
         double power = pid + FEEDFORWARD;
 
@@ -132,7 +135,7 @@ public class Lift {
         //////////////////////////////////////////////////////////////////////
 
         // If we are rezeroing...
-        if(rezeroing) {
+        if (rezeroing) {
 
             // Use the rezeroing power.
             leftMotor.setPower(REZEROING_POWER);
@@ -165,7 +168,7 @@ public class Lift {
 
         // Get the lift's position.
         int leftPosition = leftMotor.getCurrentPosition();
-        int rightPosition = rightMotor.getCurrentPosition();
+        int rightPosition = -rightMotor.getCurrentPosition();
 
         // Get the lift's power.
         double leftPower = leftMotor.getPower();
@@ -192,9 +195,6 @@ public class Lift {
         telemetry.addData("- Power", "%.2f/%.2f", leftPower, rightPower);
         telemetry.addData("- Target Position", targetPosition);
 
-        // Add lift information to the telemetry.
-        telemetry.addData("Lift", "Position = %d/%d, Power = %.2f/%.2f", leftPosition, rightPosition, leftPower, rightPower);
-
     }
 
     // Resets the lift.
@@ -207,28 +207,24 @@ public class Lift {
     }
 
     // Resets a lift motor.
-    private static void reset(DcMotorEx motor) {
+    private void reset(DcMotorEx motor) {
 
         // Reset the motor.
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+        // Set the target position to the ground position.
+        targetPosition = GROUND_POSITION;
+
     }
 
-    public double getPosition() {
-        double leftPosition = leftMotor.getCurrentPosition();
-        double rightPosition = rightMotor.getCurrentPosition();
-        return (leftPosition + rightPosition) / 2;
+    public int getPosition() {
+        return leftMotor.getCurrentPosition();
     }
 
     public double getPositionInInches() {
         return getPosition() * INCHES_PER_POS;
-    }
-
-    public void overridePower(double power) {
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
     }
 
     // Determines whether the lift is busy.
@@ -257,7 +253,7 @@ public class Lift {
     public void raise() {
 
         // If the lift is fully raised...
-        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+        if (targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -276,7 +272,7 @@ public class Lift {
     public void lower() {
 
         // If the lift is fully lowered...
-        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+        if (targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -321,51 +317,19 @@ public class Lift {
 
     }
 
-    // Moves the lift to the high basket position.
-    public void setHighBasketPosition() {
+    // Moves the lift to the basket position.
+    public void setBasketPosition() {
 
-        // Move the lift to the high basket position.
-        targetPosition = HIGH_BASKET_POSITION;
-
-    }
-
-    // Determines whether the lift is raised.
-    public boolean isRaised() {
-
-        // Get the lift's current position.
-        double currentPosition = getPosition();
-
-        // Determine whether the lift is raised.
-        boolean isRaised = currentPosition > RAISED_POSITION_THRESHOLD;
-
-        // Return the result.
-        return isRaised;
+        // Move the lift to the basket position.
+        targetPosition = BASKET_POSITION;
 
     }
 
-    public boolean targetingScoringPos() {
-        return targetPosition > MINIMUM_POSITION;
-    }
+    // Moves the lift to the chamber position.
+    public void setChamberPosition() {
 
-    // Determines whether the lift is in the high basket position.
-    public boolean isInHighBasketPosition() {
-
-        // Determine whether the lift is in the high basket position.
-        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
-
-        // Return the result.
-        return isInHighBasketPosition;
-
-    }
-
-    // Determines whether the lift is in the ground position.
-    public boolean isInGroundPosition() {
-
-        // Determine whether the lift is in the ground position.
-        boolean isInGroundPosition = targetPosition == MINIMUM_POSITION;
-
-        // Return the result.
-        return isInGroundPosition;
+        // Move the lift to the basket position.
+        targetPosition = CHAMBER_POSITION;
 
     }
 
@@ -389,7 +353,7 @@ public class Lift {
     public void stopRezeroing() {
 
         // If we are not rezeroing...
-        if(!rezeroing) {
+        if (!rezeroing) {
 
             // Exit the method.
             return;

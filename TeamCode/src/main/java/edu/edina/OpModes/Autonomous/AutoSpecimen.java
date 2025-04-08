@@ -1,7 +1,8 @@
 package edu.edina.OpModes.Autonomous;
 
-import static edu.edina.Libraries.Robot.RobotHardware.SCORE_SPECIMEN_BACKUP_INCHES;
-import static edu.edina.OpModes.Autonomous.AutoSample.TIMEOUT_MILLISECONDS;
+import static edu.edina.Libraries.Robot.RobotHardware.BLUE_SQUARE;
+import static edu.edina.Libraries.Robot.RobotHardware.getBanner;
+import static edu.edina.Libraries.Robot.RobotHardware.prompt;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -9,437 +10,561 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.WaitForTime;
-import edu.edina.Libraries.Robot.WaitForHardware;
 
 @Config
 @Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSpecimen extends LinearOpMode {
 
-		// Start pose
-		public static double START_X = 0;
-		public static double START_Y = -62.5;
-		public static double START_HEADING = Math.toRadians(180);
-
-		// Chamber pose
-		public static double CHAMBER_X = 0;
-		public static double CHAMBER_X_INCREMENT = 3;
-		public static double CHAMBER_Y = -35;
-		public static double CHAMBER_HEADING = Math.toRadians(270);
-
-		// Score pose
-		public static double SCORE_X = CHAMBER_X;
-		public static double SCORE_Y = CHAMBER_Y - SCORE_SPECIMEN_BACKUP_INCHES;
-
-		// First spike mark pose
-		public static double FIRST_SPIKE_MARK_A_X = 49;
-		public static double FIRST_SPIKE_MARK_A_Y = -47;
-		public static double FIRST_SPIKE_MARK_B_X = FIRST_SPIKE_MARK_A_X;
-		public static double FIRST_SPIKE_MARK_B_Y = -41;
-		public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(90);
-
-		// Second spike mark pose
-		public static double SECOND_SPIKE_MARK_A_X = 59;
-		public static double SECOND_SPIKE_MARK_A_Y = FIRST_SPIKE_MARK_A_Y;
-		public static double SECOND_SPIKE_MARK_B_X = SECOND_SPIKE_MARK_A_X;
-		public static double SECOND_SPIKE_MARK_B_Y = FIRST_SPIKE_MARK_B_Y;
-		public static double SECOND_SPIKE_MARK_HEADING = Math.toRadians(90);
-
-		// Third Spike Mark pose
-		public static double THIRD_SPIKE_MARK_X = 58;
-		public static double THIRD_SPIKE_MARK_Y = -25;
-		public static double HUMAN_PLAYER_X = 47;
-		public static double HUMAN_PLAYER_Y = -50;
-		public static double CONSTANT_Y = -46.5;
-		public static double CONSTANT_X = 47;
-		public static double HUMAN_PAYER_2_Y = -50;
-		public static double HUMAN_PAYER_2_X = 44;
-		public static double HUMAN_PLAYER_HEADING = 3.0 / 2 * Math.PI;
-		// Duration in milliseconds to toggle the claw
-		public static int CLAW_DELAY = 500;
-		public static int ARM_DELAY = 500;
-		public static int SCORE_DELAY = 400;
-		public static double TEST_HUMAN_PLAYER_Y = -43;
-
-
-		// Robot hardware
-		private RobotHardware robotHardware;
-		private Action driveFromChamberToScore;
-		private Action driveFromChamberToScore2;
-		private Action driveFromChamberToScore3;
-
-		// Runs the op mode.
-		@Override
-		public void runOpMode() throws InterruptedException {
-
-			// Get hardware.
-			robotHardware = new RobotHardware(this);
-
-			// Wait for the user to lower the lift.
-			robotHardware.waitForLiftDown();
-
-			// Wait for the user to lower the arm.
-			robotHardware.waitForArmDown();
-
-			// Move the arm to the ground position.
-			robotHardware.setArmGroundPosition();
-
-			// Close the claw.
-			robotHardware.closeClaw();
-
-			// Raise the wrist.
-			robotHardware.initializeWrist();
-
-			// If stop is requested...
-			if (isStopRequested()) {
-
-				// Exit the method.
-				return;
-
-			}
-
-			// Prompt the user to press start.
-			robotHardware.log("Waiting for start...");
-
-			// Wait for the user to press start.
-			waitForStart();
-
-			// Indicate that this is running.
-			robotHardware.log("Running...");
-
-			// Construct a start pose.
-			Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
-
-			// Construct a chamber pose.
-			Pose2d chamberPose = new Pose2d(CHAMBER_X, CHAMBER_Y, CHAMBER_HEADING);
-			Pose2d scorePose = new Pose2d(SCORE_X, SCORE_Y, CHAMBER_HEADING);
-
-			// Construct a chamber pose.
-			Pose2d chamberPose2 = new Pose2d(CHAMBER_X + CHAMBER_X_INCREMENT, CHAMBER_Y + 2, CHAMBER_HEADING);
-			Pose2d scorePose2 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT, SCORE_Y, CHAMBER_HEADING);
-			Pose2d chamberPose3 = new Pose2d(SCORE_X + CHAMBER_X_INCREMENT + 3,CHAMBER_Y + 2,CHAMBER_HEADING);
-			Pose2d scorePose3 = new Pose2d(SCORE_X+ CHAMBER_X_INCREMENT + 3,SCORE_Y,CHAMBER_HEADING);
-
-			// Construct a first spike mark pose.
-			Vector2d firstSpikeMarkAVector = new Vector2d(FIRST_SPIKE_MARK_A_X, FIRST_SPIKE_MARK_A_Y);
-			Vector2d firstSpikeMarkBVector = new Vector2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y);
-			Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_B_X, FIRST_SPIKE_MARK_B_Y, FIRST_SPIKE_MARK_HEADING);
-
-			// Construct a second spike mark pose.
-			Vector2d secondSpikeMarkAVector = new Vector2d(SECOND_SPIKE_MARK_A_X, SECOND_SPIKE_MARK_A_Y);
-			Vector2d secondSpikeMarkBVector = new Vector2d(SECOND_SPIKE_MARK_B_X, SECOND_SPIKE_MARK_B_Y);
-			Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_B_X, SECOND_SPIKE_MARK_B_Y, SECOND_SPIKE_MARK_HEADING);
-
-			// Construct a constant pose.
-			Pose2d constantPose = new Pose2d(CONSTANT_X, CONSTANT_Y, CHAMBER_HEADING);
-			// Construct a human player 2 pose.
-			Pose2d humanPlayer2Pose = new Pose2d(HUMAN_PAYER_2_X, HUMAN_PAYER_2_Y, HUMAN_PLAYER_HEADING);
-
-			// Construct a third spike mark pose.
-			Pose2d thirdSpikeMarkPose = new Pose2d(THIRD_SPIKE_MARK_X, THIRD_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
-			// Construct a human player pose.
-			Pose2d humanPlayerPose = new Pose2d(HUMAN_PLAYER_X, HUMAN_PLAYER_Y, HUMAN_PLAYER_HEADING);
-
-			// Testing
-			double testSubToSpikeMarkTangent = 15.0/8*Math.PI;
-			Pose2d testFirstSpikeMarkPose = new Pose2d(45,-34,Math.toRadians(89));
-			double testFirstSpikeMarkTangent = Math.toRadians(89);
-			Vector2d testDropFirstSpikeMarkSampleVector = new Vector2d(53, TEST_HUMAN_PLAYER_Y);
-			double testDropFirstSpikeMarkSampleHeading = 3.0/2*Math.PI;
-			Vector2d testGrabFirstSpecimenFromHumanPlayerVector = new Vector2d(47, TEST_HUMAN_PLAYER_Y);
-			double testGrabFirstSpecimenFromHumanPlayerHeading = 3.0/2*Math.PI;
-			Pose2d testFromScoreToHumanPlayerPose = new Pose2d(47, -40, Math.toRadians(270));
-			Pose2d testFromScoreToHumanPlayerPose2 = new Pose2d(47, TEST_HUMAN_PLAYER_Y, Math.toRadians(270));
-			// Construct a drive interface.
-			MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
-
-			// Construct an action for driving from the start to the chamber.
-			Action driveFromStartToChamber = drive.actionBuilder(startPose)
-					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
-					.build();
-			driveFromChamberToScore = drive.actionBuilder(chamberPose)
-					.strafeToLinearHeading(scorePose.position, scorePose.heading)
-					.build();
-
-			// Construct an action for driving from the score to the first spike mark.
-			Action driveFromScoreToFirstSpikeMark = drive.actionBuilder(scorePose)
-					.strafeToLinearHeading(firstSpikeMarkAVector, FIRST_SPIKE_MARK_HEADING)
-					.strafeTo(firstSpikeMarkBVector)
-					.build();
-
-			// Construct an action for driving from the first spike mark to the second spike mark.
-			Action driveFromFirstSpikeMarkToSecondSpikeMark = drive.actionBuilder(firstSpikeMarkPose)
-					.strafeToLinearHeading(secondSpikeMarkAVector, SECOND_SPIKE_MARK_HEADING)
-					.strafeTo(secondSpikeMarkBVector)
-					.build();
-
-
-			// Construct an action for driving from the first spike mark to human player.
-			Action driveFirstSpikeMarkToHumanPlayer = drive.actionBuilder(firstSpikeMarkPose)
-					.strafeToLinearHeading(humanPlayerPose.position, humanPlayerPose.heading)
-					.build();
-
-			// Construct an action for driving from the human player to second spike mark.
-			Action driveFromHumanToSecondSpikeMark = drive.actionBuilder(humanPlayerPose)
-					.strafeToLinearHeading(secondSpikeMarkPose.position, secondSpikeMarkPose.heading)
-					.build();
-
-			// Construct an action for driving from the second spike mark to the human player.
-			Action driveFromSecondSpikeMarkToHumanPlayer = drive.actionBuilder(secondSpikeMarkPose)
-					.strafeToLinearHeading(humanPlayerPose.position, humanPlayerPose.heading)
-					.build();
-
-			// Construct an action for driving from the score to spike mark.
-			Action driveFromScoreToThirdSpikeMark = drive.actionBuilder(scorePose)
-					.strafeToLinearHeading(thirdSpikeMarkPose.position, thirdSpikeMarkPose.heading)
-					.build();
-			// Construct an action for driving from the third spike mark to human player.
-			Action driveFromThirdSpikeMarkToHumanPlayer = drive.actionBuilder(thirdSpikeMarkPose)
-					.strafeToLinearHeading(humanPlayerPose.position, humanPlayerPose.heading)
-					.build();
-			// Construct an action for driving from the human player to chamber.
-			Action driveFromHumanPlayerToChamber = drive.actionBuilder(humanPlayerPose)
-					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
-					.build();
-			// Construct an action for driving from the score to human player.
-			Action driveFromScoreToHumanPlayer = drive.actionBuilder(scorePose)
-					.strafeToLinearHeading(humanPlayerPose.position, humanPlayerPose.heading)
-					.build();
-			// Construct an action for driving from the human player to constant position.
-			Action driveFromHHumanPlayerToConstant = drive.actionBuilder(humanPlayerPose)
-					.strafeToLinearHeading(constantPose.position, constantPose.heading)
-					.build();
-			// Construct an action for driving from the constant position to the 2nd human player position.
-			Action driveFromConstantToHumanPlayer2 = drive.actionBuilder(constantPose)
-					.strafeToLinearHeading(humanPlayer2Pose.position, humanPlayer2Pose.heading)
-					.build();
-			// Construct an action for driving from the 2nd human player position to the chamber.
-			Action driveFromHumanPlayer2ToChamber = drive.actionBuilder(humanPlayer2Pose)
-					.strafeToLinearHeading(chamberPose.position, chamberPose.heading)
-					.build();
-
-			// Testing
-			Action testSetTangentForDrivingFromSubToSpikeMark = drive.actionBuilder(scorePose)
-					.setTangent(testSubToSpikeMarkTangent)
-					.build();
-
-			Action testDriveFromSubToFirstSpikeMark = drive.actionBuilder(new Pose2d(scorePose.position, testSubToSpikeMarkTangent))
-					.splineToLinearHeading(testFirstSpikeMarkPose, testFirstSpikeMarkTangent)
-					.build();
-
-			Action testSetTangentToNormal = drive.actionBuilder(scorePose)
-					.setTangent(testSubToSpikeMarkTangent)
-					.build();
-
-			Action testDriveFromFirstSpikeMarkToHumanPlayer = drive.actionBuilder(testFirstSpikeMarkPose)
-					.strafeToLinearHeading(testDropFirstSpikeMarkSampleVector, testDropFirstSpikeMarkSampleHeading)
-					.build();
-
-			Action testDriveToFirstHumanPlayerSpecimen = drive.actionBuilder(new Pose2d(testDropFirstSpikeMarkSampleVector, testDropFirstSpikeMarkSampleHeading))
-					.strafeToLinearHeading(testGrabFirstSpecimenFromHumanPlayerVector, testGrabFirstSpecimenFromHumanPlayerHeading)
-					.build();
-
-			Action testDriveToChamberFromHumanPlayer1 = drive.actionBuilder(new Pose2d(testGrabFirstSpecimenFromHumanPlayerVector, testGrabFirstSpecimenFromHumanPlayerHeading))
-					.strafeToLinearHeading(chamberPose2.position, chamberPose2.heading)
-					.build();
-			driveFromChamberToScore2 = drive.actionBuilder(chamberPose2)
-					.strafeToLinearHeading(scorePose2.position, scorePose2.heading)
-					.build();
-			Action testDriveFromScoreToHumanPlayer = drive.actionBuilder(scorePose2)
-					.strafeToLinearHeading(testFromScoreToHumanPlayerPose.position, testFromScoreToHumanPlayerPose.heading)
-
-					.strafeToLinearHeading(testFromScoreToHumanPlayerPose2.position, testFromScoreToHumanPlayerPose2.heading, new TranslationalVelConstraint(10.0))
-					.build();
-			Action testDriveFromHumanPlayerToChamberPose3 = drive.actionBuilder(humanPlayer2Pose)
-					.strafeToLinearHeading(chamberPose3.position, chamberPose3.heading)
-					.build();
-			driveFromChamberToScore3 = drive.actionBuilder(chamberPose3)
-					.strafeToLinearHeading(scorePose3.position, scorePose3.heading)
-					.build();
-
-			// Construct a main action.
-			Action mainAction = new SequentialAction(
-
-					// Score preloaded specimen.
-					driveFromStartToChamber,
-					scoreSpecimenAndLower(driveFromChamberToScore),
-
-					// Test
-					testSetTangentForDrivingFromSubToSpikeMark,
-					testDriveFromSubToFirstSpikeMark,
-					testSetTangentToNormal,
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					testDriveFromFirstSpikeMarkToHumanPlayer,
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					new InstantAction(() -> robotHardware.openClaw()),
-					new WaitForTime(CLAW_DELAY),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new InstantAction(() -> robotHardware.incrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					testDriveToFirstHumanPlayerSpecimen,
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new InstantAction(() -> robotHardware.decrementArmPosition()),
-					new WaitForTime(ARM_DELAY),
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-					testDriveToChamberFromHumanPlayer1,
-					scoreSpecimenAndLower(driveFromChamberToScore2),
-					testDriveFromScoreToHumanPlayer,
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-					testDriveFromHumanPlayerToChamberPose3,
-					scoreSpecimenAndLower(driveFromChamberToScore3)
-
-
-
-
-					/*
-					// Grab first spike mark sample.
-					driveFromScoreToFirstSpikeMark,
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-
-					// Deliver first spike mark sample.
-					deliverSampleToHumanPlayer(),
-
-					// Grab second spike mark sample.
-					driveFromFirstSpikeMarkToSecondSpikeMark,
-					new InstantAction(() -> robotHardware.closeClaw()),
-					new WaitForTime(CLAW_DELAY),
-
-					// Deliver second spike mark sample.
-					deliverSampleToHumanPlayer()
-					 */
-
-//							//deliver sample to human player
-//							driveFirstSpikeMarkToHumanPlayer,
-//							new OpenClaw(),
-//							//pick up new sample from 2nd spike mark
-//							driveFromHumanToSecondSpikeMark,
-//							new CloseClaw(),
-//							//deliver to sample human player
-//							driveFromSecondSpikeMarkToHumanPlayer,
-//							new OpenClaw(),
-//							//align with the specimen from the first spike mark
-//							driveFromHHumanPlayerToConstant,
-//							driveFromConstantToHumanPlayer2,
-//							new CloseClaw(),
-//							// score specimen
-//							driveFromHumanPlayer2ToChamber,
-//							score(),
-//							//pick up sample from 3rd spike
-//							driveFromScoreToThirdSpikeMark,
-//							new CloseClaw(),
-//							// deliver to human player
-//							driveFromThirdSpikeMarkToHumanPlayer,
-//							new OpenClaw(),
-//							//align with specimen from 2nd spike mark
-//							driveFromHHumanPlayerToConstant,
-//							driveFromConstantToHumanPlayer2,
-//							new CloseClaw(),
-//							//score the specimen from the 2nd spike mark, but third sample total.
-//							driveFromHumanPlayer2ToChamber,
-//							score(),
-//							// pick up specimen that was 3rd spike mark from the human player
-//							driveFromScoreToHumanPlayer,
-//							new CloseClaw(),
-//							// score the specimen
-//							driveFromHumanPlayerToChamber,
-//							score()
-			);
-
-			// Disable manual driving.
-			robotHardware.disableManualDriving();
-
-			// Add the action to the robot hardware.
-			robotHardware.addAction(mainAction);
-
-			// While the op mode is active...
-			while (opModeIsActive()) {
-
-				// Update the robot hardware.
-				robotHardware.update();
-
-				// Update the telemetry.
-				telemetry.update();
-
-			}
-
-		}
-
-		// Scores a specimen and then lowers the arm.
-        public Action scoreSpecimenAndLower(Action driveFromChamberToScore) {
-
-			// Construct an action.
-            Action action = new SequentialAction(
-					new InstantAction(() -> robotHardware.lowerWrist()),
-					new MoveArm(robotHardware, Arm.HIGH_CHAMBER_POSITION, false),
-					new WaitForTime(500),
-					scoreSpecimen(driveFromChamberToScore, robotHardware),
-					new WaitForTime(500),
-					new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
-                    new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
-					new InstantAction(() -> robotHardware.lowerWrist())
-            );
-
-			// Return the action.
-			return action;
+    // Start pose
+    public static double START_X = 3;
+    public static double START_Y = -60;
+    public static double START_HEADING = Math.toRadians(270);
+
+    // Preload chamber pose
+    public static double PRELOAD_CHAMBER_X = START_X;
+    public static double PRELOAD_CHAMBER_Y = -29;
+    public static double PRELOAD_CHAMBER_HEADING = START_HEADING;
+
+    // First spike mark pose
+    public static double FIRST_SPIKE_MARK_X = 46.5;
+    public static double FIRST_SPIKE_MARK_Y = -41;
+    public static double FIRST_SPIKE_MARK_HEADING = Math.toRadians(270);
+    public static double FIRST_SPIKE_MARK_END_TANGENT = Math.toRadians(90);
+
+    // Second spike mark pose
+    public static double SECOND_SPIKE_MARK_X = 56.5;
+    public static double SECOND_SPIKE_MARK_Y = -40;
+    public static double SECOND_SPIKE_MARK_HEADING = FIRST_SPIKE_MARK_HEADING;
+    public static double SECOND_SPIKE_MARK_END_TANGENT = FIRST_SPIKE_MARK_END_TANGENT;
+
+    // Drop pose
+    public static double DROP_X = FIRST_SPIKE_MARK_X;
+    public static double DROP_Y = -51;
+    public static double DROP_HEADING = FIRST_SPIKE_MARK_HEADING;
+
+    // Approach pick up pose
+    public static double APPROACH_PICK_UP_X = 40;
+    public static double APPROACH_PICK_UP_Y = -47;
+    public static double APPROACH_PICK_UP_HEADING = DROP_HEADING;
+    public static double APPROACH_PICK_UP_TANGENT = Math.toRadians(270);
+
+    // Pick up pose
+    public static double PICK_UP_X = APPROACH_PICK_UP_X;
+    public static double FIRST_PICK_UP_Y = -62;
+    public static double SECOND_PICK_UP_Y = -64;
+    public static double PICK_UP_HEADING = DROP_HEADING;
+    public static double PICK_UP_TANGENT = Math.toRadians(270);
+
+    // Chamber values
+    public static double CHAMBER_TANGENT = Math.toRadians(90);
+    public static double CHAMBER_X_SEPARATION = 3;
+    public static double CHAMBER_X_CLOSE = 13;
+
+    // Approacc first chamber pose
+    public static double APPROACH_FIRST_CHAMBER_X = PRELOAD_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double APPROACH_FIRST_CHAMBER_Y = -39;
+    public static double APPROACH_FIRST_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+
+    // First chamber pose
+    public static double FIRST_CHAMBER_X = APPROACH_FIRST_CHAMBER_X;
+    public static double FIRST_CHAMBER_Y = -31;
+    public static double FIRST_CHAMBER_HEADING = APPROACH_FIRST_CHAMBER_HEADING;
+
+    // Approach second chamber pose
+    public static double APPROACH_SECOND_CHAMBER_X = FIRST_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double APPROACH_SECOND_CHAMBER_Y = APPROACH_FIRST_CHAMBER_Y;
+    public static double APPROACH_SECOND_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+
+    // Second chamber pose
+    public static double SECOND_CHAMBER_X = APPROACH_SECOND_CHAMBER_X;
+    public static double SECOND_CHAMBER_Y = FIRST_CHAMBER_Y;
+    public static double SECOND_CHAMBER_HEADING = APPROACH_SECOND_CHAMBER_HEADING;
+
+    // Approach third chamber pose
+    public static double APPROACH_THIRD_CHAMBER_X = SECOND_CHAMBER_X - CHAMBER_X_SEPARATION;
+    public static double APPROACH_THIRD_CHAMBER_Y = APPROACH_FIRST_CHAMBER_Y;
+    public static double APPROACH_THIRD_CHAMBER_HEADING = PRELOAD_CHAMBER_HEADING;
+
+    // Third chamber pose
+    public static double THIRD_CHAMBER_X = APPROACH_THIRD_CHAMBER_X;
+    public static double THIRD_CHAMBER_Y = -29;
+    public static double THIRD_CHAMBER_HEADING = APPROACH_THIRD_CHAMBER_HEADING;
+
+    // Velocities
+    public static double FAST_VELOCITY = 39;
+    public static double MEDIUM_VELOCITY = 27;
+    public static double SLOW_VELOCITY = 21;
+
+    // Robot hardware
+    private RobotHardware robotHardware;
+
+    // Runs the op mode.
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        // Display launch menu.
+        //////////////////////////////////////////////////////////////////////
+
+        // Initialize an input tall walls value.
+        Boolean inputTallWalls = null;
+
+        // Initialize gamepads.
+        Gamepad currentGamepad = new Gamepad();
+        Gamepad previousGamepad = new Gamepad();
+
+        // While we are waiting for a response...
+        while (!isStopRequested()) {
+
+            // Update gamepads.
+            previousGamepad.copy(currentGamepad);
+            currentGamepad.copy(gamepad1);
+
+            // If the tall walls value is missing...
+            if(inputTallWalls == null) {
+
+                // Prompt the user for a walls value.
+                prompt(telemetry, "Walls", "X = Tall, B = Short");
+
+                // If the user pressed x...
+                if (currentGamepad.x && !previousGamepad.x) {
+
+                    // Use tall walls.
+                    inputTallWalls = true;
+
+                }
+
+                // Otherwise, if the user pressed b...
+                else if (currentGamepad.b && !previousGamepad.b) {
+
+                    // Use short walls.
+                    inputTallWalls = false;
+
+                }
+
+            }
+
+            // Otherwise (if we are done)...
+            else {
+
+                // Hide the launch menu.
+                break;
+
+            }
 
         }
 
-		// Scores a specimen.
-		public static Action scoreSpecimen(Action backup, RobotHardware robotHardware) {
+        // If stop is requested...
+        if (isStopRequested()) {
 
-			// Construct a score specimen action.
-			Action action = new ParallelAction(
-					new InstantAction(() -> robotHardware.moveWristToHighChamberScore()),
-					backup,
-					new SequentialAction(
-							new WaitForTime(SCORE_DELAY),
-							new InstantAction(() -> robotHardware.openClaw())
-					)
-			);
+            // Exit the method.
+            return;
 
-			// Return the action.
-			return action;
+        }
 
-		}
+        // Initialize the robot.
+        //////////////////////////////////////////////////////////////////////
 
-		// Delivers a sample to a human player.
-		public Action deliverSampleToHumanPlayer() {
+        // Construct a start pose.
+        Pose2d startPose = new Pose2d(START_X, START_Y, START_HEADING);
 
-			// Construct an action.
-			Action action = new SequentialAction(
-					new MoveArm(robotHardware, Arm.SUBMERSIBLE_POSITION, false),
-					new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS),
-					new InstantAction(() -> robotHardware.openClaw()),
-					new WaitForTime(CLAW_DELAY),
-					new MoveArm(robotHardware, Arm.GROUND_POSITION, false),
-					new WaitForHardware(robotHardware, TIMEOUT_MILLISECONDS)
-			);
+        // Get hardware.
+        robotHardware = new RobotHardware(this, startPose);
 
-			// Return the action.
-			return action;
+        // Indicate that the robot is initializing.
+        robotHardware.log("Initializing...");
 
-		}
+        // Set the tall walls value.
+        robotHardware.setTallWalls(inputTallWalls);
 
-	}
+        // Wait for the user to lower the lift.
+        robotHardware.waitForLiftDown();
+
+        // Wait for the user to lower the arm.
+        robotHardware.waitForArmDown();
+
+        // Close the big claw.
+        robotHardware.closeBigClaw();
+
+        // Open the small claw.
+        robotHardware.openSmallClaw();
+
+        // Set the wrist to the submersible position.
+        robotHardware.setWristSubmersiblePosition();
+
+        // Set the swivel to the horizontal position.
+        robotHardware.swivelSetHorizontal();
+
+        // If stop is requested...
+        if (isStopRequested()) {
+
+            // Exit the method.
+            return;
+
+        }
+
+        // Wait for start.
+        //////////////////////////////////////////////////////////////////////
+
+        // Add telemetry.
+        addTelemetry();
+
+        // Prompt the user to press start.
+        robotHardware.log("Waiting for start...");
+
+        // Wait for the user to press start.
+        waitForStart();
+
+        // Run the op mode.
+        //////////////////////////////////////////////////////////////////////
+
+        // Indicate that this is running.
+        robotHardware.log("Running...");
+
+        // Disable manual driving.
+        robotHardware.disableManualDriving();
+
+        // Get a drive interface.
+        MecanumDrive drive = robotHardware.getDrive();
+
+        // Get the main action.
+        Action mainAction = getMainAction(drive, startPose);
+
+        // Add the main action to the robot hardware.
+        robotHardware.addAction(mainAction);
+
+        // While the op mode is active...
+        while (opModeIsActive()) {
+
+            // Add telemetry.
+            addTelemetry();
+
+            // Update the robot hardware.
+            robotHardware.update();
+
+            // Update the telemetry.
+            telemetry.update();
+
+        }
+
+    }
+
+    // Gets the main action.
+    private Action getMainAction(MecanumDrive drive, Pose2d startPose) {
+
+        // Construct velocity constraints.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a preload velocity constraint.
+        TranslationalVelConstraint preloadVelocityConstraint =
+                new TranslationalVelConstraint(SLOW_VELOCITY);
+
+        // Construct a first spike mark velocity constraint.
+        VelConstraint firstSpikeMarkVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() > 35 ? MEDIUM_VELOCITY : FAST_VELOCITY;
+
+        // Construct a pick up velocity constraint.
+        VelConstraint pickUpVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.y.value() < -52 ? SLOW_VELOCITY : FAST_VELOCITY;
+
+        // Construct a chamber velocity constraints.
+        VelConstraint firstChamberVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() < FIRST_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint secondChamberVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() < SECOND_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+        VelConstraint thirdChamberVelocityConstraint = (robotPose, _path, _disp) ->
+                robotPose.position.x.value() < THIRD_CHAMBER_X + CHAMBER_X_CLOSE ? MEDIUM_VELOCITY : FAST_VELOCITY;
+
+        // Construct poses.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a chamber pose.
+        Pose2d chamberPose = new Pose2d(PRELOAD_CHAMBER_X, PRELOAD_CHAMBER_Y, PRELOAD_CHAMBER_HEADING);
+
+        // Construct a first spike mark pose.
+        Pose2d firstSpikeMarkPose = new Pose2d(FIRST_SPIKE_MARK_X, FIRST_SPIKE_MARK_Y, FIRST_SPIKE_MARK_HEADING);
+
+        // Construct a  drop pose.
+        Pose2d dropPose = new Pose2d(DROP_X, DROP_Y, DROP_HEADING);
+
+        // Construct a second spike mark pose.
+        Pose2d secondSpikeMarkPose = new Pose2d(SECOND_SPIKE_MARK_X, SECOND_SPIKE_MARK_Y, SECOND_SPIKE_MARK_HEADING);
+
+        // Construct an approach pick up pose.
+        Pose2d approachPickUpPose = new Pose2d(APPROACH_PICK_UP_X, APPROACH_PICK_UP_Y, APPROACH_PICK_UP_HEADING);
+
+        // Construct a first pick up pose.
+        Pose2d firstPickUpPose = new Pose2d(PICK_UP_X, FIRST_PICK_UP_Y, PICK_UP_HEADING);
+
+        // Construct a second pick up pose.
+        Pose2d secondPickUpPose = new Pose2d(PICK_UP_X, SECOND_PICK_UP_Y, PICK_UP_HEADING);
+
+        // Construct an approach first chamber pose.
+        Pose2d approachFirstChamberPose = new Pose2d(APPROACH_FIRST_CHAMBER_X, APPROACH_FIRST_CHAMBER_Y, APPROACH_FIRST_CHAMBER_HEADING);
+
+        // Construct a first chamber pose.
+        Pose2d firstChamberPose = new Pose2d(FIRST_CHAMBER_X, FIRST_CHAMBER_Y, FIRST_CHAMBER_HEADING);
+
+        // Construct an approach second chamber pose.
+        Pose2d approachSecondChamberPose = new Pose2d(APPROACH_SECOND_CHAMBER_X, APPROACH_SECOND_CHAMBER_Y, APPROACH_SECOND_CHAMBER_HEADING);
+
+        // Construct a second chamber pose.
+        Pose2d secondChamberPose = new Pose2d(SECOND_CHAMBER_X, SECOND_CHAMBER_Y, SECOND_CHAMBER_HEADING);
+
+        // Construct an approach third chamber pose.
+        Pose2d approachThirdChamberPose = new Pose2d(APPROACH_THIRD_CHAMBER_X, APPROACH_THIRD_CHAMBER_Y, APPROACH_THIRD_CHAMBER_HEADING);
+
+        // Construct a third chamber pose.
+        Pose2d thirdChamberPose = new Pose2d(THIRD_CHAMBER_X, THIRD_CHAMBER_Y, THIRD_CHAMBER_HEADING);
+
+        // Construct trajectories.
+        //////////////////////////////////////////////////////////////////////
+
+        // Construct a drive from start to chamber trajectory.
+        TrajectoryActionBuilder driveFromStartToChamberBuilder = drive.actionBuilder(startPose)
+                .strafeTo(chamberPose.position, preloadVelocityConstraint);
+        Action driveFromStartToChamber = driveFromStartToChamberBuilder.build();
+
+        // Construct a drive from chamber to first spike mark trajectory.
+        TrajectoryActionBuilder driveFromChamberToFirstSpikeMarkBuilder = driveFromStartToChamberBuilder.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToConstantHeading(firstSpikeMarkPose.position, FIRST_SPIKE_MARK_END_TANGENT, firstSpikeMarkVelocityConstraint);
+        Action driveFromChamberToFirstSpikeMark = driveFromChamberToFirstSpikeMarkBuilder.build();
+
+        // Construct a drive from first spike mark to drop to second spike mark trajectory.
+        TrajectoryActionBuilder driveFromFirstSpikeMarkToDropToSecondSpikeMarkBuilder = driveFromChamberToFirstSpikeMarkBuilder.endTrajectory().fresh()
+                .strafeTo(dropPose.position)
+                .setTangent(Math.toRadians(90))
+                .splineToConstantHeading(secondSpikeMarkPose.position, SECOND_SPIKE_MARK_END_TANGENT);
+        Action driveFromFirstSpikeMarkToDropToSecondSpikeMark = driveFromFirstSpikeMarkToDropToSecondSpikeMarkBuilder.build();
+
+        // Construct a drive from second spike mark to pick up trajectory.
+        TrajectoryActionBuilder driveFromSecondSpikeMarkToPickUpBuilder = driveFromFirstSpikeMarkToDropToSecondSpikeMarkBuilder.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToConstantHeading(approachPickUpPose.position, APPROACH_PICK_UP_TANGENT, pickUpVelocityConstraint)
+                .splineToConstantHeading(firstPickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
+        Action driveFromSecondSpikeMarkToPickUp = driveFromSecondSpikeMarkToPickUpBuilder.build();
+
+        // Construct a drive from pick up to first chamber trajectory.
+        TrajectoryActionBuilder driveFromPickUpToFirstChamberBuilder = driveFromSecondSpikeMarkToPickUpBuilder.endTrajectory().fresh()
+                .setTangent(CHAMBER_TANGENT)
+                .splineToConstantHeading(approachFirstChamberPose.position, CHAMBER_TANGENT, firstChamberVelocityConstraint)
+                .splineToConstantHeading(firstChamberPose.position, CHAMBER_TANGENT, firstChamberVelocityConstraint);
+        Action driveFromPickUpToFirstChamber = driveFromPickUpToFirstChamberBuilder.build();
+
+        // Construct a drive from first chamber to pick up trajectory.
+        TrajectoryActionBuilder driveFromFirstChamberToPickUpBuilder = driveFromPickUpToFirstChamberBuilder.endTrajectory().fresh()
+                .setTangent(PICK_UP_TANGENT)
+                .splineToConstantHeading(approachPickUpPose.position, APPROACH_PICK_UP_TANGENT, pickUpVelocityConstraint)
+                .splineToConstantHeading(firstPickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
+        Action driveFromFirstChamberToPickUp = driveFromFirstChamberToPickUpBuilder.build();
+
+        // Construct a drive from pick up to second chamber trajectory.
+        TrajectoryActionBuilder driveFromPickUpToSecondChamberBuilder = driveFromFirstChamberToPickUpBuilder.endTrajectory().fresh()
+                .setTangent(CHAMBER_TANGENT)
+                .splineToConstantHeading(approachSecondChamberPose.position, CHAMBER_TANGENT, secondChamberVelocityConstraint)
+                .splineToConstantHeading(secondChamberPose.position, CHAMBER_TANGENT, secondChamberVelocityConstraint);
+        Action driveFromPickUpToSecondChamber = driveFromPickUpToSecondChamberBuilder.build();
+
+        // Construct a drive from second chamber to pick up trajectory.
+        TrajectoryActionBuilder driveFromSecondChamberToPickUpBuilder = driveFromPickUpToSecondChamberBuilder.endTrajectory().fresh()
+                .setTangent(PICK_UP_TANGENT)
+                .splineToConstantHeading(approachPickUpPose.position, APPROACH_PICK_UP_TANGENT, pickUpVelocityConstraint)
+                .splineToConstantHeading(secondPickUpPose.position, PICK_UP_TANGENT, pickUpVelocityConstraint);
+        Action driveFromSecondChamberToPickUp = driveFromSecondChamberToPickUpBuilder.build();
+
+        // Construct a drive from pick up to third chamber trajectory.
+        TrajectoryActionBuilder driveFromPickUpToThirdChamberBuilder = driveFromSecondChamberToPickUpBuilder.endTrajectory().fresh()
+                .setTangent(CHAMBER_TANGENT)
+                .splineToConstantHeading(approachThirdChamberPose.position, CHAMBER_TANGENT, thirdChamberVelocityConstraint)
+                .splineToConstantHeading(thirdChamberPose.position, CHAMBER_TANGENT, thirdChamberVelocityConstraint);
+        Action driveFromPickUpToThirdChamber = driveFromPickUpToThirdChamberBuilder.build();
+
+        // Construct a drive nowhere trajectory.
+        Action driveNowhere = new SequentialAction();
+
+        // Construct a main action.
+        //////////////////////////////////////////////////////////////////////
+
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        // Construct a main action.
+        Action mainAction = new SequentialAction(
+
+                // Score the preloaded specimen and drive to the first spike mark.
+                scoreAndDrive(driveFromStartToChamber, driveFromChamberToFirstSpikeMark, Arm.AUTO_SPECIMEN_POSITION, true),
+
+                // Grab the first spike mark sample.
+                grabSample(),
+
+                // Deliver the first spike mark sample and grab the second spike mark sample.
+                new ParallelAction(
+                        driveFromFirstSpikeMarkToDropToSecondSpikeMark,
+                        new InstantAction(() -> robotHardware.setMinimumExtension()),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.MEDIUM_INCREMENT),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
+                        new SequentialAction(
+                                new WaitForTime(1000),
+                                new InstantAction(() -> robotHardware.openBigClaw()),
+                                new WaitForTime(200),
+                                new InstantAction(() -> robotHardware.setWristSubmersiblePosition()),
+                                new InstantAction(() -> robotHardware.setAutoExtension()),
+                                new MoveArm(robotHardware, Arm.AUTO_SPECIMEN_POSITION, MoveArm.MEDIUM_INCREMENT),
+                                new WaitForTime(100)
+                        )
+                ),
+
+                // Grab the first spike mark sample.
+                grabSample(),
+
+                // Deliver the second spike mark sample and drive to the pick up location.
+                new ParallelAction(
+                        driveFromSecondSpikeMarkToPickUp,
+                        new InstantAction(() -> robotHardware.setMinimumExtension()),
+                        new MoveArm(robotHardware, Arm.WALL_POSITION, MoveArm.MEDIUM_INCREMENT),
+                        new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
+                        new SequentialAction(
+                                new WaitForTime(1100),
+                                new InstantAction(() -> robotHardware.openBigClaw())
+                        )
+                ),
+
+                // Pick up specimen.
+                pickUpSpecimen(),
+
+                // Score the first specimen and drive to the wall.
+                scoreAndDrive(driveFromPickUpToFirstChamber, driveFromFirstChamberToPickUp, Arm.WALL_POSITION, false),
+
+                // Pick up specimen.
+                pickUpSpecimen(),
+
+                // Score the second specimen and drive to the wall.
+                scoreAndDrive(driveFromPickUpToSecondChamber, driveFromSecondChamberToPickUp, Arm.WALL_POSITION, false),
+
+                // Pick up specimen.
+                pickUpSpecimen(),
+
+                // Score the third specimen.
+                scoreAndDrive(driveFromPickUpToThirdChamber, driveNowhere, Arm.WALL_POSITION, false)
+
+        );
+
+        // Return the main action.
+        return mainAction;
+
+    }
+
+    // Scores a specimen and then drives to a destination.
+    private Action scoreAndDrive(Action driveToChamber, Action driveToDestination, int finalArmPosition, boolean isPreload) {
+
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        // Construct an action.
+        Action action = new SequentialAction(
+
+                // Drive to the chamber while raising the specimen.
+                new ParallelAction(
+                        new SequentialAction(
+                                new WaitForTime(250),
+                                driveToChamber
+                        ),
+                        robotHardware.raiseToChamber()
+                ),
+
+                // Score the specimen.
+                new InstantAction(() -> robotHardware.openSmallClaw()),
+                new WaitForTime(100),
+                new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)),
+
+                // Drive to the destination while lowering the arm.
+                new ParallelAction(
+                        driveToDestination,
+                        new SequentialAction(
+                                new WaitForTime(isPreload ? 1000 : 800),
+                                new ParallelAction(
+                                        new InstantAction(() -> robotHardware.setLiftGroundPosition()),
+                                        finalArmPosition == Arm.WALL_POSITION ?
+                                                new InstantAction(() -> robotHardware.setMinimumExtension()) :
+                                                new InstantAction(() -> robotHardware.setAutoExtension()),
+                                        new InstantAction(() -> robotHardware.openBigClaw()),
+                                        new InstantAction(() -> robotHardware.swivelSetHorizontal()),
+                                        new MoveArm(robotHardware, finalArmPosition, MoveArm.MEDIUM_INCREMENT),
+                                        finalArmPosition == Arm.WALL_POSITION ?
+                                                new InstantAction(() -> robotHardware.setWristWallPosition(tallWalls)) :
+                                                new InstantAction(() -> robotHardware.setWristSubmersiblePosition())
+                                )
+                        )
+                ),
+
+                // Wait for the arm to settle.
+                new WaitForTime(100)
+
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Grabs a sample from a spike mark.
+    private Action grabSample() {
+
+        // Construct an action.
+        Action action = new SequentialAction(
+                new MoveArm(robotHardware, Arm.SUBMERSIBLE_GRAB_POSITION, MoveArm.MEDIUM_INCREMENT),
+                new WaitForTime(100),
+                new InstantAction(() -> robotHardware.closeBigClaw()),
+                new WaitForTime(250)
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Picks up a specimen from the wall.
+    private Action pickUpSpecimen() {
+
+        // Construct an action.
+        Action action = new SequentialAction(
+                new InstantAction(() -> robotHardware.closeBigClaw()),
+                new WaitForTime(250)
+        );
+
+        // Return the action.
+        return action;
+
+    }
+
+    // Adds telemetry.
+    private void addTelemetry() {
+
+        // Get a banner.
+        String banner = getBanner(BLUE_SQUARE);
+
+        // Get the tall walls value.
+        boolean tallWalls = robotHardware.getTallWalls();
+
+        // Construct a walls string.
+        String walls = tallWalls ? "Tall" : "Short";
+
+        // Display main telemetry.
+        telemetry.addData("AutoSpecimen", banner);
+        telemetry.addData("- Walls", walls);
+
+    }
+
+}

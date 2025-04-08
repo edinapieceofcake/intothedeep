@@ -1,42 +1,46 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
 @Disabled
 public class LiftTest extends LinearOpMode {
-    private DcMotor leftLift, rightLift;
-
-    public void runOpMode() {
-        leftLift = hardwareMap.get(DcMotor.class, "left_lift_motor");
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rightLift = hardwareMap.get(DcMotor.class, "right_lift_motor");
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
-
+    public void runOpMode() throws InterruptedException {
+        RobotHardware hw = new RobotHardware(this);
+        LiftActions liftActions = new LiftActions(hw);
+        TelemetryPacket telemetryPacket = new TelemetryPacket();
+        FtcDashboard ftcDashboard = FtcDashboard.getInstance();
 
         waitForStart();
 
+        Action raise = new SequentialAction(
+                liftActions.setTarget(14),
+                liftActions.holdPos(14)
+        );
+
+        Action lower = new SequentialAction(
+                liftActions.setTarget(0.3),
+                liftActions.holdPos(0)
+        );
+
         while (opModeIsActive()) {
+            telemetryPacket.put("current draw", liftActions.getVMech().getCurrent());
+            telemetryPacket.put("position", liftActions.getVMech().getPositionAndVelocity(false).get(0));
+
             if (gamepad1.dpad_up) {
-                leftLift.setPower(1);
-                //rightLift.setPower(1);
-            } else if (gamepad1.dpad_down) {
-                leftLift.setPower(-1);
-                //rightLift.setPower(-1);
-            } else {
-                leftLift.setPower(0.0);
-                //rightLift.setPower(0.0);
+                raise.run(new TelemetryPacket());
+            }
+            if (gamepad1.dpad_down) {
+                lower.run(new TelemetryPacket());
             }
 
-            telemetry.addData("leftLift", leftLift.getCurrentPosition());
-            telemetry.addData("rightLift", rightLift.getCurrentPosition());
-            telemetry.update();
+            ftcDashboard.sendTelemetryPacket(telemetryPacket);
         }
     }
 }

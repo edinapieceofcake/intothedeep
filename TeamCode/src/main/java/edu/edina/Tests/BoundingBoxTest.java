@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import edu.edina.Libraries.Robot.GamePadClick;
 import edu.edina.Libraries.Robot.RobotHardware;
 
+@Disabled
 @TeleOp
 public class BoundingBoxTest extends LinearOpMode {
     @Override
@@ -18,13 +19,13 @@ public class BoundingBoxTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             c.read();
-            if (c.a)
-                hw.toggleWrist();
+            //if (c.a)
+                //hw.toggleWrist();
 
-            hw.getFailsafe().updateSensorsForTestEventuallyRemoveThisMethod();
-            hw.getFailsafe().apply();
+//            hw.getFailsafe().updateSensorsForTestEventuallyRemoveThisMethod();
+//            hw.getFailsafe().apply();
 
-            hw.getFailsafe().addToTelemetry(telemetry);
+//            hw.getFailsafe().addToTelemetry(telemetry);
             telemetry.update();
         }
     }

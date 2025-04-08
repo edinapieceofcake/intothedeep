@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TrackingServo {
@@ -37,5 +38,12 @@ public class TrackingServo {
         double estTravelTime = Math.abs(tgtPos - prevPos) * fullRangeTime;
         double x = Math.min(elapsedTime / estTravelTime, 1);
         return (tgtPos - prevPos) * x + prevPos;
+    }
+
+    public void turnOff() {
+        ((ServoImplEx) s).setPwmDisable();
+    }
+    public void turnOn() {
+        ((ServoImplEx) s).setPwmEnable();
     }
 }

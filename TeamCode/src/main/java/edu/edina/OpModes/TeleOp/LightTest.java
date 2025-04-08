@@ -1,37 +1,39 @@
 package edu.edina.OpModes.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.SampleColor;
+import edu.edina.Libraries.Robot.SampleSensor;
 
 @TeleOp
+@Disabled
+//@Disabled
 public class LightTest extends LinearOpMode {
     private Light light;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        light = new Light(hardwareMap, null);
-
+        SampleSensor sampleSensor = new SampleSensor(hardwareMap);
+        light = new Light(hardwareMap, sampleSensor);
+        
         waitForStart();
 
+        ElapsedTime t = new ElapsedTime();
         while (opModeIsActive()) {
-            if (gamepad1.y)
-                setColor(SampleColor.YELLOW);
-            else if (gamepad1.b)
-                setColor(SampleColor.RED);
-            else if (gamepad1.x)
-                setColor(SampleColor.BLUE);
-            else
-                setColor(SampleColor.NOTHING);
+            telemetry.addData("time", "%.2f", t.seconds());
 
-            light.update();
+//            SampleColor sampleColor = sampleSensor.detectSampleColor();
+//
+//            telemetry.addData("sample color", sampleColor);
+            telemetry.update();
+
+            light.update(true, true);
         }
-    }
-
-    public void setColor(SampleColor sampleColor) {
-        light.setSampleColor();
     }
 }

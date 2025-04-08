@@ -3,6 +3,7 @@ package edu.edina.Tests;
 import android.graphics.Color;
 import android.view.View;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import android.app.Activity;
@@ -15,6 +16,7 @@ import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.SampleColor;
 
 @TeleOp
+@Disabled
 public class ColorSensorLightTest extends LinearOpMode {
     private Light light;
     private NormalizedColorSensor colorSensor;
@@ -93,7 +95,7 @@ public class ColorSensorLightTest extends LinearOpMode {
 //            else
 //                setColor(SampleColor.NOTHING);
 
-            light.update();
+            light.update(false, true);
 
             telemetry.update();
 

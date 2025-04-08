@@ -19,62 +19,56 @@ public class Arm {
     // Feedforward coefficient
     public static double FEEDFORWARD = 0.1;
 
-    // High basket position
-    public static int HIGH_BASKET_POSITION = 3000;
+    // Ground position
+    public static int GROUND_POSITION = 0;
+
+    // Basket position
+    public static int BASKET_POSITION = 1800;
 
     // Integral coefficient
     public static double INTEGRAL = 0;
 
     // Initial degrees below horizontal (determined experimentally)
-    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 26;
-
-    // Low basket position
-    public static int LOW_BASKET_POSITION = 2700;
+    public static double INITIAL_DEGREES_BELOW_HORIZONTAL = 11;
 
     // Maximum position
-    public static int MAXIMUM_POSITION = 6000;
-
-    // Minimum position
-    public static int MINIMUM_POSITION = -200;
-
-    // Ground position
-    public static int GROUND_POSITION = MINIMUM_POSITION;
-
-    // Nearly down position threshold
-    public static int NEARLY_DOWN_POSITION = 100;
+    public static int MAXIMUM_POSITION = 4500;
 
     // Proportional coefficient
     public static double PROPORTIONAL = 0.0008;
 
     // Position increment (ticks)
-    public static int POSITION_INCREMENT = 275;
+    public static int POSITION_INCREMENT = 50;
 
     // Rezeroing power
     public static double REZEROING_POWER = -0.3;
 
-    // Submersible position
-    public static int SUBMERSIBLE_POSITION = 4700;
+    // Submersible enter position
+    public static int SUBMERSIBLE_ENTER_POSITION = 4100;
 
-    // Submersible position threshold
-    public static int SUBMERSIBLE_POSITION_THRESHOLD = 1000;
+    // Submersible hover position
+    public static int SUBMERSIBLE_HOVER_POSITION = SUBMERSIBLE_ENTER_POSITION;
+
+    // Submersible grab position
+    public static int SUBMERSIBLE_GRAB_POSITION = 4450;
+
+    // Submersible button position
+    public static int SUBMERSIBLE_BUTTON_POSITION = 4700;
+
+    // Auto specimen position
+    public static int AUTO_SPECIMEN_POSITION = 4000;
 
     // Ticks per degree (determined experimentally)
     public static double TICKS_PER_DEGREE = 23.3;
 
     // Wall position
-    public static int WALL_POSITION = 400;
+    public static int WALL_POSITION = -400;
 
-    // High Chamber Position
-    public static int HIGH_CHAMBER_POSITION = 3000;
-
-    // Low Chamber Position
-    public static int LOW_CHAMBER_POSITION = 4150;
+    // Chamber position
+    public static int CHAMBER_POSITION = 4600;
 
     // Ascent position
-    public static int ASCENT_POSITION = 700;
-
-    // Wrist extension limit threshold
-    public static int WRIST_EXTENSION_LIMIT_THRESHOLD = 1300;
+    public static int ASCENT_POSITION = 200;
 
     // Busy threshold
     public static int BUSY_THRESHOLD = 600;
@@ -95,7 +89,11 @@ public class Arm {
     private int targetPosition;
 
     // Touch sensor
-    private final TouchSensor touch;
+    private final TouchSensor touchFront;
+    private final TouchSensor touchBack;
+
+    // Position correction
+    private int positionCorrection;
 
     // Initializes this.
     public Arm(RobotHardware robotHardware) {
@@ -113,13 +111,14 @@ public class Arm {
         motor = hardwareMap.get(DcMotorEx.class, "arm_motor");
 
         // Reverse the motor.
-        motor.setDirection(DcMotorEx.Direction.REVERSE);
+        motor.setDirection(DcMotorEx.Direction.FORWARD);
 
         // Reset the motor.
         reset();
 
         // Get the touch sensor.
-        touch = hardwareMap.get(TouchSensor.class, "arm_touch");
+        touchFront = hardwareMap.get(TouchSensor.class, "arm_touch_front");
+        touchBack = hardwareMap.get(TouchSensor.class, "arm_touch_back");
 
         // Initialize the arm controller.
         controller = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
@@ -137,10 +136,10 @@ public class Arm {
 
         // Determine the appropriate arm power.
         controller.setPID(PROPORTIONAL, INTEGRAL, DERIVATIVE);
-        int currentPosition = motor.getCurrentPosition();
-        double currentDegrees = getDegrees(currentPosition);
+        int correctedPosition = getCorrectedPosition();
+        double currentDegrees = getDegrees(correctedPosition);
         double currentRadians = Math.toRadians(currentDegrees);
-        double pid = controller.calculate(currentPosition, targetPosition);
+        double pid = controller.calculate(correctedPosition, targetPosition);
         double targetDegrees = getDegrees(targetPosition);
         double feedForward = Math.cos(currentRadians) * FEEDFORWARD;
         double power = pid + feedForward;
@@ -149,7 +148,7 @@ public class Arm {
         //////////////////////////////////////////////////////////////////////
 
         // If we are rezeroing...
-        if(rezeroing) {
+        if (rezeroing) {
 
             // Use the rezeroing power.
             motor.setPower(REZEROING_POWER);
@@ -167,14 +166,28 @@ public class Arm {
         // Reset the arm if appropriate
         //////////////////////////////////////////////////////////////////////
 
-        // Determine whether the arm is down.
-        boolean down = touch.isPressed();
+        // Determine whether the front button is down.
+        boolean frontDown = touchFront.isPressed();
 
-        // If the arm is down...
-        if (down) {
+        // If we finished lowering the arm...
+        if (targetPosition == WALL_POSITION && frontDown) {
 
             // Reset the arm motor.
             reset();
+
+        }
+
+        // Determine whether the back button is down.
+        boolean backDown = touchBack.isPressed();
+
+        // If the back button is down...
+        if(backDown) {
+
+            // Get the uncorrected position.
+            int uncorrectedPosition = getUncorrectedPosition();
+
+            // Update the position correction.
+            positionCorrection = MAXIMUM_POSITION - uncorrectedPosition;
 
         }
 
@@ -194,9 +207,11 @@ public class Arm {
         telemetry.addData("Arm", "====================");
         telemetry.addData("- Busy", isBusy);
         telemetry.addData("- Current Degrees", currentDegrees);
-        telemetry.addData("- Current Position", currentPosition);
-        telemetry.addData("- Down", down);
+        telemetry.addData("- Current Position", correctedPosition);
+        telemetry.addData("- Front Down", frontDown);
+        telemetry.addData("- Back Down", backDown);
         telemetry.addData("- Feedforward", feedForward);
+        telemetry.addData("- Position Correction", positionCorrection);
         telemetry.addData("- PID", pid);
         telemetry.addData("- Power", power);
         telemetry.addData("- Target Degrees", targetDegrees);
@@ -222,7 +237,7 @@ public class Arm {
         LinearOpMode opMode = robotHardware.getOpMode();
 
         // While the arm is up...
-        while (!opMode.isStopRequested() && !touch.isPressed()) {
+        while (!opMode.isStopRequested() && !touchFront.isPressed()) {
 
             // Instruct the user to lower the arm.
             robotHardware.log("Please lower the arm...");
@@ -245,13 +260,19 @@ public class Arm {
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+        // Set the target position to the ground position.
+        targetPosition = GROUND_POSITION;
+
+        // Reset the position correction.
+        positionCorrection = 0;
+
     }
 
     // Decrements the arm position.
     public void decrementPosition() {
 
         // If the arm is fully lowered...
-        if(targetPosition - POSITION_INCREMENT < MINIMUM_POSITION) {
+        if (targetPosition - POSITION_INCREMENT < WALL_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -270,7 +291,7 @@ public class Arm {
     public void incrementPosition() {
 
         // If the arm is fully raised...
-        if(targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
+        if (targetPosition + POSITION_INCREMENT > MAXIMUM_POSITION) {
 
             // Notify the user.
             robotHardware.beep();
@@ -285,8 +306,20 @@ public class Arm {
 
     }
 
-    public int getCurrentPosition() {
+    // Gets the corrected position.
+    public int getCorrectedPosition() {
+
+        // Return the corrected position.
+        return getUncorrectedPosition() + positionCorrection;
+
+    }
+
+    // Gets the uncorrected position.
+    private int getUncorrectedPosition() {
+
+        // Return the uncorrected position.
         return motor.getCurrentPosition();
+
     }
 
     public void overridePower(double power) {
@@ -301,58 +334,6 @@ public class Arm {
 
     }
 
-    public boolean isHighRung() {
-        return targetPosition == HIGH_CHAMBER_POSITION;
-    }
-
-    // Moves the arm to the ground position.
-    public void setGroundPosition() {
-
-        // Move the arm to the ground position.
-        targetPosition = GROUND_POSITION;
-
-    }
-
-    // Moves the arm to the low basket position.
-    public void setLowBasketPosition() {
-
-        // Move the arm to the low basket position.
-        targetPosition = LOW_BASKET_POSITION;
-
-    }
-
-    // Moves the arm to the high basket position.
-    public void setHighBasketPosition() {
-
-        // Move the arm to the high basket position.
-        targetPosition = HIGH_BASKET_POSITION;
-
-    }
-
-    // Moves the arm to the high chamber position.
-    public void setHighChamberPosition() {
-
-        // Move the arm to the high chamber position.
-        targetPosition = HIGH_CHAMBER_POSITION;
-
-    }
-
-    // Moves the arm to the low chamber position.
-    public void setLowChamberPosition() {
-
-        // Move the arm to the low chamber position.
-        targetPosition = LOW_CHAMBER_POSITION;
-
-    }
-
-    // Moves the arm to the submersible position.
-    public void setSubmersiblePosition() {
-
-        // Move the arm to the submersible position.
-        targetPosition = SUBMERSIBLE_POSITION;
-
-    }
-
     // Moves the arm to the ascent position.
     public void setAscentPosition() {
 
@@ -361,22 +342,11 @@ public class Arm {
 
     }
 
-    // Determines whether the arm is nearly down.
-    public boolean isNearlyDown() {
-
-        // Determine whether the arm is nearly down.
-        boolean isNearlyDown = targetPosition <= NEARLY_DOWN_POSITION;
-
-        // Return the result.
-        return isNearlyDown;
-
-    }
-
     // Determines whether the arm is busy.
     public boolean isBusy() {
 
         // Get the arm's current position.
-        int currentPosition = motor.getCurrentPosition();
+        int currentPosition = getCorrectedPosition();
 
         // Get the position difference.
         int difference = Math.abs(currentPosition - targetPosition);
@@ -384,81 +354,6 @@ public class Arm {
         // Return indicating if the arm is busy.
         return difference >= BUSY_THRESHOLD;
 
-    }
-
-    // Determines whether the arm is in the submersible position.
-    public boolean isInSubmersiblePosition() {
-
-        // Determine whether the arm is in the submersible position.
-        boolean isInSubmersiblePosition = targetPosition == SUBMERSIBLE_POSITION;
-
-        // Return the result.
-        return isInSubmersiblePosition;
-
-    }
-
-    // Determines whether the arm is near the submersible position.
-    public boolean isNearSubmersiblePosition() {
-
-        // Determine whether the arm is near the submersible position.
-        boolean isNearSubmersiblePosition = Math.abs(targetPosition - SUBMERSIBLE_POSITION) <= SUBMERSIBLE_POSITION_THRESHOLD;
-
-        // Return the result.
-        return isNearSubmersiblePosition;
-
-    }
-
-
-    // Determines whether the arm is in the ground position.
-    public boolean isInGroundPosition() {
-
-        // Determine whether the arm is in the ground position.
-        boolean isInGroundPosition = targetPosition == GROUND_POSITION;
-
-        // Return the result.
-        return isInGroundPosition;
-
-    }
-
-    // Determines whether the arm is in the low basket position.
-    public boolean isInLowBasketPosition() {
-
-        // Determine whether the arm is in the low basket position.
-        boolean isInLowBasketPosition = targetPosition == LOW_BASKET_POSITION;
-
-        // Return the result.
-        return isInLowBasketPosition;
-
-    }
-
-    // Determines whether the arm is in the high basket position.
-    public boolean isInHighBasketPosition() {
-
-        // Determine whether the arm is in the high basket position.
-        boolean isInHighBasketPosition = targetPosition == HIGH_BASKET_POSITION;
-
-        // Return the result.
-        return isInHighBasketPosition;
-
-    }
-
-    // Determines whether the arm is in the high chamber position.
-    public boolean isInHighChamberPosition() {
-
-        // Determine whether the arm is in the high chamber position.
-        boolean isInHighChamberPosition = targetPosition == HIGH_CHAMBER_POSITION;
-
-        // Return the result.
-        return isInHighChamberPosition;
-
-    }
-
-    public boolean isInLowBar() {
-        return targetPosition == LOW_CHAMBER_POSITION;
-    }
-
-    public boolean isInHighBar() {
-        return targetPosition == HIGH_CHAMBER_POSITION;
     }
 
     // Starts rezeroing.
@@ -473,7 +368,7 @@ public class Arm {
     public void stopRezeroing() {
 
         // If we are not rezeroing...
-        if(!rezeroing) {
+        if (!rezeroing) {
 
             // Exit the method.
             return;
@@ -485,7 +380,6 @@ public class Arm {
 
         // Stop rezeroing.
         rezeroing = false;
-
     }
 
 }

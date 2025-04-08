@@ -14,10 +14,8 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.internal.camera.libuvc.api.UvcApiExposureControl;
 
 @Config
 public class BoundingBoxFailsafe {
@@ -49,10 +47,10 @@ public class BoundingBoxFailsafe {
         this.slide = slide;
     }
 
-    // use a globally-updated sensor caching mechanism instead, eventually
-    public void updateSensorsForTestEventuallyRemoveThisMethod() {
-        slide.updateVoltage();
-    }
+//    // use a globally-updated sensor caching mechanism instead, eventually
+//    public void updateSensorsForTestEventuallyRemoveThisMethod() {
+//        slide.updateVoltage();
+//    }
 
     public void apply() {
         if (DISABLE)
@@ -71,8 +69,8 @@ public class BoundingBoxFailsafe {
                 arm.overridePower(-1);
             }
 
-            wrist.raise();
-            slide.overridePower(-1);
+            //wrist.raise();
+//            slide.overridePower(-1);
         } else if (maxExtent > BOUNDING_BOX_MAX) {
             if (p.armDeg > 0) {
                 arm.overridePower(1);
@@ -80,8 +78,8 @@ public class BoundingBoxFailsafe {
                 arm.overridePower(-1);
             }
 
-            wrist.raise();
-            slide.overridePower(-1);
+            //wrist.raise();
+//            slide.overridePower(-1);
         }
     }
 
@@ -110,12 +108,12 @@ public class BoundingBoxFailsafe {
     }
 
     private double getArmPosition() {
-        double p = arm.getCurrentPosition();
+        double p = arm.getCorrectedPosition();
         return p / Arm.TICKS_PER_DEGREE - Arm.INITIAL_DEGREES_BELOW_HORIZONTAL;
     }
 
     private double getSlidePosition() {
-        return slide.getPosition() + MIN_SLIDE_LENGTH;
+        return 0;
     }
 
     private double getLiftPosition() {
@@ -125,7 +123,7 @@ public class BoundingBoxFailsafe {
     private double getWristPosDeg() {
         double p = wrist.getEstimatedPosition();
         double deg = interp(p,
-                Wrist.DOWN_POSITION, Wrist.UP_POSITION,
+                Wrist.TALL_WALL_POSITION, Wrist.BASKET_POSITION,
                 WRIST_DOWN_POSITION_DEG, WRIST_UP_POSITION_DEG);
         return deg;
     }
