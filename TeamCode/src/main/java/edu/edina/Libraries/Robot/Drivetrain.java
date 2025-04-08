@@ -15,12 +15,15 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import edu.edina.Libraries.Actions.ContinuousBooleanTest;
 import edu.edina.Libraries.Angle;
 
 // This represents a drivetrain.
 @Config
 public class Drivetrain {
     public static double ALIGNMENT_NORM_MIN = 10;
+
+    private ContinuousBooleanTest booleanTest;
 
     // Normal multiplier
     public static double NORMAL_MULTIPLIER = 1;
@@ -32,6 +35,8 @@ public class Drivetrain {
     public static double MAX_PURSUIT_INCHES = 10;
     public static double YAW_DEADZONE = 0.1;
     public static double HEADING_P_COEF = 2;
+
+    public static int MILISECOND = 200;
 
     // Turtle multiplier
     public static double SNAIL_MULTIPLIER = 0.3;
@@ -65,6 +70,7 @@ public class Drivetrain {
 
     // Initializes this.
     public Drivetrain(LinearOpMode opMode) {
+        booleanTest = new ContinuousBooleanTest(MILISECOND);
 
         // Remember the op mode.
         this.opMode = opMode;
@@ -101,6 +107,8 @@ public class Drivetrain {
     private Pose2d refPose;
 
     public void update2() {
+
+
         if (opMode.gamepad1.left_trigger > 0.6) {
             for (DcMotorEx motor : motors) {
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -135,7 +143,8 @@ public class Drivetrain {
 
         //if turning robot change heading and update target
         //if not pushing stick then maintain target heading
-        if (Math.abs(opMode.gamepad1.right_stick_x) > YAW_DEADZONE) {
+        boolean nowInDeadZone = Math.abs(opMode.gamepad1.right_stick_x) > YAW_DEADZONE);
+        if (booleanTest.update(nowInDeadZone)) {
             yawPower = opMode.gamepad1.right_stick_x;
             newRefHead = currPose.heading;
         } else {
