@@ -36,7 +36,7 @@ public class Drivetrain {
     public static double YAW_DEADZONE = 0.1;
     public static double HEADING_P_COEF = 2;
 
-    public static int MILISECOND = 200;
+    public static int MILISECOND = 300;
 
     // Turtle multiplier
     public static double SNAIL_MULTIPLIER = 0.3;
@@ -143,13 +143,13 @@ public class Drivetrain {
 
         //if turning robot change heading and update target
         //if not pushing stick then maintain target heading
-        boolean nowInDeadZone = Math.abs(opMode.gamepad1.right_stick_x) > YAW_DEADZONE);
+        boolean nowInDeadZone = Math.abs(opMode.gamepad1.right_stick_x) < YAW_DEADZONE;
         if (booleanTest.update(nowInDeadZone)) {
-            yawPower = opMode.gamepad1.right_stick_x;
-            newRefHead = currPose.heading;
-        } else {
+            // set the power using PID
             double radDiff = Angle.radianDiff(currPose.heading.toDouble(), refPose.heading.toDouble());
             yawPower = HEADING_P_COEF * radDiff;
+
+            // update reference heading
             double norm = vel.norm();
             if (opMode.gamepad1.b && norm > ALIGNMENT_NORM_MIN) {
                 Vector2d unitVel = vel.div(norm);
@@ -161,6 +161,12 @@ public class Drivetrain {
             } else {
                 newRefHead = refPose.heading;
             }
+        } else {
+            // set the power manually
+            yawPower = opMode.gamepad1.right_stick_x;
+
+            // current heading *becomes* the reference heading
+            newRefHead = currPose.heading;
         }
 
         RobotLog.ii(tag, "ref heading = %.1f act heading = %.1f",
