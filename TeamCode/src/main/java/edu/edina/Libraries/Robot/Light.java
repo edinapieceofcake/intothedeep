@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Light {
     private byte[] pixArray;
-    private int numPixel;
     private NeoPixelDriverDevice neoPixel;
+    private NeoPixelDriverDevice.Params params;
     private ElapsedTime t, t2;
     private SampleColor sampleColor;
     private SampleSensor sampleSensor;
@@ -17,14 +17,18 @@ public class Light {
 
     public Light(HardwareMap hardwareMap, SampleSensor sampleSensor) {
         neoPixel = hardwareMap.get(NeoPixelDriverDevice.class, "neopixel_driver");
-        numPixel = NeoPixelDriverDevice.NUM_PIXELS;
-        pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
+
+        params = new NeoPixelDriverDevice.Params();
+        params.numPixels = 16;
+        neoPixel.initialize(params);
+
+        pixArray = new byte[params.getNumBytes()];
         t = new ElapsedTime();
         t2 = new ElapsedTime();
         this.sampleSensor = sampleSensor;
         LIGHT_MULT = 0.07;
-        chaseDirs = new int[] {1, 1};
-        currPixNums = new int[] {0, 16};
+        chaseDirs = new int[]{1, 1};
+        currPixNums = new int[]{0, 16};
     }
 
     public void update(boolean wave, boolean sample) {
@@ -43,13 +47,13 @@ public class Light {
             double greenTime = t.seconds() * 0.5;
             double greenFrequency = 1;
 
-            for (int n = 0; n < numPixel; n++) {
+            for (int n = 0; n < params.numPixels; n++) {
                 int blueByte = n * 3 + 2;
                 x = n * a;
                 pixArray[blueByte] = toByte(Math.sin(blueTime + x), -1, 1, 10, 140);
             }
 
-            for (int n = 0; n < numPixel; n++) {
+            for (int n = 0; n < params.numPixels; n++) {
                 int greenByte = n * 3;
                 x = greenFrequency * n;
                 pixArray[greenByte] = toByte(Math.sin(blueTime + x), -1, 1, 0, 90);
@@ -90,20 +94,20 @@ public class Light {
         if (t2.milliseconds() > 70) {
             t2.reset();
 
-            pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
+            pixArray = new byte[params.getNumBytes()];
 
-            for (int i = 0; i < chaseDirs.length; i++){
+            for (int i = 0; i < chaseDirs.length; i++) {
                 int currentPixelNumber = currPixNums[i];
                 int chaseDirection = chaseDirs[i];
 
-                if (currPixNums[i] < numPixel && currPixNums[i] >= 0) {
+                if (currPixNums[i] < params.numPixels && currPixNums[i] >= 0) {
                     currPixNums[i] += chaseDirs[i];
                 } else {
                     chaseDirs[i] = -chaseDirs[i];
                     currPixNums[i] += chaseDirs[i];
                 }
 
-                for (int n = 0; n < numPixel; n++) {
+                for (int n = 0; n < params.numPixels; n++) {
                     byte green = g;
                     byte red = r;
                     byte blue = b;

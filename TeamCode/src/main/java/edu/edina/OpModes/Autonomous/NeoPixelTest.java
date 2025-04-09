@@ -18,9 +18,13 @@ public class NeoPixelTest extends LinearOpMode {
     public void runOpMode() {
         NeoPixelDriverDevice neoPixel = hardwareMap.get(NeoPixelDriverDevice.class, "neopixel_driver");
 
+        NeoPixelDriverDevice.Params p = new NeoPixelDriverDevice.Params();
+        p.numPixels = 16;
+        neoPixel.initialize(p);
+
         waitForStart();
 
-        byte[] pixArray = new byte[NeoPixelDriverDevice.NUM_BYTES];
+        byte[] pixArray = new byte[p.getNumBytes()];
 
         Random r = new Random();
 
@@ -77,7 +81,6 @@ public class NeoPixelTest extends LinearOpMode {
             neoPixel.showColors(pixArray);
 
             telemetry.addData("time", t);
-            telemetry.addData("numWrites", neoPixel.getNumWrites());
             telemetry.update();
         }
     }
