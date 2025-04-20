@@ -30,7 +30,7 @@ public class LevelThreeTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             double rightStick = Math.signum(-gamepad1.right_stick_y) * Math.pow(-gamepad1.right_stick_y, 2);
-            double leftStick = Math.signum(-gamepad1.left_stick_y) * Math.pow(-gamepad1.right_stick_y, 2);
+            double leftStick = Math.signum(-gamepad1.left_stick_y) * Math.pow(-gamepad1.left_stick_y, 2);
             telemetry.addData("right stick", rightStick);
             telemetry.addData("left stick", leftStick);
             telemetry.addLine("--------");

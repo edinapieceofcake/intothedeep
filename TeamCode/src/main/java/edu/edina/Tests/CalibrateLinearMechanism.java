@@ -20,6 +20,7 @@ import edu.edina.Libraries.LinearMotion.TestMechanism;
 import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
+import edu.edina.Libraries.Robot.ArmMech;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
@@ -40,7 +41,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
-        linearMech = new MecanumLinearMechanism(hardwareMap);
+        linearMech = new ArmMech(hardwareMap);
 
         waitForStart();
 
