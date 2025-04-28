@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,21 +12,14 @@ import com.qualcomm.robotcore.util.RobotLog;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
-import edu.edina.Libraries.LinearMotion.ArmSwingMechanism;
-import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
-import edu.edina.Libraries.LinearMotion.TestMechanism;
-import edu.edina.Libraries.LinearMotion.VerticalExtensionMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
-import edu.edina.Libraries.Robot.ArmMech;
+import edu.edina.Libraries.Robot.Arm2;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
-import edu.edina.Libraries.Robot.MecanumLinearMechanism;
-import edu.edina.Libraries.Robot.RobotHardware;
 
 @TeleOp
 public class CalibrateLinearMechanism extends LinearOpMode {
@@ -41,7 +33,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
-        linearMech = new ArmMech(hardwareMap);
+        linearMech = new Arm2.Mechanism(hardwareMap);
 
         waitForStart();
 
