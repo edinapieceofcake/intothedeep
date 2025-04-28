@@ -8,24 +8,24 @@ import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
-import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.LinearMotion.IMotionControlLinearMechanism;
 
 // want to convert this to an action
 public class MotionControlAction implements Action {
     // 3. doneTime was just for debugging the python code, and can be removed
     private final double targetPos, targetVel;
+    private final IMotionControlLinearMechanism mechanism;
     private final MotionControlSettings settings;
     private final ElapsedTime etime;
-    private double prevTime;
+    private DualNum<Time> posAndVel;
+    private double prevTime, power;
 
     private boolean done;
 
     // eventually make a new version of this class
-    private ILinearMechanism linearMech;
 
-    public MotionControlAction(double targetPos, double targetVel, ILinearMechanism linearMech, MotionControlSettings settings) {
-        this.settings = settings;
+    public MotionControlAction(double targetPos, double targetVel, IMotionControlLinearMechanism mechanism) {
+        this.settings = mechanism.getMotionSettings();
 
         //if target velocity is away from target x, target velocity is zero
         if (Math.signum(targetPos) != Math.signum(targetVel)) {
@@ -34,28 +34,42 @@ public class MotionControlAction implements Action {
 
         this.targetPos = targetPos;
         this.targetVel = targetVel;
-        this.linearMech = linearMech;
+        this.mechanism = mechanism;
 
         etime = new ElapsedTime();
-        prevTime = 0;
+        prevTime = etime.seconds();
     }
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        if (done) {
-            return false;
-        } else {
-            DualNum<Time> posAndVel = linearMech.getPositionAndVelocity(false);
+        if (!done) {
+            posAndVel = mechanism.getPositionAndVelocity(false);
 
             double t = etime.seconds();
-            double power = drivePower(t, posAndVel.get(0), posAndVel.get(1));
-            linearMech.setPower(power);
+            double dt = t - prevTime;
             prevTime = t;
-            return true;
+
+            power = drivePower(dt, posAndVel.get(0), posAndVel.get(1));
+            mechanism.setPower(power);
         }
+
+        addTelemetry(telemetryPacket);
+
+        return !done;
     }
 
-    private double drivePower(double t, double x, double v) {
+    public void preview(@NonNull TelemetryPacket telemetryPacket) {
+        posAndVel = mechanism.getPositionAndVelocity(false);
+        addTelemetry(telemetryPacket);
+    }
+
+    private void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {
+        telemetryPacket.put("MotCon.pos", posAndVel.get(0));
+        telemetryPacket.put("MotCon.vel", posAndVel.get(1));
+        telemetryPacket.put("MotCon.power", power);
+    }
+
+    private double drivePower(double dt, double x, double v) {
         if (Math.abs(x - targetPos) < settings.posTolerance && Math.abs(v - targetVel) < settings.velTolerance) {
             done = true;
             return 0;
@@ -77,11 +91,8 @@ public class MotionControlAction implements Action {
         }
 
         double v1 = limitMagnitude(v0, settings.velLimit);
-        double dt = t - prevTime;
         double nextA = limitMagnitude((v1 - v) / dt / settings.pCoefficient, settings.accelLimit);
         double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
-
-        prevTime = t;
 
         return p;
     }

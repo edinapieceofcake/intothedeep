@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.LinearMotion.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
 
@@ -19,8 +19,13 @@ public class Arm2 {
     public static double KA = 3.21e-4;
     public static double POS_AT_180_DEG = 4100;
 
-    public static class Mechanism implements ILinearMechanism {
+    public static double VEL_LIMIT = 60;
+    public static double MAX_POWER = 0.6;
+    public static double POS_TOLERANCE = 5;
+    public static double VEL_TOLERANCE = 1;
+    public static double P = .01;
 
+    public static class Mechanism implements IMotionControlLinearMechanism {
         private final double posMult;
         private final DcMotorEx motor;
         private final Speedometer speedometer;
@@ -63,6 +68,14 @@ public class Arm2 {
         @Override
         public LinearMechanismSettings getSettings() {
             return new LinearMechanismSettings("arm", Units.DEGREES, KS, KV, KA, 40);
+        }
+
+        @Override
+        public MotionControlSettings getMotionSettings() {
+            return new MotionControlSettings(KS, KV, KA,
+                    VEL_LIMIT, MAX_POWER,
+                    POS_TOLERANCE, VEL_TOLERANCE,
+                    P);
         }
     }
 }
