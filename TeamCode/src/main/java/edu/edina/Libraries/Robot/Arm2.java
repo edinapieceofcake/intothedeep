@@ -12,13 +12,14 @@ import edu.edina.Libraries.LinearMotion.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
 
+@Config
 public class Arm2 {
-    @Config
+    public static double KS = 5.56e-2;
+    public static double KV = 8.81e-4;
+    public static double KA = 3.21e-4;
+    public static double POS_AT_180_DEG = 4100;
+
     public static class Mechanism implements ILinearMechanism {
-        public static double KS = 0;
-        public static double KV = 0;
-        public static double KA = 0;
-        public static double POS_AT_180_DEG = 0;
 
         private final double posMult;
         private final DcMotorEx motor;
@@ -29,7 +30,7 @@ public class Arm2 {
 
             speedometer = new Speedometer(3);
 
-            motor = hw.get(DcMotorEx.class, "extension_motor");
+            motor = hw.get(DcMotorEx.class, "arm_motor");
             motor.setDirection(DcMotorSimple.Direction.FORWARD);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -61,7 +62,7 @@ public class Arm2 {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return new LinearMechanismSettings("arm", Units.DEGREES, KS, KV, KA, 0);
+            return new LinearMechanismSettings("arm", Units.DEGREES, KS, KV, KA, 40);
         }
     }
 }
