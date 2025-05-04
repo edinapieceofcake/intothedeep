@@ -34,7 +34,7 @@ public class DataFile {
 
     public void println(String s) {
         if (out != null) {
-            out.print(s);
+            out.println(s);
             out.flush();
         }
     }
