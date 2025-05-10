@@ -45,6 +45,7 @@ import edu.edina.Libraries.RoadRunner.messages.DriveCommandMessage;
 import edu.edina.Libraries.RoadRunner.messages.MecanumCommandMessage;
 import edu.edina.Libraries.RoadRunner.messages.MecanumLocalizerInputsMessage;
 import edu.edina.Libraries.RoadRunner.messages.PoseMessage;
+import edu.edina.Libraries.Robot.OTOSLocalizer;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -239,7 +240,8 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+     //   localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+        localizer = new OTOSLocalizer(hardwareMap);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }

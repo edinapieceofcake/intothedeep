@@ -185,7 +185,7 @@ public class RobotHardware implements DrivingRobotHardware {
     }
 
     // Waits for the user to lower the arm.
-    public void waitForArmDown() throws InterruptedException {
+    public void waitForArmDown() {
 
         // Waits for the user to lower the arm.
         arm.waitForDown();
