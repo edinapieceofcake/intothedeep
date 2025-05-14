@@ -7,12 +7,12 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.LinearMotion.IMotionControlLinearMechanism;
 
-// want to convert this to an action
 public class MotionControlAction implements Action {
-    // 3. doneTime was just for debugging the python code, and can be removed
+    public static String TAG = "MotionControlAction";
     private final double targetPos, targetVel;
     private final IMotionControlLinearMechanism mechanism;
     private final MotionControlSettings settings;
@@ -42,9 +42,9 @@ public class MotionControlAction implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        if (!done) {
-            posAndVel = mechanism.getPositionAndVelocity(false);
+        addTelemetry(telemetryPacket);
 
+        if (!done) {
             double t = etime.seconds();
             double dt = t - prevTime;
             prevTime = t;
@@ -53,23 +53,24 @@ public class MotionControlAction implements Action {
             mechanism.setPower(power);
         }
 
-        addTelemetry(telemetryPacket);
-
         return !done;
     }
 
-    public void preview(@NonNull TelemetryPacket telemetryPacket) {
+    public void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {
         posAndVel = mechanism.getPositionAndVelocity(false);
-        addTelemetry(telemetryPacket);
-    }
-
-    private void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {
         telemetryPacket.put("MotCon.pos", posAndVel.get(0));
         telemetryPacket.put("MotCon.vel", posAndVel.get(1));
         telemetryPacket.put("MotCon.power", power);
+        telemetryPacket.put("MotCon.tgt", targetPos);
     }
 
     private double drivePower(double dt, double x, double v) {
+        if (TAG != null) {
+            RobotLog.ii(TAG, "init: |x - tgt| = |%.1f - %.1f| < %.1f; |v - tgt| = |%.1f - %.1f| < %.1f",
+                    x, targetPos, settings.posTolerance,
+                    v, targetVel, settings.velTolerance);
+        }
+
         if (Math.abs(x - targetPos) < settings.posTolerance && Math.abs(v - targetVel) < settings.velTolerance) {
             done = true;
             return 0;
@@ -91,8 +92,14 @@ public class MotionControlAction implements Action {
         }
 
         double v1 = limitMagnitude(v0, settings.velLimit);
-        double nextA = limitMagnitude((v1 - v) / dt / settings.pCoefficient, settings.accelLimit);
+
+        double nextA = limitMagnitude((v1 - v) / dt * settings.pCoefficient, settings.accelLimit);
         double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
+
+        if (TAG != null) {
+            RobotLog.ii(TAG, "dist = %.1f, z = %.1f, v0 = %.1f, v1 = %.1f, nextA = %.1f, p = %.3f",
+                    dist, z, v0, v1, nextA, p);
+        }
 
         return p;
     }

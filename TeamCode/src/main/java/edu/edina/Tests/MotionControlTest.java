@@ -31,7 +31,7 @@ public class MotionControlTest extends LinearOpMode {
 
         while (opModeInInit()) {
             TelemetryPacket p = new TelemetryPacket();
-            action.preview(p);
+            action.addTelemetry(p);
             dashboard.sendTelemetryPacket(p);
         }
 
@@ -39,16 +39,16 @@ public class MotionControlTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             TelemetryPacket p = new TelemetryPacket();
-            boolean done = action.run(p);
+            boolean keepRunning = action.run(p);
             dashboard.sendTelemetryPacket(p);
 
-            if (done)
+            if (!keepRunning)
                 break;
         }
 
         while (opModeIsActive()) {
             TelemetryPacket p = new TelemetryPacket();
-            action.preview(p);
+            action.addTelemetry(p);
             dashboard.sendTelemetryPacket(p);
 
             telemetry.addLine("done");
