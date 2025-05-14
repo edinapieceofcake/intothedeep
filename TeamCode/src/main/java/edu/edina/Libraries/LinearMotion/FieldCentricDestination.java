@@ -6,7 +6,8 @@ import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 @Config
-public class FieldCentricDestination implements Destination {
+public class
+FieldCentricDestination implements Destination {
     private boolean stopping;
     private Pose2d poseEst, relDest;
     private Pose2d stopPose;

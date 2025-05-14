@@ -2,8 +2,6 @@ package edu.edina.Tests.PurePursuit;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import kotlin.NotImplementedError;
-
 @Disabled
 public class MotorCommand {
     public MotorCommand(double axial, double lateral, double yaw) {

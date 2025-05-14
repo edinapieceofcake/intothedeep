@@ -118,7 +118,7 @@ public class SpecimenPark implements Action {
 
         Pose2d currentPos = odometry.getPoseEstimate();
 
-        pursuit.nextPursuitPoint(currentPos.position, radius);
+        pursuit.calcNextPursuitPoint(currentPos.position, radius);
 
         telemetry.addData("pursuit point", "x = %.2f y = %.2f", pursuit.getPursuitPoint().x, pursuit.getPursuitPoint().y);
 

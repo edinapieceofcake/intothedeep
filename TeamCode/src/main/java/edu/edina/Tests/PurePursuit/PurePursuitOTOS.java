@@ -78,7 +78,7 @@ public class PurePursuitOTOS extends LinearOpMode {
         while (opModeIsActive()) {
             pose = new Pose2d(-myOtos.getPosition().x, -myOtos.getPosition().y, myOtos.getPosition().h);
 
-            pp.nextPursuitPoint(pose.position, 5);
+            pp.calcNextPursuitPoint(pose.position, 5);
 
             purePursuitX = pp.getPursuitPoint().x;
             purePursuitY = pp.getPursuitPoint().y;

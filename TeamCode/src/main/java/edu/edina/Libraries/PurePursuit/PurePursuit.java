@@ -27,7 +27,7 @@ public class PurePursuit {
         return path;
     }
 
-    public void nextPursuitPoint(Vector2d location, double radius) {
+    public void calcNextPursuitPoint(Vector2d location, double radius) {
         double cx = location.x;
         double cy = location.y;
 

@@ -7,11 +7,7 @@ import com.acmerobotics.roadrunner.Twist2dDual;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import edu.edina.Libraries.PurePursuit.PurePursuit;
 import edu.edina.Libraries.Robot.FieldToRobot;
@@ -64,12 +60,12 @@ public class TeleOpPurePursuit extends LinearOpMode {
             pose = pose.plus(t.value());
 
             if (gamepad1.a) {
-                pp.nextPursuitPoint(pose.position, 3);
+                pp.calcNextPursuitPoint(pose.position, 3);
                 purePursuitX = pp.getPursuitPoint().x;
                 purePursuitY = pp.getPursuitPoint().y;
                 rv = FieldToRobot.toRobotRel(pose, pp.getPursuitPoint());
             } else if (gamepad1.x) {
-                pp2.nextPursuitPoint(pose.position, 3);
+                pp2.calcNextPursuitPoint(pose.position, 3);
                 purePursuitX = pp2.getPursuitPoint().x;
                 purePursuitY = pp2.getPursuitPoint().y;
                 rv = FieldToRobot.toRobotRel(pose, pp2.getPursuitPoint());

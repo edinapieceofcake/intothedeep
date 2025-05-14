@@ -14,16 +14,16 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Arm2 {
-    public static double KS = 5.56e-2;
-    public static double KV = 8.81e-4;
-    public static double KA = 3.21e-4;
-    public static double POS_AT_180_DEG = 4100;
+    public static double KS = 1.18e-1;
+    public static double KV = 1.19e-3;
+    public static double KA = 3e-4;
+    public static double POS_AT_180_DEG = 4060;
 
-    public static double VEL_LIMIT = 60;
+    public static double VEL_LIMIT = 200;
     public static double MAX_POWER = 0.6;
     public static double POS_TOLERANCE = 5;
     public static double VEL_TOLERANCE = 1;
-    public static double P = .01;
+    public static double P = .2;
 
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final double posMult;

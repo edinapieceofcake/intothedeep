@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import edu.edina.Libraries.Actions.ContinuousBooleanTest;
 import edu.edina.Libraries.Angle;
+import edu.edina.Libraries.VectorCalc;
 
 // This represents a drivetrain.
 @Config
@@ -107,8 +108,6 @@ public class Drivetrain {
     private Pose2d refPose;
 
     public void update2() {
-
-
         if (opMode.gamepad1.left_trigger > 0.6) {
             for (DcMotorEx motor : motors) {
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -130,10 +129,10 @@ public class Drivetrain {
         Vector2d c = new Vector2d(-opMode.gamepad1.left_stick_y, -opMode.gamepad1.left_stick_x);
 
         Vector2d newRefPos;
-        if (angleBetweenDeg(c, vel) < VEC_TRACK_ANGLE) {
+        if (VectorCalc.angleBetweenDeg(c, vel) < VEC_TRACK_ANGLE) {
             Vector2d p1 = currPose.position;
             Vector2d q0 = refPose.position;
-            newRefPos = project(p1.minus(q0), c).plus(q0);
+            newRefPos = VectorCalc.project(p1.minus(q0), c).plus(q0);
         } else {
             newRefPos = currPose.position;
         }
@@ -321,24 +320,5 @@ public class Drivetrain {
         leftBack.setPower(0);
         rightBack.setPower(0);
 
-    }
-
-    private Vector2d project(Vector2d v, Vector2d onto) {
-        double o2 = onto.dot(onto);
-        if (o2 == 0)
-            return v;
-        else
-            return onto.times(v.dot(onto) / o2);
-    }
-
-    private Vector2d normalize(Vector2d v) {
-        double norm = v.norm();
-        if (norm == 0) return v;
-        else return v.div(norm);
-    }
-
-    private double angleBetweenDeg(Vector2d v0, Vector2d v1) {
-        double rad = Math.acos(normalize(v0).dot(normalize(v1)));
-        return Math.toDegrees(rad);
     }
 }
