@@ -194,6 +194,7 @@ public class Drivetrain {
         double r = Math.max(Math.abs(axial + lateral), Math.abs(axial - lateral));
         double a = Math.abs(yaw);
 
+        // use MotorCommand here...
         if (r + a > 1) {
 
         }
