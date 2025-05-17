@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 
 import edu.edina.Libraries.Robot.INA219Device;
 import edu.edina.Libraries.Robot.INA260Device;
+import edu.edina.Libraries.Robot.PowerReading;
 
 @TeleOp
 public class CurrentMonitorTest extends LinearOpMode {
@@ -24,48 +25,37 @@ public class CurrentMonitorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DataFile dataFile = new DataFile("current-monitor.csv");
-        dataFile.println("Time,Reading");
+        dataFile.println("Time,Current,Voltage");
 
-        dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-
-        dev = hardwareMap.get(INA260Device.class, "sensor_ina219");
+        dev = hardwareMap.get(INA260Device.class, "sensor_ina260");
         DcMotor motor = hardwareMap.get(DcMotor.class, "arm_motor");
 
         while (opModeInInit()) {
-            readDevice();
+            PowerReading r = dev.getReading();
             dataFile.showStatus(telemetry);
+            telemetry.addData("current", "%.1fA", r.getCurrent());
+            telemetry.addData("voltage", "%.1fv", r.getVoltage());
             telemetry.update();
         }
 
         ElapsedTime t = new ElapsedTime();
 
         while (opModeIsActive()) {
-            telemetry.addLine("press A to run motor");
-
             if (gamepad1.a) {
-                motor.setPower(0.2);
+                motor.setPower(0.8);
             } else {
                 motor.setPower(0);
             }
 
-            short reading = readDevice();
-            dataFile.println(String.format("%f,%d", t.seconds(), reading));
+            PowerReading r = dev.getReading();
 
+            dataFile.println(String.format("%f,%f,%f", t.seconds(), r.getCurrent(), r.getVoltage()));
+
+            dataFile.showStatus(telemetry);
+            telemetry.addData("current", "%.1fA", r.getCurrent());
+            telemetry.addData("voltage", "%.1fv", r.getVoltage());
+            telemetry.addLine("press A to run motor");
             telemetry.update();
         }
-    }
-
-    private short readDevice() {
-        byte[] buffer = dev.getReading();
-        short reading = ByteBuffer.wrap(buffer).getShort();
-
-        telemetry.addData("reading", reading);
-
-        TelemetryPacket p = new TelemetryPacket();
-        p.put("reading", reading);
-        dashboard.sendTelemetryPacket(p);
-
-        return reading;
     }
 }
