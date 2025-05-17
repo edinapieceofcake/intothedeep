@@ -13,11 +13,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.nio.ByteBuffer;
 
 import edu.edina.Libraries.Robot.INA219Device;
+import edu.edina.Libraries.Robot.INA260Device;
 
 @TeleOp
 public class CurrentMonitorTest extends LinearOpMode {
     private FtcDashboard dashboard;
-    private INA219Device dev;
+    private INA260Device dev;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -28,7 +29,7 @@ public class CurrentMonitorTest extends LinearOpMode {
         dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        dev = hardwareMap.get(INA219Device.class, "sensor_ina219");
+        dev = hardwareMap.get(INA260Device.class, "sensor_ina219");
         DcMotor motor = hardwareMap.get(DcMotor.class, "arm_motor");
 
         while (opModeInInit()) {
