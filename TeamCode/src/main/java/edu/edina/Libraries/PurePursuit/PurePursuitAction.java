@@ -6,7 +6,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
@@ -14,12 +16,15 @@ import edu.edina.Libraries.Robot.MotionControlSettings;
 import edu.edina.Libraries.Robot.Odometry;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.VectorCalc;
+import edu.edina.Tests.PurePursuit.MotorCommand;
 
 public class PurePursuitAction implements Action {
+    public static double VEL_LIMIT = 16;
     public static double MAX_POWER = 0.75;
     public static double POS_TOL = 1;
     public static double VEL_TOL = 1;
-    public static double P_COEFF = 1;
+    public static double P_COEFF_LIN = 1;
+    public static double P_COEFF_ANG = 0.5;
 
     public static double AXIAL_KA = 0.0025;
 
@@ -29,6 +34,8 @@ public class PurePursuitAction implements Action {
     public static double LAT_KS = 0.12338;
     public static double LAT_KV = 0.017618;
 
+    private ElapsedTime etime;
+    private double prevTime;
     private PurePursuit purePursuit;
     private double tgtSpeed, maxSpeed, radius;
     private Odometry odometry;
@@ -36,6 +43,7 @@ public class PurePursuitAction implements Action {
     private Vector2d vecKs, vecKv, vecKa;
 
     private boolean done;
+    private MotorCommand mc;
 
     public PurePursuitAction(Vector2d[] path, double tgtSpeed, double maxSpeed, double radius, RobotHardware hw) {
         purePursuit = new PurePursuit(path, false);
@@ -45,6 +53,7 @@ public class PurePursuitAction implements Action {
         odometry = hw.getOdometry();
         dt = hw.getDrivetrain();
         done = false;
+        etime = new ElapsedTime();
 
         vecKs = new Vector2d(AXIAL_KS, LAT_KS);
         vecKv = new Vector2d(AXIAL_KV, LAT_KV);
@@ -57,26 +66,43 @@ public class PurePursuitAction implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        odometry.update();
-        Pose2d p = odometry.getPoseEstimate();
-        PoseVelocity2d v = odometry.getVelocityEstimate();
+        double t = etime.seconds();
+        double dt = t - prevTime;
+        prevTime = t;
 
-        purePursuit.calcNextPursuitPoint(p.position, radius);
+        odometry.update();
+        Pose2d pose = odometry.getPoseEstimate();
+        PoseVelocity2d v = odometry.getVelocityEstimate();
+        Vector2d vRel = FieldToRobot.rotateToRobotRel(pose.heading, v.linearVel);
+
+        purePursuit.calcNextPursuitPoint(pose.position, radius);
         Vector2d pp = purePursuit.getPursuitPoint();
-        Vector2d ppRel = FieldToRobot.toRobotRel(p, pp);
+        Vector2d ppRel = FieldToRobot.toRobotRel(pose, pp);
 
         Vector2d ppNormRel = VectorCalc.normalize(ppRel);
+
+        //Probably not right
         double ks = ppNormRel.dot(vecKs);
         double kv = ppNormRel.dot(vecKv);
         double ka = ppNormRel.dot(vecKa);
 
-          boolean keepRunning = false;
-        return keepRunning;
+        MotionControlSettings mcs = new MotionControlSettings(ks, kv, ka, VEL_LIMIT, MAX_POWER, POS_TOL, VEL_TOL, P_COEFF_LIN);
+
+        double p = drivePower(dt, 0, ppRel.norm(), ppNormRel.dot(vRel), mcs);
+
+        Vector2d linearPower = ppNormRel.times(p);
+        Rotation2d r = ppNormRel.angleCast();
+
+        double yaw = r.toDouble() * P_COEFF_ANG;
+
+        MotorCommand mc = new MotorCommand(linearPower.x, linearPower.y, yaw);
+
+        this.dt.update(mc);
+
+        return !done;
     }
 
     private double drivePower(double dt, double x, double targetPos, double v, MotionControlSettings settings) {
-
-
         if (Math.abs(x - targetPos) < settings.posTolerance && Math.abs(v - tgtSpeed) < settings.velTolerance) {
             done = true;
             return 0;
@@ -98,7 +124,7 @@ public class PurePursuitAction implements Action {
         }
 
         double v1 = limitMagnitude(v0, settings.velLimit);
-        double nextA = limitMagnitude((v1 - v) / dt / settings.pCoefficient, settings.accelLimit);
+        double nextA = limitMagnitude((v1 - v) / dt * settings.pCoefficient, settings.accelLimit);
         double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
 
         return p;

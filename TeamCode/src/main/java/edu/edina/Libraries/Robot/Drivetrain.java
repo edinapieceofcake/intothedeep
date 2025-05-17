@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import edu.edina.Libraries.Actions.ContinuousBooleanTest;
 import edu.edina.Libraries.Angle;
 import edu.edina.Libraries.VectorCalc;
+import edu.edina.Tests.PurePursuit.MotorCommand;
 
 // This represents a drivetrain.
 @Config
@@ -282,6 +283,13 @@ public class Drivetrain {
 
     public void update(double axial, double lateral, double yaw) {
         update(axial, lateral, yaw, true);
+    }
+
+    public void update(MotorCommand mc) {
+        leftFront.setPower(mc.getLeftFrontPower());
+        leftBack.setPower(mc.getLeftBackPower());
+        rightFront.setPower(mc.getRightFrontPower());
+        rightBack.setPower(mc.getRightBackPower());
     }
 
     // Sets the turtle mode value.
