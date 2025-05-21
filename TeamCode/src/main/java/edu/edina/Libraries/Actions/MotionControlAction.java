@@ -1,4 +1,4 @@
-package edu.edina.Libraries.Robot;
+package edu.edina.Libraries.Actions;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +9,8 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import edu.edina.Libraries.LinearMotion.IMotionControlLinearMechanism;
+import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
+import edu.edina.Libraries.Robot.MotionControlSettings;
 
 public class MotionControlAction implements Action {
     public static String TAG = "MotionControlAction";

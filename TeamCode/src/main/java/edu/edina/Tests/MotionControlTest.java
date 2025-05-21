@@ -7,9 +7,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import edu.edina.Libraries.LinearMotion.IMotionControlLinearMechanism;
+import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.Arm2;
-import edu.edina.Libraries.Robot.MotionControlAction;
+import edu.edina.Libraries.Actions.MotionControlAction;
 
 @TeleOp
 @Config

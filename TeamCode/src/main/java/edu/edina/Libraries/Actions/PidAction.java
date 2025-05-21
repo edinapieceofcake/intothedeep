@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.controller.PIDController;
 
-import edu.edina.Libraries.LinearMotion.IMotionControlLinearMechanism;
+import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 
 public class PidAction implements Action {
     private final PIDController pid;

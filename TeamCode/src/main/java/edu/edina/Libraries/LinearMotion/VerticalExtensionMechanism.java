@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 

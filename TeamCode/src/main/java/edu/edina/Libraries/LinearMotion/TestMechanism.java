@@ -1,7 +1,6 @@
 package edu.edina.Libraries.LinearMotion;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,6 +10,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import java.util.ArrayList;
 
 import edu.edina.Libraries.Actions.RunToPositionAction;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.Robot.Speedometer;
 
 @Config

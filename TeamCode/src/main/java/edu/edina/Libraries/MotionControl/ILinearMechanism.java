@@ -1,11 +1,10 @@
-package edu.edina.Libraries.LinearMotion;
+package edu.edina.Libraries.MotionControl;
 
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 
 import edu.edina.Libraries.Actions.RunToPositionAction;
-import edu.edina.Libraries.Robot.MotionControlSettings;
+import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 
 // a mechanism which moves like F=ma
 // examples are arms and lifts or 1-D driving

@@ -14,10 +14,9 @@ import java.util.List;
 
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
-import edu.edina.Libraries.Robot.Arm2;
 import edu.edina.Libraries.Robot.Extension;
 import edu.edina.Libraries.Robot.FuncInverter;
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;

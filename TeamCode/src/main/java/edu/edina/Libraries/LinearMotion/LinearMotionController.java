@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
+
 public class LinearMotionController {
     private static final boolean LOG = true;
 

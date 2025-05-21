@@ -1,4 +1,4 @@
-package edu.edina.Libraries.LinearMotion;
+package edu.edina.Libraries.MotionControl;
 
 import edu.edina.Libraries.Robot.MotionControlSettings;
 

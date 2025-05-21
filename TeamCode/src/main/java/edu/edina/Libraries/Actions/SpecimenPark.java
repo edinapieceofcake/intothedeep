@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.LinearMotion.RotationalDriveMechanism;

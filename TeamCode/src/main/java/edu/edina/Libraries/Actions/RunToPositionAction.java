@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.LinearMotion.IFeedForward;
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
 

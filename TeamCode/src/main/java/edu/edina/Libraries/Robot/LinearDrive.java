@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import kotlin.NotImplementedError;
 

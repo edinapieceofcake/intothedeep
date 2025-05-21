@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.DrivingRobotHardware;
 import edu.edina.Libraries.Robot.FieldToRobot;

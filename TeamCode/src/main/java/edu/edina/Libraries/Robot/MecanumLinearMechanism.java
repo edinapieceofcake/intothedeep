@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 
 @Config

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 
 import edu.edina.Libraries.Actions.FeedForward;
+import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 
 public class FeedForwardMechanism implements IMotionControlLinearMechanism {

@@ -7,14 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.R;
-
 import java.util.ArrayList;
 
 import edu.edina.Libraries.LinearMotion.ArmExtensionMechanism;
-import edu.edina.Libraries.LinearMotion.AxialDriveMechanism;
-import edu.edina.Libraries.LinearMotion.ILinearMechanism;
-import edu.edina.Libraries.LinearMotion.LateralDriveMechanism;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.LinearMotionController;
 import edu.edina.Libraries.Robot.RobotHardware;

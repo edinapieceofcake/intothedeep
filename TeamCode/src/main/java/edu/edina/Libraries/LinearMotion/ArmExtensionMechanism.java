@@ -6,12 +6,12 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import edu.edina.Libraries.Robot.DrivingRobotHardware;
+import edu.edina.Libraries.MotionControl.ILinearMechanism;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.Speedometer;
 
 @Config
-public class ArmExtensionMechanism implements ILinearMechanism{
+public class ArmExtensionMechanism implements ILinearMechanism {
     private final Speedometer speedometer;
     private final VoltageSensor vs;
     private final DcMotorEx extension;
