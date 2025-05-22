@@ -12,8 +12,9 @@ public class PidAction implements Action {
     private final PIDController pid;
     private final IMotionControlLinearMechanism mechanism;
 
-    public PidAction(double p, double i, double d, IMotionControlLinearMechanism mechanism) {
-        pid = new PIDController(p, i, d);
+    public PidAction(double target, PidSettings pid, IMotionControlLinearMechanism mechanism) {
+        this.pid = new PIDController(pid.p, pid.i, pid.d);
+        this.pid.setSetPoint(target);
         this.mechanism = mechanism;
     }
 
