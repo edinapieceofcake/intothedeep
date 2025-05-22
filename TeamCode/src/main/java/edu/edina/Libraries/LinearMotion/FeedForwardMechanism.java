@@ -44,6 +44,6 @@ public class FeedForwardMechanism implements IMotionControlLinearMechanism {
 
     @Override
     public LinearMechanismSettings getSettings() {
-        return null;
+        return linearMechanism.getSettings();
     }
 }
