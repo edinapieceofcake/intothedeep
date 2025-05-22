@@ -14,14 +14,14 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Extension {
-    public static double KS = 1.18e-1;
-    public static double KV = 1.19e-3;
-    public static double KA = 3e-4;
-    public static double POS_MULT = 0;
+    public static double KS = 0.06;
+    public static double KV = 3.4e-2;
+    public static double KA = 3e-3;
+    public static double POS_MULT = 11.0 / 1285.0;
 
     public static double VEL_LIMIT = 1;
     public static double MAX_POWER = 1;
-    public static double POS_TOLERANCE = 1;
+    public static double POS_TOLERANCE = 0.25;
     public static double VEL_TOLERANCE = 1;
     public static double P = 0.1;
 
@@ -33,7 +33,7 @@ public class Extension {
             speedometer = new Speedometer(3);
 
             motor = hw.get(DcMotorEx.class, "extension_motor");
-            motor.setDirection(DcMotorSimple.Direction.FORWARD);
+            motor.setDirection(DcMotorSimple.Direction.REVERSE);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
@@ -64,7 +64,7 @@ public class Extension {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return new LinearMechanismSettings("extension", Units.INCHES, KS, KV, KA, 40);
+            return new LinearMechanismSettings("extension", Units.INCHES, KS, KV, KA, 2);
         }
 
         @Override

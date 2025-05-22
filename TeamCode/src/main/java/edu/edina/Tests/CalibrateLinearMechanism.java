@@ -1,6 +1,7 @@
 package edu.edina.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
 import edu.edina.Libraries.Robot.Extension;
@@ -22,12 +24,13 @@ import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 
 @TeleOp
+@Config
 public class CalibrateLinearMechanism extends LinearOpMode {
     private static final String LOG_TAG = "linear cal";
     double powerStep = 0.02;
     double speedThres = 1;
 
-    ILinearMechanism linearMech;
+    IMotionControlLinearMechanism linearMech;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,7 +43,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         telemetry.addLine("Press a to calibrate encoder");
         telemetry.addLine("Press b to calibrate Kv and Ks");
         telemetry.addLine("Press x to calibrate Ka");
-        telemetry.addLine("Press y to measure ambient acceleration");
+        telemetry.addLine("Press y to measure countering power");
         telemetry.update();
 
         while (opModeIsActive()) {
@@ -84,7 +87,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         while (opModeIsActive()) {
             target = linearMech.getPositionAndVelocity(false).get(0);
 
-            telemetry.addLine("move lifts to wanted location");
+            telemetry.addLine("move mechanism to wanted location, it will try and hold it there");
             telemetry.addData("target", "%.2f", target);
             telemetry.addLine("press b to start calibration");
             telemetry.update();
@@ -92,7 +95,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             if (gamepad1.b) break;
         }
 
-        FuncInverter fi = new FuncInverter(target, linearMech.getSettings().stopXTol);
+        FuncInverter fi = new FuncInverter(target, linearMech.getMotionSettings().posTolerance);
 
         fi.eval(-0.75, testAmbientAccel(-0.75));
         fi.eval(0.75, testAmbientAccel(0.75));
