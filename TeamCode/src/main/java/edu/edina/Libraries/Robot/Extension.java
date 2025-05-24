@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
@@ -28,6 +29,7 @@ public class Extension {
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motor;
         private final Speedometer speedometer;
+        private ICancelableAction currentAction;
 
         public Mechanism(HardwareMap hw) {
             speedometer = new Speedometer(3);
@@ -78,6 +80,14 @@ public class Extension {
                     VEL_LIMIT, MAX_POWER,
                     POS_TOLERANCE, VEL_TOLERANCE,
                     P);
+        }
+
+        @Override
+        public void setCurrentAction(ICancelableAction action) {
+            if (currentAction != null)
+                currentAction.cancel();
+
+            currentAction = action;
         }
     }
 }

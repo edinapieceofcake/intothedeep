@@ -6,5 +6,7 @@ public interface IMotionControlLinearMechanism extends ILinearMechanism {
     double getAccelCalDistance();
 
     MotionControlSettings getMotionSettings();
+
+    void setCurrentAction(ICancelableAction action);
 }
 

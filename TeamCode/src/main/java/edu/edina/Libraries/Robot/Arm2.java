@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
@@ -29,6 +30,7 @@ public class Arm2 {
         private final double posMult;
         private final DcMotorEx motor;
         private final Speedometer speedometer;
+        private ICancelableAction currentAction;
 
         public Mechanism(HardwareMap hw) {
             posMult = 180.0 / POS_AT_180_DEG;
@@ -81,6 +83,14 @@ public class Arm2 {
                     VEL_LIMIT, MAX_POWER,
                     POS_TOLERANCE, VEL_TOLERANCE,
                     P);
+        }
+
+        @Override
+        public void setCurrentAction(ICancelableAction action) {
+            if (currentAction != null)
+                currentAction.cancel();
+
+            currentAction = action;
         }
     }
 }

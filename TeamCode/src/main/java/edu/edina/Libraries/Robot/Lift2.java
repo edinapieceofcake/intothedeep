@@ -15,6 +15,7 @@ import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
+import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 
 @Config
@@ -43,7 +44,7 @@ public class Lift2 {
         PidSettings p = new PidSettings(P, I, D);
 
         return new SequentialAction(
-                new MotionControlAction(target, 0, mechanism),
+                new MotionControlAction(target, mechanism),
                 new PidAction(target, p, mechanism)
         );
     }
@@ -51,6 +52,7 @@ public class Lift2 {
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motorLeft, motorRight;
         private final Speedometer speedometer;
+        private ICancelableAction currentAction;
 
         public Mechanism(HardwareMap hardwareMap) {
             speedometer = new Speedometer(3);
@@ -106,6 +108,14 @@ public class Lift2 {
                     VEL_LIMIT, MAX_POWER,
                     POS_TOLERANCE, VEL_TOLERANCE,
                     P);
+        }
+
+        @Override
+        public void setCurrentAction(ICancelableAction action) {
+            if (currentAction != null)
+                currentAction.cancel();
+
+            currentAction = action;
         }
     }
 }

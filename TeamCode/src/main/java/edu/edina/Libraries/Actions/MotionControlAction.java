@@ -13,7 +13,7 @@ import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 
-public class MotionControlAction implements Action {
+public class MotionControlAction implements ICancelableAction {
     public static String TAG = "MotionControlAction";
     private final double targetPos, targetVel;
     private final IMotionControlLinearMechanism mechanism;
@@ -22,10 +22,13 @@ public class MotionControlAction implements Action {
     private DualNum<Time> posAndVel;
     private double prevTime, power;
 
-    private boolean canceled;
     private boolean done;
 
     // eventually make a new version of this class
+
+    public MotionControlAction(double targetPos, IMotionControlLinearMechanism mechanism) {
+        this(targetPos, 0, mechanism);
+    }
 
     public MotionControlAction(double targetPos, double targetVel, IMotionControlLinearMechanism mechanism) {
         this.settings = mechanism.getMotionSettings();
@@ -41,6 +44,8 @@ public class MotionControlAction implements Action {
 
         etime = new ElapsedTime();
         prevTime = etime.seconds();
+
+        mechanism.setCurrentAction(this);
     }
 
     @Override
@@ -59,9 +64,9 @@ public class MotionControlAction implements Action {
         return !done;
     }
 
-    //    @Override
+    @Override
     public void cancel() {
-        canceled = true;
+        done = true;
     }
 
     public void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {
