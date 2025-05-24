@@ -3,7 +3,6 @@ package edu.edina.Libraries.Actions;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,7 +13,7 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 
 public class MotionControlAction implements ICancelableAction {
-    public static String TAG = "MotionControlAction";
+    private final static String TAG = "MotionControlAction";
     private final double targetPos, targetVel;
     private final IMotionControlLinearMechanism mechanism;
     private final MotionControlSettings settings;
@@ -79,7 +78,8 @@ public class MotionControlAction implements ICancelableAction {
 
     private double drivePower(double dt, double x, double v) {
         if (TAG != null) {
-            RobotLog.ii(TAG, "init: |x - tgt| = |%.1f - %.1f| < %.1f; |v - tgt| = |%.1f - %.1f| < %.1f",
+            RobotLog.ii(TAG, "%s: |x - tgt| = |%.1f - %.1f| < %.1f; |v - tgt| = |%.1f - %.1f| < %.1f",
+                    mechanism.getName(),
                     x, targetPos, settings.posTolerance,
                     v, targetVel, settings.velTolerance);
         }
@@ -110,7 +110,8 @@ public class MotionControlAction implements ICancelableAction {
         double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
 
         if (TAG != null) {
-            RobotLog.ii(TAG, "dist = %.1f, z = %.1f, v0 = %.1f, v1 = %.1f, nextA = %.1f, p = %.3f",
+            RobotLog.ii(TAG, "%s: dist = %.1f, z = %.1f, v0 = %.1f, v1 = %.1f, nextA = %.1f, p = %.3f",
+                    mechanism.getName(),
                     dist, z, v0, v1, nextA, p);
         }
 

@@ -44,6 +44,11 @@ public class Arm2 {
         }
 
         @Override
+        public String getName() {
+            return "arm";
+        }
+
+        @Override
         public void setPower(double power) {
             motor.setPower(power);
         }

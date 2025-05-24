@@ -41,6 +41,11 @@ public class Extension {
         }
 
         @Override
+        public String getName() {
+            return "extension";
+        }
+
+        @Override
         public void setPower(double power) {
             motor.setPower(power);
         }

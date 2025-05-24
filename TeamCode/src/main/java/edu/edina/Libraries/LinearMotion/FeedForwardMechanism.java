@@ -21,6 +21,11 @@ public class FeedForwardMechanism implements IMotionControlLinearMechanism {
     }
 
     @Override
+    public String getName() {
+        return String.format("%s+ff", linearMechanism.getName());
+    }
+
+    @Override
     public MotionControlSettings getMotionSettings() {
         return linearMechanism.getMotionSettings();
     }

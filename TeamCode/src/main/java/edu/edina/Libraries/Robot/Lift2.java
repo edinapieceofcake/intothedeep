@@ -68,6 +68,11 @@ public class Lift2 {
         }
 
         @Override
+        public String getName() {
+            return "lift";
+        }
+
+        @Override
         public void setPower(double power) {
             motorRight.setPower(power);
             motorLeft.setPower(power);
