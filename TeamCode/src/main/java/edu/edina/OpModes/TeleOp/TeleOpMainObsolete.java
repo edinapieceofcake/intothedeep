@@ -22,7 +22,7 @@ import edu.edina.Libraries.Robot.WaitForTime;
 // Main tele op mode
 @Config
 @TeleOp
-public class TeleOpMain extends LinearOpMode {
+public class TeleOpMainObsolete extends LinearOpMode {
 
     /*
 
