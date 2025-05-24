@@ -19,14 +19,15 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 
 @Config
 public class Lift2 {
-    public static double KS = 1e-3;
-    public static double KV = 1e-3;
+    public static double KS = 6.1402e-2;
+    public static double KV = 3.3710e-2;
     public static double KA = 3e-4;
 
     public static double VEL_LIMIT = 200;
     public static double MAX_POWER = 0.6;
     public static double POS_TOLERANCE = 5;
     public static double VEL_TOLERANCE = 1;
+    public static double POS_MULT = 14.4 / 1615.0;
 
     public static double P = .2;
     public static double I = 0;
@@ -50,11 +51,8 @@ public class Lift2 {
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motorLeft, motorRight;
         private final Speedometer speedometer;
-        private final double posMult;
 
         public Mechanism(HardwareMap hardwareMap) {
-            posMult = 14.4 / 1615.0;
-
             speedometer = new Speedometer(3);
 
             motorRight = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
@@ -89,7 +87,7 @@ public class Lift2 {
             if (raw)
                 return posVel;
             else
-                return posVel.times(posMult);
+                return posVel.times(POS_MULT);
         }
 
         @Override

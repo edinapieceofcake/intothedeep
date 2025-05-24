@@ -243,7 +243,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 kv = fit.beta;
                 telemetry.addData("Ks", "%.4e", ks);
                 telemetry.addData("Kv", "%.4e", kv);
-                telemetry.addData("R", fit.R2);
+                telemetry.addData("R^2", fit.R2);
             }
 
             telemetry.addLine("press down to back up");
