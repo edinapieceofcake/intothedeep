@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 
@@ -21,6 +22,7 @@ public class MotionControlAction implements Action {
     private DualNum<Time> posAndVel;
     private double prevTime, power;
 
+    private boolean canceled;
     private boolean done;
 
     // eventually make a new version of this class
@@ -55,6 +57,11 @@ public class MotionControlAction implements Action {
         }
 
         return !done;
+    }
+
+    //    @Override
+    public void cancel() {
+        canceled = true;
     }
 
     public void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {

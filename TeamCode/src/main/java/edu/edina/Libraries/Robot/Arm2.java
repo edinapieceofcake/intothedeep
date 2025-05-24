@@ -71,6 +71,11 @@ public class Arm2 {
         }
 
         @Override
+        public double getAccelCalDistance() {
+            return 40;
+        }
+
+        @Override
         public MotionControlSettings getMotionSettings() {
             return new MotionControlSettings(KS, KV, KA,
                     VEL_LIMIT, MAX_POWER,

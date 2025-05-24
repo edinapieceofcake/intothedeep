@@ -21,13 +21,13 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 public class Lift2 {
     public static double KS = 6.1402e-2;
     public static double KV = 3.3710e-2;
-    public static double KA = 3e-4;
+    public static double KA = 2.8125e-2;
 
     public static double VEL_LIMIT = 200;
     public static double MAX_POWER = 0.6;
-    public static double POS_TOLERANCE = 5;
+    public static double POS_TOLERANCE = 0.5;
     public static double VEL_TOLERANCE = 1;
-    public static double POS_MULT = 14.4 / 1615.0;
+    public static double POS_MULT = -14.4 / 1615.0;
 
     public static double P = .2;
     public static double I = 0;
@@ -43,7 +43,7 @@ public class Lift2 {
         PidSettings p = new PidSettings(P, I, D);
 
         return new SequentialAction(
-                new MotionControlAction(target, VEL_LIMIT, mechanism),
+                new MotionControlAction(target, 0, mechanism),
                 new PidAction(target, p, mechanism)
         );
     }
@@ -92,7 +92,12 @@ public class Lift2 {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return new LinearMechanismSettings("lift", Units.INCHES, KS, KV, KA, 10);
+            return new LinearMechanismSettings("lift", Units.INCHES, KS, KV, KA, 5);
+        }
+
+        @Override
+        public double getAccelCalDistance() {
+            return 5;
         }
 
         @Override

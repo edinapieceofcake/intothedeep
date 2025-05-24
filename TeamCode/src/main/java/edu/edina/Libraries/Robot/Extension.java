@@ -68,6 +68,11 @@ public class Extension {
         }
 
         @Override
+        public double getAccelCalDistance() {
+            return 2;
+        }
+
+        @Override
         public MotionControlSettings getMotionSettings() {
             return new MotionControlSettings(KS, KV, KA,
                     VEL_LIMIT, MAX_POWER,

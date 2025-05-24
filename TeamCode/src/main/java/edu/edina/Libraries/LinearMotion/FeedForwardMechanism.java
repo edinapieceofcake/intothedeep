@@ -43,6 +43,11 @@ public class FeedForwardMechanism implements IMotionControlLinearMechanism {
     }
 
     @Override
+    public double getAccelCalDistance() {
+        return linearMechanism.getAccelCalDistance();
+    }
+
+    @Override
     public LinearMechanismSettings getSettings() {
         return linearMechanism.getSettings();
     }
