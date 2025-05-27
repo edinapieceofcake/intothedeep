@@ -2,12 +2,17 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.Actions.MotionControlAction;
+import edu.edina.Libraries.Actions.PidAction;
+import edu.edina.Libraries.Actions.PidSettings;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -18,20 +23,39 @@ public class Extension {
     public static double KS = 0.06;
     public static double KV = 3.4e-2;
     public static double KA = 3e-3;
-    public static double POS_MULT = 11.0 / 1285.0;
 
     public static double VEL_LIMIT = 1;
     public static double MAX_POWER = 1;
     public static double POS_TOLERANCE = 0.25;
     public static double VEL_TOLERANCE = 1;
     public static double P = 0.1;
+    public static double I = 0.1;
+    public static double D = 0.1;
+
+    private Mechanism mechanism;
+
+    public Extension(HardwareMap hw) {
+        mechanism = new Extension.Mechanism(hw);
+    }
+
+    public Action moveExtension(double target) {
+        PidSettings p = new PidSettings(P, I, D);
+
+        return new SequentialAction(
+                new MotionControlAction(target, mechanism),
+                new PidAction(target, p, mechanism)
+        );
+    }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motor;
         private final Speedometer speedometer;
         private ICancelableAction currentAction;
+        private final RobotState robotState;
 
         public Mechanism(HardwareMap hw) {
+            robotState = new RobotState(hw);
+
             speedometer = new Speedometer(3);
 
             motor = hw.get(DcMotorEx.class, "extension_motor");
@@ -57,16 +81,13 @@ public class Extension {
 
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
-            double pos = motor.getCurrentPosition();
+            double pos = robotState.getExtensionPos();
             speedometer.sample(pos);
             double vel = speedometer.getSpeed();
 
             DualNum<Time> posVel = new DualNum<>(new double[]{pos, vel});
 
-            if (raw)
-                return posVel;
-            else
-                return posVel.times(POS_MULT);
+            return posVel;
         }
 
         @Override

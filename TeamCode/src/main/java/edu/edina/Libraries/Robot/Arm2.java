@@ -2,12 +2,17 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.Actions.MotionControlAction;
+import edu.edina.Libraries.Actions.PidAction;
+import edu.edina.Libraries.Actions.PidSettings;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -18,22 +23,38 @@ public class Arm2 {
     public static double KS = 1.18e-1;
     public static double KV = 1.19e-3;
     public static double KA = 3e-4;
-    public static double POS_AT_180_DEG = 4060;
 
     public static double VEL_LIMIT = 200;
     public static double MAX_POWER = 0.6;
     public static double POS_TOLERANCE = 5;
     public static double VEL_TOLERANCE = 1;
     public static double P = .2;
+    public static double I = .2;
+    public static double D = .2;
+
+    private Mechanism mechanism;
+
+    public Arm2(HardwareMap hw) {
+        mechanism = new Arm2.Mechanism(hw);
+    }
+
+    public Action moveArm(double target) {
+        PidSettings p = new PidSettings(P, I, D);
+
+        return new SequentialAction(
+                new MotionControlAction(target, mechanism),
+                new PidAction(target, p, mechanism)
+        );
+    }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
-        private final double posMult;
         private final DcMotorEx motor;
         private final Speedometer speedometer;
         private ICancelableAction currentAction;
+        private final RobotState robotState;
 
         public Mechanism(HardwareMap hw) {
-            posMult = 180.0 / POS_AT_180_DEG;
+            robotState = new RobotState(hw);
 
             speedometer = new Speedometer(3);
 
@@ -60,16 +81,13 @@ public class Arm2 {
 
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
-            double pos = motor.getCurrentPosition();
+            double pos = robotState.getArmPos();
             speedometer.sample(pos);
             double vel = speedometer.getSpeed();
 
             DualNum<Time> posVel = new DualNum<>(new double[]{pos, vel});
 
-            if (raw)
-                return posVel;
-            else
-                return posVel.times(posMult);
+            return posVel;
         }
 
         @Override

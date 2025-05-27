@@ -105,6 +105,35 @@ public class Drivetrain {
         refPose = currPose;
     }
 
+    public Drivetrain(HardwareMap hw) {
+        booleanTest = new ContinuousBooleanTest(MILISECOND);
+
+        // Get the hardware map.
+        // Get the motors.
+        leftBack = hw.get(DcMotorEx.class, "left_back_drive");
+        leftFront = hw.get(DcMotorEx.class, "left_front_drive");
+        rightBack = hw.get(DcMotorEx.class, "right_back_drive");
+        rightFront = hw.get(DcMotorEx.class, "right_front_drive");
+
+        // Set the motor directions.
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set the motor zero power behavior.
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        motors = new DcMotorEx[]{leftBack, leftFront, rightBack, rightFront};
+
+        odo = new OpticalOdometry(hw);
+        currPose = odo.getCurrentPose();
+        refPose = currPose;
+    }
+
     private Pose2d currPose;
     private Pose2d refPose;
 

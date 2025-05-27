@@ -16,6 +16,7 @@ import java.util.List;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
+import edu.edina.Libraries.Robot.Arm2;
 import edu.edina.Libraries.Robot.Extension;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.MotionControl.ILinearMechanism;
@@ -37,7 +38,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
-        linearMech = new Lift2.Mechanism(hardwareMap);
+        linearMech = new Arm2.Mechanism(hardwareMap);
 
         waitForStart();
 

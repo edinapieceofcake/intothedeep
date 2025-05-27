@@ -28,7 +28,6 @@ public class Lift2 {
     public static double MAX_POWER = 0.6;
     public static double POS_TOLERANCE = 0.5;
     public static double VEL_TOLERANCE = 1;
-    public static double POS_MULT = -14.4 / 1615.0;
 
     public static double P = .2;
     public static double I = 0;
@@ -36,8 +35,8 @@ public class Lift2 {
 
     private Mechanism mechanism;
 
-    public Lift2(Mechanism mechanism) {
-        this.mechanism = mechanism;
+    public Lift2(HardwareMap hw) {
+        mechanism = new Lift2.Mechanism(hw);
     }
 
     public Action moveLift(double target) {
@@ -53,12 +52,15 @@ public class Lift2 {
         private final DcMotorEx motorLeft, motorRight;
         private final Speedometer speedometer;
         private ICancelableAction currentAction;
+        private final RobotState robotState;
 
-        public Mechanism(HardwareMap hardwareMap) {
+        public Mechanism(HardwareMap hw) {
+            robotState = new RobotState(hw);
+
             speedometer = new Speedometer(3);
 
-            motorRight = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
-            motorLeft = hardwareMap.get(DcMotorEx.class, "left_lift_motor");
+            motorRight = hw.get(DcMotorEx.class, "right_lift_motor");
+            motorLeft = hw.get(DcMotorEx.class, "left_lift_motor");
             motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
             motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -85,16 +87,13 @@ public class Lift2 {
 
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
-            double pos = (motorRight.getCurrentPosition() - motorLeft.getCurrentPosition()) / 2.0;
+            double pos = robotState.getLiftPos();
             speedometer.sample(pos);
             double vel = speedometer.getSpeed();
 
             DualNum<Time> posVel = new DualNum<>(new double[]{pos, vel});
 
-            if (raw)
-                return posVel;
-            else
-                return posVel.times(POS_MULT);
+            return posVel;
         }
 
         @Override
