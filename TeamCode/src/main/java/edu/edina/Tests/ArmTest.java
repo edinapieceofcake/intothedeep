@@ -1,12 +1,15 @@
 package edu.edina.Tests;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.Robot.Arm2;
 
+@Config
 @TeleOp
 public class ArmTest extends LinearOpMode {
+    public static double POWER_LEVEL = 0.3;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -24,9 +27,9 @@ public class ArmTest extends LinearOpMode {
             if (pos > 180)
                 arm.setPower(0);
             else if (gamepad1.dpad_up)
-                arm.setPower(1);
+                arm.setPower(POWER_LEVEL);
             else if (gamepad1.dpad_down)
-                arm.setPower(-1);
+                arm.setPower(-POWER_LEVEL);
             else
                 arm.setPower(0);
         }
