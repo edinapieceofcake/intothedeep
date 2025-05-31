@@ -137,8 +137,8 @@ public class Drivetrain {
     private Pose2d currPose;
     private Pose2d refPose;
 
-    public void update2() {
-        if (opMode.gamepad1.left_trigger > 0.6) {
+    public void update2(Gamepad gamepad1) {
+        if (gamepad1.left_trigger > 0.6) {
             for (DcMotorEx motor : motors) {
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
@@ -156,7 +156,7 @@ public class Drivetrain {
 
         RobotLog.ii(tag, "vel = (%.1f, %.1f)", vel.x, vel.y);
 
-        Vector2d c = new Vector2d(-opMode.gamepad1.left_stick_y, -opMode.gamepad1.left_stick_x);
+        Vector2d c = new Vector2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x);
 
         Vector2d newRefPos;
         if (VectorCalc.angleBetweenDeg(c, vel) < VEC_TRACK_ANGLE) {
@@ -172,7 +172,7 @@ public class Drivetrain {
 
         //if turning robot change heading and update target
         //if not pushing stick then maintain target heading
-        boolean nowInDeadZone = Math.abs(opMode.gamepad1.right_stick_x) < YAW_DEADZONE;
+        boolean nowInDeadZone = Math.abs(gamepad1.right_stick_x) < YAW_DEADZONE;
         if (booleanTest.update(nowInDeadZone)) {
             // set the power using PID
             double radDiff = Angle.radianDiff(currPose.heading.toDouble(), refPose.heading.toDouble());
@@ -180,7 +180,7 @@ public class Drivetrain {
 
             // update reference heading
             double norm = vel.norm();
-            if (opMode.gamepad1.b && norm > ALIGNMENT_NORM_MIN) {
+            if (gamepad1.b && norm > ALIGNMENT_NORM_MIN) {
                 Vector2d unitVel = vel.div(norm);
                 newRefHead = new Rotation2d(unitVel.x, unitVel.y);
 
@@ -192,7 +192,7 @@ public class Drivetrain {
             }
         } else {
             // set the power manually
-            yawPower = opMode.gamepad1.right_stick_x;
+            yawPower = gamepad1.right_stick_x;
 
             // current heading *becomes* the reference heading
             newRefHead = currPose.heading;

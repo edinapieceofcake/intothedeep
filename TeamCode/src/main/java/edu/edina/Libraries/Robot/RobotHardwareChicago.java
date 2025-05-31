@@ -43,8 +43,6 @@ public class RobotHardwareChicago {
         runningActions = newActions;
 
         dash.sendTelemetryPacket(packet);
-
-        drivetrain.update2();
     }
 
     public void highBasket() {
@@ -64,5 +62,9 @@ public class RobotHardwareChicago {
             extension.cancelAction();
             extension.setPower(y);
         }
+    }
+
+    public Drivetrain getDrivetrain() {
+        return drivetrain;
     }
 }
