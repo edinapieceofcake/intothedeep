@@ -61,6 +61,10 @@ public class Extension {
         mechanism.setCurrentAction(null);
     }
 
+    public boolean hasCurrentAction() {
+        return mechanism.hasCurrentAction();
+    }
+
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motor;
         private final Speedometer speedometer;
@@ -128,6 +132,10 @@ public class Extension {
                 currentAction.cancel();
 
             currentAction = action;
+        }
+
+        public boolean hasCurrentAction() {
+            return currentAction != null;
         }
     }
 }

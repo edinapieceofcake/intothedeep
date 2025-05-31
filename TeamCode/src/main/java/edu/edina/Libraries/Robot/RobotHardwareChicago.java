@@ -19,6 +19,7 @@ public class RobotHardwareChicago {
     private Lift2 lift;
     private RobotState robotState;
     private TelemetryPacket packet;
+    private CurrentSensor currentSensor;
 
     public RobotHardwareChicago(HardwareMap hw) {
         packet = new TelemetryPacket();
@@ -29,6 +30,13 @@ public class RobotHardwareChicago {
         extension = new Extension(robotState, hw);
         arm = new Arm2(robotState, hw);
         lift = new Lift2(robotState, hw);
+        currentSensor = new CurrentSensor(hw);
+
+        runningActions.add(arm.holdPos());
+    }
+
+    public void initUpdate() {
+        currentSensor.checkForInit();
     }
 
     public void update() {
@@ -55,21 +63,15 @@ public class RobotHardwareChicago {
     }
 
     public void extend(double y) {
-        if (Math.abs(y) < 0.1) {
-            runningActions.add(
-                    extension.holdPos()
-            );
+        if (Math.abs(y) < 0.1 && !extension.hasCurrentAction()) {
+            runningActions.add(extension.holdPos());
         } else {
             extension.cancelAction();
             extension.setPower(y);
         }
     }
 
-    public void drive(Gamepad gamepad){
-
-    }
-
-    public Drivetrain getDrivetrain() {
-        return drivetrain;
+    public void drive(Gamepad gamepad) {
+        drivetrain.update2(gamepad);
     }
 }

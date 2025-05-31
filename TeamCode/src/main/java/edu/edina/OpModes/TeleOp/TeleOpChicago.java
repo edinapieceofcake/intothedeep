@@ -11,11 +11,13 @@ public class TeleOpChicago extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         RobotHardwareChicago hw = new RobotHardwareChicago(hardwareMap);
 
-        waitForStart();
+        while (opModeInInit()) {
+            hw.initUpdate();
+        }
 
         while (opModeIsActive()) {
             hw.update();
-            hw.getDrivetrain().update2(gamepad1);
+            hw.drive(gamepad1);
             hw.extend(-gamepad2.left_stick_y);
         }
     }
