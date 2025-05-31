@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -14,6 +15,7 @@ import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.OpticalOdometry;
 
+@Disabled
 @Config
 @TeleOp
 public class FieldCentricTest extends LinearOpMode {

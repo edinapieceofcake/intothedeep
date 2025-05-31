@@ -13,7 +13,7 @@ import edu.edina.Libraries.RoadRunner.ThreeDeadWheelLocalizer;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.OpticalOdometry;
 
-@TeleOp
+@TeleOp(name = "Odometry Comparison", group = "Test")
 public class OdoCompareTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

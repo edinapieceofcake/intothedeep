@@ -12,7 +12,7 @@ import edu.edina.Libraries.Robot.Arm2;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Robot.RobotState;
 
-@TeleOp
+@TeleOp(name = "Motion Control Test", group = "Test")
 @Config
 public class MotionControlTest extends LinearOpMode {
     public static double TARGET_POS = 45;

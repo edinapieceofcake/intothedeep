@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.ArrayList;
@@ -62,6 +63,10 @@ public class RobotHardwareChicago {
             extension.cancelAction();
             extension.setPower(y);
         }
+    }
+
+    public void drive(Gamepad gamepad){
+
     }
 
     public Drivetrain getDrivetrain() {

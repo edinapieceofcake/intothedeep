@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -20,8 +21,9 @@ import edu.edina.Libraries.Robot.RobotMode;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 // Main tele op mode
+@Disabled
 @Config
-@TeleOp
+@TeleOp(name = "TeleOpMain (old)", group = "Main")
 public class TeleOpMainObsolete extends LinearOpMode {
 
     /*
@@ -645,11 +647,10 @@ public class TeleOpMainObsolete extends LinearOpMode {
                 // Increment the arm position.
                 robotHardware.incrementArmPosition();
 
-            }
-            else if (robotMode == RobotMode.BASKET) {
+            } else if (robotMode == RobotMode.BASKET) {
                 if (robotHardware.getCorrectedArmPosition() > 1600) {
                     robotHardware.decrementArmPosition();
-                }else {
+                } else {
                     robotHardware.beep();
                 }
             }
@@ -706,7 +707,7 @@ public class TeleOpMainObsolete extends LinearOpMode {
         if (currentGamepad1.right_trigger > TRIGGER_THRESHOLD && previousGamepad1.right_trigger <= TRIGGER_THRESHOLD) {
 
             // If the robot is in submersible mode...
-            if(robotMode == RobotMode.SUBMERSIBLE) {
+            if (robotMode == RobotMode.SUBMERSIBLE) {
 
                 // Toggle ascent.
                 robotHardware.turnOnWave();

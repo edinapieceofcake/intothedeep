@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp
+@TeleOp(name = "Level 3 Test", group = "Test")
 public class LevelThreeTest extends LinearOpMode {
     private DcMotorEx leftMotor;
     private DcMotorEx rightMotor;
@@ -19,7 +19,7 @@ public class LevelThreeTest extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        DcMotorEx[] motors = new DcMotorEx[] {leftMotor, rightMotor};
+        DcMotorEx[] motors = new DcMotorEx[]{leftMotor, rightMotor};
         for (DcMotorEx m : motors) {
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }

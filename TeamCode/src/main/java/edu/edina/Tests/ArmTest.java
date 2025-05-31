@@ -8,7 +8,7 @@ import edu.edina.Libraries.Robot.Arm2;
 import edu.edina.Libraries.Robot.RobotState;
 
 @Config
-@TeleOp
+@TeleOp(name = "Arm Test", group = "Test")
 public class ArmTest extends LinearOpMode {
     public static double POWER_LEVEL = 0.3;
 

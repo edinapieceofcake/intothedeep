@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -20,6 +21,7 @@ import edu.edina.Libraries.Robot.RobotMode;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 // Main tele op mode
+@Disabled
 @Config
 @TeleOp
 public class TeleOpMainAltControls extends LinearOpMode {

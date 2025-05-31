@@ -26,7 +26,7 @@ import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.Robot.RobotState;
 
-@TeleOp
+@TeleOp(name = "Calibrate Mechanism", group = "Test")
 @Config
 public class CalibrateLinearMechanism extends LinearOpMode {
     private static final String LOG_TAG = "linear cal";

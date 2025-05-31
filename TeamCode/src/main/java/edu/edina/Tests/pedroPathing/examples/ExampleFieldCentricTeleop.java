@@ -3,6 +3,7 @@ package edu.edina.Tests.pedroPathing.examples;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -17,7 +18,7 @@ import edu.edina.Tests.pedroPathing.constants.LConstants;
  * @version 2.0, 12/30/2024
  */
 
-@TeleOp(name = "Example Field-Centric Teleop", group = "Examples")
+@TeleOp(name = "Example Field-Centric Teleop", group = "Test Pedro Pathing")
 public class ExampleFieldCentricTeleop extends OpMode {
     private Follower follower;
     private final Pose startPose = new Pose(0,0,0);

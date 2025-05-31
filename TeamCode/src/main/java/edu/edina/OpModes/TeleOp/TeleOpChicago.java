@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 
-@TeleOp(name = "TeleOp Main \uD83C\uDF82", group = "a")
+@TeleOp(name = "TeleOp Main \uD83C\uDF82", group = "Main")
 public class TeleOpChicago extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

@@ -31,6 +31,7 @@ public class PidAction implements ICancelableAction {
 
         if (TAG != null) {
             RobotLog.ii(TAG, "%s: e_p = %.3f, e_v = %.3f --> power = %.3f",
+                    mechanism.getName(),
                     pid.getPositionError(),
                     pid.getVelocityError(),
                     power);
