@@ -16,9 +16,11 @@ public class TeleOpChicago extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            hw.update();
+            hw.update(telemetry);
             hw.drive(gamepad1);
             hw.extend(-gamepad2.left_stick_y);
+
+            telemetry.update();
         }
     }
 }

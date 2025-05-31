@@ -2,6 +2,9 @@ package edu.edina.Libraries.Robot;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.roadrunner.Action;
+
+import edu.edina.Libraries.Actions.ContinuousAction;
 
 public class Light {
     private byte[] pixArray;
@@ -29,6 +32,13 @@ public class Light {
         LIGHT_MULT = 0.07;
         chaseDirs = new int[]{1, 1};
         currPixNums = new int[]{0, 16};
+    }
+
+    public Action makeUpdateAction() {
+        return new ContinuousAction(() -> {
+            update(false, true);
+            return true;
+        });
     }
 
     public void update(boolean wave, boolean sample) {

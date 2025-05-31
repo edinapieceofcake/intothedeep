@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,6 @@ import java.util.List;
  *   Motor 3: left_lift_motor
  *   Servo 3: swivel
  *   Servo 4: wrist
- *   Servo 5: claw_top
  *   I2C Bus 0:
  *     imu
  *     sensor_ina260
@@ -50,6 +51,7 @@ public class RobotHardwareChicago {
     private RobotState robotState;
     private TelemetryPacket packet;
     private CurrentSensor currentSensor;
+    private SampleSensor sampleSensor;
     private Light light;
 
     public RobotHardwareChicago(HardwareMap hw) {
@@ -62,16 +64,19 @@ public class RobotHardwareChicago {
         arm = new Arm2(robotState, hw);
         lift = new Lift2(robotState, hw);
         currentSensor = new CurrentSensor(hw);
+        sampleSensor = new SampleSensor(hw);
+        light = new Light(hw, sampleSensor);
 
         runningActions.add(arm.holdPos());
+        runningActions.add(light.makeUpdateAction());
     }
 
     public void initUpdate() {
         currentSensor.checkForInit();
     }
 
-    public void update() {
-        robotState.update();
+    public void update(Telemetry telemetry) {
+        robotState.update(telemetry);
 
         List<Action> newActions = new ArrayList<>();
         for (Action action : runningActions) {

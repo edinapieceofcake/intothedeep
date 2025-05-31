@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class RobotState {
     private VoltageSensor vs;
     private DcMotorEx extensionMotor, armMotor, leftMotor, rightMotor;
@@ -23,7 +25,7 @@ public class RobotState {
         vs = hw.voltageSensor.iterator().next();
     }
 
-    public void update() {
+    public void update(Telemetry telemetry) {
         extensionPos = extensionMotor.getCurrentPosition();
         armPos = armMotor.getCurrentPosition();
         leftPos = leftMotor.getCurrentPosition();

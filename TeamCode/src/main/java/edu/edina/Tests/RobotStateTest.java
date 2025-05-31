@@ -14,12 +14,7 @@ public class RobotStateTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            rs.update();
-
-            telemetry.addData("left lift", rs.getLeftLiftPos());
-            telemetry.addData("right lift", rs.getRightLiftPos());
-            telemetry.addData("arm", rs.getArmPos());
-            telemetry.addData("ext", rs.getExtensionPos());
+            rs.update(telemetry);
             telemetry.update();
         }
     }
