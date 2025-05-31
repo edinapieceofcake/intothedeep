@@ -22,11 +22,12 @@ public class RobotHardwareChicago {
     public RobotHardwareChicago(HardwareMap hw) {
         packet = new TelemetryPacket();
 
-        drivetrain = new Drivetrain(hw);
-        extension = new Extension(hw);
-        arm = new Arm2(hw);
-        lift = new Lift2(hw);
         robotState = new RobotState(hw);
+
+        drivetrain = new Drivetrain(hw);
+        extension = new Extension(robotState, hw);
+        arm = new Arm2(robotState, hw);
+        lift = new Lift2(robotState, hw);
     }
 
     public void update() {
@@ -52,5 +53,16 @@ public class RobotHardwareChicago {
                 extension.moveExtension(10),
                 arm.moveArm(60)
         ));
+    }
+
+    public void extend(double y) {
+        if (Math.abs(y) < 0.1) {
+            runningActions.add(
+                    extension.holdPos()
+            );
+        } else {
+            extension.cancelAction();
+            extension.setPower(y);
+        }
     }
 }

@@ -33,15 +33,17 @@ public class Lift2 {
     public static double I = 0;
     public static double D = 0;
 
+    private RobotState rS;
+    private PidSettings p;
     private Mechanism mechanism;
 
-    public Lift2(HardwareMap hw) {
-        mechanism = new Lift2.Mechanism(hw);
+    public Lift2(RobotState rS, HardwareMap hw) {
+        this.rS = rS;
+        mechanism = new Lift2.Mechanism(rS, hw);
+        p = new PidSettings(P, I, D);
     }
 
     public Action moveLift(double target) {
-        PidSettings p = new PidSettings(P, I, D);
-
         return new SequentialAction(
                 new MotionControlAction(target, mechanism),
                 new PidAction(target, p, mechanism)
@@ -54,8 +56,8 @@ public class Lift2 {
         private ICancelableAction currentAction;
         private final RobotState robotState;
 
-        public Mechanism(HardwareMap hw) {
-            robotState = new RobotState(hw);
+        public Mechanism(RobotState rS, HardwareMap hw) {
+            robotState = rS;
 
             speedometer = new Speedometer(3);
 

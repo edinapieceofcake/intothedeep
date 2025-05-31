@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.Arm2;
 import edu.edina.Libraries.Actions.MotionControlAction;
+import edu.edina.Libraries.Robot.RobotState;
 
 @TeleOp
 @Config
@@ -19,7 +20,7 @@ public class MotionControlTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        IMotionControlLinearMechanism mechanism = new Arm2.Mechanism(hardwareMap);
+        IMotionControlLinearMechanism mechanism = new Arm2.Mechanism(new RobotState(hardwareMap), hardwareMap);
         MotionControlAction action = new MotionControlAction(TARGET_POS, TARGET_VEL, mechanism);
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());

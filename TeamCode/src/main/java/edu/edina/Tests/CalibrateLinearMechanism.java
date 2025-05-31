@@ -24,6 +24,7 @@ import edu.edina.Libraries.Robot.Lift2;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
+import edu.edina.Libraries.Robot.RobotState;
 
 @TeleOp
 @Config
@@ -38,7 +39,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
-        linearMech = new Arm2.Mechanism(hardwareMap);
+        linearMech = new Arm2.Mechanism(new RobotState(hardwareMap), hardwareMap);
 
         waitForStart();
 

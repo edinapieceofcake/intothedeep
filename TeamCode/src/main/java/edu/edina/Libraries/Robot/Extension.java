@@ -32,19 +32,33 @@ public class Extension {
     public static double I = 0.1;
     public static double D = 0.1;
 
+    private PidSettings p;
     private Mechanism mechanism;
+    private RobotState rS;
 
-    public Extension(HardwareMap hw) {
-        mechanism = new Extension.Mechanism(hw);
+    public Extension(RobotState rS, HardwareMap hw) {
+        this.rS = rS;
+        mechanism = new Extension.Mechanism(rS, hw);
+        p = new PidSettings(P, I, D);
     }
 
     public Action moveExtension(double target) {
-        PidSettings p = new PidSettings(P, I, D);
-
         return new SequentialAction(
                 new MotionControlAction(target, mechanism),
                 new PidAction(target, p, mechanism)
         );
+    }
+
+    public Action holdPos() {
+        return new PidAction(rS.getExtensionPos(), p, mechanism);
+    }
+
+    public void setPower(double power) {
+        mechanism.setPower(power);
+    }
+
+    public void cancelAction() {
+        mechanism.setCurrentAction(null);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
@@ -53,8 +67,8 @@ public class Extension {
         private ICancelableAction currentAction;
         private final RobotState robotState;
 
-        public Mechanism(HardwareMap hw) {
-            robotState = new RobotState(hw);
+        public Mechanism(RobotState rS, HardwareMap hw) {
+            robotState = rS;
 
             speedometer = new Speedometer(3);
 

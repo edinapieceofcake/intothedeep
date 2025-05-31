@@ -31,20 +31,26 @@ public class Arm2 {
     public static double P = .2;
     public static double I = .2;
     public static double D = .2;
+    private RobotState rS;
 
+    private PidSettings p;
     private Mechanism mechanism;
 
-    public Arm2(HardwareMap hw) {
-        mechanism = new Arm2.Mechanism(hw);
+    public Arm2(RobotState rS, HardwareMap hw) {
+        this.rS = rS;
+        mechanism = new Arm2.Mechanism(rS, hw);
+        p = new PidSettings(P, I, D);
     }
 
     public Action moveArm(double target) {
-        PidSettings p = new PidSettings(P, I, D);
-
         return new SequentialAction(
                 new MotionControlAction(target, mechanism),
                 new PidAction(target, p, mechanism)
         );
+    }
+
+    public Action holdPos() {
+        return new PidAction(rS.getExtensionPos(), p, mechanism);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
@@ -53,8 +59,8 @@ public class Arm2 {
         private ICancelableAction currentAction;
         private final RobotState robotState;
 
-        public Mechanism(HardwareMap hw) {
-            robotState = new RobotState(hw);
+        public Mechanism(RobotState rS, HardwareMap hw) {
+            robotState = rS;
 
             speedometer = new Speedometer(3);
 

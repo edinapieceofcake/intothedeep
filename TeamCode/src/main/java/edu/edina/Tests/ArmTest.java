@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.Robot.Arm2;
+import edu.edina.Libraries.Robot.RobotState;
 
 @Config
 @TeleOp
@@ -13,7 +14,7 @@ public class ArmTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Arm2.Mechanism arm = new Arm2.Mechanism(hardwareMap);
+        Arm2.Mechanism arm = new Arm2.Mechanism(new RobotState(hardwareMap), hardwareMap);
 
         waitForStart();
 
