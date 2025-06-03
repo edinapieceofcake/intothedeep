@@ -12,40 +12,39 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Control hub:
- *   Motor 0: extension_motor
- *   Motor 1: left_front_drive
- *   Motor 2: left_back_drive
- *   Motor 3: left_lift_motor
- *   Servo 3: swivel
- *   Servo 4: wrist
- *   I2C Bus 0:
- *     imu
- *     sensor_ina260
- *   I2C Bus 1:
- *     neopixel_driver
- *   I2C Bus 2:
- *     sensor_otos
- *   I2C Bus 3:
- *     sensor_color
- * Expansion hub:
- *   Motor 0: right_lift_motor
- *   Motor 1: right_back_drive
- *   Motor 2: right_front_drive
- *   Motor 3: arm_motor
- *   Servo 3: claw_bottom
- *   I2C 1:
- *     distance_left
- *   I2C 2:
- *     distance_right
- */
+// Control hub:
+//   Motor 0: extension_motor
+//   Motor 1: left_front_drive
+//   Motor 2: left_back_drive
+//   Motor 3: left_lift_motor
+//   Servo 3: swivel
+//   Servo 4: wrist
+//   I2C Bus 0:
+//     imu
+//     sensor_ina260
+//   I2C Bus 1:
+//     neopixel_driver
+//   I2C Bus 2:
+//     sensor_otos
+//   I2C Bus 3:
+//     sensor_color
+// Expansion hub:
+//   Motor 0: right_lift_motor
+//   Motor 1: right_back_drive
+//   Motor 2: right_front_drive
+//   Motor 3: arm_motor
+//   Servo 3: claw_bottom
+//   I2C 1:
+//     distance_left
+//   I2C 2:
+//     distance_right
 
 public class RobotHardwareChicago {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
     private Drivetrain drivetrain;
     private Arm2 arm;
+    private Grabber grabber;
     private Extension extension;
     private Lift2 lift;
     private RobotState robotState;
@@ -66,6 +65,7 @@ public class RobotHardwareChicago {
         currentSensor = new CurrentSensor(hw);
         sampleSensor = new SampleSensor(hw);
         light = new Light(hw, sampleSensor);
+        grabber = new Grabber(robotState, hw);
 
         runningActions.add(arm.holdPos());
         runningActions.add(light.makeUpdateAction());
@@ -96,6 +96,22 @@ public class RobotHardwareChicago {
                 extension.moveExtension(10),
                 arm.moveArm(60)
         ));
+    }
+
+    public void toggleClaw() {
+        runningActions.add(grabber.toggleClaw());
+    }
+
+    public void subMode() {
+        runningActions.add(grabber.subMode());
+    }
+
+    public void wallMode() {
+        runningActions.add(grabber.wallMode());
+    }
+
+    public void specimenMode() {
+        runningActions.add(grabber.specimenMode());
     }
 
     public void extend(double y) {
