@@ -1,18 +1,20 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.roadrunner.Action;
 
+@Config
 public class Grabber {
     private Servo claw, wrist, swivel;
     private RobotState robotState;
 
     //claw
-    public static double OPEN_POS = 0.576;
-    public static double CLOSED_POS = 0.53;
+    public static double CLOSED_POS = 0.576;
+    public static double OPEN_POS = 0.53;
 
     //wrist
     public static double INTAKE_POSITION = 0.4;
@@ -40,6 +42,14 @@ public class Grabber {
         double pos = open ? CLOSED_POS : OPEN_POS;
         open = !open;
         return new InstantAction(() -> claw.setPosition(pos));
+    }
+
+    public Action openClaw() {
+        return new InstantAction(() -> claw.setPosition(OPEN_POS));
+    }
+
+    public Action closeClaw() {
+        return new InstantAction(() -> claw.setPosition(CLOSED_POS));
     }
 
     public Action subMode() {

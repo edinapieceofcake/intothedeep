@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -104,14 +105,32 @@ public class RobotHardwareChicago {
 
     public void subMode() {
         runningActions.add(grabber.subMode());
+        runningActions.add(extension.moveExtension(5));
+        runningActions.add(lift.moveLift(0));
+        runningActions.add(arm.moveArm(180));
     }
 
     public void wallMode() {
         runningActions.add(grabber.wallMode());
+        runningActions.add(extension.moveExtension(0));
+        runningActions.add(lift.moveLift(0));
+        runningActions.add(arm.moveArm(0));
+    }
+
+    public void highSpecimen() {
+        runningActions.add(lift.moveLift(8));
+        specimenMode();
+    }
+
+    public void lowSpecimen() {
+        runningActions.add(lift.moveLift(4));
+        specimenMode();
     }
 
     public void specimenMode() {
         runningActions.add(grabber.specimenMode());
+        runningActions.add(extension.moveExtension(0));
+        runningActions.add(arm.moveArm(180));
     }
 
     public void extend(double y) {
@@ -125,5 +144,15 @@ public class RobotHardwareChicago {
 
     public void drive(Gamepad gamepad) {
         drivetrain.update2(gamepad);
+    }
+
+    public void intake() {
+        runningActions.add(new SequentialAction(
+                arm.moveArm(200),
+                new WaitForTime(500),
+                grabber.closeClaw(),
+                new WaitForTime(200),
+                extension.moveExtension(0)
+        ));
     }
 }

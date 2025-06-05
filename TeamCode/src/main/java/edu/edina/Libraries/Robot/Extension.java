@@ -28,9 +28,9 @@ public class Extension {
     public static double MAX_POWER = 1;
     public static double POS_TOLERANCE = 0.25;
     public static double VEL_TOLERANCE = 1;
-    public static double P = 0.1;
-    public static double I = 0.1;
-    public static double D = 0.1;
+    public static double P = 0;
+    public static double I = 0;
+    public static double D = 0;
 
     private PidSettings p;
     private Mechanism mechanism;

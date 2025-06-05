@@ -13,7 +13,7 @@ public class RobotState {
     private int extensionPos, armPos, leftPos, rightPos;
     private double voltage;
 
-    public static double LIFT_MULT = -14.4 / 1615.0;
+    public static double LIFT_MULT = 14.4 / 1615.0;
     public static double POS_AT_180_DEG_ARM = 4060;
     public static double EXTENSION_MULT = -11.0 / 1285.0;
 
@@ -31,6 +31,10 @@ public class RobotState {
         leftPos = leftMotor.getCurrentPosition();
         rightPos = rightMotor.getCurrentPosition();
         voltage = vs.getVoltage();
+
+//        telemetry.addData("lift", "%.1f in", getLiftPos());
+//        telemetry.addData("arm", "%.1f deg", getArmPos());
+//        telemetry.addData("ext", "%.1f in", getExtensionPos());
     }
 
     public double getRightLiftPos() {

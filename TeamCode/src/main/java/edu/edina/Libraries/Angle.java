@@ -2,6 +2,8 @@ package edu.edina.Libraries;
 
 import com.acmerobotics.roadrunner.Rotation2d;
 
+import java.util.ArrayList;
+
 public class Angle {
     public static double degreeDiff(double a0, double a1) {
         double d = a0 - a1;
@@ -24,7 +26,9 @@ public class Angle {
     }
 
     public static double degreeDiff(Rotation2d a0, Rotation2d a1) {
-        double d = radianDiff(a0,a1);
+        double d = radianDiff(a0, a1);
         return Math.toDegrees(d);
     }
 }
+
+
