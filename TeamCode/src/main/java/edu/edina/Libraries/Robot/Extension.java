@@ -67,14 +67,11 @@ public class Extension {
 
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motor;
-        private final Speedometer speedometer;
         private ICancelableAction currentAction;
         private final RobotState robotState;
 
         public Mechanism(RobotState rS, HardwareMap hw) {
             robotState = rS;
-
-            speedometer = new Speedometer(3);
 
             motor = hw.get(DcMotorEx.class, "extension_motor");
             motor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -100,8 +97,7 @@ public class Extension {
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
             double pos = robotState.getExtensionPos();
-            speedometer.sample(pos);
-            double vel = speedometer.getSpeed();
+            double vel = robotState.getExtensionSpeed();
 
             DualNum<Time> posVel = new DualNum<>(new double[]{pos, vel});
 

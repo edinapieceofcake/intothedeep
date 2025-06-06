@@ -777,7 +777,7 @@ public class TeleOpMainObsolete extends LinearOpMode {
                 robotHardware.runActions();
                 robotHardware.getArm().update();
                 robotHardware.getSlide().update();
-                robotHardware.drivetrain.update2(gamepad1);
+                robotHardware.drivetrain.update2(gamepad1, gamepad2);
             }
         }
     }

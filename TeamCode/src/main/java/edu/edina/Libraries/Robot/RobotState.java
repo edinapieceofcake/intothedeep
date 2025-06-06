@@ -11,6 +11,7 @@ public class RobotState {
     private DcMotorEx extensionMotor, armMotor, leftMotor, rightMotor;
 
     private int extensionPos, armPos, leftPos, rightPos;
+    private Speedometer extensionSpeed, armSpeed, leftSpeed, rightSpeed;
     private double voltage;
 
     public static double LIFT_MULT = 14.4 / 1615.0;
@@ -23,13 +24,26 @@ public class RobotState {
         leftMotor = hw.get(DcMotorEx.class, "left_lift_motor");
         rightMotor = hw.get(DcMotorEx.class, "right_lift_motor");
         vs = hw.voltageSensor.iterator().next();
+
+        extensionSpeed = new Speedometer(3);
+        armSpeed = new Speedometer(3);
+        leftSpeed = new Speedometer(3);
+        rightSpeed = new Speedometer(3);
     }
 
     public void update(Telemetry telemetry) {
         extensionPos = extensionMotor.getCurrentPosition();
+        extensionSpeed.sample(extensionPos);
+
         armPos = armMotor.getCurrentPosition();
+        armSpeed.sample(armPos);
+
         leftPos = leftMotor.getCurrentPosition();
+        leftSpeed.sample(leftPos);
+
         rightPos = rightMotor.getCurrentPosition();
+        rightSpeed.sample(rightPos);
+
         voltage = vs.getVoltage();
 
 //        telemetry.addData("lift", "%.1f in", getLiftPos());
@@ -41,20 +55,40 @@ public class RobotState {
         return rightPos * LIFT_MULT;
     }
 
+    public double getRightLiftSpeed() {
+        return rightSpeed.getSpeed() * LIFT_MULT;
+    }
+
     public double getLeftLiftPos() {
         return leftPos * LIFT_MULT;
+    }
+
+    public double getLeftLiftSpeed() {
+        return leftSpeed.getSpeed() * LIFT_MULT;
     }
 
     public double getLiftPos() {
         return (getLeftLiftPos() - getRightLiftPos()) / 2.0;
     }
 
+    public double getLiftSpeed() {
+        return (getLeftLiftSpeed() - getRightLiftSpeed()) / 2.0;
+    }
+
     public double getArmPos() {
         return armPos * (180.0 / POS_AT_180_DEG_ARM);
     }
 
+    public double getArmSpeed() {
+        return armSpeed.getSpeed() * (180.0 / POS_AT_180_DEG_ARM);
+    }
+
     public double getExtensionPos() {
         return extensionPos * EXTENSION_MULT;
+    }
+
+    public double getExtensionSpeed() {
+        return extensionSpeed.getSpeed() * EXTENSION_MULT;
     }
 
     public double getVoltage() {

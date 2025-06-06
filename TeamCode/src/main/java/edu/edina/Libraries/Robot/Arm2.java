@@ -55,14 +55,11 @@ public class Arm2 {
 
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motor;
-        private final Speedometer speedometer;
         private ICancelableAction currentAction;
         private final RobotState robotState;
 
         public Mechanism(RobotState rS, HardwareMap hw) {
             robotState = rS;
-
-            speedometer = new Speedometer(3);
 
             motor = hw.get(DcMotorEx.class, "arm_motor");
             motor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -88,8 +85,7 @@ public class Arm2 {
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
             double pos = robotState.getArmPos();
-            speedometer.sample(pos);
-            double vel = speedometer.getSpeed();
+            double vel = robotState.getArmSpeed();
 
             DualNum<Time> posVel = new DualNum<>(new double[]{pos, vel});
 

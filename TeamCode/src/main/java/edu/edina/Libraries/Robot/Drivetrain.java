@@ -137,7 +137,7 @@ public class Drivetrain {
     private Pose2d currPose;
     private Pose2d refPose;
 
-    public void update2(Gamepad gamepad1) {
+    public void update2(Gamepad gamepad1, Gamepad gamepad2) {
         if (gamepad1.left_trigger > 0.6) {
             for (DcMotorEx motor : motors) {
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

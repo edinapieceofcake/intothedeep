@@ -52,14 +52,11 @@ public class Lift2 {
 
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motorLeft, motorRight;
-        private final Speedometer speedometer;
         private ICancelableAction currentAction;
         private final RobotState robotState;
 
         public Mechanism(RobotState rS, HardwareMap hw) {
             robotState = rS;
-
-            speedometer = new Speedometer(3);
 
             motorRight = hw.get(DcMotorEx.class, "right_lift_motor");
             motorLeft = hw.get(DcMotorEx.class, "left_lift_motor");
@@ -90,8 +87,7 @@ public class Lift2 {
         @Override
         public DualNum<Time> getPositionAndVelocity(boolean raw) {
             double pos = robotState.getLiftPos();
-            speedometer.sample(pos);
-            double vel = speedometer.getSpeed();
+            double vel = robotState.getLiftSpeed();
 
             DualNum<Time> posVel = new DualNum<>(new double[]{pos, vel});
 
