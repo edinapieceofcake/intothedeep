@@ -2,7 +2,6 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.roadrunner.Action;
@@ -22,8 +21,9 @@ public class Grabber {
     public static double WALL_POSITION = (INTAKE_POSITION + SPECIMEN_POSITION) / 2;
 
     //swivel
-    public static double HORIZONTAL_POS = 0;
-    public static double VERTICAL_POS = 0.576;
+    public static double HORIZONTAL_POS = 0.1;
+    public static double VERTICAL_POS = 0.55;
+    public static double END_POS = 1;
 
     private boolean open;
 
@@ -64,7 +64,7 @@ public class Grabber {
         return new InstantAction(() -> {
             wrist.setPosition(SPECIMEN_POSITION);
             claw.setPosition(CLOSED_POS);
-            swivel.setPosition(HORIZONTAL_POS);
+            swivel.setPosition(END_POS);
         });
     }
 
@@ -74,5 +74,9 @@ public class Grabber {
             claw.setPosition(OPEN_POS);
             swivel.setPosition(HORIZONTAL_POS);
         });
+    }
+
+    public Action straightWrist() {
+        return new InstantAction(() -> wrist.setPosition(WALL_POSITION));
     }
 }

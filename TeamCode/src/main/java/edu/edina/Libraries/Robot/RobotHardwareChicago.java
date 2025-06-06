@@ -142,17 +142,23 @@ public class RobotHardwareChicago {
         }
     }
 
-    public void drive(Gamepad gamepad) {
-        drivetrain.update2(gamepad);
+    public void drive(Gamepad gamepad1, Gamepad gamepad2) {
+
+        drivetrain.update2(gamepad1, gamepad2);
     }
 
     public void intake() {
         runningActions.add(new SequentialAction(
                 arm.moveArm(200),
-                new WaitForTime(500),
+                new WaitForTime(400),
                 grabber.closeClaw(),
                 new WaitForTime(200),
-                extension.moveExtension(0)
+                arm.moveArm(180),
+                new ParallelAction(
+                        extension.moveExtension(0),
+                        grabber.straightWrist()
+                )
+
         ));
     }
 }
