@@ -14,15 +14,16 @@ public class ArmTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Arm2.Mechanism arm = new Arm2.Mechanism(new RobotState(hardwareMap), hardwareMap);
+        RobotState rs = new RobotState(hardwareMap);
+        Arm2.Mechanism arm = new Arm2.Mechanism(rs, hardwareMap);
 
         waitForStart();
 
         while (opModeIsActive()) {
+            rs.update(telemetry);
             double pos = arm.getPosition(false);
 
             telemetry.addLine("press up/down to move arm");
-            telemetry.addData("position", "%.1f", pos);
             telemetry.update();
 
             if (pos > 180)
