@@ -43,7 +43,7 @@ import java.util.List;
 public class RobotHardwareChicago {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
-    private Drivetrain drivetrain;
+    private Drivetrain2 drivetrain;
     private Arm2 arm;
     private Grabber grabber;
     private Extension extension;
@@ -59,7 +59,7 @@ public class RobotHardwareChicago {
 
         robotState = new RobotState(hw);
 
-        drivetrain = new Drivetrain(hw);
+        drivetrain = new Drivetrain2(hw, robotState);
         extension = new Extension(robotState, hw);
         arm = new Arm2(robotState, hw);
         lift = new Lift2(robotState, hw);

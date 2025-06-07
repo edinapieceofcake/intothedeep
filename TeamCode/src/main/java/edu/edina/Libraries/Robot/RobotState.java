@@ -1,5 +1,8 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -9,10 +12,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class RobotState {
     private VoltageSensor vs;
     private DcMotorEx extensionMotor, armMotor, leftMotor, rightMotor;
+    private OpticalOdometry odo;
 
     private int extensionPos, armPos, leftPos, rightPos;
     private Speedometer extensionSpeed, armSpeed, leftSpeed, rightSpeed;
     private double voltage;
+    private Pose2dDual<Time> poseDual;
 
     public static double LIFT_MULT = 14.4 / 1615.0;
     public static double POS_AT_180_DEG_ARM = 4060;
@@ -24,6 +29,7 @@ public class RobotState {
         leftMotor = hw.get(DcMotorEx.class, "left_lift_motor");
         rightMotor = hw.get(DcMotorEx.class, "right_lift_motor");
         vs = hw.voltageSensor.iterator().next();
+        odo = new OpticalOdometry(hw);
 
         extensionSpeed = new Speedometer(3);
         armSpeed = new Speedometer(3);
@@ -46,9 +52,13 @@ public class RobotState {
 
         voltage = vs.getVoltage();
 
-//        telemetry.addData("lift", "%.1f in", getLiftPos());
-//        telemetry.addData("arm", "%.1f deg", getArmPos());
-//        telemetry.addData("ext", "%.1f in", getExtensionPos());
+        poseDual = odo.getCurrentPoseDual();
+
+        Pose2d p = getCurrentPose();
+        telemetry.addData("pose", "(%.1f, %.1f) %.1f deg", p.position.x, p.position.y, Math.toDegrees(p.heading.toDouble()));
+        telemetry.addData("lift", "%.1f in   %.1f in/s", getLiftPos(), getLiftSpeed());
+        telemetry.addData("arm", "%.1f deg   %.1f deg/s", getArmPos(), getArmSpeed());
+        telemetry.addData("ext", "%.1f in   %.1f in/s", getExtensionPos(), getExtensionSpeed());
     }
 
     public double getRightLiftPos() {
@@ -93,5 +103,13 @@ public class RobotState {
 
     public double getVoltage() {
         return voltage;
+    }
+
+    public Pose2d getCurrentPose() {
+        return poseDual.value();
+    }
+
+    public Pose2dDual<Time> getCurrentPoseDual() {
+        return poseDual;
     }
 }
