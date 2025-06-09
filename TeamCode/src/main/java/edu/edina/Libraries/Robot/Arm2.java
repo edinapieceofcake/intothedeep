@@ -28,6 +28,7 @@ public class Arm2 {
     public static double MAX_POWER = 0.6;
     public static double POS_TOLERANCE = 5;
     public static double VEL_TOLERANCE = 1;
+    public static double VEL_COEF = 0.005;
     public static double P = 0.005;
     public static double I = 0;
     public static double D = 0.000002;
@@ -107,7 +108,7 @@ public class Arm2 {
             return new MotionControlSettings(KS, KV, KA,
                     VEL_LIMIT, MAX_POWER,
                     POS_TOLERANCE, VEL_TOLERANCE,
-                    P);
+                    VEL_COEF);
         }
 
         @Override

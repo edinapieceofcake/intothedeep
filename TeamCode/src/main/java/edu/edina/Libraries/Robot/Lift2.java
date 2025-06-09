@@ -29,6 +29,8 @@ public class Lift2 {
     public static double POS_TOLERANCE = 0.5;
     public static double VEL_TOLERANCE = 1;
 
+    public static double VEL_COEF = .2;
+
     public static double P = .2;
     public static double I = 0;
     public static double D = 0;
@@ -109,7 +111,7 @@ public class Lift2 {
             return new MotionControlSettings(KS, KV, KA,
                     VEL_LIMIT, MAX_POWER,
                     POS_TOLERANCE, VEL_TOLERANCE,
-                    P);
+                    VEL_COEF);
         }
 
         @Override
