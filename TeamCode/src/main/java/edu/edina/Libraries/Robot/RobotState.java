@@ -1,5 +1,6 @@
 package edu.edina.Libraries.Robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class RobotState {
     private VoltageSensor vs;
     private DcMotorEx extensionMotor, armMotor, leftMotor, rightMotor;
@@ -21,7 +23,7 @@ public class RobotState {
 
     public static double LIFT_MULT = 14.4 / 1615.0;
     public static double POS_AT_180_DEG_ARM = 4060;
-    public static double EXTENSION_MULT = -11.0 / 1285.0;
+    public static double EXTENSION_MULT = -.14;
 
     public RobotState(HardwareMap hw) {
         extensionMotor = hw.get(DcMotorEx.class, "extension_motor");

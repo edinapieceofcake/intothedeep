@@ -50,6 +50,10 @@ public class Arm2 {
         );
     }
 
+    public Action moveArmWithPid(double target) {
+        return new PidAction(target, p, mechanism);
+    }
+
     public Action holdPos() {
         return new PidAction(rS.getExtensionPos(), p, mechanism);
     }

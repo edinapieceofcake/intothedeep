@@ -42,21 +42,18 @@ import java.util.List;
 
 public class RobotHardwareChicago {
     private FtcDashboard dash = FtcDashboard.getInstance();
-    private List<Action> runningActions = new ArrayList<>();
+    private ActionList runningActions = new ActionList();
     private Drivetrain2 drivetrain;
     private Arm2 arm;
     private Grabber grabber;
     private Extension extension;
     private Lift2 lift;
     private RobotState robotState;
-    private TelemetryPacket packet;
     private CurrentSensor currentSensor;
     private SampleSensor sampleSensor;
     private Light light;
 
     public RobotHardwareChicago(HardwareMap hw) {
-        packet = new TelemetryPacket();
-
         robotState = new RobotState(hw);
 
         drivetrain = new Drivetrain2(hw, robotState);
@@ -79,14 +76,8 @@ public class RobotHardwareChicago {
     public void update(Telemetry telemetry) {
         robotState.update(telemetry);
 
-        List<Action> newActions = new ArrayList<>();
-        for (Action action : runningActions) {
-            action.preview(packet.fieldOverlay());
-            if (action.run(packet)) {
-                newActions.add(action);
-            }
-        }
-        runningActions = newActions;
+        TelemetryPacket packet = new TelemetryPacket();
+        runningActions.run(packet);
 
         dash.sendTelemetryPacket(packet);
     }
