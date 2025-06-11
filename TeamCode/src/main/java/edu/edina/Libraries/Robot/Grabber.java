@@ -79,4 +79,8 @@ public class Grabber {
     public Action straightWrist() {
         return new InstantAction(() -> wrist.setPosition(WALL_POSITION));
     }
+
+    public Action perpendicularWrist() {
+        return new InstantAction(() -> wrist.setPosition(VERTICAL_POS));
+    }
 }

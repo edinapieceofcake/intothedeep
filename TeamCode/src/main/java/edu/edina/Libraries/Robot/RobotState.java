@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Vector2dDual;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -32,6 +33,8 @@ public class RobotState {
         rightMotor = hw.get(DcMotorEx.class, "right_lift_motor");
         vs = hw.voltageSensor.iterator().next();
         odo = new OpticalOdometry(hw);
+
+        poseDual = odo.getCurrentPoseDual();
 
         extensionSpeed = new Speedometer(3);
         armSpeed = new Speedometer(3);

@@ -53,7 +53,11 @@ public class RobotHardwareChicago {
     private SampleSensor sampleSensor;
     private Light light;
 
+    private double p2mult;
+
     public RobotHardwareChicago(HardwareMap hw) {
+        p2mult = 0.3;
+
         robotState = new RobotState(hw);
 
         drivetrain = new Drivetrain2(hw, robotState);
@@ -85,8 +89,12 @@ public class RobotHardwareChicago {
     public void highBasket() {
         runningActions.add(new ParallelAction(
                 lift.moveLift(12),
-                extension.moveExtension(10),
-                arm.moveArm(60)
+                new SequentialAction(
+                        arm.moveArm(100),
+                        new WaitForTime(600),
+                        extension.moveExtension(10)
+                ),
+                grabber.perpendicularWrist()
         ));
     }
 
@@ -98,14 +106,14 @@ public class RobotHardwareChicago {
         runningActions.add(grabber.subMode());
         runningActions.add(extension.moveExtension(5));
         runningActions.add(lift.moveLift(0));
-        runningActions.add(arm.moveArm(180));
+        runningActions.add(arm.moveArm(215));
     }
 
     public void wallMode() {
         runningActions.add(grabber.wallMode());
         runningActions.add(extension.moveExtension(0));
         runningActions.add(lift.moveLift(0));
-        runningActions.add(arm.moveArm(0));
+        runningActions.add(arm.moveArm(45));
     }
 
     public void highSpecimen() {
@@ -121,7 +129,7 @@ public class RobotHardwareChicago {
     public void specimenMode() {
         runningActions.add(grabber.specimenMode());
         runningActions.add(extension.moveExtension(0));
-        runningActions.add(arm.moveArm(180));
+        runningActions.add(arm.moveArm(215));
     }
 
     public void extend(double y) {
@@ -134,22 +142,20 @@ public class RobotHardwareChicago {
     }
 
     public void drive(Gamepad gamepad1, Gamepad gamepad2) {
-
-        drivetrain.update2(gamepad1, gamepad2);
+        drivetrain.update2(gamepad1, gamepad2, p2mult);
     }
 
     public void intake() {
         runningActions.add(new SequentialAction(
-                arm.moveArm(200),
+                arm.moveArm(240),
                 new WaitForTime(400),
                 grabber.closeClaw(),
                 new WaitForTime(200),
-                arm.moveArm(180),
+                arm.moveArm(215),
                 new ParallelAction(
                         extension.moveExtension(0),
                         grabber.straightWrist()
                 )
-
         ));
     }
 }
