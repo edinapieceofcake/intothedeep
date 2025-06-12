@@ -103,8 +103,8 @@ public class Drivetrain2 {
         }
 
         double gamepadYaw = gamepad1.right_stick_x + gamepad2.right_stick_x * playerTwoMult;
-        double gamepadLateral = gamepad1.left_stick_x + gamepad2.left_stick_x * playerTwoMult;
-        double gamepadAxial = gamepad1.left_stick_y + gamepad2.left_stick_y * playerTwoMult;
+        double gamepadLateral = -(gamepad1.left_stick_x + gamepad2.left_stick_x * playerTwoMult);
+        double gamepadAxial = -(gamepad1.left_stick_y + gamepad2.left_stick_y * playerTwoMult);
 
         Pose2dDual<Time> poseDual = robotState.getCurrentPoseDual();
 
@@ -114,7 +114,7 @@ public class Drivetrain2 {
 
         RobotLog.ii(tag, "vel = (%.1f, %.1f)", vel.x, vel.y);
 
-        Vector2d c = new Vector2d(-Math.signum(gamepadAxial) * gamepadAxial, -Math.signum(gamepadLateral) * gamepadLateral);
+        Vector2d c = new Vector2d(gamepadAxial, gamepadLateral);
 
         Vector2d newRefPos;
         if (VectorCalc.angleBetweenDeg(c, vel) < VEC_TRACK_ANGLE) {
@@ -189,7 +189,7 @@ public class Drivetrain2 {
         update(axial, lateral, yaw);
     }
 
-    public void update(double axial, double lateral, double yaw, boolean isDriver1InControl) {
+    public void update(double axial, double lateral, double yaw) {
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
         double leftFrontPower = axial + lateral + yaw;
@@ -215,17 +215,6 @@ public class Drivetrain2 {
         rightFront.setPower(rightFrontPower);
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
-    }
-
-    public void update(double axial, double lateral, double yaw) {
-        update(axial, lateral, yaw, true);
-    }
-
-    public void update(MotorCommand mc) {
-        leftFront.setPower(mc.getLeftFrontPower());
-        leftBack.setPower(mc.getLeftBackPower());
-        rightFront.setPower(mc.getRightFrontPower());
-        rightBack.setPower(mc.getRightBackPower());
     }
 
     // Stops the robot.
