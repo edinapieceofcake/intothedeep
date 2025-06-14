@@ -31,7 +31,7 @@ public class TeleOpChicago extends LinearOpMode {
 
             hw.update(telemetry);
             hw.drive(gamepad1, gamepad2);
-            hw.extend(-gamepad2.left_stick_y);
+            hw.extend(-gamepad2.right_stick_y);
 
             if (currentGamepad1.a && !previousGamepad1.a) {
                 hw.toggleClaw();

@@ -89,8 +89,8 @@ public class RobotHardwareChicago {
     public void highBasket() {
         runningActions.add(new ParallelAction(
                 lift.moveLift(12),
+                arm.moveArm(100),
                 new SequentialAction(
-                        arm.moveArm(100),
                         new WaitForTime(600),
                         extension.moveExtension(10)
                 ),
@@ -117,7 +117,7 @@ public class RobotHardwareChicago {
     }
 
     public void highSpecimen() {
-        runningActions.add(lift.moveLift(8));
+        runningActions.add(lift.moveLift(13));
         specimenMode();
     }
 
@@ -151,7 +151,7 @@ public class RobotHardwareChicago {
                 new WaitForTime(400),
                 grabber.closeClaw(),
                 new WaitForTime(200),
-                arm.moveArm(215),
+                arm.moveArm(190),
                 new ParallelAction(
                         extension.moveExtension(0),
                         grabber.straightWrist()

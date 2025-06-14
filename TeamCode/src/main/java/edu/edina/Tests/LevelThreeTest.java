@@ -42,6 +42,12 @@ public class LevelThreeTest extends LinearOpMode {
                 j++;
             }
 
+            if (gamepad1.right_trigger > 0.7) {
+                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            } else {
+                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+
             armMotor.setPower(rightStick);
 
             telemetry.addData("left lift pos", i[0]);
