@@ -107,7 +107,7 @@ public class Arm2 {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return new LinearMechanismSettings("arm", Units.DEGREES, KS, KV, KA, 40);
+            return new LinearMechanismSettings(getName(), Units.DEGREES, KS, KV, KA, 40);
         }
 
         @Override

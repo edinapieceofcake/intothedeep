@@ -98,7 +98,7 @@ public class Lift2 {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return new LinearMechanismSettings("lift", Units.INCHES, KS, KV, KA, 5);
+            return new LinearMechanismSettings(getName(), Units.INCHES, KS, KV, KA, 5);
         }
 
         @Override

@@ -111,7 +111,7 @@ public class Extension {
 
         @Override
         public LinearMechanismSettings getSettings() {
-            return new LinearMechanismSettings("extension", Units.INCHES, KS, KV, KA, 2);
+            return new LinearMechanismSettings(getName(), Units.INCHES, KS, KV, KA, 2);
         }
 
         @Override
