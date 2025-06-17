@@ -36,29 +36,26 @@ public class TeleOpChicago extends LinearOpMode {
             if (currentGamepad1.a && !previousGamepad1.a) {
                 hw.toggleClaw();
             }
-
             if (currentGamepad1.b && !previousGamepad1.b) {
                 hw.wallMode();
             }
-
             if (currentGamepad2.x && !previousGamepad2.x) {
                 hw.subMode();
             }
-
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
                 hw.highSpecimen();
             }
-
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper && currentGamepad1.right_trigger >= 0.7) {
                 hw.lowSpecimen();
             }
-
             if (currentGamepad2.right_trigger >= 0.7) {
                 hw.intake();
             }
-
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
                 hw.highBasket();
+            }
+            if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper && currentGamepad1.right_trigger >= 0.7) {
+                hw.lowBasket();
             }
 
             telemetry.update();

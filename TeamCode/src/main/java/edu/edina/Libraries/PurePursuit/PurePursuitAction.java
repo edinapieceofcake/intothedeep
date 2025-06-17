@@ -5,20 +5,22 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
+import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import edu.edina.Libraries.Robot.Drivetrain;
+import edu.edina.Libraries.MotionControl.ICancelableAction;
+import edu.edina.Libraries.Robot.Drivetrain2;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.MotionControlSettings;
-import edu.edina.Libraries.Robot.Odometry;
-import edu.edina.Libraries.Robot.RobotHardware;
+import edu.edina.Libraries.Robot.RobotState;
 import edu.edina.Libraries.VectorCalc;
 import edu.edina.Tests.PurePursuit.MotorCommand;
 
-public class PurePursuitAction implements Action {
+public class PurePursuitAction implements ICancelableAction {
     public static double VEL_LIMIT = 16;
     public static double MAX_POWER = 0.75;
     public static double POS_TOL = 1;
@@ -38,20 +40,21 @@ public class PurePursuitAction implements Action {
     private double prevTime;
     private PurePursuit purePursuit;
     private double tgtSpeed, maxSpeed, radius;
-    private Odometry odometry;
-    private Drivetrain dt;
+    private RobotState state;
+    private Drivetrain2 dt;
     private Vector2d vecKs, vecKv, vecKa;
 
     private boolean done;
     private MotorCommand mc;
 
-    public PurePursuitAction(Vector2d[] path, double tgtSpeed, double maxSpeed, double radius, RobotHardware hw) {
+    public PurePursuitAction(Vector2d[] path, double tgtSpeed, double maxSpeed, double radius, Drivetrain2 dt, RobotState state) {
+
         purePursuit = new PurePursuit(path, false);
         this.tgtSpeed = tgtSpeed;
         this.radius = radius;
         this.maxSpeed = maxSpeed;
-        odometry = hw.getOdometry();
-        dt = hw.getDrivetrain();
+        this.state = state;
+        this.dt = dt;
         done = false;
         etime = new ElapsedTime();
 
@@ -66,13 +69,17 @@ public class PurePursuitAction implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+        if (done) {
+            return false;
+        }
+
         double t = etime.seconds();
         double dt = t - prevTime;
         prevTime = t;
 
-        odometry.update();
-        Pose2d pose = odometry.getPoseEstimate();
-        PoseVelocity2d v = odometry.getVelocityEstimate();
+        Pose2dDual<Time> poseDual = state.getCurrentPoseDual();
+        Pose2d pose = poseDual.value();
+        PoseVelocity2d v = poseDual.velocity().value();
         Vector2d vRel = FieldToRobot.rotateToRobotRel(pose.heading, v.linearVel);
 
         purePursuit.calcNextPursuitPoint(pose.position, radius);
@@ -95,9 +102,7 @@ public class PurePursuitAction implements Action {
 
         double yaw = r.toDouble() * P_COEFF_ANG;
 
-        MotorCommand mc = new MotorCommand(linearPower.x, linearPower.y, yaw);
-
-        this.dt.update(mc);
+        this.dt.update(linearPower.x, linearPower.y, yaw);
 
         return !done;
     }
@@ -128,5 +133,10 @@ public class PurePursuitAction implements Action {
         double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
 
         return p;
+    }
+
+    @Override
+    public void cancel() {
+        done = true;
     }
 }

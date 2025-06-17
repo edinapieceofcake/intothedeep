@@ -44,6 +44,7 @@ public class RobotHardwareChicago {
     private FtcDashboard dash = FtcDashboard.getInstance();
     private ActionList runningActions = new ActionList();
     private Drivetrain2 drivetrain;
+    private RobotDriver robotDriver;
     private Arm2 arm;
     private Grabber grabber;
     private Extension extension;
@@ -69,6 +70,8 @@ public class RobotHardwareChicago {
         light = new Light(hw, sampleSensor);
         grabber = new Grabber(robotState, hw);
 
+        robotDriver = new RobotDriver(drivetrain, robotState, runningActions);
+
         runningActions.add(arm.holdPos());
         runningActions.add(light.makeUpdateAction());
     }
@@ -87,6 +90,18 @@ public class RobotHardwareChicago {
     }
 
     public void highBasket() {
+        runningActions.add(new ParallelAction(
+                lift.moveLift(12),
+                arm.moveArm(100),
+                new SequentialAction(
+                        new WaitForTime(600),
+                        extension.moveExtension(10)
+                ),
+                grabber.perpendicularWrist()
+        ));
+    }
+
+    public void lowBasket() {
         runningActions.add(new ParallelAction(
                 lift.moveLift(12),
                 arm.moveArm(100),
@@ -122,7 +137,7 @@ public class RobotHardwareChicago {
     }
 
     public void lowSpecimen() {
-        runningActions.add(lift.moveLift(4));
+        runningActions.add(lift.moveLift(7));
         specimenMode();
     }
 
