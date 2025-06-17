@@ -18,28 +18,28 @@ public class PurePursuitActionTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotHardware hw = new RobotHardware(this);
-
-        Vector2d[] v = new Vector2d[]{
-                new Vector2d(0, 0),
-                new Vector2d(20, 0),
-                new Vector2d(20, 5)
-        };
-
-        PurePursuitAction action = new PurePursuitAction(v, TGT, MAX, 5, hw);
-
-        waitForStart();
-
-        while (opModeIsActive()) {
-            TelemetryPacket pkt = new TelemetryPacket();
-            boolean keepRunning = action.run(pkt);
-            if (!keepRunning)
-                break;
-        }
-
-        while (opModeIsActive()) {
-            telemetry.addLine("done");
-            telemetry.update();
-        }
+//        RobotHardware hw = new RobotHardware(this);
+//
+//        Vector2d[] v = new Vector2d[]{
+//                new Vector2d(0, 0),
+//                new Vector2d(20, 0),
+//                new Vector2d(20, 5)
+//        };
+//
+//        PurePursuitAction action = new PurePursuitAction(v, TGT, MAX, 5, hw);
+//
+//        waitForStart();
+//
+//        while (opModeIsActive()) {
+//            TelemetryPacket pkt = new TelemetryPacket();
+//            boolean keepRunning = action.run(pkt);
+//            if (!keepRunning)
+//                break;
+//        }
+//
+//        while (opModeIsActive()) {
+//            telemetry.addLine("done");
+//            telemetry.update();
+//        }
     }
 }
