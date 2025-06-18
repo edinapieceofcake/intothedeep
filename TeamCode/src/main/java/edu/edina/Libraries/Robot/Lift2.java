@@ -20,6 +20,8 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 
 @Config
 public class Lift2 {
+    public static double LIFT_MULT = 14.4 / 1615.0;
+
     public static double KS = 6.1402e-2;
     public static double KV = 3.3710e-2;
     public static double KA = 2.8125e-2;
@@ -35,12 +37,10 @@ public class Lift2 {
     public static double I = 0;
     public static double D = 0;
 
-    private RobotState rS;
     private PidSettings p;
     private Mechanism mechanism;
 
     public Lift2(RobotState rS, HardwareMap hw) {
-        this.rS = rS;
         mechanism = new Lift2.Mechanism(rS, hw);
         p = new PidSettings(P, I, D);
     }

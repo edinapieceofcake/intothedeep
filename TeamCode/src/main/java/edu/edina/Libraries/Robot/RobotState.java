@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2dDual;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -22,15 +23,14 @@ public class RobotState {
     private double voltage;
     private Pose2dDual<Time> poseDual;
 
-    public static double LIFT_MULT = 14.4 / 1615.0;
-    public static double POS_AT_180_DEG_ARM = 4060;
-    public static double EXTENSION_MULT = -.14;
-
     public RobotState(HardwareMap hw) {
         extensionMotor = hw.get(DcMotorEx.class, "extension_motor");
         armMotor = hw.get(DcMotorEx.class, "arm_motor");
         leftMotor = hw.get(DcMotorEx.class, "left_lift_motor");
         rightMotor = hw.get(DcMotorEx.class, "right_lift_motor");
+
+        extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         vs = hw.voltageSensor.iterator().next();
         odo = new OpticalOdometry(hw);
 
@@ -67,19 +67,19 @@ public class RobotState {
     }
 
     public double getRightLiftPos() {
-        return rightPos * LIFT_MULT;
+        return rightPos * Lift2.LIFT_MULT;
     }
 
     public double getRightLiftSpeed() {
-        return rightSpeed.getSpeed() * LIFT_MULT;
+        return rightSpeed.getSpeed() * Lift2.LIFT_MULT;
     }
 
     public double getLeftLiftPos() {
-        return leftPos * LIFT_MULT;
+        return leftPos * Lift2.LIFT_MULT;
     }
 
     public double getLeftLiftSpeed() {
-        return leftSpeed.getSpeed() * LIFT_MULT;
+        return leftSpeed.getSpeed() * Lift2.LIFT_MULT;
     }
 
     public double getLiftPos() {
@@ -91,19 +91,19 @@ public class RobotState {
     }
 
     public double getArmPos() {
-        return armPos * (180.0 / POS_AT_180_DEG_ARM);
+        return armPos * (180.0 / Arm2.POS_AT_180_DEG_ARM);
     }
 
     public double getArmSpeed() {
-        return armSpeed.getSpeed() * (180.0 / POS_AT_180_DEG_ARM);
+        return armSpeed.getSpeed() * (180.0 / Arm2.POS_AT_180_DEG_ARM);
     }
 
     public double getExtensionPos() {
-        return extensionPos * EXTENSION_MULT;
+        return extensionPos * Extension.EXTENSION_MULT;
     }
 
     public double getExtensionSpeed() {
-        return extensionSpeed.getSpeed() * EXTENSION_MULT;
+        return extensionSpeed.getSpeed() * Extension.EXTENSION_MULT;
     }
 
     public double getVoltage() {

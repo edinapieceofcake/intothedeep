@@ -29,33 +29,33 @@ public class Extension {
     public static double POS_TOLERANCE = 0.25;
     public static double VEL_TOLERANCE = 1;
     public static double VEL_COEF = 0;
-    public static double P = 0;
-    public static double I = 0;
+    public static double P = 0.3;
+    public static double I = 0.5;
     public static double D = 0;
+    public static double EXTENSION_MULT = -0.00846740050804403;
 
-    private PidSettings p;
     private Mechanism mechanism;
     private RobotState rS;
 
     public Extension(RobotState rS, HardwareMap hw) {
         this.rS = rS;
         mechanism = new Extension.Mechanism(rS, hw);
-        p = new PidSettings(P, I, D);
+
     }
 
     public Action moveExtension(double target) {
         return new SequentialAction(
                 new MotionControlAction(target, mechanism),
-                new PidAction(target, p, mechanism)
+                new PidAction(target, getPidSettings(), mechanism)
         );
     }
 
     public Action moveExtensionWithPid(double target) {
-        return new PidAction(target, p, mechanism);
+        return new PidAction(target, getPidSettings(), mechanism);
     }
 
     public Action holdPos() {
-        return new PidAction(rS.getExtensionPos(), p, mechanism);
+        return new PidAction(rS.getExtensionPos(), getPidSettings(), mechanism);
     }
 
     public void setPower(double power) {
@@ -70,6 +70,10 @@ public class Extension {
         return mechanism.hasCurrentAction();
     }
 
+    private PidSettings getPidSettings(){
+        return new PidSettings(P, I, D);
+    }
+
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motor;
         private ICancelableAction currentAction;
@@ -79,7 +83,6 @@ public class Extension {
             robotState = rS;
 
             motor = hw.get(DcMotorEx.class, "extension_motor");
-            motor.setDirection(DcMotorSimple.Direction.REVERSE);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }

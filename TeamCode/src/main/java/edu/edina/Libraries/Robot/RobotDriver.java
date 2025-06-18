@@ -12,7 +12,7 @@ public class RobotDriver {
     private ActionList actionList;
     private PurePursuitAction currentAction;
 
-    public static double tgtSpeed, maxSpeed, radius;
+    public static double maxSpeed = 1, radius = 1;
 
     public RobotDriver(Drivetrain2 dt, RobotState state, ActionList actionList) {
         this.dt = dt;
@@ -20,7 +20,7 @@ public class RobotDriver {
         this.actionList = actionList;
     }
 
-    public void addDrivePath(Vector2d[] vectors) {
+    public void addDrivePath(Vector2d[] vectors, double tgtSpeed) {
         if (currentAction != null) {
             currentAction.cancel();
             currentAction = null;

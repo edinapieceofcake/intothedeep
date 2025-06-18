@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Config
 @Autonomous
-public class SampleCross extends LinearOpMode {
+public class AutoSampleOpponentSide extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 

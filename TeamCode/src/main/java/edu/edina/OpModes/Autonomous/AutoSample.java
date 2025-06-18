@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -26,6 +27,7 @@ import edu.edina.Libraries.Robot.WaitForHardware;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 @Config
+@Disabled
 @Autonomous(preselectTeleOp = "TeleOpMain")
 public class AutoSample extends LinearOpMode {
 

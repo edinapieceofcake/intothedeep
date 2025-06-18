@@ -1,11 +1,7 @@
 package edu.edina.Libraries.Robot;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.DualNum;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Action;
@@ -13,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
@@ -25,6 +20,8 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Arm2 {
+    public static double POS_AT_180_DEG_ARM = 4060;
+
     public static double KS = 1.18e-1;
     public static double KV = 1.19e-3;
     public static double KA = 3e-4;

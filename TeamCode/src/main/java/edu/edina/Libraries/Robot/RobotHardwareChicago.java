@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -172,5 +173,9 @@ public class RobotHardwareChicago {
                         grabber.straightWrist()
                 )
         ));
+    }
+
+    public void addPath(Vector2d[] vectors, double tgtSpeed) {
+        robotDriver.addDrivePath(vectors, tgtSpeed);
     }
 }

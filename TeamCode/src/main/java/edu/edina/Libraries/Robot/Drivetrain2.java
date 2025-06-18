@@ -27,21 +27,14 @@ public class Drivetrain2 {
 
     private ContinuousBooleanTest booleanTest;
 
-    // Normal multiplier
-    public static double YAW_PRIORITY = 0.5;
-
     private final String tag = "Drivetrain";
 
     public static double VEC_TRACK_ANGLE = 30;
     public static double MAX_PURSUIT_INCHES = 10;
     public static double YAW_DEADZONE = 0.1;
-    public static double HEADING_P_COEF = 2;
+    public static double HEADING_P_COEF = 1;
 
     public static int MILISECOND = 300;
-
-    // Turtle multiplier
-    public static double SNAIL_MULTIPLIER = 0.3;
-    public static double TURTLE_MULTIPLIER = 0.55;
 
     // Left back drive
     private final DcMotorEx leftBack;

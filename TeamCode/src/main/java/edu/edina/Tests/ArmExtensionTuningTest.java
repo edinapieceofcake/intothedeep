@@ -1,13 +1,8 @@
 package edu.edina.Tests;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.edina.Libraries.Robot.ActionList;
 import edu.edina.Libraries.Robot.Arm2;
