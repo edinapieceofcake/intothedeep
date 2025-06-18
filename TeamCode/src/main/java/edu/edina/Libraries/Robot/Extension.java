@@ -32,7 +32,7 @@ public class Extension {
     public static double P = 0.3;
     public static double I = 0.5;
     public static double D = 0;
-    public static double EXTENSION_MULT = -0.00846740050804403;
+    public static double EXTENSION_MULT = 0.00846740050804403;
 
     private Mechanism mechanism;
     private RobotState rS;
