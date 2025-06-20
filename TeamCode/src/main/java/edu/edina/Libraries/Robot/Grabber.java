@@ -25,23 +25,17 @@ public class Grabber {
     public static double VERTICAL_POS = 0.55;
     public static double END_POS = 1;
 
-    private boolean open;
-
     public Grabber(RobotState robotState, HardwareMap hw) {
         claw = hw.get(Servo.class, "claw_bottom");
         wrist = hw.get(Servo.class, "wrist");
         swivel = hw.get(Servo.class, "swivel");
-
-        open = false;
 
         this.robotState = robotState;
     }
 
     //update with tracking and cancelable etc.
     public Action toggleClaw() {
-        double pos = open ? CLOSED_POS : OPEN_POS;
-        open = !open;
-        return new InstantAction(() -> claw.setPosition(pos));
+        return claw.getPosition() == OPEN_POS ? closeClaw() : openClaw();
     }
 
     public Action openClaw() {
@@ -80,7 +74,15 @@ public class Grabber {
         return new InstantAction(() -> wrist.setPosition(WALL_POSITION));
     }
 
-    public Action perpendicularWrist() {
-        return new InstantAction(() -> wrist.setPosition(VERTICAL_POS));
+    public Action perpendicularSwivel() {
+        return new InstantAction(() -> swivel.setPosition(VERTICAL_POS));
+    }
+
+    public Action horizontalSwivel() {
+        return new InstantAction(() -> swivel.setPosition(HORIZONTAL_POS));
+    }
+
+    public Action toggleSwivel() {
+        return swivel.getPosition() == VERTICAL_POS ? horizontalSwivel() : perpendicularSwivel();
     }
 }
