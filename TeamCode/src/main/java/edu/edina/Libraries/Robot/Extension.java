@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import edu.edina.Libraries.Actions.MotionControlAction;
@@ -55,22 +54,19 @@ public class Extension {
     }
 
     public Action holdPos() {
-        return new PidAction(rS.getExtensionPos(), getPidSettings(), mechanism);
+        return new PidAction(mechanism.getPosition(false), getPidSettings(), mechanism);
     }
 
     public void setPower(double power) {
         mechanism.setPower(power);
     }
 
-    public void cancelAction() {
-        mechanism.setCurrentAction(null);
+    public boolean canManuallyAdjust() {
+        return Math.abs(mechanism.getPositionAndVelocity(false).get(1)) < VEL_LIMIT / 2;
+
     }
 
-    public boolean hasCurrentAction() {
-        return mechanism.hasCurrentAction();
-    }
-
-    private PidSettings getPidSettings(){
+    private PidSettings getPidSettings() {
         return new PidSettings(P, I, D);
     }
 
@@ -136,10 +132,6 @@ public class Extension {
                 currentAction.cancel();
 
             currentAction = action;
-        }
-
-        public boolean hasCurrentAction() {
-            return currentAction != null;
         }
     }
 }

@@ -22,13 +22,14 @@ public class ActionList {
     }
 
     public void run(TelemetryPacket packet) {
-        List<Action> newActions = new ArrayList<>();
-        for (Action action : runningActions) {
+        List<Action> runList = runningActions;
+        runningActions = new ArrayList<>();
+
+        for (Action action : runList) {
             action.preview(packet.fieldOverlay());
             if (action.run(packet)) {
-                newActions.add(action);
+                runningActions.add(action);
             }
         }
-        runningActions = newActions;
     }
 }

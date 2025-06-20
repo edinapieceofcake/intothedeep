@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.edina.Libraries.Actions.ActionList;
+import edu.edina.Libraries.Actions.ActionListOld;
 import edu.edina.Libraries.Actions.Condition;
 import edu.edina.Libraries.Actions.Conditions;
 import edu.edina.Libraries.Actions.OdometryUpdater;
@@ -37,17 +37,17 @@ public class SpecimenParkingTest extends LinearOpMode {
             Condition sp = new Conditions.SpecimenPark(this);
 
             if (sp.run()) {
-                if (ActionList.canAddAction(SpecimenPark.class, runningActions)) {
+                if (ActionListOld.canAddAction(SpecimenPark.class, runningActions)) {
                     runningActions.add(new SpecimenPark(hw, sp));
                 }
 
-                if (ActionList.canAddAction(RaiseLift.class, runningActions)) {
+                if (ActionListOld.canAddAction(RaiseLift.class, runningActions)) {
                     runningActions.add(new RaiseLift(hw, 14));
                 }
             }
 
             // check if still in manual driving mode
-            if (ActionList.canControlPart("drivetrain", runningActions)) {
+            if (ActionListOld.canControlPart("drivetrain", runningActions)) {
                 hw.drivetrain.update();
             }
 

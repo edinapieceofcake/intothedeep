@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -145,11 +146,9 @@ public class RobotHardwareChicago {
     }
 
     public void extend(double y) {
-        if (Math.abs(y) < 0.1 && !extension.hasCurrentAction()) {
-            runningActions.add(extension.holdPos());
-        } else {
-            extension.cancelAction();
+        if (Math.abs(y) > 0.1 && extension.canManuallyAdjust()) {
             extension.setPower(y);
+            runningActions.add(extension.holdPos());
         }
     }
 
@@ -181,5 +180,9 @@ public class RobotHardwareChicago {
 
     public void horizontalSwivel() {
         runningActions.add(grabber.horizontalSwivel());
+    }
+
+    public boolean armOverSub() {
+        return robotState.armOverSub();
     }
 }

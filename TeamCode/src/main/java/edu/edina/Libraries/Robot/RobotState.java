@@ -140,4 +140,8 @@ public class RobotState {
     public double getFrontDist() {
         return frontDist;
     }
+
+    public boolean armOverSub() {
+        return getArmPos() > 180;
+    }
 }
