@@ -2,7 +2,6 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -10,9 +9,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 // Control hub:
 //   Motor 0: extension_motor
@@ -98,7 +94,7 @@ public class RobotHardwareChicago {
                         new WaitForTime(600),
                         extension.moveExtension(10)
                 ),
-                grabber.perpendicularWrist()
+                grabber.perpendicularSwivel()
         ));
     }
 
@@ -110,7 +106,7 @@ public class RobotHardwareChicago {
                         new WaitForTime(600),
                         extension.moveExtension(10)
                 ),
-                grabber.perpendicularWrist()
+                grabber.perpendicularSwivel()
         ));
     }
 
@@ -177,5 +173,13 @@ public class RobotHardwareChicago {
 
     public void addPath(Vector2d[] vectors, double tgtSpeed) {
         robotDriver.addDrivePath(vectors, tgtSpeed);
+    }
+
+    public void perpendicularSwivel() {
+        runningActions.add(grabber.perpendicularSwivel());
+    }
+
+    public void horizontalSwivel() {
+        runningActions.add(grabber.horizontalSwivel());
     }
 }

@@ -5,25 +5,31 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2dDual;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class RobotState {
     private VoltageSensor vs;
     private DcMotorEx extensionMotor, armMotor, leftMotor, rightMotor;
     private OpticalOdometry odo;
+    private Rev2mDistanceSensor leftDistance, rightDistance, frontDistance;
 
     private int extensionPos, armPos, leftPos, rightPos;
     private Speedometer extensionSpeed, armSpeed, leftSpeed, rightSpeed;
-    private double voltage;
+    private double voltage, leftDist, rightDist, frontDist;
     private Pose2dDual<Time> poseDual;
 
     public RobotState(HardwareMap hw) {
+        leftDistance = hw.get(Rev2mDistanceSensor.class, "distance_left");
+        rightDistance = hw.get(Rev2mDistanceSensor.class, "distance_right");
+        frontDistance = hw.get(Rev2mDistanceSensor.class, "distance_front");
         extensionMotor = hw.get(DcMotorEx.class, "extension_motor");
         armMotor = hw.get(DcMotorEx.class, "arm_motor");
         leftMotor = hw.get(DcMotorEx.class, "left_lift_motor");
@@ -43,6 +49,10 @@ public class RobotState {
     }
 
     public void update(Telemetry telemetry) {
+        leftDist = leftDistance.getDistance(DistanceUnit.INCH);
+        rightDist = rightDistance.getDistance(DistanceUnit.INCH);
+        frontDist = frontDistance.getDistance(DistanceUnit.INCH);
+
         extensionPos = extensionMotor.getCurrentPosition();
         extensionSpeed.sample(extensionPos);
 
@@ -64,6 +74,7 @@ public class RobotState {
         telemetry.addData("lift", "%.1f in   %.1f in/s", getLiftPos(), getLiftSpeed());
         telemetry.addData("arm", "%.1f deg   %.1f deg/s", getArmPos(), getArmSpeed());
         telemetry.addData("ext", "%.1f in   %.1f in/s", getExtensionPos(), getExtensionSpeed());
+        telemetry.addData("dist", "%.1f in (f) %.1f in (l) %.1f (r)", frontDist, leftDist, rightDist);
     }
 
     public double getRightLiftPos() {
@@ -116,5 +127,17 @@ public class RobotState {
 
     public Pose2dDual<Time> getCurrentPoseDual() {
         return poseDual;
+    }
+
+    public double getLeftDist() {
+        return leftDist;
+    }
+
+    public double getRightDist() {
+        return rightDist;
+    }
+
+    public double getFrontDist() {
+        return frontDist;
     }
 }
