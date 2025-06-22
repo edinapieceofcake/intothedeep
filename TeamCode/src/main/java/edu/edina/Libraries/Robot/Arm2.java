@@ -24,9 +24,9 @@ public class Arm2 {
     public static double POS_SPECIMEN = 200;
     public static double POS_HIGH_BASKET = 120;
     public static double POS_LOW_BASKET = 100;
-    public static double ARM_VERTICAL = 140;
-    public static double ARM_SCORE_BASKET_MIN = 100;
-    public static double ARM_WALL_POS = 45;
+    public static double POS_ARM_VERTICAL = 140;
+    public static double POS_ARM_SCORE_BASKET_MIN = 100;
+    public static double POS_ARM_WALL = 45;
 
     public static double POS_AT_180_DEG_ARM = 4060;
 
@@ -42,9 +42,9 @@ public class Arm2 {
     public static double MOT_VEL_COEF = 0.7;
 
     // for pid action
-    public static double HOLD_P = 0.01;
-    public static double HOLD_I = 0.05;
-    public static double HOLD_D = 0.002;
+    public static double HOLD_P = 0.003;
+    public static double HOLD_I = 0.04;
+    public static double HOLD_D = 0.0;
     private RobotState rS;
 
     private Mechanism mechanism;

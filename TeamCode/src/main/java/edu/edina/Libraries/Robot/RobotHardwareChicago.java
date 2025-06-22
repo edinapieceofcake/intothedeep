@@ -2,7 +2,6 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -12,7 +11,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import edu.edina.Libraries.Actions.Condition;
 import edu.edina.Libraries.Actions.WaitUntil;
 
 // Control hub:
@@ -100,7 +98,7 @@ public class RobotHardwareChicago {
                         new ParallelAction(
                                 arm.moveArm(Arm2.POS_HIGH_BASKET),
                                 new SequentialAction(
-                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.ARM_VERTICAL && robotState.getArmPos() > Arm2.ARM_SCORE_BASKET_MIN),
+                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN),
                                         extension.moveExtension(Extension.POS_HIGH_BASKET)
                                 )
                         )
@@ -117,7 +115,7 @@ public class RobotHardwareChicago {
                         new ParallelAction(
                                 arm.moveArm(Arm2.POS_LOW_BASKET),
                                 new SequentialAction(
-                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.ARM_VERTICAL && robotState.getArmPos() > Arm2.ARM_SCORE_BASKET_MIN),
+                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN),
                                         extension.moveExtension(Extension.POS_LOW_BASKET)
                                 )
                         )
@@ -164,7 +162,7 @@ public class RobotHardwareChicago {
                 lift.moveLift(Lift2.POS_BOTTOM),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
-                        arm.moveArm(Arm2.ARM_WALL_POS)
+                        arm.moveArm(Arm2.POS_ARM_WALL)
                 )
         ));
     }

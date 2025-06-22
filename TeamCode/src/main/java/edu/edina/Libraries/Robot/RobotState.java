@@ -42,7 +42,7 @@ public class RobotState {
 
         poseDual = odo.getCurrentPoseDual();
 
-        extensionSpeed = new Speedometer(3);
+        extensionSpeed = new Speedometer(5);
         armSpeed = new Speedometer(3);
         leftSpeed = new Speedometer(3);
         rightSpeed = new Speedometer(3);

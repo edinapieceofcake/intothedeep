@@ -18,7 +18,6 @@ public class MotionControlAction implements ICancelableAction {
     private final IMotionControlLinearMechanism mechanism;
     private final MotionControlSettings settings;
     private final ElapsedTime etime;
-    private DualNum<Time> posAndVel;
     private double prevTime, power;
 
     private boolean done;
@@ -47,8 +46,6 @@ public class MotionControlAction implements ICancelableAction {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        addTelemetry(telemetryPacket);
-
         if (!done) {
             mechanism.setCurrentAction(this);
 
@@ -56,6 +53,7 @@ public class MotionControlAction implements ICancelableAction {
             double dt = t - prevTime;
             prevTime = t;
 
+            DualNum<Time> posAndVel = mechanism.getPositionAndVelocity(false);
             power = drivePower(dt, posAndVel.get(0), posAndVel.get(1));
             mechanism.setPower(power);
         }
@@ -66,9 +64,6 @@ public class MotionControlAction implements ICancelableAction {
     @Override
     public void cancel() {
         done = true;
-    }
-
-    public void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {
     }
 
     private double drivePower(double dt, double x, double v) {

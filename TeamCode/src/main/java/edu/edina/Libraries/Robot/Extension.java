@@ -24,13 +24,13 @@ public class Extension {
 
     public static double KS = 0.06;
     public static double KV = 3.4e-2;
-    public static double KA = 3e-3;
+    public static double KA = 0.03;
 
-    public static double MOT_VEL_LIMIT = 1;
+    public static double MOT_VEL_LIMIT = 20;
     public static double MOT_MAX_POWER = 1;
-    public static double MOT_POS_TOLERANCE = 0.25;
-    public static double MOT_VEL_TOLERANCE = 1;
-    public static double MOT_VEL_COEF = 0;
+    public static double MOT_POS_TOLERANCE = 1;
+    public static double MOT_VEL_TOLERANCE = 2;
+    public static double MOT_VEL_COEF = 0.25;
     public static double HOLD_P = 0.35;
     public static double HOLD_I = 0.7;
     public static double HOLD_D = 0;
@@ -40,13 +40,10 @@ public class Extension {
     public static double EXTENSION_RETRACTED_INCHES = 1;
     public static double INIT_EXTENSION_SUB = 5;
 
-    private Mechanism mechanism;
-    private RobotState rS;
+    private final Mechanism mechanism;
 
     public Extension(RobotState rS, HardwareMap hw) {
-        this.rS = rS;
         mechanism = new Extension.Mechanism(rS, hw);
-
     }
 
     public Action moveExtension(double target) {
