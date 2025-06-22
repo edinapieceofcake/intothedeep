@@ -37,6 +37,9 @@ public class Extension {
 
     public static double EXTENSION_MULT = 0.00846740050804403;
 
+    public static double EXTENSION_RETRACTED_INCHES = 1;
+    public static double INIT_EXTENSION_SUB = 5;
+
     private Mechanism mechanism;
     private RobotState rS;
 
@@ -53,6 +56,14 @@ public class Extension {
         );
     }
 
+    public void cancelActions() {
+        mechanism.setCurrentAction(null);
+    }
+
+    public boolean isInactive() {
+        return mechanism.currentAction != null;
+    }
+
     public Action moveExtensionWithPid(double target) {
         return new PidAction(target, getPidSettings(), mechanism);
     }
@@ -63,11 +74,6 @@ public class Extension {
 
     public void setPower(double power) {
         mechanism.setPower(power);
-    }
-
-    public boolean canManuallyAdjust() {
-        return Math.abs(mechanism.getPositionAndVelocity(false).get(1)) < MOT_VEL_LIMIT / 2;
-
     }
 
     private PidSettings getPidSettings() {
@@ -132,8 +138,11 @@ public class Extension {
 
         @Override
         public void setCurrentAction(ICancelableAction action) {
-            if (currentAction != null)
-                currentAction.cancel();
+            if (currentAction != null) {
+                if (currentAction != action) {
+                    currentAction.cancel();
+                }
+            }
 
             currentAction = action;
         }

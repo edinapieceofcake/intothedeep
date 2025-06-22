@@ -24,6 +24,9 @@ public class Arm2 {
     public static double POS_SPECIMEN = 200;
     public static double POS_HIGH_BASKET = 120;
     public static double POS_LOW_BASKET = 100;
+    public static double ARM_VERTICAL = 140;
+    public static double ARM_SCORE_BASKET_MIN = 100;
+    public static double ARM_WALL_POS = 45;
 
     public static double POS_AT_180_DEG_ARM = 4060;
 
@@ -130,8 +133,11 @@ public class Arm2 {
 
         @Override
         public void setCurrentAction(ICancelableAction action) {
-            if (currentAction != null)
-                currentAction.cancel();
+            if (currentAction != null) {
+                if (currentAction != action) {
+                    currentAction.cancel();
+                }
+            }
 
             currentAction = action;
         }

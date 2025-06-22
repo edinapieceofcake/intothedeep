@@ -20,12 +20,16 @@ public class PidAction implements ICancelableAction {
         this.pid = new PIDController(pid.p, pid.i, pid.d);
         this.pid.setSetPoint(target);
         this.mechanism = mechanism;
-
-        mechanism.setCurrentAction(this);
     }
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+        if (done) {
+            return false;
+        }
+
+        mechanism.setCurrentAction(this);
+
         double x = mechanism.getPosition(false);
         double power = pid.calculate(x);
 
@@ -38,7 +42,7 @@ public class PidAction implements ICancelableAction {
         }
 
         mechanism.setPower(power);
-        return !done;
+        return true;
     }
 
     @Override

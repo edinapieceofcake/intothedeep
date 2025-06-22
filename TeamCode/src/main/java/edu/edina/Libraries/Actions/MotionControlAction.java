@@ -43,8 +43,6 @@ public class MotionControlAction implements ICancelableAction {
 
         etime = new ElapsedTime();
         prevTime = etime.seconds();
-
-        mechanism.setCurrentAction(this);
     }
 
     @Override
@@ -52,6 +50,8 @@ public class MotionControlAction implements ICancelableAction {
         addTelemetry(telemetryPacket);
 
         if (!done) {
+            mechanism.setCurrentAction(this);
+
             double t = etime.seconds();
             double dt = t - prevTime;
             prevTime = t;

@@ -24,6 +24,7 @@ public class Lift2 {
 
     public static double POS_HIGH_BASKET = 15;
     public static double POS_LOW_BASKET = 12;
+    public static double POS_BOTTOM = 0;
 
     public static double KS = 6.1402e-2;
     public static double KV = 3.3710e-2;
@@ -120,8 +121,11 @@ public class Lift2 {
 
         @Override
         public void setCurrentAction(ICancelableAction action) {
-            if (currentAction != null)
-                currentAction.cancel();
+            if (currentAction != null) {
+                if (currentAction != action) {
+                    currentAction.cancel();
+                }
+            }
 
             currentAction = action;
         }
