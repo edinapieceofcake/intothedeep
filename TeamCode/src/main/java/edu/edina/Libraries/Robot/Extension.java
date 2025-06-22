@@ -19,18 +19,22 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Extension {
+    public static double POS_HIGH_BASKET = 11;
+    public static double POS_LOW_BASKET = 10;
+
     public static double KS = 0.06;
     public static double KV = 3.4e-2;
     public static double KA = 3e-3;
 
-    public static double VEL_LIMIT = 1;
-    public static double MAX_POWER = 1;
-    public static double POS_TOLERANCE = 0.25;
-    public static double VEL_TOLERANCE = 1;
-    public static double VEL_COEF = 0;
-    public static double P = 0.3;
-    public static double I = 0.5;
-    public static double D = 0;
+    public static double MOT_VEL_LIMIT = 1;
+    public static double MOT_MAX_POWER = 1;
+    public static double MOT_POS_TOLERANCE = 0.25;
+    public static double MOT_VEL_TOLERANCE = 1;
+    public static double MOT_VEL_COEF = 0;
+    public static double HOLD_P = 0.35;
+    public static double HOLD_I = 0.7;
+    public static double HOLD_D = 0;
+
     public static double EXTENSION_MULT = 0.00846740050804403;
 
     private Mechanism mechanism;
@@ -62,12 +66,12 @@ public class Extension {
     }
 
     public boolean canManuallyAdjust() {
-        return Math.abs(mechanism.getPositionAndVelocity(false).get(1)) < VEL_LIMIT / 2;
+        return Math.abs(mechanism.getPositionAndVelocity(false).get(1)) < MOT_VEL_LIMIT / 2;
 
     }
 
     private PidSettings getPidSettings() {
-        return new PidSettings(P, I, D);
+        return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
@@ -121,9 +125,9 @@ public class Extension {
         @Override
         public MotionControlSettings getMotionSettings() {
             return new MotionControlSettings(KS, KV, KA,
-                    VEL_LIMIT, MAX_POWER,
-                    POS_TOLERANCE, VEL_TOLERANCE,
-                    VEL_COEF);
+                    MOT_VEL_LIMIT, MOT_MAX_POWER,
+                    MOT_POS_TOLERANCE, MOT_VEL_TOLERANCE,
+                    MOT_VEL_COEF);
         }
 
         @Override

@@ -22,34 +22,38 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 public class Lift2 {
     public static double LIFT_MULT = 14.4 / 1615.0;
 
+    public static double POS_HIGH_BASKET = 15;
+    public static double POS_LOW_BASKET = 12;
+
     public static double KS = 6.1402e-2;
     public static double KV = 3.3710e-2;
     public static double KA = 2.8125e-2;
 
-    public static double VEL_LIMIT = 200;
-    public static double MAX_POWER = 0.6;
-    public static double POS_TOLERANCE = 0.5;
-    public static double VEL_TOLERANCE = 1;
+    public static double MOT_VEL_LIMIT = 200;
+    public static double MOT_MAX_POWER = 0.6;
+    public static double MOT_POS_TOLERANCE = 0.5;
+    public static double MOT_VEL_TOLERANCE = 1;
+    public static double MOT_VEL_COEF = .2;
 
-    public static double VEL_COEF = .2;
+    public static double HOLD_P = .3;
+    public static double HOLD_I = 0;
+    public static double HOLD_D = 0;
 
-    public static double P = .2;
-    public static double I = 0;
-    public static double D = 0;
-
-    private PidSettings p;
     private Mechanism mechanism;
 
     public Lift2(RobotState rS, HardwareMap hw) {
         mechanism = new Lift2.Mechanism(rS, hw);
-        p = new PidSettings(P, I, D);
     }
 
     public Action moveLift(double target) {
         return new SequentialAction(
                 new MotionControlAction(target, mechanism),
-                new PidAction(target, p, mechanism)
+                new PidAction(target, getPidSettings(), mechanism)
         );
+    }
+
+    private PidSettings getPidSettings(){
+        return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
@@ -109,9 +113,9 @@ public class Lift2 {
         @Override
         public MotionControlSettings getMotionSettings() {
             return new MotionControlSettings(KS, KV, KA,
-                    VEL_LIMIT, MAX_POWER,
-                    POS_TOLERANCE, VEL_TOLERANCE,
-                    VEL_COEF);
+                    MOT_VEL_LIMIT, MOT_MAX_POWER,
+                    MOT_POS_TOLERANCE, MOT_VEL_TOLERANCE,
+                    MOT_VEL_COEF);
         }
 
         @Override

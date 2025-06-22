@@ -20,6 +20,11 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Arm2 {
+    // positions
+    public static double POS_SPECIMEN = 200;
+    public static double POS_HIGH_BASKET = 120;
+    public static double POS_LOW_BASKET = 100;
+
     public static double POS_AT_180_DEG_ARM = 4060;
 
     public static double KS = 1.18e-1;
@@ -27,40 +32,43 @@ public class Arm2 {
     public static double KA = 3e-4;
 
     // for linear motion
-    public static double VEL_LIMIT = 200;
-    public static double MAX_POWER = 0.6;
-    public static double POS_TOLERANCE = 15;
-    public static double VEL_TOLERANCE = 20;
-    public static double VEL_COEF = 0.7;
+    public static double MOT_VEL_LIMIT = 200;
+    public static double MOT_MAX_POWER = 0.6;
+    public static double MOT_POS_TOLERANCE = 15;
+    public static double MOT_VEL_TOLERANCE = 20;
+    public static double MOT_VEL_COEF = 0.7;
 
     // for pid action
-    public static double P = 0.005;
-    public static double I = 0;
-    public static double D = 0.000002;
+    public static double HOLD_P = 0.01;
+    public static double HOLD_I = 0.05;
+    public static double HOLD_D = 0.002;
     private RobotState rS;
 
-    private PidSettings p;
     private Mechanism mechanism;
 
     public Arm2(RobotState rS, HardwareMap hw) {
         this.rS = rS;
         mechanism = new Arm2.Mechanism(rS, hw);
-        p = new PidSettings(P, I, D);
+
     }
 
     public Action moveArm(double target) {
         return new SequentialAction(
                 new MotionControlAction(target, mechanism),
-                new PidAction(target, p, mechanism)
+                new PidAction(target, getPidSettings(), mechanism)
         );
     }
 
     public Action moveArmWithPid(double target) {
-        return new PidAction(target, p, mechanism);
+        return new PidAction(target, getPidSettings(), mechanism);
     }
 
     public Action holdPos() {
-        return new PidAction(rS.getExtensionPos(), p, mechanism);
+        return new PidAction(rS.getExtensionPos(), getPidSettings(), mechanism);
+    }
+
+    private PidSettings getPidSettings() {
+        return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
@@ -115,9 +123,9 @@ public class Arm2 {
         @Override
         public MotionControlSettings getMotionSettings() {
             return new MotionControlSettings(KS, KV, KA,
-                    VEL_LIMIT, MAX_POWER,
-                    POS_TOLERANCE, VEL_TOLERANCE,
-                    VEL_COEF);
+                    MOT_VEL_LIMIT, MOT_MAX_POWER,
+                    MOT_POS_TOLERANCE, MOT_VEL_TOLERANCE,
+                    MOT_VEL_COEF);
         }
 
         @Override

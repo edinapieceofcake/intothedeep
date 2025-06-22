@@ -69,11 +69,6 @@ public class MotionControlAction implements ICancelableAction {
     }
 
     public void addTelemetry(@NonNull TelemetryPacket telemetryPacket) {
-        posAndVel = mechanism.getPositionAndVelocity(false);
-        telemetryPacket.put("MotCon.pos", posAndVel.get(0));
-        telemetryPacket.put("MotCon.vel", posAndVel.get(1));
-        telemetryPacket.put("MotCon.power", power);
-        telemetryPacket.put("MotCon.tgt", targetPos);
     }
 
     private double drivePower(double dt, double x, double v) {

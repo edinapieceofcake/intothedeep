@@ -19,7 +19,7 @@ public class AutoSampleAllianceSide extends LinearOpMode {
         Vector2d[] v = new Vector2d[]{
                 new Vector2d(0, 0),
                 new Vector2d(20, 0),
-                new Vector2d(20, 5)
+                new Vector2d(20, -20)
         };
 
         waitForStart();

@@ -89,11 +89,11 @@ public class RobotHardwareChicago {
 
     public void highBasket() {
         runningActions.add(new ParallelAction(
-                lift.moveLift(12),
-                arm.moveArm(100),
+                lift.moveLift(Lift2.POS_HIGH_BASKET),
+                arm.moveArm(Arm2.POS_HIGH_BASKET),
                 new SequentialAction(
                         new WaitForTime(600),
-                        extension.moveExtension(10)
+                        extension.moveExtension(Extension.POS_HIGH_BASKET)
                 ),
                 grabber.perpendicularSwivel()
         ));
@@ -101,11 +101,11 @@ public class RobotHardwareChicago {
 
     public void lowBasket() {
         runningActions.add(new ParallelAction(
-                lift.moveLift(12),
-                arm.moveArm(100),
+                lift.moveLift(Lift2.POS_LOW_BASKET),
+                arm.moveArm(Arm2.POS_LOW_BASKET),
                 new SequentialAction(
                         new WaitForTime(600),
-                        extension.moveExtension(10)
+                        extension.moveExtension(Extension.POS_LOW_BASKET)
                 ),
                 grabber.perpendicularSwivel()
         ));
@@ -142,11 +142,11 @@ public class RobotHardwareChicago {
     public void specimenMode() {
         runningActions.add(grabber.specimenMode());
         runningActions.add(extension.moveExtension(0));
-        runningActions.add(arm.moveArm(215));
+        runningActions.add(arm.moveArm(Arm2.POS_SPECIMEN));
     }
 
     public void extend(double y) {
-        if (Math.abs(y) > 0.1 && extension.canManuallyAdjust()) {
+        if (Math.abs(y) > 0.1) {
             extension.setPower(y);
             runningActions.add(extension.holdPos());
         }
