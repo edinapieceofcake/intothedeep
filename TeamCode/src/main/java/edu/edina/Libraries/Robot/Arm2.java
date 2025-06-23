@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
+import edu.edina.Libraries.LinearMotion.VoltageCompensatingMechanism;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -27,6 +28,7 @@ public class Arm2 {
     public static double POS_ARM_VERTICAL = 140;
     public static double POS_ARM_SCORE_BASKET_MIN = 100;
     public static double POS_ARM_WALL = 45;
+    public static double POS_GROUND = 225;
 
     public static double POS_AT_180_DEG_ARM = 4060;
 
@@ -52,26 +54,29 @@ public class Arm2 {
     public Arm2(RobotState rS, HardwareMap hw) {
         this.rS = rS;
         mechanism = new Arm2.Mechanism(rS, hw);
-
     }
 
     public Action moveArm(double target) {
         return new SequentialAction(
-                new MotionControlAction(target, mechanism),
-                new PidAction(target, getPidSettings(), mechanism)
+                new MotionControlAction(target, wrapMechanism()),
+                moveArmWithPid(target)
         );
     }
 
     public Action moveArmWithPid(double target) {
-        return new PidAction(target, getPidSettings(), mechanism);
+        return new PidAction(target, getPidSettings(), wrapMechanism());
     }
 
     public Action holdPos() {
-        return new PidAction(rS.getExtensionPos(), getPidSettings(), mechanism);
+        return moveArmWithPid(rS.getExtensionPos());
     }
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
+    }
+
+    private IMotionControlLinearMechanism wrapMechanism() {
+        return new VoltageCompensatingMechanism(mechanism, rS);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {

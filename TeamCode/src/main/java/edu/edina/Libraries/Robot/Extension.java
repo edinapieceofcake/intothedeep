@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
+import edu.edina.Libraries.LinearMotion.VoltageCompensatingMechanism;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -42,15 +43,17 @@ public class Extension {
     public static double INIT_EXTENSION_SUB = 5;
 
     private final Mechanism mechanism;
+    private final RobotState rS;
 
     public Extension(RobotState rS, HardwareMap hw) {
+        this.rS = rS;
         mechanism = new Extension.Mechanism(rS, hw);
     }
 
     public Action moveExtension(double target) {
         return new SequentialAction(
-                new MotionControlAction(target, mechanism),
-                new PidAction(target, getPidSettings(), mechanism)
+                new MotionControlAction(target, wrapMechanism()),
+                moveExtensionWithPid(target)
         );
     }
 
@@ -63,19 +66,23 @@ public class Extension {
     }
 
     public Action moveExtensionWithPid(double target) {
-        return new PidAction(target, getPidSettings(), mechanism);
+        return new PidAction(target, getPidSettings(), wrapMechanism());
     }
 
     public Action holdPos() {
-        return new PidAction(mechanism.getPosition(false), getPidSettings(), mechanism);
+        return moveExtensionWithPid(mechanism.getPosition(false));
     }
 
     public void setPower(double power) {
-        mechanism.setPower(power);
+        wrapMechanism().setPower(power);
     }
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
+    }
+
+    private IMotionControlLinearMechanism wrapMechanism() {
+        return new VoltageCompensatingMechanism(mechanism, rS);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {

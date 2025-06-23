@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -177,10 +178,15 @@ public class RobotHardwareChicago {
         specimenMode();
     }
 
-    public void specimenMode() {
-        runningActions.add(grabber.specimenMode());
-        runningActions.add(extension.moveExtension(0));
-        runningActions.add(arm.moveArm(Arm2.POS_SPECIMEN));
+    private void specimenMode() {
+        runningActions.add(new ParallelAction(
+                grabber.specimenMode(),
+                extension.moveExtension(0),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
+                        arm.moveArm(Arm2.POS_SPECIMEN)
+                )
+        ));
     }
 
     public void extend(double y) {
@@ -188,8 +194,10 @@ public class RobotHardwareChicago {
             extension.setPower(y);
             extension.cancelActions();
         } else {
-            if (Math.abs(robotState.getExtensionSpeed()) < 0.5 && extension.isInactive()) {
-                extension.holdPos();
+            if (extension.isInactive()) {
+                extension.setPower(0);
+                if (Math.abs(robotState.getExtensionSpeed()) < 0.5)
+                    extension.holdPos();
             }
         }
     }
@@ -199,15 +207,18 @@ public class RobotHardwareChicago {
     }
 
     public void intake() {
-        runningActions.add(new SequentialAction(
-                arm.moveArm(240),
-                new WaitForTime(400),
-                grabber.closeClaw(),
-                new WaitForTime(200),
-                arm.moveArm(190),
-                new ParallelAction(
-                        extension.moveExtension(0),
-                        grabber.straightWrist()
+        runningActions.add(new ParallelAction(
+                arm.moveArm(Arm2.POS_GROUND),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getArmPos() >= Arm2.POS_GROUND - 5),
+                        grabber.closeClaw(),
+                        new WaitForTime(100),
+                        grabber.straightWrist(),
+                        arm.moveArm(Arm2.POS_SPECIMEN),
+                        new SequentialAction(
+                                new WaitUntil(() -> robotState.getArmPos() <= Arm2.POS_GROUND - 10),
+                                extension.moveExtension(0)
+                        )
                 )
         ));
     }
