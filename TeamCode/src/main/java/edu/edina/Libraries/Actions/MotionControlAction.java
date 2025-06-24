@@ -53,8 +53,6 @@ public class MotionControlAction implements ICancelableAction {
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         if (!done) {
-            mechanism.setCurrentAction(this);
-
             double t = etime.seconds();
             double dt = t - prevTime;
             prevTime = t;

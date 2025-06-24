@@ -141,16 +141,5 @@ public class Arm2 {
                     MOT_POS_TOLERANCE, MOT_VEL_TOLERANCE,
                     MOT_VEL_COEF);
         }
-
-        @Override
-        public void setCurrentAction(ICancelableAction action) {
-            if (currentAction != null) {
-                if (currentAction != action) {
-                    currentAction.cancel();
-                }
-            }
-
-            currentAction = action;
-        }
     }
 }
