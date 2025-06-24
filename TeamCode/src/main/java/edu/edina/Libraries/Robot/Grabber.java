@@ -23,6 +23,7 @@ public class Grabber {
     //swivel
     public static double HORIZONTAL_POS = 0.1;
     public static double VERTICAL_POS = 0.55;
+    private static double inBetween = (HORIZONTAL_POS + VERTICAL_POS) / 2.0;
     public static double END_POS = 1;
 
     public Grabber(RobotState robotState, HardwareMap hw) {
@@ -82,7 +83,7 @@ public class Grabber {
         return new InstantAction(() -> swivel.setPosition(HORIZONTAL_POS));
     }
 
-    public Action toggleSwivel() {
-        return swivel.getPosition() == VERTICAL_POS ? horizontalSwivel() : perpendicularSwivel();
+    public Action halfSwivel() {
+        return new InstantAction(() -> swivel.setPosition(inBetween));
     }
 }

@@ -59,10 +59,14 @@ public class TeleOpChicago extends LinearOpMode {
                 if (currentGamepad2.right_trigger >= 0.7) {
                     hw.intake();
                 }
-                if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
+
+                if (currentGamepad2.left_bumper && previousGamepad2.left_bumper && currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
+                    hw.halfSwivel();
+                } else if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper && currentGamepad2.right_bumper && previousGamepad2.right_bumper) {
+                    hw.halfSwivel();
+                } else if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
                     hw.perpendicularSwivel();
-                }
-                if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
+                } else if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {
                     hw.horizontalSwivel();
                 }
                 hw.extend(-gamepad2.right_stick_y);
