@@ -44,7 +44,7 @@ public class Arm2 {
     public static double MOT_VEL_COEF = 0.7;
 
     // for pid action
-    public static double HOLD_P = 0.003;
+    public static double HOLD_P = 0.0001;
     public static double HOLD_I = 0.04;
     public static double HOLD_D = 0.0;
     private RobotState rS;
@@ -58,13 +58,13 @@ public class Arm2 {
 
     public Action moveArm(double target) {
         return new SequentialAction(
-                new MotionControlAction(target, wrapMechanism()),
+                new MotionControlAction(target, getMechanism()),
                 moveArmWithPid(target)
         );
     }
 
     public Action moveArmWithPid(double target) {
-        return new PidAction(target, getPidSettings(), wrapMechanism());
+        return new PidAction(target, getPidSettings(), getMechanism());
     }
 
     public Action holdPos() {
@@ -75,7 +75,7 @@ public class Arm2 {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }
 
-    private IMotionControlLinearMechanism wrapMechanism() {
+    private IMotionControlLinearMechanism getMechanism() {
         return new VoltageCompensatingMechanism(mechanism, rS);
     }
 

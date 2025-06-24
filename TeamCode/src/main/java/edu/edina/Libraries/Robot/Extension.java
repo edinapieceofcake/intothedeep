@@ -2,14 +2,17 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.Actions.ControllingAction;
+import edu.edina.Libraries.Actions.ControllingActionManager;
+import edu.edina.Libraries.Actions.LazyAction;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
@@ -33,55 +36,61 @@ public class Extension {
     public static double MOT_POS_TOLERANCE = 1;
     public static double MOT_VEL_TOLERANCE = 2;
     public static double MOT_VEL_COEF = 0.25;
-    public static double HOLD_P = 0.35;
-    public static double HOLD_I = 0.7;
-    public static double HOLD_D = 0;
+    public static double HOLD_P = 0.0001;
+    public static double HOLD_I = 0.04;
+    public static double HOLD_D = 0.0;
 
     public static double EXTENSION_MULT = 0.00846740050804403;
 
     public static double EXTENSION_RETRACTED_INCHES = 1;
     public static double INIT_EXTENSION_SUB = 5;
 
+    public static double MANUAL_ADJ_MULT = 0.12;
+
     private final Mechanism mechanism;
     private final RobotState rS;
+    private final ControllingActionManager conActMgr;
 
     public Extension(RobotState rS, HardwareMap hw) {
         this.rS = rS;
         mechanism = new Extension.Mechanism(rS, hw);
+        conActMgr = new ControllingActionManager();
     }
 
     public Action moveExtension(double target) {
-        return new SequentialAction(
-                new MotionControlAction(target, wrapMechanism()),
-                moveExtensionWithPid(target)
-        );
-    }
-
-    public void cancelActions() {
-        mechanism.setCurrentAction(null);
-    }
-
-    public boolean isInactive() {
-        return mechanism.currentAction != null;
+        return new ControllingAction(
+                new SequentialAction(
+                        new MotionControlAction(target, getMechanism()),
+                        moveExtensionWithPid(target)
+                ), conActMgr);
     }
 
     public Action moveExtensionWithPid(double target) {
-        return new PidAction(target, getPidSettings(), wrapMechanism());
+        return new ControllingAction(new PidAction(target, getPidSettings(), getMechanism()), conActMgr);
     }
 
-    public Action holdPos() {
-        return moveExtensionWithPid(mechanism.getPosition(false));
-    }
+    public Action manuallyAdjust(double power) {
+        conActMgr.cancelControllingAction();
+        getMechanism().setPower(power);
 
-    public void setPower(double power) {
-        wrapMechanism().setPower(power);
+        double v = rS.getExtensionSpeed();
+        double x = rS.getExtensionPos();
+        double target = x + v * MANUAL_ADJ_MULT;
+
+        return new ControllingAction(
+                new SequentialAction(
+                        new WaitForTime(10),
+                        new InstantAction(() -> getMechanism().setPower(0)),
+                        new PidAction(target, getPidSettings(), getMechanism())),
+                conActMgr
+        );
     }
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }
 
-    private IMotionControlLinearMechanism wrapMechanism() {
+    private IMotionControlLinearMechanism getMechanism() {
         return new VoltageCompensatingMechanism(mechanism, rS);
     }
 

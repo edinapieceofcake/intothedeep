@@ -191,14 +191,7 @@ public class RobotHardwareChicago {
 
     public void extend(double y) {
         if (Math.abs(y) > 0.1) {
-            extension.setPower(y);
-            extension.cancelActions();
-        } else {
-            if (extension.isInactive()) {
-                extension.setPower(0);
-                if (Math.abs(robotState.getExtensionSpeed()) < 0.5)
-                    extension.holdPos();
-            }
+            runningActions.add(extension.manuallyAdjust(y));
         }
     }
 

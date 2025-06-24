@@ -10,9 +10,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import edu.edina.Libraries.MovingAverageCalc;
 
 @Config
 public class RobotState {
@@ -25,6 +28,8 @@ public class RobotState {
     private Speedometer extensionSpeed, armSpeed, leftSpeed, rightSpeed;
     private double voltage, leftDist, rightDist, frontDist;
     private Pose2dDual<Time> poseDual;
+    private final ElapsedTime t;
+    private final MovingAverageCalc voltAvg;
 
     public RobotState(HardwareMap hw) {
         leftDistance = hw.get(Rev2mDistanceSensor.class, "distance_left");
@@ -46,6 +51,9 @@ public class RobotState {
         armSpeed = new Speedometer(3);
         leftSpeed = new Speedometer(3);
         rightSpeed = new Speedometer(3);
+
+        t = new ElapsedTime();
+        voltAvg = new MovingAverageCalc(1);
     }
 
     public void update(Telemetry telemetry) {
@@ -66,6 +74,7 @@ public class RobotState {
         rightSpeed.sample(rightPos);
 
         voltage = vs.getVoltage();
+        voltAvg.update(t.seconds(), voltage);
 
         poseDual = odo.getCurrentPoseDual();
 
@@ -119,6 +128,10 @@ public class RobotState {
 
     public double getVoltage() {
         return voltage;
+    }
+
+    public double getAverageVoltage() {
+        return voltAvg.getAverage();
     }
 
     public Pose2d getCurrentPose() {

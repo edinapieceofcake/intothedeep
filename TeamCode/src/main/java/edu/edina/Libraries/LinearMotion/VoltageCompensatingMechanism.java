@@ -39,7 +39,7 @@ public class VoltageCompensatingMechanism implements IMotionControlLinearMechani
 
     @Override
     public void setPower(double power) {
-        double v = robotState.getVoltage();
+        double v = robotState.getAverageVoltage();
         double multiplier = 12 / v;
         mechanism.setPower(power * multiplier);
     }

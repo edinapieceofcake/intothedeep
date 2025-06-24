@@ -36,8 +36,8 @@ public class Lift2 {
     public static double MOT_VEL_TOLERANCE = 1;
     public static double MOT_VEL_COEF = .2;
 
-    public static double HOLD_P = .3;
-    public static double HOLD_I = 0;
+    public static double HOLD_P = 0.4;
+    public static double HOLD_I = 0.04;
     public static double HOLD_D = 0;
 
     private Mechanism mechanism;
