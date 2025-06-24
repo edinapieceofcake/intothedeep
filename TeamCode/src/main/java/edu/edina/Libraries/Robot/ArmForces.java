@@ -16,7 +16,7 @@ public class ArmForces implements IFeedForward {
     }
 
     @Override
-    public double getAcceleration(DualNum<Time> posVel) {
+    public double getPower(DualNum<Time> posVel) {
         double rad = Math.toRadians(posVel.get(0));
         double mult = -Math.cos(rad);
         return g * mult;

@@ -58,7 +58,7 @@ public class LinearMotionController {
         u = linearMech.getPositionAndVelocity(false);
         double x = u.get(0);
         double v = u.get(1);
-        double a = ambForce != null ? ambForce.getAcceleration(u) : 0;
+        double a = ambForce != null ? ambForce.getPower(u) : 0;
         double p = power(t, x, v, a);
         linearMech.setPower(p);
 

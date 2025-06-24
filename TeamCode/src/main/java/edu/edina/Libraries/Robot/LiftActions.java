@@ -31,7 +31,7 @@ public class LiftActions {
     public Action holdPos(double heightInches) {
         return new ContinuousAction(() -> {
             DualNum<Time> current = vMech.getPositionAndVelocity(false);
-            double a = springForce.getAcceleration(current);
+            double a = springForce.getPower(current);
             double feedForward = a * vMech.getSettings().ka;
             double pTerm = pMult * (heightInches - current.get(0));
             double power = feedForward + pTerm;

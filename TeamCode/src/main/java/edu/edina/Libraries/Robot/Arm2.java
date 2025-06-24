@@ -10,10 +10,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.Actions.ControllingAction;
+import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
-import edu.edina.Libraries.LinearMotion.VoltageCompensatingMechanism;
+import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -45,26 +47,34 @@ public class Arm2 {
 
     // for pid action
     public static double HOLD_P = 0.0001;
-    public static double HOLD_I = 0.04;
+    public static double HOLD_I = 0.02;
     public static double HOLD_D = 0.0;
     private RobotState rS;
 
-    private Mechanism mechanism;
+    private final Mechanism mechanism;
+    private final ControllingActionManager conActMgr;
+    private final VoltageCompensation vc;
 
     public Arm2(RobotState rS, HardwareMap hw) {
         this.rS = rS;
         mechanism = new Arm2.Mechanism(rS, hw);
+        conActMgr = new ControllingActionManager();
+        vc = new VoltageCompensation(rS);
     }
 
     public Action moveArm(double target) {
-        return new SequentialAction(
-                new MotionControlAction(target, getMechanism()),
-                moveArmWithPid(target)
-        );
+        return new ControllingAction(
+                new SequentialAction(
+                        new MotionControlAction(target, mechanism, vc, null),
+                        moveArmWithPid(target)
+                ),
+                conActMgr);
     }
 
     public Action moveArmWithPid(double target) {
-        return new PidAction(target, getPidSettings(), getMechanism());
+        return new ControllingAction(
+                new PidAction(target, getPidSettings(), mechanism, vc, null),
+                conActMgr);
     }
 
     public Action holdPos() {
@@ -73,10 +83,6 @@ public class Arm2 {
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
-    }
-
-    private IMotionControlLinearMechanism getMechanism() {
-        return new VoltageCompensatingMechanism(mechanism, rS);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {

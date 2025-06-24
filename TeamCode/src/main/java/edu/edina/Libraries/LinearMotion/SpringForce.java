@@ -13,7 +13,7 @@ public class SpringForce implements IFeedForward {
     }
 
     @Override
-    public double getAcceleration(DualNum<Time> posVel) {
+    public double getPower(DualNum<Time> posVel) {
         return g+k*posVel.get(0);
     }
 }

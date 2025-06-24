@@ -12,11 +12,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import edu.edina.Libraries.Actions.ControllingAction;
 import edu.edina.Libraries.Actions.ControllingActionManager;
-import edu.edina.Libraries.Actions.LazyAction;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
-import edu.edina.Libraries.LinearMotion.VoltageCompensatingMechanism;
+import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -50,28 +49,30 @@ public class Extension {
     private final Mechanism mechanism;
     private final RobotState rS;
     private final ControllingActionManager conActMgr;
+    private final VoltageCompensation vc;
 
     public Extension(RobotState rS, HardwareMap hw) {
         this.rS = rS;
         mechanism = new Extension.Mechanism(rS, hw);
         conActMgr = new ControllingActionManager();
+        vc = new VoltageCompensation(rS);
     }
 
     public Action moveExtension(double target) {
         return new ControllingAction(
                 new SequentialAction(
-                        new MotionControlAction(target, getMechanism()),
+                        new MotionControlAction(target, mechanism, vc, null),
                         moveExtensionWithPid(target)
                 ), conActMgr);
     }
 
     public Action moveExtensionWithPid(double target) {
-        return new ControllingAction(new PidAction(target, getPidSettings(), getMechanism()), conActMgr);
+        return new ControllingAction(new PidAction(target, getPidSettings(), mechanism, vc, null), conActMgr);
     }
 
     public Action manuallyAdjust(double power) {
         conActMgr.cancelControllingAction();
-        getMechanism().setPower(power);
+        mechanism.setPower(power);
 
         double v = rS.getExtensionSpeed();
         double x = rS.getExtensionPos();
@@ -80,18 +81,14 @@ public class Extension {
         return new ControllingAction(
                 new SequentialAction(
                         new WaitForTime(10),
-                        new InstantAction(() -> getMechanism().setPower(0)),
-                        new PidAction(target, getPidSettings(), getMechanism())),
+                        new InstantAction(() -> mechanism.setPower(0)),
+                        new PidAction(target, getPidSettings(), mechanism, vc, null)),
                 conActMgr
         );
     }
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
-    }
-
-    private IMotionControlLinearMechanism getMechanism() {
-        return new VoltageCompensatingMechanism(mechanism, rS);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {

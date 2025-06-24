@@ -8,6 +8,8 @@ import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.LinearMotion.IFeedForward;
+import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.MotionControlSettings;
@@ -21,15 +23,19 @@ public class MotionControlAction implements ICancelableAction {
     private double prevTime, power;
 
     private boolean done;
+    private final VoltageCompensation vc;
+    private final IFeedForward feedFwd;
 
     // eventually make a new version of this class
 
-    public MotionControlAction(double targetPos, IMotionControlLinearMechanism mechanism) {
-        this(targetPos, 0, mechanism);
+    public MotionControlAction(double targetPos, IMotionControlLinearMechanism mechanism, VoltageCompensation optVolCon, IFeedForward optFeedFwd) {
+        this(targetPos, 0, mechanism, optVolCon, optFeedFwd);
     }
 
-    public MotionControlAction(double targetPos, double targetVel, IMotionControlLinearMechanism mechanism) {
+    public MotionControlAction(double targetPos, double targetVel, IMotionControlLinearMechanism mechanism, VoltageCompensation optVolCon, IFeedForward optFeedFwd) {
         this.settings = mechanism.getMotionSettings();
+        vc = optVolCon;
+        feedFwd = optFeedFwd;
 
         //if target velocity is away from target x, target velocity is zero
         if (Math.signum(targetPos) != Math.signum(targetVel)) {
@@ -97,12 +103,17 @@ public class MotionControlAction implements ICancelableAction {
         double v1 = limitMagnitude(v0, settings.velLimit);
 
         double nextA = limitMagnitude((v1 - v) / dt * settings.pCoefficient, settings.accelLimit);
-        double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
+        double mcPower = settings.ks * s + settings.kv * v + settings.ka * nextA;
+        double ff = feedFwd != null ? feedFwd.getPower(new DualNum<>(new double[]{x, v})) : 0;
+        double vcMult = vc != null ? vc.adjustPower(1) : 1;
+
+        double p = (mcPower + ff) * vcMult;
 
         if (TAG != null) {
-            RobotLog.ii(TAG, "%s: dist = %.1f, z = %.1f, v0 = %.1f, v1 = %.1f, nextA = %.1f, p = %.3f",
+            RobotLog.ii(TAG, "%s: dist = %.1f, z = %.1f, v0 = %.1f, v1 = %.1f, nextA = %.1f, p = %.3f = (%.3f + %.3f)*%.3f",
                     mechanism.getName(),
-                    dist, z, v0, v1, nextA, p);
+                    dist, z, v0, v1, nextA,
+                    p, mcPower, ff, vcMult);
         }
 
         return p;
