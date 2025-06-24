@@ -228,6 +228,10 @@ public class RobotHardwareChicago {
         runningActions.add(grabber.horizontalSwivel());
     }
 
+    public void halfSwivel() {
+        runningActions.add(grabber.halfSwivel());
+    }
+
     public boolean armOverSub() {
         return robotState.armOverSub();
     }
