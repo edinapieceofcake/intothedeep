@@ -16,8 +16,5 @@ public interface ILinearMechanism {
     DualNum<Time> getPositionAndVelocity(boolean raw);
 
     LinearMechanismSettings getSettings();
-
-    default void registerAction(RunToPositionAction a) {
-    }
 }
 

@@ -62,8 +62,8 @@ public class Extension {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
-                        moveExtensionWithPid(target)
-                ), conActMgr);
+                        new PidAction(target, getPidSettings(), mechanism, vc, null)),
+                conActMgr);
     }
 
     public Action moveExtensionWithPid(double target) {

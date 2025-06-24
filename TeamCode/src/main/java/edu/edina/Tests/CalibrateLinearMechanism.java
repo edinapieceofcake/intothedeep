@@ -291,7 +291,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         // determine how long it should drive, apply the acceleration
 
         LinearMechanismSettings settings = linearMech.getSettings();
-        double d = settings.accelCalibrationDist;
+        double d = linearMech.getAccelCalDistance();
         double nominalTime = Quadratic.rootOrDefault(0.5, -2 * settings.kv * d, -settings.ks - 2 * d * ka, 0);
 
         if (nominalTime == 0) throw new RuntimeException("zero time test");

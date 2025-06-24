@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 
-@TeleOp
+@TeleOp(name = "Vision Test", group = "Test")
 public class VisionTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

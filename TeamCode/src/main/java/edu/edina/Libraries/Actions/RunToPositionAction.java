@@ -47,8 +47,6 @@ public class RunToPositionAction implements Action {
         this.target = target;
 
         cancel = false;
-
-        linearMech.registerAction(this);
     }
 
     public void setMaxPower(double power) {

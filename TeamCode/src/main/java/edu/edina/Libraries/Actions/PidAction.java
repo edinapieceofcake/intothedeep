@@ -37,7 +37,7 @@ public class PidAction implements ICancelableAction {
         }
 
         DualNum<Time> xv = mechanism.getPositionAndVelocity(false);
-        double x = mechanism.getPosition(false);
+        double x = xv.value();
         double pidPower = pid.calculate(x);
         double ff = feedFwd != null ? feedFwd.getPower(xv) : 0;
         double vcMult = vc != null ? vc.adjustPower(1) : 1;

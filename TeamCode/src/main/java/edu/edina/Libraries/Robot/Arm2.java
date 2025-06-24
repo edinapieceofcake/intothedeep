@@ -66,7 +66,7 @@ public class Arm2 {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
-                        moveArmWithPid(target)
+                        new PidAction(target, getPidSettings(), mechanism, vc, null)
                 ),
                 conActMgr);
     }
