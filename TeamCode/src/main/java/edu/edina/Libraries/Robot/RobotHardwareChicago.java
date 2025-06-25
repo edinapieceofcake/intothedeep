@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -201,7 +202,7 @@ public class RobotHardwareChicago {
 
     public void intake() {
         runningActions.add(new ParallelAction(
-                arm.moveArm(Arm2.POS_GROUND),
+                arm.constantPower(Arm2.INTAKE_POWER),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getArmPos() >= Arm2.POS_GROUND - 5),
                         grabber.closeClaw(),

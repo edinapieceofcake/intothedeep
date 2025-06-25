@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.Actions.ConstantPowerAction;
+import edu.edina.Libraries.Actions.ContinuousAction;
 import edu.edina.Libraries.Actions.ControllingAction;
 import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.MotionControlAction;
@@ -49,6 +51,9 @@ public class Arm2 {
     public static double HOLD_P = 0.0001;
     public static double HOLD_I = 0.02;
     public static double HOLD_D = 0.0;
+
+    public static double INTAKE_POWER = 0.1;
+
     private RobotState rS;
 
     private final Mechanism mechanism;
@@ -68,6 +73,12 @@ public class Arm2 {
                         new MotionControlAction(target, mechanism, vc, null),
                         new PidAction(target, getPidSettings(), mechanism, vc, null)
                 ),
+                conActMgr);
+    }
+
+    public Action constantPower(double nominalPower) {
+        return new ControllingAction(
+                new ConstantPowerAction(nominalPower, mechanism, vc, null),
                 conActMgr);
     }
 
