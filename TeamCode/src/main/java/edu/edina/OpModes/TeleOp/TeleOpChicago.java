@@ -5,16 +5,21 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
+import edu.edina.Libraries.Robot.Speedometer;
 
 @TeleOp(name = "TeleOp Main \uD83C\uDF82", group = "Main")
 public class TeleOpChicago extends LinearOpMode {
     private Gamepad currentGamepad1, previousGamepad1, currentGamepad2, previousGamepad2;
+    private int cycleNum;
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        Speedometer s = new Speedometer(20);
 
         currentGamepad1 = new Gamepad();
         previousGamepad1 = new Gamepad();
@@ -75,6 +80,11 @@ public class TeleOpChicago extends LinearOpMode {
             if (currentGamepad2.x && !previousGamepad2.x) {
                 hw.subMode();
             }
+
+            s.sample(cycleNum);
+            cycleNum++;
+
+            telemetry.addData("cycleSpeed", 1000.0 / s.getSpeed());
 
             telemetry.update();
         }
