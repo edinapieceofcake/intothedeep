@@ -16,6 +16,7 @@ import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
+import edu.edina.Libraries.LinearMotion.IFeedForward;
 import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
@@ -53,6 +54,7 @@ public class Arm2 {
     public static double HOLD_D = 0.0;
 
     public static double INTAKE_POWER = 0.3;
+    public static double MAX_FEED_FWD_MULT = 0.0025;
 
     private RobotState rS;
 
@@ -71,7 +73,7 @@ public class Arm2 {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
-                        new PidAction(target, getPidSettings(), mechanism, vc, null)
+                        new PidAction(target, getPidSettings(), mechanism, vc, makeFeedFwd())
                 ),
                 conActMgr);
     }
@@ -84,7 +86,7 @@ public class Arm2 {
 
     public Action moveArmWithPid(double target) {
         return new ControllingAction(
-                new PidAction(target, getPidSettings(), mechanism, vc, null),
+                new PidAction(target, getPidSettings(), mechanism, vc, makeFeedFwd()),
                 conActMgr);
     }
 
@@ -94,6 +96,10 @@ public class Arm2 {
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
+    }
+
+    private IFeedForward makeFeedFwd() {
+        return new ArmFeedForward(rS);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {

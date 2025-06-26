@@ -13,14 +13,13 @@ import com.qualcomm.robotcore.util.RobotLog;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
+import edu.edina.Libraries.NoisyFuncGuesser;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
 import edu.edina.Libraries.Robot.Arm2;
-import edu.edina.Libraries.Robot.Extension;
 import edu.edina.Libraries.Robot.FuncInverter;
-import edu.edina.Libraries.MotionControl.ILinearMechanism;
-import edu.edina.Libraries.Robot.Lift2;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
 import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
@@ -33,20 +32,22 @@ public class CalibrateLinearMechanism extends LinearOpMode {
     double powerStep = 0.02;
     double speedThres = 1;
 
+    RobotState robotState;
     IMotionControlLinearMechanism linearMech;
 
     @Override
     public void runOpMode() throws InterruptedException {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
-        linearMech = new Arm2.Mechanism(new RobotState(hardwareMap), hardwareMap);
+        robotState = new RobotState(hardwareMap);
+        linearMech = new Arm2.Mechanism(robotState, hardwareMap);
 
         waitForStart();
 
         telemetry.addLine("Press a to calibrate encoder");
         telemetry.addLine("Press b to calibrate Kv and Ks");
         telemetry.addLine("Press x to calibrate Ka");
-        telemetry.addLine("Press y to measure countering power");
+        telemetry.addLine("Press y to measure feed forward");
         telemetry.update();
 
         while (opModeIsActive()) {
@@ -60,10 +61,14 @@ public class CalibrateLinearMechanism extends LinearOpMode {
                 calibrateKa();
             }
             if (gamepad1.y) {
-                measureAccelCounterPower();
+                measureFeedForward();
             }
-
         }
+    }
+
+    private boolean isActive() {
+        robotState.update(telemetry);
+        return opModeIsActive();
     }
 
     private void calibrateEncoder() {
@@ -84,10 +89,13 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         }
     }
 
-    private void measureAccelCounterPower() {
+    public static double MIN_FEED_FWD_POW = -0.2;
+    public static double MAX_FEED_FWD_POW = 0.2;
+
+    private void measureFeedForward() {
         double target = -1000;
 
-        while (opModeIsActive()) {
+        while (isActive()) {
             target = linearMech.getPositionAndVelocity(false).get(0);
 
             telemetry.addLine("move mechanism to wanted location, it will try and hold it there");
@@ -98,14 +106,11 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             if (gamepad1.b) break;
         }
 
-        FuncInverter fi = new FuncInverter(target, linearMech.getMotionSettings().posTolerance);
+        NoisyFuncGuesser fi = new NoisyFuncGuesser(target, MIN_FEED_FWD_POW, MAX_FEED_FWD_POW, 6);
 
-        fi.eval(-0.75, testAmbientAccel(-0.75));
-        fi.eval(0.75, testAmbientAccel(0.75));
-
-        while (opModeIsActive() && !fi.hasResult()) {
+        while (isActive() && !fi.hasResult()) {
             double guess = fi.getGuess();
-            fi.eval(guess, testAmbientAccel(guess));
+            fi.eval(guess, testVelocityUnderCompensatedPower(guess));
         }
 
         while (opModeIsActive()) {
@@ -115,9 +120,9 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         }
     }
 
-    private double testAmbientAccel(double power) {
-        while (opModeIsActive()) {
-            telemetry.addData("press and hold b to test with ", "%.4g power", power);
+    private double testVelocityUnderCompensatedPower(double power) {
+        while (isActive()) {
+            telemetry.addData("press and hold b to test with ", "%.4g power (vc)", power);
             telemetry.addData("position", linearMech.getPosition(false));
             telemetry.update();
 
@@ -126,8 +131,9 @@ public class CalibrateLinearMechanism extends LinearOpMode {
             }
         }
 
-        while (opModeIsActive()) {
-            linearMech.setPower(power);
+        VoltageCompensation vc = new VoltageCompensation(robotState);
+        while (isActive()) {
+            linearMech.setPower(vc.adjustPower(power));
 
             telemetry.addData("power", "%.2f", power);
             telemetry.addData("position", "%.2f", linearMech.getPosition(false));
@@ -140,7 +146,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
 
         linearMech.setPower(0);
 
-        return linearMech.getPositionAndVelocity(false).get(0);
+        return linearMech.getPositionAndVelocity(false).get(1);
     }
 
     private static LinearFunc fitAccelFunc(List<Double> t, List<Double> x) {
