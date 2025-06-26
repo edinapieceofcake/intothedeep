@@ -21,6 +21,10 @@ public class ActionList {
         runningActions.add(a);
     }
 
+    public void remove(Action a) {
+        runningActions.remove(a);
+    }
+
     public void run(TelemetryPacket packet) {
         List<Action> runList = runningActions;
         runningActions = new ArrayList<>();

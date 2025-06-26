@@ -259,7 +259,11 @@ public class RobotHardwareChicago {
         return robotState.armOverSub();
     }
 
+    private Action primaryAction = null;
+
     private void addPrimaryAction(Action a) {
-        runningActions.add(a);
+        runningActions.remove(primaryAction);
+        primaryAction = a;
+        runningActions.add(primaryAction);
     }
 }
