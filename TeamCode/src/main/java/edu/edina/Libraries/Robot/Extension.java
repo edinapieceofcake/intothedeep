@@ -23,7 +23,7 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Extension {
-    public static double POS_HIGH_BASKET = 11;
+    public static double POS_HIGH_BASKET = 13;
     public static double POS_LOW_BASKET = 10;
 
     public static double KS = 0.06;
@@ -36,7 +36,7 @@ public class Extension {
     public static double MOT_VEL_TOLERANCE = 2;
     public static double MOT_VEL_COEF = 0.25;
     public static double HOLD_P = 0.0001;
-    public static double HOLD_I = 0.04;
+    public static double HOLD_I = 0.03;
     public static double HOLD_D = 0.0;
 
     public static double EXTENSION_MULT = 0.00846740050804403;

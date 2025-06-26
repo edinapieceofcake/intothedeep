@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import edu.edina.Libraries.Actions.ControllingAction;
+import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.WaitUntil;
 
 // Control hub:
@@ -92,7 +94,8 @@ public class RobotHardwareChicago {
     }
 
     public void highBasket() {
-        runningActions.add(new ParallelAction(
+        addPrimaryAction(new ParallelAction(
+                grabber.horizontalSwivel(),
                 extension.moveExtension(0),
                 lift.moveLift(Lift2.POS_HIGH_BASKET),
                 new SequentialAction(
@@ -109,7 +112,8 @@ public class RobotHardwareChicago {
     }
 
     public void lowBasket() {
-        runningActions.add(new ParallelAction(
+        addPrimaryAction(new ParallelAction(
+                grabber.horizontalSwivel(),
                 extension.moveExtension(0),
                 lift.moveLift(Lift2.POS_LOW_BASKET),
                 new SequentialAction(
@@ -143,14 +147,14 @@ public class RobotHardwareChicago {
                 )
         );
 
-        runningActions.add(new ParallelAction(
+        addPrimaryAction(new ParallelAction(
                 grabber.straightWrist(),
                 extension.moveExtension(0),
                 lift.moveLift(Lift2.POS_BOTTOM),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                         new ParallelAction(
-                                arm.moveArm(Arm2.POS_SPECIMEN),
+                                arm.moveArm(Arm2.POS_SUBMERSIBLE),
                                 extendInSub
                         )
                 )
@@ -158,7 +162,7 @@ public class RobotHardwareChicago {
     }
 
     public void wallMode() {
-        runningActions.add(new ParallelAction(
+        addPrimaryAction(new ParallelAction(
                 grabber.wallMode(),
                 extension.moveExtension(0),
                 lift.moveLift(Lift2.POS_BOTTOM),
@@ -180,9 +184,9 @@ public class RobotHardwareChicago {
     }
 
     private void specimenMode() {
-        runningActions.add(new ParallelAction(
+        addPrimaryAction(new ParallelAction(
                 grabber.specimenMode(),
-                extension.moveExtension(0),
+                extension.moveExtension(1),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                         arm.moveArm(Arm2.POS_SPECIMEN)
@@ -201,7 +205,7 @@ public class RobotHardwareChicago {
     }
 
     public void intake() {
-        runningActions.add(new ParallelAction(
+        addPrimaryAction(new ParallelAction(
                 arm.constantPower(Arm2.INTAKE_POWER),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getArmPos() >= Arm2.POS_GROUND - 5),
@@ -235,5 +239,9 @@ public class RobotHardwareChicago {
 
     public boolean armOverSub() {
         return robotState.armOverSub();
+    }
+
+    private void addPrimaryAction(Action a) {
+        runningActions.add(a);
     }
 }

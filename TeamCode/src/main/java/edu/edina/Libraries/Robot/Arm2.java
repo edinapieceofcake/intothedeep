@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import edu.edina.Libraries.Actions.ConstantPowerAction;
-import edu.edina.Libraries.Actions.ContinuousAction;
 import edu.edina.Libraries.Actions.ControllingAction;
 import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.MotionControlAction;
@@ -27,7 +26,8 @@ import edu.edina.Libraries.LinearMotion.Units;
 public class Arm2 {
     // positions
     public static double POS_SPECIMEN = 200;
-    public static double POS_HIGH_BASKET = 120;
+    public static double POS_SUBMERSIBLE = 210;
+    public static double POS_HIGH_BASKET = 105;
     public static double POS_LOW_BASKET = 100;
     public static double POS_ARM_VERTICAL = 140;
     public static double POS_ARM_SCORE_BASKET_MIN = 100;
@@ -48,11 +48,11 @@ public class Arm2 {
     public static double MOT_VEL_COEF = 0.7;
 
     // for pid action
-    public static double HOLD_P = 0.0001;
-    public static double HOLD_I = 0.02;
+    public static double HOLD_P = 0.00008;
+    public static double HOLD_I = 0.018;
     public static double HOLD_D = 0.0;
 
-    public static double INTAKE_POWER = 0.1;
+    public static double INTAKE_POWER = 0.3;
 
     private RobotState rS;
 

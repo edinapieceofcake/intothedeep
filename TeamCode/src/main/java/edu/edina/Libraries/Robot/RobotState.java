@@ -53,7 +53,7 @@ public class RobotState {
         rightSpeed = new Speedometer(3);
 
         t = new ElapsedTime();
-        voltAvg = new MovingAverageCalc(1);
+        voltAvg = new MovingAverageCalc(3);
     }
 
     public void update(Telemetry telemetry) {
@@ -79,6 +79,7 @@ public class RobotState {
         poseDual = odo.getCurrentPoseDual();
 
         Pose2d p = getCurrentPose();
+        telemetry.addData("v_avg", "%.2fV", voltAvg.getAverage());
         telemetry.addData("pose", "(%.1f, %.1f) %.1f deg", p.position.x, p.position.y, Math.toDegrees(p.heading.toDouble()));
         telemetry.addData("lift", "%.1f in   %.1f in/s", getLiftPos(), getLiftSpeed());
         telemetry.addData("arm", "%.1f deg   %.1f deg/s", getArmPos(), getArmSpeed());

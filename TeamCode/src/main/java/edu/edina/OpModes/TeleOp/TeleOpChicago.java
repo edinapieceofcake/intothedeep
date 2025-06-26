@@ -71,6 +71,7 @@ public class TeleOpChicago extends LinearOpMode {
                 }
                 hw.extend(-gamepad2.right_stick_y);
             }
+
             if (currentGamepad2.x && !previousGamepad2.x) {
                 hw.subMode();
             }
