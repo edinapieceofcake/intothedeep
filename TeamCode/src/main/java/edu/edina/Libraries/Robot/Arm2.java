@@ -43,15 +43,15 @@ public class Arm2 {
 
     // for linear motion
     public static double MOT_VEL_LIMIT = 200;
-    public static double MOT_MAX_POWER = 0.6;
+    public static double MOT_MAX_POWER = 0.35;
     public static double MOT_POS_TOLERANCE = 15;
     public static double MOT_VEL_TOLERANCE = 20;
-    public static double MOT_VEL_COEF = 0.7;
+    public static double MOT_VEL_COEF = 0.9;
 
     // for pid action
-    public static double HOLD_P = 0.00008;
-    public static double HOLD_I = 0.018;
-    public static double HOLD_D = 0.0;
+    public static double HOLD_P = 0.00001;
+    public static double HOLD_I = 0.025;
+    public static double HOLD_D = 0.001;
 
     public static double INTAKE_POWER = 0.3;
     public static double MAX_FEED_FWD_MULT = 0.0025;
