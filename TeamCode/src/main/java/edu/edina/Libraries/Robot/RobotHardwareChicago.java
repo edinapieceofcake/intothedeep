@@ -66,7 +66,7 @@ public class RobotHardwareChicago {
         extension = new Extension(robotState, hw);
         arm = new Arm2(robotState, hw);
         lift = new Lift2(robotState, hw);
-        currentSensor = new CurrentSensor(hw);
+//        currentSensor = new CurrentSensor(hw);
         sampleSensor = new SampleSensor(hw);
         light = new Light(hw, sampleSensor);
         grabber = new Grabber(robotState, hw);
@@ -102,7 +102,7 @@ public class RobotHardwareChicago {
                         new ParallelAction(
                                 arm.moveArm(Arm2.POS_HIGH_BASKET),
                                 new SequentialAction(
-                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN),
+                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN && robotState.getArmSpeed() < 1),
                                         new LogAction("highBasket", "done waiting for arm"),
                                         extension.moveExtension(Extension.POS_HIGH_BASKET)
                                 )
@@ -123,7 +123,7 @@ public class RobotHardwareChicago {
                         new ParallelAction(
                                 arm.moveArm(Arm2.POS_LOW_BASKET),
                                 new SequentialAction(
-                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN),
+                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN && robotState.getArmSpeed() < 1),
                                         new LogAction("lowBasket", "done waiting for arm"),
                                         extension.moveExtension(Extension.POS_LOW_BASKET)
                                 )
@@ -177,22 +177,17 @@ public class RobotHardwareChicago {
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                         new LogAction("wallMode", "done waiting for ext"),
-                        arm.moveArm(Arm2.POS_ARM_WALL)
+                        arm.moveArm(Arm2.POS_ARM_WALL),
+                        new SequentialAction(
+                                new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_WALL + 10),
+                                grabber.openClaw()
+                        )
                 )
         ));
     }
 
     public void highSpecimen() {
-        runningActions.add(lift.moveLift(13));
-        specimenMode();
-    }
-
-    public void lowSpecimen() {
-        runningActions.add(lift.moveLift(7));
-        specimenMode();
-    }
-
-    private void specimenMode() {
+        runningActions.add(lift.moveLift(12));
         addPrimaryAction(new ParallelAction(
                 new LogAction("specimenMode", "start"),
                 grabber.specimenMode(),
@@ -203,6 +198,24 @@ public class RobotHardwareChicago {
                         arm.moveArm(Arm2.POS_SPECIMEN)
                 )
         ));
+    }
+
+    public void lowSpecimen() {
+        runningActions.add(lift.moveLift(0));
+        addPrimaryAction(new ParallelAction(
+                new LogAction("specimenMode", "start"),
+                grabber.specimenMode(),
+                extension.moveExtension(1),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
+                        new LogAction("specimenMode", "done waiting for ext"),
+                        arm.moveArm(Arm2.POS_LOW_SPECIMEN)
+                )
+        ));
+    }
+
+    private void specimenMode() {
+
     }
 
     public void extend(double y) {
@@ -261,5 +274,13 @@ public class RobotHardwareChicago {
         runningActions.remove(primaryAction);
         primaryAction = a;
         runningActions.add(primaryAction);
+    }
+
+    public void brake() {
+        drivetrain.stop();
+    }
+
+    public void calibrateIMU() {
+        robotState.calibrateIMU();
     }
 }

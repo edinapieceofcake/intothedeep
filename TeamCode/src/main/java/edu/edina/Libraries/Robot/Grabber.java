@@ -66,7 +66,6 @@ public class Grabber {
     public Action wallMode() {
         return new InstantAction(() -> {
             wrist.setPosition(WALL_POSITION);
-            claw.setPosition(OPEN_POS);
             swivel.setPosition(HORIZONTAL_POS);
         });
     }

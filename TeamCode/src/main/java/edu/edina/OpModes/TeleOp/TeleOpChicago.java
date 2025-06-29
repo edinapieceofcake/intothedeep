@@ -41,6 +41,13 @@ public class TeleOpChicago extends LinearOpMode {
             hw.update(telemetry);
             hw.drive(gamepad1, gamepad2);
 
+            if (currentGamepad2.back) {
+                hw.brake();
+                continue;
+            }
+            if (previousGamepad2.back && !currentGamepad2.back) {
+                hw.calibrateIMU();
+            }
             if (currentGamepad1.a && !previousGamepad1.a) {
                 hw.toggleClaw();
             }

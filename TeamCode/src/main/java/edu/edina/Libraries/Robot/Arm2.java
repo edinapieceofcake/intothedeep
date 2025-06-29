@@ -16,6 +16,7 @@ import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.MotionControlAction;
 import edu.edina.Libraries.Actions.PidAction;
 import edu.edina.Libraries.Actions.PidSettings;
+import edu.edina.Libraries.Actions.SinglePowerPid;
 import edu.edina.Libraries.LinearMotion.IFeedForward;
 import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
@@ -27,6 +28,7 @@ import edu.edina.Libraries.LinearMotion.Units;
 public class Arm2 {
     // positions
     public static double POS_SPECIMEN = 200;
+    public static double POS_LOW_SPECIMEN = 215;
     public static double POS_SUBMERSIBLE = 210;
     public static double POS_HIGH_BASKET = 105;
     public static double POS_LOW_BASKET = 100;
@@ -56,6 +58,9 @@ public class Arm2 {
     public static double INTAKE_POWER = 0.3;
     public static double MAX_FEED_FWD_MULT = 0.0025;
 
+    public static double CONST_POWER = 0.1;
+    public static double POS_TOLERANCE = 0.2;
+
     private RobotState rS;
 
     private final Mechanism mechanism;
@@ -73,7 +78,7 @@ public class Arm2 {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
-                        new PidAction(target, getPidSettings(), mechanism, vc, makeFeedFwd())
+                        new SinglePowerPid(CONST_POWER, target, POS_TOLERANCE, makeFeedFwd(), mechanism, vc)
                 ),
                 conActMgr);
     }
