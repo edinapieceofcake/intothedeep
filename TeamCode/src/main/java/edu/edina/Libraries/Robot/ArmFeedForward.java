@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.LinearMotion.IFeedForward;
 
@@ -14,7 +15,7 @@ public class ArmFeedForward implements IFeedForward {
 
     @Override
     public double getPower(DualNum<Time> armPosVel) {
-        double extPos = rs.getExtensionPos();
+        double extPos = 0.85 * rs.getExtensionPos() + 2;
         double armPos = rs.getArmPos() - Arm2.POS_ARM_WALL;
         double horizontalFeedforward = extPos * Arm2.MAX_FEED_FWD_MULT;
         double angleMult = Math.cos(Math.toRadians(armPos));

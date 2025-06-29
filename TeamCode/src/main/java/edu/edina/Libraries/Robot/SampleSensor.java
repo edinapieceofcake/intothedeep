@@ -18,11 +18,10 @@ public class SampleSensor {
     public SampleSensor(HardwareMap hardwareMap) {
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
         hsvValues = new float[3];
+        colorSensor.setGain(2);
     }
 
     public SampleColor detectSampleColor() {
-        colorSensor.setGain(2);
-
         rgb = colorSensor.getNormalizedColors();
         Color.colorToHSV(rgb.toColor(), hsvValues);
 

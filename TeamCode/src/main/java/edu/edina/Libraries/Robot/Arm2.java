@@ -58,8 +58,8 @@ public class Arm2 {
     public static double INTAKE_POWER = 0.3;
     public static double MAX_FEED_FWD_MULT = 0.0025;
 
-    public static double CONST_POWER = 0.1;
-    public static double POS_TOLERANCE = 0.2;
+    public static double CONST_POWER = 0.15;
+    public static double POS_TOLERANCE = 2;
 
     private RobotState rS;
 

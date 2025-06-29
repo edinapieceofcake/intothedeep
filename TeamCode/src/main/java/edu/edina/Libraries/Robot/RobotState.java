@@ -57,9 +57,9 @@ public class RobotState {
     }
 
     public void update(Telemetry telemetry) {
-        leftDist = leftDistance.getDistance(DistanceUnit.INCH);
-        rightDist = rightDistance.getDistance(DistanceUnit.INCH);
-        frontDist = frontDistance.getDistance(DistanceUnit.INCH);
+//        leftDist = leftDistance.getDistance(DistanceUnit.INCH);
+//        rightDist = rightDistance.getDistance(DistanceUnit.INCH);
+//        frontDist = frontDistance.getDistance(DistanceUnit.INCH);
 
         extensionPos = extensionMotor.getCurrentPosition();
         extensionSpeed.sample(extensionPos);
@@ -157,5 +157,9 @@ public class RobotState {
 
     public boolean armOverSub() {
         return getArmPos() > 180;
+    }
+
+    public void calibrateIMU() {
+        odo.calibrateIMU();
     }
 }

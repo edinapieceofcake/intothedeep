@@ -91,7 +91,7 @@ public class TeleOpChicago extends LinearOpMode {
             s.sample(cycleNum);
             cycleNum++;
 
-            telemetry.addData("cycleSpeed", 1000.0 / s.getSpeed());
+            telemetry.addData("cycleSpeed", "%.1f", 1000.0 / s.getSpeed());
 
             telemetry.update();
         }

@@ -11,12 +11,15 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.Vector2dDual;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class OpticalOdometry {
+    public static String name = "sensor_otos";
+
     public static double angularScalar = 0.99173554;
     public static double linearScalar = 1.04712042;
 
@@ -30,7 +33,7 @@ public class OpticalOdometry {
     private final SparkFunOTOS otos;
 
     public OpticalOdometry(HardwareMap hw) {
-        otos = hw.get(SparkFunOTOS.class, "sensor_otos");
+        otos = hw.get(SparkFunOTOS.class, name);
 
         otos.calibrateImu();
         otos.setAngularUnit(AngleUnit.DEGREES);
@@ -55,5 +58,11 @@ public class OpticalOdometry {
                 new DualNum<Time>(new double[]{pose.x, vel.x, acc.x}),
                 new DualNum<Time>(new double[]{pose.y, vel.y, acc.y}),
                 new DualNum<Time>(new double[]{Math.toRadians(pose.h), Math.toRadians(vel.h), Math.toRadians(acc.h)}));
+    }
+
+    public void calibrateIMU() {
+        RobotLog.ii(name, "starting OTOS calibration");
+        otos.calibrateImu();
+        RobotLog.ii(name, "finished OTOS calibration");
     }
 }

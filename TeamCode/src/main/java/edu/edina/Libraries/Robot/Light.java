@@ -42,7 +42,7 @@ public class Light {
     }
 
     public void update(boolean wave, boolean sample) {
-        setSampleColor();
+//        setSampleColor();
         updateWaveEffect(wave);
         showSample(sample);
         neoPixel.showColors(pixArray);

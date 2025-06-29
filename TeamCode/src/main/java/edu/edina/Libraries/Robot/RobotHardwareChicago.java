@@ -66,7 +66,7 @@ public class RobotHardwareChicago {
         extension = new Extension(robotState, hw);
         arm = new Arm2(robotState, hw);
         lift = new Lift2(robotState, hw);
-//        currentSensor = new CurrentSensor(hw);
+        currentSensor = new CurrentSensor(hw);
         sampleSensor = new SampleSensor(hw);
         light = new Light(hw, sampleSensor);
         grabber = new Grabber(robotState, hw);
