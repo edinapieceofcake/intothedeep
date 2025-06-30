@@ -81,7 +81,8 @@ public class RobotState {
         Pose2d p = getCurrentPose();
         telemetry.addData("v_avg", "%.2fV", voltAvg.getAverage());
         telemetry.addData("pose", "(%.1f, %.1f) %.1f deg", p.position.x, p.position.y, Math.toDegrees(p.heading.toDouble()));
-        telemetry.addData("lift", "%.1f in   %.1f in/s", getLiftPos(), getLiftSpeed());
+        telemetry.addData("lift", "%.1f(%.1f, %.1f) in   %.1f in/s",
+                getLiftPos(), getLeftLiftPos(), getRightLiftPos(), getLiftSpeed());
         telemetry.addData("arm", "%.1f deg   %.1f deg/s", getArmPos(), getArmSpeed());
         telemetry.addData("ext", "%.1f in   %.1f in/s", getExtensionPos(), getExtensionSpeed());
         telemetry.addData("dist", "%.1f in (f) %.1f in (l) %.1f (r)", frontDist, leftDist, rightDist);
