@@ -31,9 +31,9 @@ public class Arm2 {
     public static double POS_LOW_SPECIMEN = 215;
     public static double POS_SUBMERSIBLE = 210;
     public static double POS_HIGH_BASKET = 105;
-    public static double POS_LOW_BASKET = 100;
+    public static double POS_LOW_BASKET = 85;
     public static double POS_ARM_VERTICAL = 140;
-    public static double POS_ARM_SCORE_BASKET_MIN = 100;
+    public static double POS_ARM_SCORE_BASKET_MIN = 45;
     public static double POS_ARM_WALL = 45;
     public static double POS_GROUND = 225;
 
