@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Vector2dDual;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -31,6 +30,8 @@ public class RobotState {
     private final ElapsedTime t;
     private final MovingAverageCalc voltAvg;
 
+    private final BackgroundSensorReader<BackgroundData> bgData;
+
     public RobotState(HardwareMap hw) {
         leftDistance = hw.get(Rev2mDistanceSensor.class, "distance_left");
         rightDistance = hw.get(Rev2mDistanceSensor.class, "distance_right");
@@ -54,13 +55,12 @@ public class RobotState {
 
         t = new ElapsedTime();
         voltAvg = new MovingAverageCalc(3);
+
+        bgData = new BackgroundSensorReader<>(() -> readBackgroundData(), 1);
     }
 
     public void update(Telemetry telemetry) {
-//        leftDist = leftDistance.getDistance(DistanceUnit.INCH);
-//        rightDist = rightDistance.getDistance(DistanceUnit.INCH);
-//        frontDist = frontDistance.getDistance(DistanceUnit.INCH);
-
+        BackgroundData bgData = this.bgData.getValue();
         extensionPos = extensionMotor.getCurrentPosition();
         extensionSpeed.sample(extensionPos);
 
@@ -73,10 +73,14 @@ public class RobotState {
         rightPos = rightMotor.getCurrentPosition();
         rightSpeed.sample(rightPos);
 
-        voltage = vs.getVoltage();
+        voltage = bgData.voltage;
         voltAvg.update(t.seconds(), voltage);
 
-        poseDual = odo.getCurrentPoseDual();
+        poseDual = bgData.poseDual;
+
+        frontDist = bgData.frontDist;
+        leftDist = bgData.leftDist;
+        rightDist = bgData.rightDist;
 
         Pose2d p = getCurrentPose();
         telemetry.addData("v_avg", "%.2fV", voltAvg.getAverage());
@@ -162,5 +166,28 @@ public class RobotState {
 
     public void calibrateIMU() {
         odo.calibrateIMU();
+    }
+
+    private static class BackgroundData {
+        public final double voltage, leftDist, rightDist, frontDist;
+        public final Pose2dDual<Time> poseDual;
+
+        private BackgroundData(double voltage, double leftDist, double rightDist, double frontDist, Pose2dDual<Time> poseDual) {
+            this.voltage = voltage;
+            this.leftDist = leftDist;
+            this.rightDist = rightDist;
+            this.frontDist = frontDist;
+            this.poseDual = poseDual;
+        }
+    }
+
+    private BackgroundData readBackgroundData() {
+        double leftDist = leftDistance.getDistance(DistanceUnit.INCH);
+        double rightDist = rightDistance.getDistance(DistanceUnit.INCH);
+        double frontDist = frontDistance.getDistance(DistanceUnit.INCH);
+        double voltage = vs.getVoltage();
+        Pose2dDual<Time> poseDual = odo.getCurrentPoseDual();
+
+        return new BackgroundData(voltage, leftDist, rightDist, frontDist, poseDual);
     }
 }
