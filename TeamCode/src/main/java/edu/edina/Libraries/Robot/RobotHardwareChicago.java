@@ -123,7 +123,7 @@ public class RobotHardwareChicago {
                         new ParallelAction(
                                 arm.moveArm(Arm2.POS_LOW_BASKET),
                                 new SequentialAction(
-                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN && robotState.getArmSpeed() < 1),
+                                        new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_VERTICAL && robotState.getArmPos() > Arm2.POS_ARM_SCORE_BASKET_MIN && Math.abs(robotState.getArmSpeed()) < 5),
                                         new LogAction("lowBasket", "done waiting for arm"),
                                         extension.moveExtension(Extension.POS_LOW_BASKET)
                                 )
@@ -177,10 +177,9 @@ public class RobotHardwareChicago {
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                         new LogAction("wallMode", "done waiting for ext"),
-                        arm.moveArm(Arm2.POS_ARM_WALL),
-                        new SequentialAction(
-                                new WaitUntil(() -> robotState.getArmPos() < Arm2.POS_ARM_WALL + 10),
-                                grabber.openClaw()
+                        new ParallelAction(
+                                arm.moveArm(Arm2.POS_ARM_WALL),
+                                extension.makeResetAction()
                         )
                 )
         ));
@@ -189,12 +188,12 @@ public class RobotHardwareChicago {
     public void highSpecimen() {
         runningActions.add(lift.moveLift(12));
         addPrimaryAction(new ParallelAction(
-                new LogAction("specimenMode", "start"),
+                new LogAction("highSpecimen", "start"),
                 grabber.specimenMode(),
                 extension.moveExtension(1),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
-                        new LogAction("specimenMode", "done waiting for ext"),
+                        new LogAction("highSpecimen", "done waiting for ext"),
                         arm.moveArm(Arm2.POS_SPECIMEN)
                 )
         ));
@@ -203,12 +202,12 @@ public class RobotHardwareChicago {
     public void lowSpecimen() {
         runningActions.add(lift.moveLift(0));
         addPrimaryAction(new ParallelAction(
-                new LogAction("specimenMode", "start"),
+                new LogAction("lowSpecimen", "start"),
                 grabber.specimenMode(),
                 extension.moveExtension(1),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
-                        new LogAction("specimenMode", "done waiting for ext"),
+                        new LogAction("lowSpecimen", "done waiting for ext"),
                         arm.moveArm(Arm2.POS_LOW_SPECIMEN)
                 )
         ));

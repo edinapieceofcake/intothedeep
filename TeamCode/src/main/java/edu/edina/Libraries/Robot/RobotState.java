@@ -29,6 +29,7 @@ public class RobotState {
     private Pose2dDual<Time> poseDual;
     private final ElapsedTime t;
     private final MovingAverageCalc voltAvg;
+    private double extensionZeroPos;
 
     private final BackgroundSensorReader<BackgroundData> bgData;
 
@@ -125,7 +126,7 @@ public class RobotState {
     }
 
     public double getExtensionPos() {
-        return extensionPos * Extension.EXTENSION_MULT;
+        return extensionPos * Extension.EXTENSION_MULT + extensionZeroPos;
     }
 
     public double getExtensionSpeed() {
@@ -189,5 +190,9 @@ public class RobotState {
         Pose2dDual<Time> poseDual = odo.getCurrentPoseDual();
 
         return new BackgroundData(voltage, leftDist, rightDist, frontDist, poseDual);
+    }
+
+    public void resetExtension(double pos) {
+        extensionZeroPos -= pos;
     }
 }
