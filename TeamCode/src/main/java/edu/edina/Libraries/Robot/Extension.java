@@ -88,7 +88,9 @@ public class Extension {
     }
 
     public Action makeResetAction() {
-        return new ResetExtensionAction(rS, mechanism);
+        return new ControllingAction(
+                new ResetExtensionAction(rS, mechanism),
+                conActMgr);
     }
 
     private PidSettings getPidSettings() {

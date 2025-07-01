@@ -2,11 +2,13 @@ package edu.edina.Libraries.Robot;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+@Config
 public class ResetExtensionAction implements Action {
     public static double TIME_RUNNING = 100;
 
