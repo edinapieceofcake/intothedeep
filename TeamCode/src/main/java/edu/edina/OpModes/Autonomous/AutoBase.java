@@ -4,16 +4,15 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import edu.edina.Libraries.Robot.Drivetrain2;
+import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 import edu.edina.Libraries.Robot.RobotState;
 
 public abstract class AutoBase extends LinearOpMode {
     protected RobotHardwareChicago hw;
     private Pose2d initPose;
-    protected Drivetrain2 dt;
+    protected Drivetrain dt;
     protected RobotState state;
 
     public AutoBase(double x, double y, double deg) {

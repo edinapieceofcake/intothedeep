@@ -25,7 +25,7 @@ import edu.edina.Libraries.LinearMotion.LinearMechanismSettings;
 import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
-public class Arm2 {
+public class Arm {
     // positions
     public static double POS_SPECIMEN = 200;
     public static double POS_LOW_SPECIMEN = 215;
@@ -67,9 +67,9 @@ public class Arm2 {
     private final ControllingActionManager conActMgr;
     private final VoltageCompensation vc;
 
-    public Arm2(RobotState rS, HardwareMap hw) {
+    public Arm(RobotState rS, HardwareMap hw) {
         this.rS = rS;
-        mechanism = new Arm2.Mechanism(rS, hw);
+        mechanism = new Arm.Mechanism(rS, hw);
         conActMgr = new ControllingActionManager();
         vc = new VoltageCompensation(rS);
     }

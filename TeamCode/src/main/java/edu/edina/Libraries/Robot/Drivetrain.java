@@ -6,23 +6,19 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import edu.edina.Libraries.Actions.ContinuousBooleanTest;
 import edu.edina.Libraries.Angle;
 import edu.edina.Libraries.VectorCalc;
-import edu.edina.Tests.PurePursuit.MotorCommand;
 
 // This represents a drivetrain.
 @Config
-public class Drivetrain2 {
+public class Drivetrain {
     public static double ALIGNMENT_NORM_MIN = 10;
 
     private ContinuousBooleanTest booleanTest;
@@ -52,7 +48,7 @@ public class Drivetrain2 {
 
     private final RobotState robotState;
 
-    public Drivetrain2(HardwareMap hw, RobotState robotState) {
+    public Drivetrain(HardwareMap hw, RobotState robotState) {
         this.robotState = robotState;
         booleanTest = new ContinuousBooleanTest(MILISECOND);
 

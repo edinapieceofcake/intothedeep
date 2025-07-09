@@ -8,14 +8,14 @@ import edu.edina.Libraries.PurePursuit.PurePursuitAction;
 
 @Config
 public class RobotDriver {
-    private Drivetrain2 dt;
+    private Drivetrain dt;
     private RobotState state;
     private ActionList actionList;
     private PurePursuitAction currentAction;
 
     public static double maxSpeed = 1, radius = 1;
 
-    public RobotDriver(Drivetrain2 dt, RobotState state, ActionList actionList) {
+    public RobotDriver(Drivetrain dt, RobotState state, ActionList actionList) {
         this.dt = dt;
         this.state = state;
         this.actionList = actionList;

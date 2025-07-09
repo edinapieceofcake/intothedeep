@@ -111,19 +111,19 @@ public class RobotState {
     }
 
     public double getRightLiftPos() {
-        return rightPos * Lift2.LIFT_MULT;
+        return rightPos * Lift.LIFT_MULT;
     }
 
     public double getRightLiftSpeed() {
-        return rightSpeed.getSpeed() * Lift2.LIFT_MULT;
+        return rightSpeed.getSpeed() * Lift.LIFT_MULT;
     }
 
     public double getLeftLiftPos() {
-        return leftPos * Lift2.LIFT_MULT;
+        return leftPos * Lift.LIFT_MULT;
     }
 
     public double getLeftLiftSpeed() {
-        return leftSpeed.getSpeed() * Lift2.LIFT_MULT;
+        return leftSpeed.getSpeed() * Lift.LIFT_MULT;
     }
 
     public double getLiftPos() {
@@ -135,11 +135,11 @@ public class RobotState {
     }
 
     public double getArmPos() {
-        return armPos * (180.0 / Arm2.POS_AT_180_DEG_ARM);
+        return armPos * (180.0 / Arm.POS_AT_180_DEG_ARM);
     }
 
     public double getArmSpeed() {
-        return armSpeed.getSpeed() * (180.0 / Arm2.POS_AT_180_DEG_ARM);
+        return armSpeed.getSpeed() * (180.0 / Arm.POS_AT_180_DEG_ARM);
     }
 
     public double getExtensionPos() {

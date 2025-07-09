@@ -18,7 +18,7 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.NoisyFuncGuesser;
 import edu.edina.Libraries.Quadratic;
 import edu.edina.Libraries.Robot.Accelerometer;
-import edu.edina.Libraries.Robot.Arm2;
+import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.FuncInverter;
 import edu.edina.Libraries.Robot.LinearFunc;
 import edu.edina.Libraries.Robot.LinearFuncFitter;
@@ -40,7 +40,7 @@ public class CalibrateLinearMechanism extends LinearOpMode {
         TelemetryPacket t = new TelemetryPacket();
         FtcDashboard f = FtcDashboard.getInstance();
         robotState = new RobotState(hardwareMap);
-        linearMech = new Arm2.Mechanism(robotState, hardwareMap);
+        linearMech = new Arm.Mechanism(robotState, hardwareMap);
 
         waitForStart();
 

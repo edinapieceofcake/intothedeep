@@ -22,7 +22,7 @@ import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 
 @Config
-public class Lift2 {
+public class Lift {
     public static double LIFT_MULT = 14.4 / 1615.0;
 
     public static double POS_HIGH_BASKET = 15;
@@ -47,8 +47,8 @@ public class Lift2 {
     private final ControllingActionManager conActMgr;
     private final VoltageCompensation vc;
 
-    public Lift2(RobotState rS, HardwareMap hw) {
-        mechanism = new Lift2.Mechanism(rS, hw);
+    public Lift(RobotState rS, HardwareMap hw) {
+        mechanism = new Lift.Mechanism(rS, hw);
         conActMgr = new ControllingActionManager();
         vc = new VoltageCompensation(rS);
     }

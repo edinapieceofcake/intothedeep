@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.MotionControl.ICancelableAction;
-import edu.edina.Libraries.Robot.Drivetrain2;
+import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 import edu.edina.Libraries.Robot.RobotState;
@@ -44,7 +44,7 @@ public class PurePursuitAction implements ICancelableAction {
     private PurePursuit purePursuit;
     private double tgtSpeed, maxSpeed, radius;
     private RobotState state;
-    private Drivetrain2 dt;
+    private Drivetrain dt;
     private Vector2d vecKs, vecKv, vecKa;
 
     private Path path;
@@ -52,7 +52,7 @@ public class PurePursuitAction implements ICancelableAction {
     private boolean done;
     private MotorCommand mc;
 
-    public PurePursuitAction(Path path, Drivetrain2 dt, RobotState state) {
+    public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
         this.path = path;
         purePursuit = new PurePursuit(path.getRoute(), false);
         this.tgtSpeed = path.getTgtSpeed();

@@ -16,8 +16,8 @@ public class ArmFeedForward implements IFeedForward {
     @Override
     public double getPower(DualNum<Time> armPosVel) {
         double extPos = 0.85 * rs.getExtensionPos() + 2;
-        double armPos = rs.getArmPos() - Arm2.POS_ARM_WALL;
-        double horizontalFeedforward = extPos * Arm2.MAX_FEED_FWD_MULT;
+        double armPos = rs.getArmPos() - Arm.POS_ARM_WALL;
+        double horizontalFeedforward = extPos * Arm.MAX_FEED_FWD_MULT;
         double angleMult = Math.cos(Math.toRadians(armPos));
 
         return horizontalFeedforward * angleMult;
