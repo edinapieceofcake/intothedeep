@@ -51,6 +51,7 @@ public class PurePursuitAction implements ICancelableAction {
 
     private boolean done;
     private MotorCommand mc;
+    private final MotionControlSettings axMcs, latMcs;
 
     public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
         this.path = path;
@@ -66,9 +67,17 @@ public class PurePursuitAction implements ICancelableAction {
         vecKs = new Vector2d(AXIAL_KS, LAT_KS);
         vecKv = new Vector2d(AXIAL_KV, LAT_KV);
         vecKa = new Vector2d(AXIAL_KA, LAT_KA);
+
+        axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, VEL_LIMIT, MAX_POWER,
+                POS_TOL, VEL_TOL,
+                P_COEFF_LIN);
+
+        latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER, POS_TOL,
+                VEL_TOL,
+                P_COEFF_LIN);
     }
 
-    private double limitMagnitude(double x, double maxMag) {
+    private static double limitMagnitude(double x, double maxMag) {
         return Math.abs(x) < maxMag ? x : maxMag * Math.signum(x);
     }
 
@@ -85,36 +94,22 @@ public class PurePursuitAction implements ICancelableAction {
         Pose2dDual<Time> poseDual = state.getCurrentPoseDual();
         Pose2d pose = poseDual.value();
         PoseVelocity2d v = poseDual.velocity().value();
-        Vector2d vRel = FieldToRobot.rotateToRobotRel(pose.heading, v.linearVel);
 
         purePursuit.calcNextPursuitPoint(pose.position, radius);
         Vector2d pp = purePursuit.getPursuitPoint();
-        Vector2d ppRel = FieldToRobot.toRobotRel(pose, pp);
 
-        Vector2d ppNormRel = VectorCalc.normalize(ppRel);
+        MotionCommand cmd = calc(pp, path.getTgtSpeed(), pose, v.linearVel, dt);
+        if (cmd != null) {
+            RobotLog.ii(TAG, "@(%.1f,%.1f/%.1f) -> (%.1f,%.1f) power: (%.1f,%.1f,%.1f)",
+                    pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()),
+                    pp.x, pp.y,
+                    cmd.axial, cmd.lateral, cmd.yaw);
 
-        //Probably not right
-        double ks = ppNormRel.dot(vecKs);
-        double kv = ppNormRel.dot(vecKv);
-        double ka = ppNormRel.dot(vecKa);
-
-        MotionControlSettings mcs = new MotionControlSettings(ks, kv, ka, VEL_LIMIT, MAX_POWER, POS_TOL, VEL_TOL, P_COEFF_LIN);
-
-        double p = drivePower(dt, 0, ppRel.norm(), ppNormRel.dot(vRel), mcs);
-
-        Vector2d linearPower = ppNormRel.times(p);
-
-        Rotation2d r = getPursuitAngle(ppNormRel);
-
-        double yaw = Math.toDegrees(r.toDouble()) * P_COEFF_ANG;
-
-        RobotLog.ii(TAG, "@(%.1f,%.1f/%.1f) -> (%.1f,%.1f) power: (%.1f,%.1f,%.1f) %s",
-                pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()),
-                pp.x, pp.y,
-                linearPower.x, linearPower.y, yaw,
-                done ? "done" : "");
-
-        this.dt.update(linearPower.x, linearPower.y, yaw);
+            this.dt.update(cmd.axial, cmd.lateral, cmd.yaw);
+        } else {
+            RobotLog.ii(TAG, "done");
+            done = true;
+        }
 
         return !done;
     }
@@ -132,31 +127,59 @@ public class PurePursuitAction implements ICancelableAction {
         return r;
     }
 
-    private double drivePower(double dt, double x, double targetPos, double v, MotionControlSettings settings) {
-        if (Math.abs(x - targetPos) < settings.posTolerance && Math.abs(v - tgtSpeed) < settings.velTolerance) {
-            done = true;
-            return 0;
+    public MotionCommand calc(Vector2d pursuitPoint, double targetSpd, Pose2d pose, Vector2d linearVelocity,
+                              double dt) {
+        Vector2d vRel = FieldToRobot.rotateToRobotRel(pose.heading, linearVelocity);
+
+        Vector2d pp = pursuitPoint;
+        Vector2d ppRel = FieldToRobot.toRobotRel(pose, pp);
+
+        double dist = ppRel.norm();
+        double radialSpeed = vRel.norm();
+
+        if (dist < POS_TOL && radialSpeed < VEL_TOL) {
+            return null;
         }
 
-        double dist = targetPos - x;
-        int s = (int) Math.signum(dist);
-        double a0 = -s * settings.accelLimit;
+        Vector2d ppNormRel = VectorCalc.normalize(ppRel);
 
-        double vd = tgtSpeed;
+        Vector2d v1 = ppNormRel.times(planSpeed(dt, dist, radialSpeed, targetSpd,
+                Math.min(axMcs.accelLimit, latMcs.accelLimit),
+                VEL_LIMIT));
+
+        double axialPower = drivePower(dt, ppRel.x, vRel.x, v1.x, axMcs);
+        double lateralPower = drivePower(dt, ppRel.y, vRel.y, v1.y, latMcs);
+
+        Rotation2d r = getPursuitAngle(ppNormRel);
+
+        double yaw = Math.toDegrees(r.toDouble()) * P_COEFF_ANG;
+
+        return new MotionCommand(axialPower, lateralPower, 0);
+    }
+
+    private static double planSpeed(double dt, double dist, double v, double targetSpd, double accelLimit,
+                                    double velLimit) {
+        double a0 = -accelLimit;
+        double vd = targetSpd;
         double z = vd * vd - 2 * a0 * dist;
         double v0;
 
         if (z > 0) {
-            v0 = s * Math.sqrt(z);
+            v0 = Math.sqrt(z);
         } else {
             // this should generally not happen
-            v0 = s * settings.velLimit;
+            v0 = velLimit;
         }
 
-        double v1 = limitMagnitude(v0, settings.velLimit);
-        double nextA = limitMagnitude((v1 - v) / dt * settings.pCoefficient, settings.accelLimit);
-        double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
+        double v1 = limitMagnitude(v0, velLimit);
+        return v1;
+    }
 
+    private static double drivePower(double dt, double dist, double v, double v1, MotionControlSettings settings) {
+        int s = (int) Math.signum(dist);
+        double nextA = limitMagnitude((v1 - v) / dt * settings.pCoefficient,
+                settings.accelLimit);
+        double p = settings.ks * s + settings.kv * v + settings.ka * nextA;
         return p;
     }
 
