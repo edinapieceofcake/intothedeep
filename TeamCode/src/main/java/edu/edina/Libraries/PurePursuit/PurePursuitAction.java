@@ -108,7 +108,7 @@ public class PurePursuitAction implements ICancelableAction {
 
         double yaw = Math.toDegrees(r.toDouble()) * P_COEFF_ANG;
 
-        RobotLog.ii(TAG, "@(%.1f,%.1f/%.1f) -> (%.1f,%.1f) next: (%.1f,%.1f) power: (%.1f, %.1f, %.1f) %s",
+        RobotLog.ii(TAG, "@(%.1f,%.1f/%.1f) -> (%.1f,%.1f) power: (%.1f,%.1f,%.1f) %s",
                 pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()),
                 pp.x, pp.y,
                 linearPower.x, linearPower.y, yaw,
