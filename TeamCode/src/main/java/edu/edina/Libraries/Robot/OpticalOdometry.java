@@ -21,27 +21,32 @@ public class OpticalOdometry {
     public static String name = "sensor_otos";
 
     public static double angularScalar = 0.99173554;
-    public static double linearScalar = 1.04712042;
+    public static double X_SCALAR = 1.12;
+    public static double Y_SCALAR = 1.12;
 
     //Inches
     public static double offsetX = 6.4;
-    public static double offsetY = 1.6;
+    public static double offsetY = -1.6;
 
     //Degrees
-    public static double offsetH = 180;
+    public static double offsetH = 90;
 
     private final SparkFunOTOS otos;
 
-    public OpticalOdometry(HardwareMap hw) {
+    public OpticalOdometry(HardwareMap hw, SparkFunOTOS.Pose2D initPose) {
         otos = hw.get(SparkFunOTOS.class, name);
 
         otos.calibrateImu();
         otos.setAngularUnit(AngleUnit.DEGREES);
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularScalar(angularScalar);
-        otos.setLinearScalar(linearScalar);
+        otos.setLinearScalar(1);
         otos.setOffset(new SparkFunOTOS.Pose2D(offsetX, offsetY, offsetH));
-        otos.setPosition(new SparkFunOTOS.Pose2D(0, 0, 0));
+        otos.setPosition(initPose);
+    }
+
+    public OpticalOdometry(HardwareMap hw) {
+        this(hw, new SparkFunOTOS.Pose2D(0, 0, 0));
     }
 
     public Pose2d getCurrentPose() {
@@ -55,8 +60,8 @@ public class OpticalOdometry {
         SparkFunOTOS.Pose2D acc = new SparkFunOTOS.Pose2D();
         otos.getPosVelAcc(pose, vel, acc);
         return new Pose2dDual<Time>(
-                new DualNum<Time>(new double[]{pose.x, vel.x, acc.x}),
-                new DualNum<Time>(new double[]{pose.y, vel.y, acc.y}),
+                new DualNum<Time>(new double[]{X_SCALAR * pose.x, X_SCALAR * vel.x, X_SCALAR * acc.x}),
+                new DualNum<Time>(new double[]{Y_SCALAR * pose.y, Y_SCALAR * vel.y, Y_SCALAR * acc.y}),
                 new DualNum<Time>(new double[]{Math.toRadians(pose.h), Math.toRadians(vel.h), Math.toRadians(acc.h)}));
     }
 

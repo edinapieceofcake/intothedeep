@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Actions.Ascent;
 import edu.edina.Libraries.RoadRunner.MecanumDrive;
@@ -18,12 +19,13 @@ import edu.edina.Libraries.Robot.Light;
 import edu.edina.Libraries.Robot.MoveArm;
 import edu.edina.Libraries.Robot.RobotHardware;
 import edu.edina.Libraries.Robot.RobotMode;
+import edu.edina.Libraries.Robot.Speedometer;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 // Main tele op mode
 @Disabled
 @Config
-@TeleOp(name = "TeleOpMain (old)", group = "Main")
+@TeleOp(name = "TeleOpMain (old)", group = "Z")
 public class TeleOpMainObsolete extends LinearOpMode {
 
     /*
@@ -92,6 +94,9 @@ public class TeleOpMainObsolete extends LinearOpMode {
 
     // Runs the op mode.
     public void runOpMode() throws InterruptedException {
+        int cycleNum = 0;
+
+        Speedometer s = new Speedometer(20);
 
         // Get hardware.
         robotHardware = new RobotHardware(this);
@@ -128,6 +133,10 @@ public class TeleOpMainObsolete extends LinearOpMode {
 
         // While the op mode is active...
         while (opModeIsActive()) {
+            telemetry.addData("cycleSpeed", "%.1f", 1000.0 / s.getSpeed());
+
+            s.sample(cycleNum);
+            cycleNum++;
 
             // Update the gamepads.
             previousGamepad1.copy(currentGamepad1);

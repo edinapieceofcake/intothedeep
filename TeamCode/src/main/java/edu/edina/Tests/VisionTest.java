@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 
+import edu.edina.Libraries.Robot.ColorBlobLocatorProcessorImplTwo;
+
 @TeleOp(name = "Vision Test", group = "Test")
 public class VisionTest extends LinearOpMode {
     @Override

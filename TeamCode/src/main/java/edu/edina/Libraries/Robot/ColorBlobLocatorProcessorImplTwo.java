@@ -26,7 +26,7 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-class ColorBlobLocatorProcessorImplTwo extends ColorBlobLocatorProcessorTwo implements VisionProcessor
+public class ColorBlobLocatorProcessorImplTwo extends ColorBlobLocatorProcessorTwo implements VisionProcessor
 {
     private ColorRangeTwo colorRange;
     private ImageRegionTwo roiImg;

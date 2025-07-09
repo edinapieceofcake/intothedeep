@@ -1,15 +1,18 @@
 package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -26,16 +29,20 @@ public class RobotState {
     private int extensionPos, armPos, leftPos, rightPos;
     private Speedometer extensionSpeed, armSpeed, leftSpeed, rightSpeed;
     private double voltage, leftDist, rightDist, frontDist;
-    private Pose2dDual<Time> poseDual;
+    private static Pose2dDual<Time> poseDual;
     private final ElapsedTime t;
     private final MovingAverageCalc voltAvg;
     private double extensionZeroPos;
 
     private final BackgroundSensorReader<BackgroundData> bgData;
 
-    public RobotState(HardwareMap hw) {
-        leftDistance = hw.get(Rev2mDistanceSensor.class, "distance_left");
-        rightDistance = hw.get(Rev2mDistanceSensor.class, "distance_right");
+    static {
+        poseDual = new Pose2dDual<>(new DualNum<>(new double[] {0}), new DualNum<>(new double[] {0}), new DualNum<>(new double[] {0}));
+    }
+
+    public RobotState(HardwareMap hw, Pose2d initPose) {
+//        leftDistance = hw.get(Rev2mDistanceSensor.class, "distance_left");
+//        rightDistance = hw.get(Rev2mDistanceSensor.class, "distance_right");
         frontDistance = hw.get(Rev2mDistanceSensor.class, "distance_front");
         extensionMotor = hw.get(DcMotorEx.class, "extension_motor");
         armMotor = hw.get(DcMotorEx.class, "arm_motor");
@@ -45,9 +52,10 @@ public class RobotState {
         extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         vs = hw.voltageSensor.iterator().next();
-        odo = new OpticalOdometry(hw);
+        odo = new OpticalOdometry(hw, new SparkFunOTOS.Pose2D(initPose.position.x, initPose.position.y, Math.toDegrees(initPose.heading.toDouble())));
 
         poseDual = odo.getCurrentPoseDual();
+        RobotLog.ii("init pose dual", "%s", poseDual.value());
 
         extensionSpeed = new Speedometer(5);
         armSpeed = new Speedometer(3);
@@ -58,6 +66,14 @@ public class RobotState {
         voltAvg = new MovingAverageCalc(3);
 
         bgData = new BackgroundSensorReader<>(() -> readBackgroundData(), 1);
+    }
+
+    public RobotState(HardwareMap hw) {
+        this(hw, new Pose2d(0, 0, 0));
+    }
+
+    public static Pose2d getLastPose2d() {
+        return poseDual.value();
     }
 
     public void update(Telemetry telemetry) {
@@ -77,7 +93,7 @@ public class RobotState {
         voltage = bgData.voltage;
         voltAvg.update(t.seconds(), voltage);
 
-        poseDual = bgData.poseDual;
+        poseDual = odo.getCurrentPoseDual();
 
         frontDist = bgData.frontDist;
         leftDist = bgData.leftDist;
@@ -90,7 +106,8 @@ public class RobotState {
                 getLiftPos(), getLeftLiftPos(), getRightLiftPos(), getLiftSpeed());
         telemetry.addData("arm", "%.1f deg   %.1f deg/s", getArmPos(), getArmSpeed());
         telemetry.addData("ext", "%.1f in   %.1f in/s", getExtensionPos(), getExtensionSpeed());
-        telemetry.addData("dist", "%.1f in (f) %.1f in (l) %.1f (r)", frontDist, leftDist, rightDist);
+//        telemetry.addData("dist", "%.1f in (f) %.1f in (l) %.1f (r)", frontDist, leftDist, rightDist);
+        telemetry.addData("dist", "%.1f in (f)", frontDist);
     }
 
     public double getRightLiftPos() {
@@ -171,25 +188,22 @@ public class RobotState {
 
     private static class BackgroundData {
         public final double voltage, leftDist, rightDist, frontDist;
-        public final Pose2dDual<Time> poseDual;
 
-        private BackgroundData(double voltage, double leftDist, double rightDist, double frontDist, Pose2dDual<Time> poseDual) {
+        private BackgroundData(double voltage, double leftDist, double rightDist, double frontDist) {
             this.voltage = voltage;
             this.leftDist = leftDist;
             this.rightDist = rightDist;
             this.frontDist = frontDist;
-            this.poseDual = poseDual;
         }
     }
 
     private BackgroundData readBackgroundData() {
-        double leftDist = leftDistance.getDistance(DistanceUnit.INCH);
-        double rightDist = rightDistance.getDistance(DistanceUnit.INCH);
+//        double leftDist = leftDistance.getDistance(DistanceUnit.INCH);
+//        double rightDist = rightDistance.getDistance(DistanceUnit.INCH);
         double frontDist = frontDistance.getDistance(DistanceUnit.INCH);
         double voltage = vs.getVoltage();
-        Pose2dDual<Time> poseDual = odo.getCurrentPoseDual();
 
-        return new BackgroundData(voltage, leftDist, rightDist, frontDist, poseDual);
+        return new BackgroundData(voltage, leftDist, rightDist, frontDist);
     }
 
     public void resetExtension(double pos) {

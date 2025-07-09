@@ -13,35 +13,17 @@ import edu.edina.Libraries.Robot.RobotHardwareChicago;
 @Autonomous
 @Config
 public class PurePursuitActionTest extends LinearOpMode {
-    public static double TGT = 2;
-    public static double MAX = 15;
-//    public static double ANG_MAX = 15;
-
     @Override
-    public void runOpMode() throws InterruptedException {
-
-//        RobotHardware hw = new RobotHardware(this);
-//
-//        Vector2d[] v = new Vector2d[]{
-//                new Vector2d(0, 0),
-//                new Vector2d(20, 0),
-//                new Vector2d(20, 5)
-//        };
-//
-//        PurePursuitAction action = new PurePursuitAction(v, TGT, MAX, 5, hw);
-//
-//        waitForStart();
-//
-//        while (opModeIsActive()) {
-//            TelemetryPacket pkt = new TelemetryPacket();
-//            boolean keepRunning = action.run(pkt);
-//            if (!keepRunning)
-//                break;
-//        }
-//
-//        while (opModeIsActive()) {
-//            telemetry.addLine("done");
-//            telemetry.update();
-//        }
+    public void runOpMode() {
+        RobotHardwareChicago hw = new RobotHardwareChicago(hardwareMap);
+        waitForStart();
+        hw.addPath(new Vector2d[]{
+                new Vector2d(0, 0),
+                new Vector2d(10, 0),
+        }, 0);
+        while (opModeIsActive()) {
+            hw.update(telemetry);
+            telemetry.update();
+        }
     }
 }

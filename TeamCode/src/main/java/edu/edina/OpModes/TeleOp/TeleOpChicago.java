@@ -29,7 +29,8 @@ public class TeleOpChicago extends LinearOpMode {
         RobotHardwareChicago hw = new RobotHardwareChicago(hardwareMap);
 
         while (opModeInInit()) {
-            hw.initUpdate();
+            hw.initUpdate(telemetry);
+            telemetry.update();
         }
 
         while (opModeIsActive()) {
