@@ -33,7 +33,8 @@ public class Arm {
     public static double POS_HIGH_BASKET = 105;
     public static double POS_LOW_BASKET = 85;
     public static double POS_ARM_VERTICAL = 140;
-    public static double POS_ARM_SCORE_BASKET_MIN = 45;
+    public static double POS_ARM_SCORE_BASKET_MIN = 85;
+    public static double POS_ARM_SCORE_BASKET_MAX = 115;
     public static double POS_ARM_WALL = 45;
     public static double POS_GROUND = 225;
 
@@ -161,7 +162,7 @@ public class Arm {
             return new MotionControlSettings(KS, KV, KA,
                     MOT_VEL_LIMIT, MOT_MAX_POWER,
                     MOT_POS_TOLERANCE, MOT_VEL_TOLERANCE,
-                    MOT_VEL_COEF);
+                    MOT_VEL_COEF, 1);
         }
     }
 }

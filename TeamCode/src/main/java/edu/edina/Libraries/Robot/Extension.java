@@ -150,7 +150,7 @@ public class Extension {
             return new MotionControlSettings(KS, KV, KA,
                     MOT_VEL_LIMIT, MOT_MAX_POWER,
                     MOT_POS_TOLERANCE, MOT_VEL_TOLERANCE,
-                    MOT_VEL_COEF);
+                    MOT_VEL_COEF, 1);
         }
     }
 }

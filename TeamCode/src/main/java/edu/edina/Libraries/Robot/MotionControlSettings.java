@@ -4,14 +4,15 @@ public class MotionControlSettings {
     public MotionControlSettings(double ks, double kv, double ka,
                                  double velLimit, double maxPower,
                                  double posTolerance, double velTolerance,
-                                 double pCoefficient) {
+                                 double pCoefficient,
+                                 double accelScalar) {
 
         this.ks = ks;
         this.kv = kv;
         this.ka = ka;
         this.velLimit = velLimit;
         this.maxPower = maxPower;
-        this.accelLimit = maxPower / ka;
+        this.accelLimit = maxPower / ka * accelScalar;
         this.posTolerance = posTolerance;
         this.velTolerance = velTolerance;
         this.pCoefficient = pCoefficient;

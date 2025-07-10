@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -20,6 +21,7 @@ import java.util.List;
 
 import edu.edina.Libraries.Actions.LogAction;
 import edu.edina.Libraries.Actions.WaitUntil;
+import edu.edina.Libraries.Actions.WaitWhile;
 import edu.edina.Libraries.PurePursuit.Path;
 
 // Control hub:
@@ -150,6 +152,29 @@ public class RobotHardwareChicago {
         ));
     }
 
+    public void highBasketRear() {
+        addPrimaryAction(new ParallelAction(
+                new LogAction("highBasketRear", "start"),
+                grabber.straightWrist(),
+                extension.moveExtension(0),
+                lift.moveLift(Lift.POS_HIGH_BASKET),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
+                        new LogAction("highBasketRear", "done waiting for ext"),
+                        new ParallelAction(
+                                arm.moveArm(Arm.POS_ARM_VERTICAL)),
+                                new SequentialAction(
+                                        new WaitUntil(() -> robotState.getArmPos() < Arm.POS_ARM_VERTICAL + 10 && robotState.getArmPos() > Arm.POS_ARM_VERTICAL - 10),
+                                        new LogAction("highBasketRear", "done waiting for arm"),
+                                        extension.moveExtension(Extension.POS_HIGH_BASKET),
+                                        new WaitUntil(() -> robotState.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
+                                        grabber.sampleRear()
+                                )
+                        )
+                )
+        );
+    }
+
     public void lowBasket() {
         addPrimaryAction(new ParallelAction(
                 new LogAction("lowBasket", "start"),
@@ -175,10 +200,18 @@ public class RobotHardwareChicago {
         runningActions.add(grabber.toggleClaw());
     }
 
+    public void openClaw() {
+        runningActions.add(grabber.openClaw());
+    }
+
+    public void closeClaw() {
+        runningActions.add(grabber.closeClaw());
+    }
+
     public void subMode() {
         Action grabberDown = new SequentialAction(
                 new WaitUntil(() -> robotState.getExtensionPos() >= Extension.INIT_EXTENSION_SUB - 1),
-                // new LogAction("subMode", "done waiting for arm (2)"),
+                new LogAction("subMode", "done waiting for arm (2)"),
                 grabber.subMode()
         );
 
@@ -250,10 +283,6 @@ public class RobotHardwareChicago {
                         arm.moveArm(Arm.POS_LOW_SPECIMEN)
                 )
         ));
-    }
-
-    private void specimenMode() {
-
     }
 
     public void extend(double y) {

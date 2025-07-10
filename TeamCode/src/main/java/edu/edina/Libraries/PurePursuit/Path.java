@@ -11,7 +11,7 @@ public class Path {
     private final Vector2d[] route;
 
     public Path(Vector2d[] route) {
-        this(route, 0, RobotDriver.maxSpeed, RobotDriver.radius, 0, true, null);
+        this(route, 0, RobotDriver.maxSpeed, RobotDriver.radius, 0, false, null);
     }
 
     public Path(Vector2d[] route, double tgtSpeed, double maxSpeed, double radius, double finalHeading, boolean rotateToGoal, String name) {
@@ -31,6 +31,10 @@ public class Path {
 
     public Path withHeading(double newFinalHeading) {
         return new Path(route, tgtSpeed, maxSpeed, radius, newFinalHeading, true, name);
+    }
+
+    public Path rotateToGoal() {
+        return new Path(route, tgtSpeed, maxSpeed, radius, 0, false, name);
     }
 
     public Path withMaxSpeed(double newMaxSpeed) {

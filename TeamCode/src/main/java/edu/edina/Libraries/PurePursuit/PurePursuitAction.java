@@ -26,6 +26,8 @@ import edu.edina.Tests.PurePursuit.MotorCommand;
 
 @Config
 public class PurePursuitAction implements ICancelableAction {
+    public static double ACCEL_COEF = 0.5;
+
     public static double VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
     public static double POS_TOL = 2;
@@ -75,11 +77,11 @@ public class PurePursuitAction implements ICancelableAction {
 
         axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, VEL_LIMIT, MAX_POWER,
                 POS_TOL, VEL_TOL,
-                P_COEFF_LIN);
+                P_COEFF_LIN, ACCEL_COEF);
 
         latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER, POS_TOL,
                 VEL_TOL,
-                P_COEFF_LIN);
+                P_COEFF_LIN, ACCEL_COEF);
 
         if (path.getName() != null) {
             dataFile = new DataFile(path.getName());
