@@ -21,35 +21,13 @@ public class RobotDriver {
         this.actionList = actionList;
     }
 
-    public void addDrivePath(Vector2d[] vectors, double tgtSpeed) {
+    public void addDrivePath(Path path) {
         if (currentAction != null) {
             currentAction.cancel();
             currentAction = null;
         }
 
-        currentAction = new PurePursuitAction(new Path(vectors, tgtSpeed, maxSpeed, radius), dt, state, null);
-
-        actionList.add(currentAction);
-    }
-
-    public void addDrivePath(Vector2d[] vectors, double tgtSpeed, String name) {
-        if (currentAction != null) {
-            currentAction.cancel();
-            currentAction = null;
-        }
-
-        currentAction = new PurePursuitAction(new Path(vectors, tgtSpeed, maxSpeed, radius), dt, state, name);
-
-        actionList.add(currentAction);
-    }
-
-    public void addDrivePath(Vector2d[] vectors, double tgtSpeed, double finalHeading) {
-        if (currentAction != null) {
-            currentAction.cancel();
-            currentAction = null;
-        }
-
-        currentAction = new PurePursuitAction(new Path(vectors, tgtSpeed, maxSpeed, radius, finalHeading), dt, state, null);
+        currentAction = new PurePursuitAction(path, dt, state);
 
         actionList.add(currentAction);
     }

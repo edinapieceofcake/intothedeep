@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 import edu.edina.Libraries.Robot.RobotState;
 
@@ -41,7 +42,9 @@ public class DriveForwardToDistanceAction implements Action {
                     pose2d.position.y + d * Math.sin(pose2d.heading.toDouble()));
 
             RobotLog.ii(TAG, "distance %.2f", d);
-            hw.addPath(new Vector2d[]{pose2d.position, tgtPoint}, 0, Math.toDegrees(pose2d.heading.toDouble()));
+            hw.addPath(new Path(new Vector2d[]{pose2d.position, tgtPoint})
+                    .withHeading(Math.toDegrees(pose2d.heading.toDouble()))
+                    .withName("drive-fwd.csv"));
             return false;
         } else {
             return true;

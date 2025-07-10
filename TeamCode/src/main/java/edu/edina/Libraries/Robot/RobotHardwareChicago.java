@@ -20,6 +20,7 @@ import java.util.List;
 
 import edu.edina.Libraries.Actions.LogAction;
 import edu.edina.Libraries.Actions.WaitUntil;
+import edu.edina.Libraries.PurePursuit.Path;
 
 // Control hub:
 //   Motor 0: extension_motor
@@ -285,16 +286,12 @@ public class RobotHardwareChicago {
         ));
     }
 
-    public void addPath(Vector2d[] vectors, double tgtSpeed, String name) {
-        robotDriver.addDrivePath(vectors, tgtSpeed, name);
-    }
-
-    public void addPath(Vector2d[] vectors, double tgtSpeed) {
-        robotDriver.addDrivePath(vectors, tgtSpeed);
+    public void addPath(Path path) {
+        robotDriver.addDrivePath(path);
     }
 
     public void addPath(Vector2d[] vectors, double tgtSpeed, double finalHeading) {
-        robotDriver.addDrivePath(vectors, tgtSpeed, finalHeading);
+        robotDriver.addDrivePath(new Path(vectors).withTargetSpeed(tgtSpeed).withHeading(finalHeading));
     }
 
     public void perpendicularSwivel() {

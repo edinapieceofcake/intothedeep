@@ -24,7 +24,10 @@ public class AutoSampleAllianceSide extends AutoBase {
 
     public AutoSampleAllianceSide() {
         super(START_X, START_Y, START_H);
-        firstScore = new Path(new Vector2d[]{new Vector2d(START_X, START_Y), new Vector2d(BASKET_X, BASKET_Y)}, 0, BASKET_MAX_SPEED, BASKET_RADIUS, BASKET_H);
+        firstScore = new Path(new Vector2d[]{new Vector2d(START_X, START_Y), new Vector2d(BASKET_X, BASKET_Y)})
+                .withMaxSpeed(BASKET_MAX_SPEED)
+                .withRadius(BASKET_RADIUS)
+                .withHeading(BASKET_H);
     }
 
     @Override

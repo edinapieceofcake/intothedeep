@@ -59,10 +59,6 @@ public class PurePursuitAction implements ICancelableAction {
     private final DataFile dataFile;
 
     public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
-        this(path, dt, state, null);
-    }
-
-    public PurePursuitAction(Path path, Drivetrain dt, RobotState state, String name) {
         this.path = path;
         purePursuit = new PurePursuit(path.getRoute(), false);
         this.tgtSpeed = path.getTgtSpeed();
@@ -85,8 +81,8 @@ public class PurePursuitAction implements ICancelableAction {
                 VEL_TOL,
                 P_COEFF_LIN);
 
-        if (name != null) {
-            dataFile = new DataFile(name);
+        if (path.getName() != null) {
+            dataFile = new DataFile(path.getName());
             dataFile.println("t,x,y,deg,pp.x,pp.y,axial,lateral,yaw");
         } else
             dataFile = null;

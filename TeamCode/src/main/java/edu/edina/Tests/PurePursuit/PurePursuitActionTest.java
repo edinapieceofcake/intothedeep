@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 
 @Autonomous
@@ -22,13 +23,13 @@ public class PurePursuitActionTest extends LinearOpMode {
             telemetry.update();
         }
 
-        hw.addPath(new Vector2d[]{
+        hw.addPath(new Path(
+                new Vector2d[]{
                         new Vector2d(0, 0),
                         new Vector2d(10, 0),
                         new Vector2d(10, 30),
                         new Vector2d(15, 35)
-                }, 0,
-                "pp-test.csv");
+                }).withName("pp-test.csv"));
 
         while (opModeIsActive()) {
             hw.update(telemetry);
