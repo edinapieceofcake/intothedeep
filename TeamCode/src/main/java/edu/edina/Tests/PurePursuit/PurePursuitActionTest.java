@@ -1,6 +1,7 @@
 package edu.edina.Tests.PurePursuit;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,12 +13,23 @@ import edu.edina.Libraries.Robot.RobotHardwareChicago;
 public class PurePursuitActionTest extends LinearOpMode {
     @Override
     public void runOpMode() {
-        RobotHardwareChicago hw = new RobotHardwareChicago(hardwareMap);
-        waitForStart();
+        RobotHardwareChicago hw = new RobotHardwareChicago(
+                hardwareMap,
+                new Pose2d(new Vector2d(0, 0), 0));
+
+        while (opModeInInit()) {
+            hw.initUpdate(telemetry);
+            telemetry.update();
+        }
+
         hw.addPath(new Vector2d[]{
-                new Vector2d(0, 0),
-                new Vector2d(10, 0),
-        }, 0);
+                        new Vector2d(0, 0),
+                        new Vector2d(10, 0),
+                        new Vector2d(10, 30),
+                        new Vector2d(15, 35)
+                }, 0,
+                "pp-test.csv");
+
         while (opModeIsActive()) {
             hw.update(telemetry);
             telemetry.update();

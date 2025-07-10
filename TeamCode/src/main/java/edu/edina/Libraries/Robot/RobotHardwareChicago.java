@@ -285,6 +285,10 @@ public class RobotHardwareChicago {
         ));
     }
 
+    public void addPath(Vector2d[] vectors, double tgtSpeed, String name) {
+        robotDriver.addDrivePath(vectors, tgtSpeed, name);
+    }
+
     public void addPath(Vector2d[] vectors, double tgtSpeed) {
         robotDriver.addDrivePath(vectors, tgtSpeed);
     }

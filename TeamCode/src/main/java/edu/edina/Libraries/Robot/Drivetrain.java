@@ -179,6 +179,11 @@ public class Drivetrain {
     }
 
     public void update(double axial, double lateral, double yaw) {
+        update(axial, lateral, yaw, false);
+    }
+
+    public void update(double axial, double lateral, double yaw, boolean reverseLateral) {
+        lateral = reverseLateral ? -lateral : lateral;
         // Combine the joystick requests for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
         double leftFrontPower = axial + lateral + yaw;

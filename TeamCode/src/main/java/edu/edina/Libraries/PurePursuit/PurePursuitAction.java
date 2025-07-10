@@ -1,5 +1,7 @@
 package edu.edina.Libraries.PurePursuit;
 
+import android.provider.ContactsContract;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -19,17 +21,19 @@ import edu.edina.Libraries.Robot.FieldToRobot;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 import edu.edina.Libraries.Robot.RobotState;
 import edu.edina.Libraries.VectorCalc;
+import edu.edina.Tests.DataFile;
 import edu.edina.Tests.PurePursuit.MotorCommand;
 
 @Config
 public class PurePursuitAction implements ICancelableAction {
-    private static String TAG = "PurePursuit";
-    public static double VEL_LIMIT = 16;
-    public static double MAX_POWER = 0.75;
-    public static double POS_TOL = 1;
-    public static double VEL_TOL = 1;
-    public static double P_COEFF_LIN = 1;
-    public static double P_COEFF_ANG = 0;
+    public static double VEL_LIMIT = 35;
+    public static double MAX_POWER = 1;
+    public static double POS_TOL = 2;
+    public static double VEL_TOL = 3;
+    public static double P_COEFF_LIN = 0.7;
+    public static double P_COEFF_ANG = 0.5;
+
+    public static double LAT_GAIN = 1.1;
 
     public static double AXIAL_KA = 0.0025;
 
@@ -52,8 +56,13 @@ public class PurePursuitAction implements ICancelableAction {
     private boolean done;
     private MotorCommand mc;
     private final MotionControlSettings axMcs, latMcs;
+    private final DataFile dataFile;
 
     public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
+        this(path, dt, state, null);
+    }
+
+    public PurePursuitAction(Path path, Drivetrain dt, RobotState state, String name) {
         this.path = path;
         purePursuit = new PurePursuit(path.getRoute(), false);
         this.tgtSpeed = path.getTgtSpeed();
@@ -75,6 +84,12 @@ public class PurePursuitAction implements ICancelableAction {
         latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER, POS_TOL,
                 VEL_TOL,
                 P_COEFF_LIN);
+
+        if (name != null) {
+            dataFile = new DataFile(name);
+            dataFile.println("t,x,y,deg,pp.x,pp.y,axial,lateral,yaw");
+        } else
+            dataFile = null;
     }
 
     private static double limitMagnitude(double x, double maxMag) {
@@ -100,14 +115,13 @@ public class PurePursuitAction implements ICancelableAction {
 
         MotionCommand cmd = calc(pp, path.getTgtSpeed(), pose, v.linearVel, dt);
         if (cmd != null) {
-            RobotLog.ii(TAG, "@(%.1f,%.1f/%.1f) -> (%.1f,%.1f) power: (%.1f,%.1f,%.1f)",
-                    pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()),
-                    pp.x, pp.y,
-                    cmd.axial, cmd.lateral, cmd.yaw);
-
-            this.dt.update(cmd.axial, cmd.lateral, cmd.yaw);
+            if (dataFile != null) {
+                dataFile.println(String.format("%f,%f,%f,%f,%f,%f,%f,%f,%f",
+                        t, pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()), pp.x, pp.y,
+                        cmd.axial, cmd.lateral, cmd.yaw));
+            }
+            this.dt.update(cmd.axial, cmd.lateral, cmd.yaw, true);
         } else {
-            RobotLog.ii(TAG, "done");
             done = true;
         }
 
@@ -148,13 +162,13 @@ public class PurePursuitAction implements ICancelableAction {
                 VEL_LIMIT));
 
         double axialPower = drivePower(dt, ppRel.x, vRel.x, v1.x, axMcs);
-        double lateralPower = drivePower(dt, ppRel.y, vRel.y, v1.y, latMcs);
+        double lateralPower = drivePower(dt, ppRel.y, vRel.y, v1.y, latMcs) * LAT_GAIN;
 
         Rotation2d r = getPursuitAngle(ppNormRel);
 
         double yaw = Math.toDegrees(r.toDouble()) * P_COEFF_ANG;
 
-        return new MotionCommand(axialPower, lateralPower, 0);
+        return new MotionCommand(axialPower, lateralPower, yaw);
     }
 
     private static double planSpeed(double dt, double dist, double v, double targetSpd, double accelLimit,

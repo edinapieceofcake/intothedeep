@@ -34,7 +34,7 @@ public class AutoSampleAllianceSide extends AutoBase {
 //                        new PurePursuitAction(firstScore, dt, state),
 //                        new InstantAction(() -> hw.highBasket()),
                         new SampleAlignAction(hw),
-                        new DriveForwardToDistanceAction(state, hw,2, 1)
+                        new DriveForwardToDistanceAction(state, hw, 2, 1)
                 )
         );
     }

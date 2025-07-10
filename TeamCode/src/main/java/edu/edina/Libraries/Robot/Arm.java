@@ -29,7 +29,7 @@ public class Arm {
     // positions
     public static double POS_SPECIMEN = 200;
     public static double POS_LOW_SPECIMEN = 215;
-    public static double POS_SUBMERSIBLE = 210;
+    public static double POS_SUBMERSIBLE = 190;
     public static double POS_HIGH_BASKET = 105;
     public static double POS_LOW_BASKET = 85;
     public static double POS_ARM_VERTICAL = 140;
@@ -45,10 +45,10 @@ public class Arm {
 
     // for linear motion
     public static double MOT_VEL_LIMIT = 200;
-    public static double MOT_MAX_POWER = 0.35;
+    public static double MOT_MAX_POWER = 0.45;
     public static double MOT_POS_TOLERANCE = 15;
     public static double MOT_VEL_TOLERANCE = 20;
-    public static double MOT_VEL_COEF = 0.9;
+    public static double MOT_VEL_COEF = 0.7;
 
     // for pid action
     public static double HOLD_P = 0.00001;

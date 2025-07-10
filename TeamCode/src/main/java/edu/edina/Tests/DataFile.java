@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+// copy off of robot with this command:
+// > adb
 public class DataFile {
     private File file;
     private PrintStream out;
