@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import edu.edina.Libraries.Angle;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
@@ -26,24 +27,23 @@ import edu.edina.Tests.PurePursuit.MotorCommand;
 
 @Config
 public class PurePursuitAction implements ICancelableAction {
-    public static double ACCEL_COEF = 0.5;
+    public static double ACCEL_COEF = 0.3;
 
     public static double VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
     public static double POS_TOL = 2;
     public static double VEL_TOL = 3;
-    public static double P_COEFF_LIN = 0.7;
-    public static double P_COEFF_ANG = 0.5;
+    public static double P_COEFF_LIN = 0.8;
+    public static double P_COEFF_ANG = 0.0005;
 
     public static double LAT_GAIN = 1.1;
 
     public static double AXIAL_KA = 0.0025;
-
     public static double AXIAL_KS = 0.066229;
-    public static double AXIAL_KV = 0.015638;
+    public static double AXIAL_KV = 0;
     public static double LAT_KA = 0.0042431;
     public static double LAT_KS = 0.12338;
-    public static double LAT_KV = 0.017618;
+    public static double LAT_KV = 0;
 
     private ElapsedTime etime;
     private double prevTime;
@@ -54,6 +54,8 @@ public class PurePursuitAction implements ICancelableAction {
     private Vector2d vecKs, vecKv, vecKa;
 
     private Path path;
+
+    private final String TAG = "debug purepursuit";
 
     private boolean done;
     private MotorCommand mc;
@@ -164,7 +166,7 @@ public class PurePursuitAction implements ICancelableAction {
 
         Rotation2d r = getPursuitAngle(ppNormRel);
 
-        double yaw = Math.toDegrees(r.toDouble()) * P_COEFF_ANG;
+        double yaw = Angle.degreeDiff(Math.toDegrees(r.toDouble()), Math.toDegrees(pose.heading.toDouble())) * P_COEFF_ANG;
 
         return new MotionCommand(axialPower, lateralPower, yaw);
     }

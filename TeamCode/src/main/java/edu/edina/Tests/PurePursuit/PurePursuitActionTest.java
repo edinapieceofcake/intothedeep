@@ -26,10 +26,9 @@ public class PurePursuitActionTest extends LinearOpMode {
         hw.addPath(new Path(
                 new Vector2d[]{
                         new Vector2d(0, 0),
-                        new Vector2d(10, 0),
-                        new Vector2d(10, 30),
-                        new Vector2d(15, 35)
-                }).withName("pp-test.csv"));
+                        new Vector2d(40, 0),
+                        new Vector2d(40, 10)
+                }).withName("pp-test.csv").withHeading(90));
 
         while (opModeIsActive()) {
             hw.update(telemetry);
