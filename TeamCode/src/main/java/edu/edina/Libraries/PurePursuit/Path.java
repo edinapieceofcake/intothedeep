@@ -1,5 +1,7 @@
 package edu.edina.Libraries.PurePursuit;
 
+import android.annotation.SuppressLint;
+
 import com.acmerobotics.roadrunner.Vector2d;
 
 import edu.edina.Libraries.Robot.RobotDriver;
@@ -75,5 +77,15 @@ public class Path {
 
     public Vector2d[] getRoute() {
         return route;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public String routeString() {
+        StringBuilder s = new StringBuilder();
+        for (Vector2d v : route) {
+            s.append(String.format("%s(%.1f,%.1f)", (s.length() == 0) ? "" : "->", v.x, v.y));
+        }
+
+        return s.toString();
     }
 }

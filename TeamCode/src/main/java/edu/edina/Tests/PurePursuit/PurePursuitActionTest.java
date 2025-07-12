@@ -17,7 +17,7 @@ public class PurePursuitActionTest extends LinearOpMode {
                 new Pose2d(new Vector2d(0, 0), 0));
 
         while (opModeInInit()) {
-            hw.initUpdate(telemetry);`
+            hw.initUpdate(telemetry);
             telemetry.update();
         }
 

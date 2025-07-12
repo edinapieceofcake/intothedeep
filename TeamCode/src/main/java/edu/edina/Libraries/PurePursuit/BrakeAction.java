@@ -32,7 +32,7 @@ public class BrakeAction implements Action {
             return true;
         } else {
             drivetrain.coast();
-            return true;
+            return false;
         }
     }
 }

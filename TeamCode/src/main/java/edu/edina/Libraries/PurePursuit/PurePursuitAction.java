@@ -27,19 +27,20 @@ import edu.edina.Tests.PurePursuit.MotorCommand;
 
 @Config
 public class PurePursuitAction implements ICancelableAction {
-    public static double ACCEL_COEF = 0.3;
-    public static double FAST_ACCEL_COEF = 0.6;
+    public static double ACCEL_COEF = 0.12;
+    public static double FAST_ACCEL_COEF = 0.7;
 
-    public static double VEL_LIMIT = 35;
+    public static double VEL_LIMIT = 20;
     public static double FAST_VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
-    public static double POS_TOL = 2;
-    public static double FAST_POS_TOL = 5;
+    public static double POS_TOL = 2.6;
+    public static double FAST_POS_TOL = 8;
     public static double VEL_TOL = 3;
     public static double ANG_TOL = 10;
-    public static double FAST_VEL_TOL = 3;
-    public static double P_COEFF_LIN = 0.8;
-    public static double P_COEFF_ANG = 0.0005;
+    public static double FAST_VEL_TOL = 25;
+    public static double P_COEFF_LIN = 0.7;
+    public static double P_COEFF_ANG = 0.0012;
+    public static double FAST_P_COEFF_ANG = 0.003;
 
     public static double LAT_GAIN = 1.1;
 
@@ -66,6 +67,7 @@ public class PurePursuitAction implements ICancelableAction {
     private MotorCommand mc;
     private final MotionControlSettings axMcs, latMcs;
     private final DataFile dataFile;
+    private final double posTol, velTol, angTol, velLimit, accelCoef, pCoeffAng;
 
     public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
         this(path, dt, state, true);
@@ -87,6 +89,13 @@ public class PurePursuitAction implements ICancelableAction {
         vecKa = new Vector2d(AXIAL_KA, LAT_KA);
 
         if (fastDrive) {
+            posTol = FAST_POS_TOL;
+            velTol = FAST_VEL_TOL;
+            angTol = ANG_TOL;
+            velLimit = FAST_VEL_LIMIT;
+            accelCoef = FAST_ACCEL_COEF;
+            pCoeffAng = FAST_P_COEFF_ANG;
+
             axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, FAST_VEL_LIMIT, MAX_POWER,
                     FAST_POS_TOL, FAST_VEL_TOL,
                     P_COEFF_LIN, FAST_ACCEL_COEF);
@@ -95,6 +104,13 @@ public class PurePursuitAction implements ICancelableAction {
                     FAST_POS_TOL, FAST_VEL_TOL,
                     P_COEFF_LIN, FAST_ACCEL_COEF);
         } else {
+            posTol = POS_TOL;
+            velTol = VEL_TOL;
+            angTol = ANG_TOL;
+            velLimit = VEL_LIMIT;
+            accelCoef = ACCEL_COEF;
+            pCoeffAng = P_COEFF_ANG;
+
             axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, VEL_LIMIT, MAX_POWER,
                     POS_TOL, VEL_TOL,
                     P_COEFF_LIN, ACCEL_COEF);
@@ -175,18 +191,18 @@ public class PurePursuitAction implements ICancelableAction {
         Rotation2d r = getPursuitAngle(ppNormRel);
         double angErr = Angle.degreeDiff(Math.toDegrees(r.toDouble()), Math.toDegrees(pose.heading.toDouble()));
 
-        if (dist < POS_TOL && radialSpeed < VEL_TOL && angErr < ANG_TOL) {
+        if (dist < posTol && radialSpeed < velTol && angErr < angTol) {
             return null;
         }
 
         Vector2d v1 = ppNormRel.times(planSpeed(dt, dist, radialSpeed, targetSpd,
                 Math.min(axMcs.accelLimit, latMcs.accelLimit),
-                VEL_LIMIT));
+                velLimit));
 
         double axialPower = drivePower(dt, ppRel.x, vRel.x, v1.x, axMcs);
         double lateralPower = drivePower(dt, ppRel.y, vRel.y, v1.y, latMcs) * LAT_GAIN;
 
-        double yaw = angErr * P_COEFF_ANG;
+        double yaw = angErr * pCoeffAng;
 
         return new MotionCommand(axialPower, lateralPower, yaw);
     }

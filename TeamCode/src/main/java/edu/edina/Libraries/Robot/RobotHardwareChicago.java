@@ -437,9 +437,14 @@ public class RobotHardwareChicago {
 
     public Action sequencePath(Path path, double minSpeed) {
         return new SequentialAction(
+                new LogAction("sequencePath", path.routeString()),
+                new LogAction("sequencePath", "fast drive"),
                 new PurePursuitAction(path, drivetrain, robotState, true),
+                new LogAction("sequencePath", "braking"),
                 new BrakeAction(robotState, drivetrain, minSpeed),
-                new PurePursuitAction(path, drivetrain, robotState, false)
+                new LogAction("sequencePath", "slow drive"),
+                new PurePursuitAction(path, drivetrain, robotState, false),
+                new LogAction("sequencePath", "done")
         );
     }
 }

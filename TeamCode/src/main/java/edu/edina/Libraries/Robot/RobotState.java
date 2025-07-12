@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
@@ -37,7 +38,7 @@ public class RobotState {
     private final BackgroundSensorReader<BackgroundData> bgData;
 
     static {
-        poseDual = new Pose2dDual<>(new DualNum<>(new double[] {0}), new DualNum<>(new double[] {0}), new DualNum<>(new double[] {0}));
+        poseDual = new Pose2dDual<>(new DualNum<>(new double[]{0}), new DualNum<>(new double[]{0}), new DualNum<>(new double[]{0}));
     }
 
     public RobotState(HardwareMap hw, Pose2d initPose) {
@@ -100,8 +101,12 @@ public class RobotState {
         rightDist = bgData.rightDist;
 
         Pose2d p = getCurrentPose();
+        PoseVelocity2d vel = poseDual.velocity().value();
         telemetry.addData("v_avg", "%.2fV", voltAvg.getAverage());
-        telemetry.addData("pose", "(%.1f, %.1f) %.1f deg", p.position.x, p.position.y, Math.toDegrees(p.heading.toDouble()));
+        telemetry.addData("pose", "(%.1f, %.1f) in   %.1f deg",
+                p.position.x, p.position.y, Math.toDegrees(p.heading.toDouble()));
+        telemetry.addData("vel", "(%.1f, %.1f) in/s   %.1f deg/s",
+                vel.linearVel.x, vel.linearVel.y, Math.toDegrees(vel.angVel));
         telemetry.addData("lift", "%.1f(%.1f, %.1f) in   %.1f in/s",
                 getLiftPos(), getLeftLiftPos(), getRightLiftPos(), getLiftSpeed());
         telemetry.addData("arm", "%.1f deg   %.1f deg/s", getArmPos(), getArmSpeed());
