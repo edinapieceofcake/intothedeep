@@ -36,6 +36,7 @@ public class PurePursuitAction implements ICancelableAction {
     public static double POS_TOL = 2;
     public static double FAST_POS_TOL = 5;
     public static double VEL_TOL = 3;
+    public static double ANG_TOL = 10;
     public static double FAST_VEL_TOL = 3;
     public static double P_COEFF_LIN = 0.8;
     public static double P_COEFF_ANG = 0.0005;
@@ -63,24 +64,14 @@ public class PurePursuitAction implements ICancelableAction {
 
     private boolean done;
     private MotorCommand mc;
-    private MotionControlSettings axMcs;
-    private MotionControlSettings latMcs;
+    private final MotionControlSettings axMcs, latMcs;
     private final DataFile dataFile;
 
-    public PurePursuitAction(Path path, Drivetrain dt, RobotState state, boolean fastDrive) {
-        this(path, dt, state);
-        if (fastDrive) {
-            axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, FAST_VEL_LIMIT, MAX_POWER,
-                    FAST_POS_TOL, FAST_VEL_TOL,
-                    P_COEFF_LIN, FAST_ACCEL_COEF);
-
-            latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, FAST_VEL_LIMIT, MAX_POWER,
-                    FAST_POS_TOL, FAST_VEL_TOL,
-                    P_COEFF_LIN, FAST_ACCEL_COEF);
-        }
+    public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
+        this(path, dt, state, true);
     }
 
-    public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
+    public PurePursuitAction(Path path, Drivetrain dt, RobotState state, boolean fastDrive) {
         this.path = path;
         purePursuit = new PurePursuit(path.getRoute(), false);
         this.tgtSpeed = path.getTgtSpeed();
@@ -95,13 +86,24 @@ public class PurePursuitAction implements ICancelableAction {
         vecKv = new Vector2d(AXIAL_KV, LAT_KV);
         vecKa = new Vector2d(AXIAL_KA, LAT_KA);
 
-        axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, VEL_LIMIT, MAX_POWER,
-                POS_TOL, VEL_TOL,
-                P_COEFF_LIN, ACCEL_COEF);
 
-        latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER,
-                POS_TOL, VEL_TOL,
-                P_COEFF_LIN, ACCEL_COEF);
+        if (fastDrive) {
+            axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, FAST_VEL_LIMIT, MAX_POWER,
+                    FAST_POS_TOL, FAST_VEL_TOL,
+                    P_COEFF_LIN, FAST_ACCEL_COEF);
+
+            latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, FAST_VEL_LIMIT, MAX_POWER,
+                    FAST_POS_TOL, FAST_VEL_TOL,
+                    P_COEFF_LIN, FAST_ACCEL_COEF);
+        } else {
+            axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, VEL_LIMIT, MAX_POWER,
+                    POS_TOL, VEL_TOL,
+                    P_COEFF_LIN, ACCEL_COEF);
+
+            latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER,
+                    POS_TOL, VEL_TOL,
+                    P_COEFF_LIN, ACCEL_COEF);
+        }
 
         if (path.getName() != null) {
             dataFile = new DataFile(path.getName());
@@ -169,11 +171,14 @@ public class PurePursuitAction implements ICancelableAction {
         double dist = ppRel.norm();
         double radialSpeed = vRel.norm();
 
-        if (dist < POS_TOL && radialSpeed < VEL_TOL) {
+        Vector2d ppNormRel = VectorCalc.normalize(ppRel);
+
+        Rotation2d r = getPursuitAngle(ppNormRel);
+        double angErr = Angle.degreeDiff(Math.toDegrees(r.toDouble()), Math.toDegrees(pose.heading.toDouble()));
+
+        if (dist < POS_TOL && radialSpeed < VEL_TOL && angErr < ANG_TOL) {
             return null;
         }
-
-        Vector2d ppNormRel = VectorCalc.normalize(ppRel);
 
         Vector2d v1 = ppNormRel.times(planSpeed(dt, dist, radialSpeed, targetSpd,
                 Math.min(axMcs.accelLimit, latMcs.accelLimit),
@@ -182,9 +187,7 @@ public class PurePursuitAction implements ICancelableAction {
         double axialPower = drivePower(dt, ppRel.x, vRel.x, v1.x, axMcs);
         double lateralPower = drivePower(dt, ppRel.y, vRel.y, v1.y, latMcs) * LAT_GAIN;
 
-        Rotation2d r = getPursuitAngle(ppNormRel);
-
-        double yaw = Angle.degreeDiff(Math.toDegrees(r.toDouble()), Math.toDegrees(pose.heading.toDouble())) * P_COEFF_ANG;
+        double yaw = angErr * P_COEFF_ANG;
 
         return new MotionCommand(axialPower, lateralPower, yaw);
     }
