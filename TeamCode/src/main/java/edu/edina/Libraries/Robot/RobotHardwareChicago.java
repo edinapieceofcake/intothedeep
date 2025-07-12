@@ -21,6 +21,7 @@ import java.util.List;
 
 import edu.edina.Libraries.Actions.LogAction;
 import edu.edina.Libraries.Actions.WaitUntil;
+import edu.edina.Libraries.PurePursuit.BrakeAction;
 import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.PurePursuit.PurePursuitAction;
 
@@ -192,15 +193,15 @@ public class RobotHardwareChicago {
 
     public void highBasketRear() {
         addPrimaryAction(new ParallelAction(
-                new LogAction("highBasketRear", "start"),
-                grabber.straightWrist(),
-                extension.moveExtension(0),
-                lift.moveLift(Lift.POS_HIGH_BASKET),
-                new SequentialAction(
-                        new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
-                        new LogAction("highBasketRear", "done waiting for ext"),
-                        new ParallelAction(
-                                arm.moveArm(Arm.POS_ARM_VERTICAL)),
+                        new LogAction("highBasketRear", "start"),
+                        grabber.straightWrist(),
+                        extension.moveExtension(0),
+                        lift.moveLift(Lift.POS_HIGH_BASKET),
+                        new SequentialAction(
+                                new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
+                                new LogAction("highBasketRear", "done waiting for ext"),
+                                new ParallelAction(
+                                        arm.moveArm(Arm.POS_ARM_VERTICAL)),
                                 new SequentialAction(
                                         new WaitUntil(() -> robotState.getArmPos() < Arm.POS_ARM_VERTICAL + 10 && robotState.getArmPos() > Arm.POS_ARM_VERTICAL - 10),
                                         new LogAction("highBasketRear", "done waiting for arm"),
@@ -434,10 +435,10 @@ public class RobotHardwareChicago {
         return new SampleLocation(80 - b.getBoxFit().center.x);
     }
 
-    public Action sequencePath(Path path, double waitTime) {
+    public Action sequencePath(Path path, double minSpeed) {
         return new SequentialAction(
                 new PurePursuitAction(path, drivetrain, robotState, true),
-                new InstantAction(this::brake),
+                new BrakeAction(robotState, drivetrain, minSpeed),
                 new PurePursuitAction(path, drivetrain, robotState, false)
         );
     }

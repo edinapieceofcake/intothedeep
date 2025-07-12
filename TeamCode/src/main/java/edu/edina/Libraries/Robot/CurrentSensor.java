@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import edu.edina.Tests.DataFile;
 
 public class CurrentSensor {
+    /*
     private INA260Device dev;
     private ElapsedTime t;
     private DataFile dataFile;
@@ -31,5 +32,15 @@ public class CurrentSensor {
             PowerReading r = dev.getReading();
             dataFile.println(String.format("%f,%f,%f", t.seconds(), r.getCurrent(), r.getVoltage()));
         }
+    }
+     */
+
+    public CurrentSensor(HardwareMap hw) {
+    }
+
+    public void checkForInit() {
+    }
+
+    public void update() {
     }
 }

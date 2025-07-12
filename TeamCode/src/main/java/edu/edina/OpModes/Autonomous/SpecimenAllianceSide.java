@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Config
-@Autonomous
+@Autonomous(name = "Specimen: Alliance Side", group = "Main")
 public class SpecimenAllianceSide extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

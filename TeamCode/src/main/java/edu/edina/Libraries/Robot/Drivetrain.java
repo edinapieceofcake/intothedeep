@@ -221,4 +221,18 @@ public class Drivetrain {
         rightBack.setPower(0);
 
     }
+
+    public void brake() {
+        for (DcMotorEx motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        stop();
+    }
+
+    public void coast() {
+        for (DcMotorEx motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+        stop();
+    }
 }

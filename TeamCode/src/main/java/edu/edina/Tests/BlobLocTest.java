@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 
-@Autonomous
+@Autonomous(name = "Color Blob Locator", group = "Test")
 public class BlobLocTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

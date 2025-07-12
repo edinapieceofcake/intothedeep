@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Config
-@Autonomous
+@Autonomous(name = "Sample: Opponent Side", group = "Main")
 public class AutoSampleOpponentSide extends LinearOpMode {
 //    public static double tgt = 0;
 

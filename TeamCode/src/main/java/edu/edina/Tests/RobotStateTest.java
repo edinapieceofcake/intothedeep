@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import edu.edina.Libraries.Robot.RobotState;
 
-@Autonomous
+@Autonomous(name = "Robot State Test", group = "Test")
 public class RobotStateTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

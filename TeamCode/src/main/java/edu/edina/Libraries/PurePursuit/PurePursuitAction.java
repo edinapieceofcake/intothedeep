@@ -86,7 +86,6 @@ public class PurePursuitAction implements ICancelableAction {
         vecKv = new Vector2d(AXIAL_KV, LAT_KV);
         vecKa = new Vector2d(AXIAL_KA, LAT_KA);
 
-
         if (fastDrive) {
             axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, FAST_VEL_LIMIT, MAX_POWER,
                     FAST_POS_TOL, FAST_VEL_TOL,
