@@ -25,6 +25,7 @@ import edu.edina.Libraries.LinearMotion.Units;
 public class Extension {
     public static double POS_HIGH_BASKET = 13;
     public static double POS_LOW_BASKET = 8;
+    public static double POS_CHAMBER = 3;
 
     public static double KS = 0.06;
     public static double KV = 3.4e-2;

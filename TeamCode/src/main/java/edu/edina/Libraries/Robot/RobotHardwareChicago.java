@@ -185,6 +185,9 @@ public class RobotHardwareChicago {
                                         new WaitUntil(() -> robotState.getArmPos() < Arm.POS_ARM_VERTICAL && robotState.getArmPos() > Arm.POS_ARM_SCORE_BASKET_MIN && robotState.getArmSpeed() < 1),
                                         new LogAction("highBasket", "done waiting for arm"),
                                         extension.moveExtension(Extension.POS_HIGH_BASKET)
+                                new SequentialAction(
+                                        new WaitUntil(() -> robotState.getExtensionPos() > Extension.POS_HIGH_BASKET - 2),
+                                        grabber.sampleRear()
                                 )
                         )
                 )
@@ -297,29 +300,43 @@ public class RobotHardwareChicago {
     }
 
     public void highSpecimen() {
-        runningActions.add(lift.moveLift(12));
         addPrimaryAction(new ParallelAction(
+                lift.moveLift(12),
                 new LogAction("highSpecimen", "start"),
-                grabber.specimenMode(),
-                extension.moveExtension(1),
+                new SequentialAction(
+                        new WaitForTime(500),
+                        grabber.specimenMode()
+                ),
+                extension.moveExtension(0),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                         new LogAction("highSpecimen", "done waiting for ext"),
                         arm.moveArm(Arm.POS_SPECIMEN)
+                ),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getArmPos() > Arm.POS_ARM_VERTICAL),
+                        extension.moveExtension(Extension.POS_CHAMBER)
                 )
         ));
     }
 
     public void lowSpecimen() {
-        runningActions.add(lift.moveLift(0));
         addPrimaryAction(new ParallelAction(
+                lift.moveLift(0),
                 new LogAction("lowSpecimen", "start"),
-                grabber.specimenMode(),
-                extension.moveExtension(1),
+                new SequentialAction(
+                        new WaitForTime(500),
+                        grabber.specimenMode()
+                ),
+                extension.moveExtension(0),
                 new SequentialAction(
                         new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                         new LogAction("lowSpecimen", "done waiting for ext"),
                         arm.moveArm(Arm.POS_LOW_SPECIMEN)
+                ),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getArmPos() > Arm.POS_ARM_VERTICAL),
+                        extension.moveExtension(Extension.POS_CHAMBER)
                 )
         ));
     }
@@ -357,6 +374,8 @@ public class RobotHardwareChicago {
     public void ground() {
         addPrimaryAction(new ParallelAction(
                 arm.moveArm(Arm.POS_GROUND_FRONT),
+                extension.moveExtension(Extension.EXTENSION_RETRACTED_INCHES),
+                lift.moveLift(Lift.POS_BOTTOM),
                 grabber.groundWrist()
         ));
     }
@@ -435,6 +454,10 @@ public class RobotHardwareChicago {
         return new SampleLocation(80 - b.getBoxFit().center.x);
     }
 
+    public void coast() {
+        drivetrain.coast();
+    }
+
     public Action sequencePath(Path path, double minSpeed) {
         return new SequentialAction(
                 new LogAction("sequencePath", path.routeString()),
@@ -444,7 +467,8 @@ public class RobotHardwareChicago {
                 new BrakeAction(robotState, drivetrain, minSpeed),
                 new LogAction("sequencePath", "slow drive"),
                 new PurePursuitAction(path, drivetrain, robotState, false),
-                new LogAction("sequencePath", "done")
+                new LogAction("sequencePath", "done"),
+                new InstantAction(this::coast)
         );
     }
 }

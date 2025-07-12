@@ -29,15 +29,15 @@ public class Arm {
     // positions
     public static double POS_SPECIMEN = 200;
     public static double POS_LOW_SPECIMEN = 215;
-    public static double POS_SUBMERSIBLE = 190;
+    public static double POS_SUBMERSIBLE = 205;
     public static double POS_HIGH_BASKET = 105;
     public static double POS_LOW_BASKET = 85;
     public static double POS_ARM_VERTICAL = 140;
     public static double POS_ARM_SCORE_BASKET_MIN = 85;
-    public static double POS_ARM_SCORE_BASKET_MAX = 115;
-    public static double POS_ARM_WALL = 45;
-    public static double POS_GROUND = 225;
-    public static double POS_GROUND_FRONT = 20;
+//    public static double POS_ARM_SCORE_BASKET_MAX = 115;
+    public static double POS_ARM_WALL = 33;
+    public static double POS_GROUND = 205;
+    public static double POS_GROUND_FRONT = 30;
 
     public static double POS_AT_180_DEG_ARM = 4060;
     public static double KS = 1.18e-1;

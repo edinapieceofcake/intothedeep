@@ -1,7 +1,5 @@
 package edu.edina.Libraries.PurePursuit;
 
-import android.provider.ContactsContract;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -13,7 +11,6 @@ import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.Angle;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
@@ -30,34 +27,33 @@ public class PurePursuitAction implements ICancelableAction {
     public static double ACCEL_COEF = 0.12;
     public static double FAST_ACCEL_COEF = 0.7;
 
-    public static double VEL_LIMIT = 20;
+    public static double SLOW_VEL_LIMIT = 25;
     public static double FAST_VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
-    public static double POS_TOL = 2.6;
-    public static double FAST_POS_TOL = 8;
-    public static double VEL_TOL = 3;
+    public static double SLOW_POS_TOL = 2.6;
+    public static double FAST_POS_TOL = 7;
     public static double ANG_TOL = 10;
+    public static double SLOW_VEL_TOL = 3;
     public static double FAST_VEL_TOL = 25;
     public static double P_COEFF_LIN = 0.7;
-    public static double P_COEFF_ANG = 0.0012;
+    public static double SLOW_P_COEFF_ANG = 0.0007;
     public static double FAST_P_COEFF_ANG = 0.003;
 
     public static double LAT_GAIN = 1.1;
 
-    public static double AXIAL_KA = 0.0025;
-    public static double AXIAL_KS = 0.066229;
-    public static double AXIAL_KV = 0;
-    public static double LAT_KA = 0.0042431;
-    public static double LAT_KS = 0.12338;
-    public static double LAT_KV = 0;
+    public static double KA_AXIAL = 0.0025;
+    public static double KS_AXIAL = 0.066229;
+    public static double KV_AXIAL = 0;
+    public static double KA_LAT = 0.0042431;
+    public static double KS_LAT = 0.06;
+    public static double KV_LAT = 0;
 
     private ElapsedTime etime;
     private double prevTime;
     private PurePursuit purePursuit;
-    private double tgtSpeed, maxSpeed, radius;
+    private double radius;
     private RobotState state;
     private Drivetrain dt;
-    private Vector2d vecKs, vecKv, vecKa;
 
     private Path path;
 
@@ -76,17 +72,11 @@ public class PurePursuitAction implements ICancelableAction {
     public PurePursuitAction(Path path, Drivetrain dt, RobotState state, boolean fastDrive) {
         this.path = path;
         purePursuit = new PurePursuit(path.getRoute(), false);
-        this.tgtSpeed = path.getTgtSpeed();
         this.radius = path.getRadius();
-        this.maxSpeed = path.getMaxSpeed();
         this.state = state;
         this.dt = dt;
         done = false;
         etime = new ElapsedTime();
-
-        vecKs = new Vector2d(AXIAL_KS, LAT_KS);
-        vecKv = new Vector2d(AXIAL_KV, LAT_KV);
-        vecKa = new Vector2d(AXIAL_KA, LAT_KA);
 
         if (fastDrive) {
             posTol = FAST_POS_TOL;
@@ -96,27 +86,27 @@ public class PurePursuitAction implements ICancelableAction {
             accelCoef = FAST_ACCEL_COEF;
             pCoeffAng = FAST_P_COEFF_ANG;
 
-            axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, FAST_VEL_LIMIT, MAX_POWER,
+            axMcs = new MotionControlSettings(KS_AXIAL, KV_AXIAL, KA_AXIAL, FAST_VEL_LIMIT, MAX_POWER,
                     FAST_POS_TOL, FAST_VEL_TOL,
                     P_COEFF_LIN, FAST_ACCEL_COEF);
 
-            latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, FAST_VEL_LIMIT, MAX_POWER,
+            latMcs = new MotionControlSettings(KS_LAT, KV_LAT, KA_LAT, FAST_VEL_LIMIT, MAX_POWER,
                     FAST_POS_TOL, FAST_VEL_TOL,
                     P_COEFF_LIN, FAST_ACCEL_COEF);
         } else {
-            posTol = POS_TOL;
-            velTol = VEL_TOL;
+            posTol = SLOW_POS_TOL;
+            velTol = SLOW_VEL_TOL;
             angTol = ANG_TOL;
-            velLimit = VEL_LIMIT;
+            velLimit = SLOW_VEL_LIMIT;
             accelCoef = ACCEL_COEF;
-            pCoeffAng = P_COEFF_ANG;
+            pCoeffAng = SLOW_P_COEFF_ANG;
 
-            axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, VEL_LIMIT, MAX_POWER,
-                    POS_TOL, VEL_TOL,
+            axMcs = new MotionControlSettings(KS_AXIAL, KV_AXIAL, KA_AXIAL, SLOW_VEL_LIMIT, MAX_POWER,
+                    SLOW_POS_TOL, SLOW_VEL_TOL,
                     P_COEFF_LIN, ACCEL_COEF);
 
-            latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER,
-                    POS_TOL, VEL_TOL,
+            latMcs = new MotionControlSettings(KS_LAT, KV_LAT, KA_LAT, SLOW_VEL_LIMIT, MAX_POWER,
+                    SLOW_POS_TOL, SLOW_VEL_TOL,
                     P_COEFF_LIN, ACCEL_COEF);
         }
 

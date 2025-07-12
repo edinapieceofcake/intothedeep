@@ -20,6 +20,7 @@ public class Grabber {
     public static double SPECIMEN_POSITION = 1;
     public static double GROUND_POS = 0.9;
     public static double WALL_POSITION = (INTAKE_POSITION + SPECIMEN_POSITION) / 2;
+    public static double BASKET_POSITION = (WALL_POSITION + SPECIMEN_POSITION) / 2;
 
     //swivel
     public static double HORIZONTAL_POS = 0.1;

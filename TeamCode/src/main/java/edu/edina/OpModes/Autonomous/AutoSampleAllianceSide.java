@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import edu.edina.Libraries.Actions.SampleAlignAction;
 import edu.edina.Libraries.Actions.WaitUntil;
 import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.Robot.Extension;
@@ -16,8 +17,8 @@ import edu.edina.Libraries.Robot.WaitForTime;
 @Autonomous(name = "Sample: Alliance Side", group = "Main")
 public class AutoSampleAllianceSide extends AutoBase {
     public static double START_X = -40, START_Y = 61, START_H = 0;
-    public static double BASKET_X = -35, BASKET_Y = 85, BASKET_H = -45, BASKET_MAX_SPEED = 24, BASKET_RADIUS = 5;
-    public static double FIRST_SPIKE_X = -16, FIRST_SPIKE_Y = 73, FIRST_SPIKE_H = 0, FIRST_SPIKE_MAX_SPEED = 24, FIRST_SPIKE_RADIUS = 5;
+    public static double BASKET_X = -37, BASKET_Y = 87, BASKET_H = 135, BASKET_MAX_SPEED = 35, BASKET_RADIUS = 5;
+    public static double FIRST_SPIKE_X = -20, FIRST_SPIKE_Y = 76, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 35, FIRST_SPIKE_RADIUS = 4;
     public static double SECOND_SPIKE_X = -16, SECOND_SPIKE_Y = 81, SECOND_SPIKE_H = 0, SECOND_SPIKE_MAX_SPEED = 24, SECOND_SPIKE_RADIUS = 5;
     public static double THIRD_SPIKE_X = -16, THIRD_SPIKE_Y = 88, THIRD_SPIKE_H = 0, THIRD_SPIKE_MAX_SPEED = 24, THIRD_SPIKE_RADIUS = 5;
     public static double OPP_FIRST_SPIKE_X = 16, OPP_FIRST_SPIKE_Y = 73, OPP_FIRST_SPIKE_H = 0, OPP_FIRST_SPIKE_MAX_SPEED = 24, OPP_FIRST_SPIKE_RADIUS = 5;
@@ -61,18 +62,22 @@ public class AutoSampleAllianceSide extends AutoBase {
                 .withRadius(OPP_THIRD_SPIKE_RADIUS)
                 .withHeading(OPP_THIRD_SPIKE_H);
 
+        hw.enableYellow();
+
         hw.addAction(
                 new SequentialAction(
-                        hw.sequencePath(score, 4),
+                        new InstantAction(hw::wallMode),
+                        hw.sequencePath(score, 3),
                         new InstantAction(hw::highBasketRear),
                         new WaitUntil(() -> state.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
-                        new WaitForTime(100),
+                        new WaitForTime(200),
                         new InstantAction(() -> hw.openClaw()),
                         new WaitForTime(50),
                         new ParallelAction(
-                                hw.sequencePath(firstSpikeMark, 4),
+                                hw.sequencePath(firstSpikeMark, 3),
                                 new InstantAction(hw::ground)
-                        )
+                        ),
+                        new SampleAlignAction(hw)
                 )
         );
     }
