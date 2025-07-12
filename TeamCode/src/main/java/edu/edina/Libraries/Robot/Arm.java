@@ -37,9 +37,9 @@ public class Arm {
     public static double POS_ARM_SCORE_BASKET_MAX = 115;
     public static double POS_ARM_WALL = 45;
     public static double POS_GROUND = 225;
+    public static double POS_GROUND_FRONT = 20;
 
     public static double POS_AT_180_DEG_ARM = 4060;
-
     public static double KS = 1.18e-1;
     public static double KV = 1.19e-3;
     public static double KA = 3e-4;

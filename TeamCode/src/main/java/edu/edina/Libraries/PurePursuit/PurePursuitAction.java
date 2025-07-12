@@ -28,11 +28,15 @@ import edu.edina.Tests.PurePursuit.MotorCommand;
 @Config
 public class PurePursuitAction implements ICancelableAction {
     public static double ACCEL_COEF = 0.3;
+    public static double FAST_ACCEL_COEF = 0.6;
 
     public static double VEL_LIMIT = 35;
+    public static double FAST_VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
     public static double POS_TOL = 2;
+    public static double FAST_POS_TOL = 5;
     public static double VEL_TOL = 3;
+    public static double FAST_VEL_TOL = 3;
     public static double P_COEFF_LIN = 0.8;
     public static double P_COEFF_ANG = 0.0005;
 
@@ -59,8 +63,22 @@ public class PurePursuitAction implements ICancelableAction {
 
     private boolean done;
     private MotorCommand mc;
-    private final MotionControlSettings axMcs, latMcs;
+    private MotionControlSettings axMcs;
+    private MotionControlSettings latMcs;
     private final DataFile dataFile;
+
+    public PurePursuitAction(Path path, Drivetrain dt, RobotState state, boolean fastDrive) {
+        this(path, dt, state);
+        if (fastDrive) {
+            axMcs = new MotionControlSettings(AXIAL_KS, AXIAL_KV, AXIAL_KA, FAST_VEL_LIMIT, MAX_POWER,
+                    FAST_POS_TOL, FAST_VEL_TOL,
+                    P_COEFF_LIN, FAST_ACCEL_COEF);
+
+            latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, FAST_VEL_LIMIT, MAX_POWER,
+                    FAST_POS_TOL, FAST_VEL_TOL,
+                    P_COEFF_LIN, FAST_ACCEL_COEF);
+        }
+    }
 
     public PurePursuitAction(Path path, Drivetrain dt, RobotState state) {
         this.path = path;
@@ -81,8 +99,8 @@ public class PurePursuitAction implements ICancelableAction {
                 POS_TOL, VEL_TOL,
                 P_COEFF_LIN, ACCEL_COEF);
 
-        latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER, POS_TOL,
-                VEL_TOL,
+        latMcs = new MotionControlSettings(LAT_KS, LAT_KV, LAT_KA, VEL_LIMIT, MAX_POWER,
+                POS_TOL, VEL_TOL,
                 P_COEFF_LIN, ACCEL_COEF);
 
         if (path.getName() != null) {

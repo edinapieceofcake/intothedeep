@@ -18,6 +18,7 @@ public class Grabber {
     //wrist
     public static double INTAKE_POSITION = 0.4;
     public static double SPECIMEN_POSITION = 1;
+    public static double GROUND_POS = 0.9;
     public static double WALL_POSITION = (INTAKE_POSITION + SPECIMEN_POSITION) / 2;
 
     //swivel
@@ -92,5 +93,9 @@ public class Grabber {
 
     public Action halfSwivel() {
         return new InstantAction(() -> swivel.setPosition(inBetween));
+    }
+
+    public Action groundWrist() {
+        return new InstantAction(() -> wrist.setPosition(GROUND_POS));
     }
 }

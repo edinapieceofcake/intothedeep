@@ -4,12 +4,12 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -21,8 +21,8 @@ import java.util.List;
 
 import edu.edina.Libraries.Actions.LogAction;
 import edu.edina.Libraries.Actions.WaitUntil;
-import edu.edina.Libraries.Actions.WaitWhile;
 import edu.edina.Libraries.PurePursuit.Path;
+import edu.edina.Libraries.PurePursuit.PurePursuitAction;
 
 // Control hub:
 //   Motor 0: extension_motor
@@ -65,7 +65,7 @@ public class RobotHardwareChicago {
     private SampleSensor sampleSensor;
     private Light light;
     private VisionPortal portal;
-    private ColorBlobLocatorProcessorTwo proc;
+    private ColorBlobLocatorProcessorTwo procBlue, procRed, procYellow;
 
     private double p2mult;
 
@@ -97,8 +97,24 @@ public class RobotHardwareChicago {
 
         robotDriver = new RobotDriver(drivetrain, robotState, runningActions);
 
-        proc = new ColorBlobLocatorProcessorTwo.Builder()
+        procBlue = new ColorBlobLocatorProcessorTwo.Builder()
                 .setTargetColorRange(ColorRangeTwo.BLUE)
+                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
+                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
+                .setDrawContours(true)
+                .setBlurSize(4)
+                .build();
+
+        procRed = new ColorBlobLocatorProcessorTwo.Builder()
+                .setTargetColorRange(ColorRangeTwo.RED)
+                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
+                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
+                .setDrawContours(true)
+                .setBlurSize(4)
+                .build();
+
+        procYellow = new ColorBlobLocatorProcessorTwo.Builder()
+                .setTargetColorRange(ColorRangeTwo.YELLOW)
                 .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
                 .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
                 .setDrawContours(true)
@@ -110,11 +126,33 @@ public class RobotHardwareChicago {
                 .setCameraResolution(new Size(160, 120))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .enableLiveView(true)
-                .addProcessors(proc)
+                .addProcessors(procBlue, procRed, procYellow)
                 .build();
+
+        portal.setProcessorEnabled(procBlue, false);
+        portal.setProcessorEnabled(procRed, false);
+        portal.setProcessorEnabled(procYellow, false);
 
         runningActions.add(arm.holdPos());
         runningActions.add(light.makeUpdateAction());
+    }
+
+    public void enableBlue() {
+        portal.setProcessorEnabled(procBlue, true);
+        portal.setProcessorEnabled(procRed, false);
+        portal.setProcessorEnabled(procYellow, false);
+    }
+
+    public void enableRed() {
+        portal.setProcessorEnabled(procBlue, false);
+        portal.setProcessorEnabled(procRed, true);
+        portal.setProcessorEnabled(procYellow, false);
+    }
+
+    public void enableYellow() {
+        portal.setProcessorEnabled(procBlue, false);
+        portal.setProcessorEnabled(procRed, false);
+        portal.setProcessorEnabled(procYellow, true);
     }
 
     public void initUpdate(Telemetry telemetry) {
@@ -315,6 +353,13 @@ public class RobotHardwareChicago {
         ));
     }
 
+    public void ground() {
+        addPrimaryAction(new ParallelAction(
+                arm.moveArm(Arm.POS_GROUND_FRONT),
+                grabber.groundWrist()
+        ));
+    }
+
     public void addPath(Path path) {
         robotDriver.addDrivePath(path);
     }
@@ -360,7 +405,7 @@ public class RobotHardwareChicago {
     }
 
     public void addSampleTelemetry(Telemetry telemetry) {
-        List<ColorBlobLocatorProcessorTwo.Blob> blobs = proc.getBlobs();
+        List<ColorBlobLocatorProcessorTwo.Blob> blobs = procBlue.getBlobs();
         for (int i = 0; i < blobs.size(); i++) {
             ColorBlobLocatorProcessorTwo.Blob blob = blobs.get(i);
             telemetry.addData(String.format("blob %d", i),
@@ -375,7 +420,7 @@ public class RobotHardwareChicago {
     }
 
     public SampleLocation getSampleLocation() {
-        List<ColorBlobLocatorProcessorTwo.Blob> blobs = proc.getBlobs();
+        List<ColorBlobLocatorProcessorTwo.Blob> blobs = procBlue.getBlobs();
         ColorBlobLocatorProcessorTwo.Util.filterByArea(SampleLocator.MIN_AREA, SampleLocator.MAX_AREA, blobs);
         ColorBlobLocatorProcessorTwo.Util.filterByDensity(SampleLocator.MIN_DENSITY, 1, blobs);
         ColorBlobLocatorProcessorTwo.Util.filterByAspectRatio(
@@ -388,5 +433,12 @@ public class RobotHardwareChicago {
 
         return new SampleLocation(80 - b.getBoxFit().center.x);
     }
-}
 
+    public Action sequencePath(Path path, double waitTime) {
+        return new SequentialAction(
+                new PurePursuitAction(path, drivetrain, robotState, true),
+                new InstantAction(this::brake),
+                new PurePursuitAction(path, drivetrain, robotState, false)
+        );
+    }
+}
