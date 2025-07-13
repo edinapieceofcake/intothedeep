@@ -65,6 +65,14 @@ public class Grabber {
         });
     }
 
+    public Action highBasket() {
+        return new InstantAction(() -> {
+            wrist.setPosition(BASKET_POSITION);
+            claw.setPosition(CLOSED_POS);
+            swivel.setPosition(HORIZONTAL_POS);
+        });
+    }
+
     public Action specimenMode() {
         return new InstantAction(() -> {
             wrist.setPosition(SPECIMEN_POSITION);
