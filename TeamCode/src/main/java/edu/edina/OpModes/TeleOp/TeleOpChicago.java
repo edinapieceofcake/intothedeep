@@ -89,6 +89,12 @@ public class TeleOpChicago extends LinearOpMode {
                 hw.subMode();
             }
 
+            if (gamepad2.dpad_up && !previousGamepad2.dpad_up) {
+                hw.getRobotState().adjustArmCalibration(1);
+            } else if (gamepad2.dpad_down && !previousGamepad2.dpad_down) {
+                hw.getRobotState().adjustArmCalibration(-1);
+            }
+
             s.sample(cycleNum);
             cycleNum++;
 
@@ -98,7 +104,7 @@ public class TeleOpChicago extends LinearOpMode {
         }
     }
 
-    private void ascentMode(){
+    private void ascentMode() {
 
 
 //        telemetry.addData("cycleSpeed", "%.1f", 1000.0 / s.getSpeed());

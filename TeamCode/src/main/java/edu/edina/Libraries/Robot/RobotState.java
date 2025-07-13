@@ -33,7 +33,7 @@ public class RobotState {
     private static Pose2dDual<Time> poseDual;
     private final ElapsedTime t;
     private final MovingAverageCalc voltAvg;
-    private double extensionZeroPos;
+    private double extensionZeroPos, armDegreeCalibration;
 
     private final BackgroundSensorReader<BackgroundData> bgData;
 
@@ -140,7 +140,7 @@ public class RobotState {
     }
 
     public double getArmPos() {
-        return armPos * (180.0 / Arm.POS_AT_180_DEG_ARM);
+        return armPos * (180.0 / Arm.POS_AT_180_DEG_ARM) + armDegreeCalibration;
     }
 
     public double getArmSpeed() {
@@ -213,5 +213,9 @@ public class RobotState {
 
     public void resetExtension(double pos) {
         extensionZeroPos -= pos;
+    }
+
+    public void adjustArmCalibration(double zeroDegreesAdjustment) {
+        armDegreeCalibration -= zeroDegreesAdjustment;
     }
 }
