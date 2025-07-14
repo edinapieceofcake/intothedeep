@@ -18,12 +18,12 @@ import edu.edina.Libraries.Robot.WaitForTime;
 public class AutoSampleAllianceSide extends AutoBase {
     public static double START_X = -40, START_Y = 61, START_H = 0;
     public static double BASKET_X = -37, BASKET_Y = 87, BASKET_H = 135, BASKET_MAX_SPEED = 35, BASKET_RADIUS = 5;
-    public static double FIRST_SPIKE_X = -22, FIRST_SPIKE_Y = 76, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 35, FIRST_SPIKE_RADIUS = 4;
-    public static double SECOND_SPIKE_X = -22, SECOND_SPIKE_Y = 85, SECOND_SPIKE_H = 0, SECOND_SPIKE_MAX_SPEED = 24, SECOND_SPIKE_RADIUS = 5;
-    public static double THIRD_SPIKE_X = -22, THIRD_SPIKE_Y = 88, THIRD_SPIKE_H = 0, THIRD_SPIKE_MAX_SPEED = 24, THIRD_SPIKE_RADIUS = 5;
-    public static double OPP_FIRST_SPIKE_X = 22, OPP_FIRST_SPIKE_Y = 76, OPP_FIRST_SPIKE_H = 0, OPP_FIRST_SPIKE_MAX_SPEED = 24, OPP_FIRST_SPIKE_RADIUS = 5;
-    public static double OPP_SECOND_SPIKE_X = 22, OPP_SECOND_SPIKE_Y = 85, OPP_SECOND_SPIKE_H = 0, OPP_SECOND_SPIKE_MAX_SPEED = 24, OPP_SECOND_SPIKE_RADIUS = 5;
-    public static double OPP_THIRD_SPIKE_X = 22, OPP_THIRD_SPIKE_Y = 88, OPP_THIRD_SPIKE_H = 0, OPP_THIRD_SPIKE_MAX_SPEED = 24, OPP_THIRD_SPIKE_RADIUS = 5;
+    public static double FIRST_SPIKE_X = -26, FIRST_SPIKE_Y = 76, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 35, FIRST_SPIKE_RADIUS = 4;
+    public static double SECOND_SPIKE_X = -26, SECOND_SPIKE_Y = 85, SECOND_SPIKE_H = 180, SECOND_SPIKE_MAX_SPEED = 24, SECOND_SPIKE_RADIUS = 5;
+    public static double THIRD_SPIKE_X = -26, THIRD_SPIKE_Y = 88, THIRD_SPIKE_H = 180, THIRD_SPIKE_MAX_SPEED = 24, THIRD_SPIKE_RADIUS = 5;
+    public static double OPP_FIRST_SPIKE_X = 18, OPP_FIRST_SPIKE_Y = 76, OPP_FIRST_SPIKE_H = 180, OPP_FIRST_SPIKE_MAX_SPEED = 24, OPP_FIRST_SPIKE_RADIUS = 5;
+    public static double OPP_SECOND_SPIKE_X = 18, OPP_SECOND_SPIKE_Y = 85, OPP_SECOND_SPIKE_H = 180, OPP_SECOND_SPIKE_MAX_SPEED = 24, OPP_SECOND_SPIKE_RADIUS = 5;
+    public static double OPP_THIRD_SPIKE_X = 18, OPP_THIRD_SPIKE_Y = 88, OPP_THIRD_SPIKE_H = 180, OPP_THIRD_SPIKE_MAX_SPEED = 24, OPP_THIRD_SPIKE_RADIUS = 5;
 
     public AutoSampleAllianceSide() {
         super(START_X, START_Y, START_H);
@@ -33,7 +33,7 @@ public class AutoSampleAllianceSide extends AutoBase {
     public void initAuto() {
         hw.enableYellow();
 
-        hw.addAction(
+        hw.addPrimaryAction(
                 new SequentialAction(
                         new InstantAction(hw::wallMode),
                         hw.sequencePath(score(), 3),
@@ -48,12 +48,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                         ),
                         new InstantAction(hw::groundIntake),
                         new WaitForTime(100),
-                        hw.sequencePath(score(), 3),
-                        new WaitUntil(() -> state.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
-                        new WaitForTime(200),
-                        new InstantAction(() -> hw.openClaw()),
-                        new WaitForTime(50),
-
+                        new InstantAction(this::score2)
                 )
         );
     }
@@ -63,6 +58,19 @@ public class AutoSampleAllianceSide extends AutoBase {
                 .withMaxSpeed(BASKET_MAX_SPEED)
                 .withRadius(BASKET_RADIUS)
                 .withHeading(BASKET_H);
+    }
+
+    public void score2() {
+        hw.addPrimaryAction(
+                new SequentialAction(
+                        hw.sequencePath(score(), 3),
+                        new InstantAction(hw::highBasketRear),
+                        new WaitUntil(() -> state.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
+                        new WaitForTime(200),
+                        new InstantAction(() -> hw.openClaw()),
+                        new WaitForTime(50)
+                )
+        );
     }
 
     public Path firstSpikeMark() {
