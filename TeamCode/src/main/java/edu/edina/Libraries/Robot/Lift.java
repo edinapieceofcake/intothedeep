@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Action;
@@ -53,13 +54,20 @@ public class Lift {
         vc = new VoltageCompensation(rS);
     }
 
-    public Action moveLift(double target) {
+    public Action moveAndHold(double target) {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
                         new PidAction(target, getPidSettings(), mechanism, vc, null)
                 ),
                 conActMgr);
+    }
+
+    public Action release() {
+        return new InstantAction(() -> {
+            mechanism.setPower(0);
+            conActMgr.cancelControllingAction();
+        });
     }
 
     private PidSettings getPidSettings() {

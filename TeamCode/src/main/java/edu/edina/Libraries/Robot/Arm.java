@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Action;
@@ -34,7 +35,7 @@ public class Arm {
     public static double POS_LOW_BASKET = 85;
     public static double POS_ARM_VERTICAL = 120;
     public static double POS_ARM_SCORE_BASKET_MIN = 85;
-//    public static double POS_ARM_SCORE_BASKET_MAX = 115;
+    //    public static double POS_ARM_SCORE_BASKET_MAX = 115;
     public static double POS_ARM_WALL = 33;
     public static double POS_GROUND = 205;
     public static double POS_GROUND_FRONT = 30;
@@ -75,13 +76,20 @@ public class Arm {
         vc = new VoltageCompensation(rS);
     }
 
-    public Action moveArm(double target) {
+    public Action moveAndHold(double target) {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
                         new SinglePowerPid(CONST_POWER, target, POS_TOLERANCE, makeFeedFwd(), mechanism, vc)
                 ),
                 conActMgr);
+    }
+
+    public Action release() {
+        return new InstantAction(() -> {
+            mechanism.setPower(0);
+            conActMgr.cancelControllingAction();
+        });
     }
 
     public Action constantPower(double nominalPower) {

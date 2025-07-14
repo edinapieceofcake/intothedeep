@@ -59,7 +59,7 @@ public class Extension {
         vc = new VoltageCompensation(rS);
     }
 
-    public Action moveExtension(double target) {
+    public Action moveAndHold(double target) {
         return new ControllingAction(
                 new SequentialAction(
                         new MotionControlAction(target, mechanism, vc, null),
@@ -92,6 +92,13 @@ public class Extension {
         return new ControllingAction(
                 new ResetExtensionAction(rS, mechanism),
                 conActMgr);
+    }
+
+    public Action release() {
+        return new InstantAction(() -> {
+            mechanism.setPower(0);
+            conActMgr.cancelControllingAction();
+        });
     }
 
     private PidSettings getPidSettings() {
