@@ -32,7 +32,7 @@ public class Arm {
     public static double POS_SUBMERSIBLE = 205;
     public static double POS_HIGH_BASKET = 105;
     public static double POS_LOW_BASKET = 85;
-    public static double POS_ARM_VERTICAL = 140;
+    public static double POS_ARM_VERTICAL = 120;
     public static double POS_ARM_SCORE_BASKET_MIN = 85;
 //    public static double POS_ARM_SCORE_BASKET_MAX = 115;
     public static double POS_ARM_WALL = 33;
