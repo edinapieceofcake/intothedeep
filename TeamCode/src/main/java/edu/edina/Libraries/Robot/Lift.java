@@ -47,8 +47,10 @@ public class Lift {
     private final Mechanism mechanism;
     private final ControllingActionManager conActMgr;
     private final VoltageCompensation vc;
+    private final RobotState rS;
 
     public Lift(RobotState rS, HardwareMap hw) {
+        this.rS = rS;
         mechanism = new Lift.Mechanism(rS, hw);
         conActMgr = new ControllingActionManager();
         vc = new VoltageCompensation(rS);
@@ -61,6 +63,10 @@ public class Lift {
                         new PidAction(target, getPidSettings(), mechanism, vc, null)
                 ),
                 conActMgr);
+    }
+
+    public boolean at(double pos, double tol) {
+        return Math.abs(rS.getLiftPos() - pos) < tol;
     }
 
     public Action release() {

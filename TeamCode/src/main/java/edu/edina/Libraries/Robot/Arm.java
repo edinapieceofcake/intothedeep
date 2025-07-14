@@ -108,6 +108,10 @@ public class Arm {
         return moveArmWithPid(rS.getExtensionPos());
     }
 
+    public boolean at(double pos, double tol) {
+        return Math.abs(rS.getArmPos() - pos) < tol;
+    }
+
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }

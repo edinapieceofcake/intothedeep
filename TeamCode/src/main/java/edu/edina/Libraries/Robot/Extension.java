@@ -67,6 +67,10 @@ public class Extension {
                 conActMgr);
     }
 
+    public boolean at(double pos, double tol) {
+        return Math.abs(rS.getExtensionPos() - pos) < tol;
+    }
+
     public Action moveExtensionWithPid(double target) {
         return new ControllingAction(new PidAction(target, getPidSettings(), mechanism, vc, null), conActMgr);
     }
