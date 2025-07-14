@@ -2,15 +2,15 @@ package edu.edina.OpModes.Autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import edu.edina.Libraries.Actions.SampleAlignAction;
-import edu.edina.Libraries.Actions.WaitUntil;
+import edu.edina.Libraries.Actions.LazyAction;
+import edu.edina.Libraries.Actions.LogAction;
 import edu.edina.Libraries.PurePursuit.Path;
-import edu.edina.Libraries.Robot.Extension;
 import edu.edina.Libraries.Robot.WaitForTime;
 
 @Config
@@ -33,22 +33,47 @@ public class AutoSampleAllianceSide extends AutoBase {
     public void initAuto() {
         hw.enableYellow();
 
-        hw.addPrimaryAction(
+        hw.addAction(makeScoreAction());
+    }
+
+    public Action makeScoreAction() {
+        return new SequentialAction(
+                new LogAction("score", "wallMode"),
+                new InstantAction(hw::wallMode), // clean this up...
+                new LogAction("score", "drive to basket"),
+                hw.sequencePath(score(), 3),
+                new LogAction("score", "high basket"),
+                hw.makeHighBasketRearAction(),
+                new LogAction("score", "open claw"),
+                new InstantAction(() -> hw.openClaw()),
+                new LogAction("score", "next action"),
+                new LazyAction(this::makeFirstSpikeMarkAction)
+        );
+    }
+
+    public Action makeFirstSpikeMarkAction() {
+        Path path = new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(FIRST_SPIKE_X, FIRST_SPIKE_Y)})
+                .withMaxSpeed(FIRST_SPIKE_MAX_SPEED)
+                .withRadius(FIRST_SPIKE_RADIUS)
+                .withHeading(FIRST_SPIKE_H);
+
+        return new ParallelAction(
+                new LogAction("firstSpikeMark", "wall mode"),
+                hw.makeWallModeAction(),
                 new SequentialAction(
-                        new InstantAction(hw::wallMode),
-                        hw.sequencePath(score(), 3),
-                        new InstantAction(hw::highBasketRear),
-                        new WaitUntil(() -> state.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
-                        new WaitForTime(200),
-                        new InstantAction(() -> hw.openClaw()),
-                        new WaitForTime(50),
+                        new LogAction("firstSpikeMark", "drive"),
+                        hw.sequencePath(path, 3),
                         new ParallelAction(
-                                hw.sequencePath(firstSpikeMark(), 3),
-                                new InstantAction(hw::ground)
-                        ),
-                        new InstantAction(hw::groundIntake),
-                        new WaitForTime(100),
-                        new InstantAction(this::score2)
+                                new LogAction("firstSpikeMark", "ground hold"),
+                                hw.makeGroundModeAction(),
+                                new SequentialAction(
+                                        hw.waitForGroundMode(),
+                                        new LogAction("firstSpikeMark", "ground intake"),
+                                        hw.makeGroundIntakeModeAction(),
+                                        new WaitForTime(100),
+                                        new LogAction("firstSpikeMark", "done")
+                                )
+                        )
                 )
         );
     }
@@ -58,19 +83,6 @@ public class AutoSampleAllianceSide extends AutoBase {
                 .withMaxSpeed(BASKET_MAX_SPEED)
                 .withRadius(BASKET_RADIUS)
                 .withHeading(BASKET_H);
-    }
-
-    public void score2() {
-        hw.addPrimaryAction(
-                new SequentialAction(
-                        hw.sequencePath(score(), 3),
-                        new InstantAction(hw::highBasketRear),
-                        new WaitUntil(() -> state.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
-                        new WaitForTime(200),
-                        new InstantAction(() -> hw.openClaw()),
-                        new WaitForTime(50)
-                )
-        );
     }
 
     public Path firstSpikeMark() {
