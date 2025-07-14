@@ -207,14 +207,14 @@ public class RobotHardwareChicago {
                                 new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
                                 new LogAction("highBasketRear", "done waiting for ext"),
                                 new ParallelAction(
-                                        arm.moveArm(Arm.POS_ARM_VERTICAL)),
-                                new SequentialAction(
-                                        new WaitUntil(() -> robotState.getArmPos() < Arm.POS_ARM_VERTICAL + 10 && robotState.getArmPos() > Arm.POS_ARM_VERTICAL - 10),
-                                        new LogAction("highBasketRear", "done waiting for arm"),
-                                        extension.moveExtension(Extension.POS_HIGH_BASKET),
-                                        new WaitUntil(() -> robotState.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
-                                        grabber.sampleRear()
-                                )
+                                        arm.moveArm(Arm.POS_ARM_VERTICAL),
+                                        new SequentialAction(
+                                                new WaitUntil(() -> robotState.getArmPos() < Arm.POS_ARM_VERTICAL + 10 && robotState.getArmPos() > Arm.POS_ARM_VERTICAL - 10),
+                                                new LogAction("highBasketRear", "done waiting for arm"),
+                                                extension.moveExtension(Extension.POS_HIGH_BASKET),
+                                                new WaitUntil(() -> robotState.getExtensionPos() > Extension.POS_HIGH_BASKET - 1),
+                                                grabber.sampleRear()
+                                        ))
                         )
                 )
         );
@@ -322,6 +322,7 @@ public class RobotHardwareChicago {
                         ),
                         new SequentialAction(
                                 new WaitUntil(() -> robotState.getArmPos() > Arm.POS_ARM_VERTICAL),
+                                new LogAction("highSpecimen", "done waiting for arm"),
                                 extension.moveExtension(Extension.POS_CHAMBER)
                         )
                 ));
@@ -416,7 +417,7 @@ public class RobotHardwareChicago {
 
     private Action primaryAction = null;
 
-    private void addPrimaryAction(Action a) {
+    public void addPrimaryAction(Action a) {
         runningActions.remove(primaryAction);
         primaryAction = a;
         runningActions.add(primaryAction);
