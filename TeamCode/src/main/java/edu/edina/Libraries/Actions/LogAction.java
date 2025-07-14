@@ -10,7 +10,7 @@ public class LogAction implements Action {
     private final String tag, msg;
 
     public LogAction(String tag, String msg) {
-        this.tag = tag;
+        this.tag = String.format("Action: %s", tag);
         this.msg = msg;
     }
 

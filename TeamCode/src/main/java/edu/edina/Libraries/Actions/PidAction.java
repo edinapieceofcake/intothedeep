@@ -15,7 +15,7 @@ import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 
 public class PidAction implements ICancelableAction {
-    private final static String TAG = "PidAction";
+    private final String TAG;
     private final PIDController pid;
     private final IMotionControlLinearMechanism mechanism;
     private boolean done;
@@ -29,6 +29,7 @@ public class PidAction implements ICancelableAction {
         this.mechanism = mechanism;
         vc = optVolCom;
         feedFwd = optFeedFwd;
+        TAG = String.format("PidAction: %s", mechanism.getName());
     }
 
     @Override
@@ -46,8 +47,8 @@ public class PidAction implements ICancelableAction {
         double p = (pidPower + ff) * vcMult;
 
         if (TAG != null) {
-            RobotLog.ii(TAG, "%s: e_p = %.3f, e_v = %.3f --> power = %.3f = (%.3f + %.3f)*%.3f",
-                    mechanism.getName(),
+            RobotLog.ii(TAG, "target = %.3f, e_p = %.3f, e_v = %.3f --> power = %.3f = (%.3f + %.3f)*%.3f",
+                    pid.getSetPoint(),
                     pid.getPositionError(),
                     pid.getVelocityError(),
                     p, pidPower, ff, vcMult);

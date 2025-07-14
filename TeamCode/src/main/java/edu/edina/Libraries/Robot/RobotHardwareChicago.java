@@ -276,6 +276,29 @@ public class RobotHardwareChicago {
         );
     }
 
+    public Action makeWallAction() {
+        return new ParallelAction(
+                new LogAction("wallMode", "start"),
+                grabber.wallMode(),
+                extension.moveAndHold(0),
+                lift.moveAndHold(Lift.POS_BOTTOM),
+                new SequentialAction(
+                        new WaitUntil(() -> robotState.getExtensionPos() < Extension.EXTENSION_RETRACTED_INCHES),
+                        new LogAction("wallMode", "done waiting for ext"),
+                        new ParallelAction(
+                                arm.moveAndHold(Arm.POS_ARM_WALL),
+                                extension.makeResetAction(),
+                                new SequentialAction(
+                                        new WaitUntil(() -> arm.at(Arm.POS_ARM_WALL, 5)),
+                                        arm.release(),
+                                        extension.release(),
+                                        lift.release()
+                                )
+                        )
+                )
+        );
+    }
+
     public void wallMode() {
         addPrimaryAction(makeWallModeAction());
     }
@@ -465,22 +488,43 @@ public class RobotHardwareChicago {
         addPrimaryAction(makeGroundIntakeModeAction());
     }
 
-    public SequentialAction makeGroundIntakeModeAction() {
+    public Action makeGroundIntakeModeAction() {
         return new SequentialAction(
-                new LogAction("intake", "start"),
-                arm.constantPower(-Arm.INTAKE_POWER),
-                new SequentialAction(
-                        new WaitUntil(() -> robotState.getArmPos() <= Arm.POS_GROUND_FRONT - 5),
-                        new LogAction("intake", "done waiting for arm"),
-                        grabber.closeClaw(),
-                        new WaitForTime(100),
-                        arm.moveAndHold(Arm.POS_ARM_WALL),
+                new ParallelAction(
+                        grabber.openClaw(),
+                        extension.moveAndHold(Extension.POS_GROUND_INTAKE),
+                        new LogAction("gintake", "start"),
+                        arm.moveAndHold(Arm.POS_GROUND_FRONT),
                         new SequentialAction(
-                                new WaitUntil(() -> robotState.getArmPos() >= Arm.POS_ARM_WALL - 10),
-                                new LogAction("intake", "done waiting for arm"),
-                                extension.moveAndHold(0)
+                                new WaitUntil(() -> armAt(Arm.POS_GROUND_FRONT, 5)),
+                                new LogAction("gintake", "done waiting for arm"),
+                                grabber.closeClaw(),
+                                new WaitForTime(100),
+                                new ParallelAction(
+                                        arm.moveAndHold(Arm.POS_ARM_WALL),
+                                        extension.moveAndHold(Extension.EXTENSION_RETRACTED_INCHES),
+                                        new SequentialAction(
+                                                new WaitUntil(() -> robotState.getArmPos() >= Arm.POS_ARM_WALL - 10),
+                                                new LogAction("gintake", "done waiting for arm (2)"),
+                                                release(),
+                                                new LogAction("gintake", "released")
+                                        )
+                                )
                         )
-                )
+                ),
+                new LogAction("intake", "all done")
+        );
+    }
+
+    public boolean armAt(double pos, double tol) {
+        return arm.at(pos, tol);
+    }
+
+    public Action release() {
+        return new ParallelAction(
+                arm.release(),
+                extension.release(),
+                lift.release()
         );
     }
 }

@@ -27,5 +27,6 @@ public class ControllingAction implements Action {
 
     public void cancel() {
         keepRunning = false;
+        manager.updateControllingAction(this, false);
     }
 }

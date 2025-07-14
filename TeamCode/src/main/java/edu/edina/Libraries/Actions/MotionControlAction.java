@@ -15,7 +15,7 @@ import edu.edina.Libraries.MotionControl.IMotionControlLinearMechanism;
 import edu.edina.Libraries.Robot.MotionControlSettings;
 
 public class MotionControlAction implements ICancelableAction {
-    private final static String TAG = "MotionControlAction";
+    private final String TAG;
     private final double targetPos, targetVel;
     private final IMotionControlLinearMechanism mechanism;
     private final MotionControlSettings settings;
@@ -33,6 +33,7 @@ public class MotionControlAction implements ICancelableAction {
     }
 
     public MotionControlAction(double targetPos, double targetVel, IMotionControlLinearMechanism mechanism, VoltageCompensation optVolCon, IFeedForward optFeedFwd) {
+        TAG = String.format("MotionControlAction: %s", mechanism.getName());
         this.settings = mechanism.getMotionSettings();
         vc = optVolCon;
         feedFwd = optFeedFwd;

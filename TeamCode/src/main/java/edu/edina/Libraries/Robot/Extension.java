@@ -23,6 +23,7 @@ import edu.edina.Libraries.LinearMotion.Units;
 
 @Config
 public class Extension {
+    public static double POS_GROUND_INTAKE = 2;
     public static double POS_HIGH_BASKET = 13;
     public static double POS_LOW_BASKET = 8;
     public static double POS_CHAMBER = 3;
