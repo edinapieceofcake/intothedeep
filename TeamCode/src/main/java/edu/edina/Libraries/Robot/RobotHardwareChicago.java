@@ -66,7 +66,7 @@ public class RobotHardwareChicago {
     private SampleSensor sampleSensor;
     private Light light;
     private VisionPortal portal;
-    private ColorBlobLocatorProcessorTwo procBlue, procRed, procYellow;
+    private ColorBlobLocatorProcessorTwo /* procBlue, procRed,*/ procYellow;
 
     private double p2mult;
 
@@ -98,21 +98,21 @@ public class RobotHardwareChicago {
 
         robotDriver = new RobotDriver(drivetrain, robotState, runningActions);
 
-        procBlue = new ColorBlobLocatorProcessorTwo.Builder()
-                .setTargetColorRange(ColorRangeTwo.BLUE)
-                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
-                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
-                .setDrawContours(true)
-                .setBlurSize(4)
-                .build();
-
-        procRed = new ColorBlobLocatorProcessorTwo.Builder()
-                .setTargetColorRange(ColorRangeTwo.RED)
-                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
-                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
-                .setDrawContours(true)
-                .setBlurSize(4)
-                .build();
+//        procBlue = new ColorBlobLocatorProcessorTwo.Builder()
+//                .setTargetColorRange(ColorRangeTwo.BLUE)
+//                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
+//                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
+//                .setDrawContours(true)
+//                .setBlurSize(4)
+//                .build();
+//
+//        procRed = new ColorBlobLocatorProcessorTwo.Builder()
+//                .setTargetColorRange(ColorRangeTwo.RED)
+//                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
+//                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
+//                .setDrawContours(true)
+//                .setBlurSize(4)
+//                .build();
 
         procYellow = new ColorBlobLocatorProcessorTwo.Builder()
                 .setTargetColorRange(ColorRangeTwo.YELLOW)
@@ -127,32 +127,28 @@ public class RobotHardwareChicago {
                 .setCameraResolution(new Size(160, 120))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .enableLiveView(true)
-                .addProcessors(procBlue, procRed, procYellow)
+                .addProcessor(procYellow)
                 .build();
-
-        portal.setProcessorEnabled(procBlue, false);
-        portal.setProcessorEnabled(procRed, false);
-        portal.setProcessorEnabled(procYellow, false);
 
         runningActions.add(arm.holdPos());
         runningActions.add(light.makeUpdateAction());
     }
 
-    public void enableBlue() {
-        portal.setProcessorEnabled(procBlue, true);
-        portal.setProcessorEnabled(procRed, false);
-        portal.setProcessorEnabled(procYellow, false);
-    }
-
-    public void enableRed() {
-        portal.setProcessorEnabled(procBlue, false);
-        portal.setProcessorEnabled(procRed, true);
-        portal.setProcessorEnabled(procYellow, false);
-    }
+//    public void enableBlue() {
+//        portal.setProcessorEnabled(procBlue, true);
+//        portal.setProcessorEnabled(procRed, false);
+//        portal.setProcessorEnabled(procYellow, false);
+//    }
+//
+//    public void enableRed() {
+//        portal.setProcessorEnabled(procBlue, false);
+//        portal.setProcessorEnabled(procRed, true);
+//        portal.setProcessorEnabled(procYellow, false);
+//    }
 
     public void enableYellow() {
-        portal.setProcessorEnabled(procBlue, false);
-        portal.setProcessorEnabled(procRed, false);
+//        portal.setProcessorEnabled(procBlue, false);
+//        portal.setProcessorEnabled(procRed, false);
         portal.setProcessorEnabled(procYellow, true);
     }
 
@@ -436,7 +432,7 @@ public class RobotHardwareChicago {
     }
 
     public void addSampleTelemetry(Telemetry telemetry) {
-        List<ColorBlobLocatorProcessorTwo.Blob> blobs = procBlue.getBlobs();
+        List<ColorBlobLocatorProcessorTwo.Blob> blobs = procYellow.getBlobs();
         for (int i = 0; i < blobs.size(); i++) {
             ColorBlobLocatorProcessorTwo.Blob blob = blobs.get(i);
             telemetry.addData(String.format("blob %d", i),
@@ -451,7 +447,7 @@ public class RobotHardwareChicago {
     }
 
     public SampleLocation getSampleLocation() {
-        List<ColorBlobLocatorProcessorTwo.Blob> blobs = procBlue.getBlobs();
+        List<ColorBlobLocatorProcessorTwo.Blob> blobs = procYellow.getBlobs();
         ColorBlobLocatorProcessorTwo.Util.filterByArea(SampleLocator.MIN_AREA, SampleLocator.MAX_AREA, blobs);
         ColorBlobLocatorProcessorTwo.Util.filterByDensity(SampleLocator.MIN_DENSITY, 1, blobs);
         ColorBlobLocatorProcessorTwo.Util.filterByAspectRatio(
