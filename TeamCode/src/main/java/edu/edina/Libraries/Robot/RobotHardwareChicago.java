@@ -97,22 +97,6 @@ public class RobotHardwareChicago {
 
         robotDriver = new RobotDriver(drivetrain, robotState, runningActions);
 
-//        procBlue = new ColorBlobLocatorProcessorTwo.Builder()
-//                .setTargetColorRange(ColorRangeTwo.BLUE)
-//                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
-//                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
-//                .setDrawContours(true)
-//                .setBlurSize(4)
-//                .build();
-//
-//        procRed = new ColorBlobLocatorProcessorTwo.Builder()
-//                .setTargetColorRange(ColorRangeTwo.RED)
-//                .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
-//                .setRoi(ImageRegionTwo.asUnityCenterCoordinates(-1, 0, 1, -1))
-//                .setDrawContours(true)
-//                .setBlurSize(4)
-//                .build();
-
         procYellow = new ColorBlobLocatorProcessorTwo.Builder()
                 .setTargetColorRange(ColorRangeTwo.YELLOW)
                 .setContourMode(ColorBlobLocatorProcessorTwo.ContourMode.EXTERNAL_ONLY)
@@ -133,21 +117,7 @@ public class RobotHardwareChicago {
         runningActions.add(light.makeUpdateAction());
     }
 
-//    public void enableBlue() {
-//        portal.setProcessorEnabled(procBlue, true);
-//        portal.setProcessorEnabled(procRed, false);
-//        portal.setProcessorEnabled(procYellow, false);
-//    }
-//
-//    public void enableRed() {
-//        portal.setProcessorEnabled(procBlue, false);
-//        portal.setProcessorEnabled(procRed, true);
-//        portal.setProcessorEnabled(procYellow, false);
-//    }
-
     public void enableYellow() {
-//        portal.setProcessorEnabled(procBlue, false);
-//        portal.setProcessorEnabled(procRed, false);
         portal.setProcessorEnabled(procYellow, true);
     }
 
@@ -165,7 +135,7 @@ public class RobotHardwareChicago {
         dash.sendTelemetryPacket(packet);
     }
 
-    public void highBasket() {
+    public void highBasketMode() {
         addPrimaryAction(
                 new ParallelAction(
                         new LogAction("highBasket", "start"),
@@ -222,7 +192,7 @@ public class RobotHardwareChicago {
         );
     }
 
-    public void lowBasket() {
+    public void lowBasketMode() {
         addPrimaryAction(
                 new ParallelAction(
                         new LogAction("lowBasket", "start"),

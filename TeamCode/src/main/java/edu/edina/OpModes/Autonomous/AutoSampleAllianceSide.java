@@ -8,6 +8,8 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import java.util.function.Supplier;
+
 import edu.edina.Libraries.Actions.LazyAction;
 import edu.edina.Libraries.Actions.LogAction;
 import edu.edina.Libraries.PurePursuit.Path;
@@ -33,10 +35,10 @@ public class AutoSampleAllianceSide extends AutoBase {
     public void initAuto() {
         hw.enableYellow();
 
-        hw.addAction(makeScoreAction());
+        hw.addAction(makeScoreAction(this::makeFirstSpikeMarkAction));
     }
 
-    public Action makeScoreAction() {
+    public Action makeScoreAction(Supplier<Action> nextAction) {
         return new SequentialAction(
                 new LogAction("score", "wallMode"),
                 new InstantAction(hw::wallMode), // clean this up...
@@ -47,7 +49,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                 new LogAction("score", "open claw"),
                 new InstantAction(() -> hw.openClaw()),
                 new LogAction("score", "next action"),
-                new LazyAction(this::makeFirstSpikeMarkAction)
+                new LazyAction(nextAction)
         );
     }
 

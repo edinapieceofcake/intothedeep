@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 import edu.edina.Libraries.Robot.Speedometer;
@@ -63,10 +62,10 @@ public class TeleOpChicago extends LinearOpMode {
                 hw.lowSpecimen();
             }
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
-                hw.highBasket();
+                hw.highBasketMode();
             }
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper && currentGamepad1.right_trigger >= 0.7) {
-                hw.lowBasket();
+                hw.lowBasketMode();
             }
             if (hw.armOverSub()) {
                 if (currentGamepad2.right_trigger >= 0.7) {
