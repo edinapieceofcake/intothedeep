@@ -53,7 +53,7 @@ public class RobotState {
         extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         vs = hw.voltageSensor.iterator().next();
-        odo = new OpticalOdometry(hw, new SparkFunOTOS.Pose2D(initPose.position.x, initPose.position.y, Math.toDegrees(initPose.heading.toDouble())));
+        odo = new OpticalOdometry(hw, initPose);
 
         poseDual = odo.getCurrentPoseDual();
         RobotLog.ii("init pose dual", "%s", poseDual.value());
