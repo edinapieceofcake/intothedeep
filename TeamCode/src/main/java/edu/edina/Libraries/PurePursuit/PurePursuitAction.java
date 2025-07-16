@@ -25,13 +25,13 @@ import edu.edina.Tests.PurePursuit.MotorCommand;
 @Config
 public class PurePursuitAction implements ICancelableAction {
     public static double ACCEL_COEF = 0.12;
-    public static double FAST_ACCEL_COEF = 0.7;
+    public static double FAST_ACCEL_COEF = 0.8;
 
     public static double SLOW_VEL_LIMIT = 25;
     public static double FAST_VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
     public static double SLOW_POS_TOL = 2.6;
-    public static double FAST_POS_TOL = 7;
+    public static double FAST_POS_TOL = 5;
     public static double ANG_TOL = 10;
     public static double SLOW_VEL_TOL = 3;
     public static double FAST_VEL_TOL = 25;
@@ -78,6 +78,8 @@ public class PurePursuitAction implements ICancelableAction {
         done = false;
         etime = new ElapsedTime();
 
+        double posTol;
+
         if (fastDrive) {
             posTol = FAST_POS_TOL;
             velTol = FAST_VEL_TOL;
@@ -109,6 +111,11 @@ public class PurePursuitAction implements ICancelableAction {
                     SLOW_POS_TOL, SLOW_VEL_TOL,
                     P_COEFF_LIN, ACCEL_COEF);
         }
+
+        if (posTol >= radius)
+            posTol = 0.9 * radius;
+
+        this.posTol = posTol;
 
         if (path.getName() != null) {
             dataFile = new DataFile(path.getName());

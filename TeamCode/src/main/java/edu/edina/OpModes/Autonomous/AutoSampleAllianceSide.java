@@ -23,8 +23,8 @@ import edu.edina.Libraries.Robot.WaitForTime;
 @Autonomous(name = "Sample: Alliance Side", group = "Main")
 public class AutoSampleAllianceSide extends AutoBase {
     public static double START_X = -40, START_Y = 61, START_H = 0;
-    public static double BASKET_X = -37, BASKET_Y = 87, BASKET_H = 135, BASKET_MAX_SPEED = 35, BASKET_RADIUS = 5;
-    public static double FIRST_SPIKE_X = -26, FIRST_SPIKE_Y = 76, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 35, FIRST_SPIKE_RADIUS = 4;
+    public static double BASKET_X = -33, BASKET_Y = 80, BASKET_H = 135, BASKET_MAX_SPEED = 35, BASKET_RADIUS = 5;
+    public static double FIRST_SPIKE_X = -23, FIRST_SPIKE_Y = 67, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 35, FIRST_SPIKE_RADIUS = 4;
     public static double SECOND_SPIKE_X = -26, SECOND_SPIKE_Y = 85, SECOND_SPIKE_H = 180, SECOND_SPIKE_MAX_SPEED = 24, SECOND_SPIKE_RADIUS = 5;
     public static double THIRD_SPIKE_X = -26, THIRD_SPIKE_Y = 88, THIRD_SPIKE_H = 180, THIRD_SPIKE_MAX_SPEED = 24, THIRD_SPIKE_RADIUS = 5;
     public static double OPP_FIRST_SPIKE_X = 18, OPP_FIRST_SPIKE_Y = 76, OPP_FIRST_SPIKE_H = 180, OPP_FIRST_SPIKE_MAX_SPEED = 24, OPP_FIRST_SPIKE_RADIUS = 5;
@@ -54,6 +54,8 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 new LogAction("score", "high basket"),
                                 hw.makeHighBasketRearAction(),
                                 new LogAction("score", "open claw"),
+                                new InstantAction(() -> hw.wristUp()),
+                                new WaitForTime(300),
                                 new InstantAction(() -> hw.openClaw()),
                                 new LogAction("score", "next action"),
                                 new InstantAction(() -> hw.addPrimaryAction(nextAction.get()))

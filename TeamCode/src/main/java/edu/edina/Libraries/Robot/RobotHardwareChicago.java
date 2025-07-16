@@ -65,7 +65,7 @@ public class RobotHardwareChicago {
     private SampleSensor sampleSensor;
     private Light light;
     private VisionPortal portal;
-    private ColorBlobLocatorProcessorTwo /* procBlue, procRed,*/ procYellow;
+    private ColorBlobLocatorProcessorTwo procYellow;
 
     private double p2mult;
 
@@ -164,6 +164,7 @@ public class RobotHardwareChicago {
     public Action makeHighBasketRearAction() {
         return new ParallelAction(
                 new LogAction("highBasketRear", "start"),
+                grabber.swivelEnd(),
                 grabber.straightWrist(),
                 extension.moveAndHold(0),
                 lift.moveAndHold(Lift.POS_HIGH_BASKET),
@@ -368,11 +369,11 @@ public class RobotHardwareChicago {
                                 new LogAction("intake", "done waiting for arm"),
                                 grabber.closeClaw(),
                                 new WaitForTime(100),
-                                grabber.straightWrist(),
-                                arm.moveAndHold(Arm.POS_SPECIMEN),
+                                arm.moveAndHold(Arm.POS_SUBMERSIBLE),
                                 new SequentialAction(
                                         new WaitUntil(() -> robotState.getArmPos() <= Arm.POS_GROUND - 10),
                                         new LogAction("intake", "done waiting for arm"),
+                                        grabber.straightWrist(),
                                         extension.moveAndHold(0)
                                 )
                         )
@@ -484,6 +485,10 @@ public class RobotHardwareChicago {
         );
     }
 
+    public void wristUp() {
+        grabber.groundWrist();
+    }
+
     public void groundIntake() {
         addPrimaryAction(makeGroundIntakeModeAction());
     }
@@ -496,7 +501,7 @@ public class RobotHardwareChicago {
                         new LogAction("gintake", "start"),
                         arm.moveAndHold(Arm.POS_GROUND_FRONT),
                         new SequentialAction(
-                                new WaitUntil(() -> armAt(Arm.POS_GROUND_FRONT, 5)),
+                                new WaitUntil(() -> armAt(Arm.POS_GROUND_FRONT, 12)),
                                 new LogAction("gintake", "done waiting for arm"),
                                 grabber.closeClaw(),
                                 new WaitForTime(100),

@@ -61,7 +61,7 @@ public class Grabber {
         return  new InstantAction(() -> {
             wrist.setPosition(INTAKE_POSITION);
             claw.setPosition(CLOSED_POS);
-            swivel.setPosition(HORIZONTAL_POS);
+            swivel.setPosition(END_POS);
         });
     }
 
@@ -106,5 +106,9 @@ public class Grabber {
 
     public Action groundWrist() {
         return new InstantAction(() -> wrist.setPosition(GROUND_POS));
+    }
+
+    public Action swivelEnd() {
+        return new InstantAction(() -> swivel.setPosition(END_POS));
     }
 }

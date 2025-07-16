@@ -10,14 +10,17 @@ public class LevelThreeTest extends LinearOpMode {
     private DcMotorEx leftMotor;
     private DcMotorEx rightMotor;
     private DcMotorEx armMotor;
+    private DcMotorEx extension;
 
     public void runOpMode() {
         leftMotor = hardwareMap.get(DcMotorEx.class, "left_lift_motor");
         leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        extension = hardwareMap.get(DcMotorEx.class, "extension_motor");
         rightMotor = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
         rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
         armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         DcMotorEx[] motors = new DcMotorEx[]{leftMotor, rightMotor};
         for (DcMotorEx m : motors) {
@@ -46,6 +49,12 @@ public class LevelThreeTest extends LinearOpMode {
                 armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             } else {
                 armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+
+            if (gamepad1.dpad_down) {
+                extension.setPower(-1);
+            } else if (gamepad1.dpad_up) {
+                extension.setPower(1);
             }
 
             armMotor.setPower(rightStick);
