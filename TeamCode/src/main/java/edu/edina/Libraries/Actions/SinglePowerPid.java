@@ -52,6 +52,8 @@ public class SinglePowerPid implements Action {
 
         mechanism.setPower(power);
 
+        telemetryPacket.put(String.format("%s-spp", mechanism.getName()), x);
+
         return true;
     }
 }

@@ -47,7 +47,9 @@ public class PidAction implements ICancelableAction {
         double p = (pidPower + ff) * vcMult;
 
         if (TAG != null) {
-            RobotLog.ii(TAG, "target = %.3f, e_p = %.3f, e_v = %.3f --> power = %.3f = (%.3f + %.3f)*%.3f",
+            RobotLog.ii(TAG, "%s: |x - tgt| = |%.1f - %.1f| = %.3f, e_v = %.3f --> power = %.3f = (%.3f + %.3f)*%.3f",
+                    mechanism.getName(),
+                    x,
                     pid.getSetPoint(),
                     pid.getPositionError(),
                     pid.getVelocityError(),

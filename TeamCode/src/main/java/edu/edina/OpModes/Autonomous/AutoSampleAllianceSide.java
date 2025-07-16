@@ -23,12 +23,12 @@ import edu.edina.Libraries.Robot.WaitForTime;
 @Autonomous(name = "Sample: Alliance Side", group = "Main")
 public class AutoSampleAllianceSide extends AutoBase {
     public static double START_X = -40, START_Y = 61, START_H = 0;
-    public static double BASKET_X = -33, BASKET_Y = 80, BASKET_H = 135, BASKET_MAX_SPEED = 35, BASKET_RADIUS = 5;
-    public static double FIRST_SPIKE_X = -23, FIRST_SPIKE_Y = 67, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 35, FIRST_SPIKE_RADIUS = 4;
+    public static double BASKET_X = -33, BASKET_Y = 80, BASKET_H = 135, BASKET_MAX_SPEED = 30, BASKET_RADIUS = 5;
+    public static double FIRST_SPIKE_X = -23, FIRST_SPIKE_Y = 67, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 30, FIRST_SPIKE_RADIUS = 4;
     public static double SECOND_SPIKE_X = -26, SECOND_SPIKE_Y = 85, SECOND_SPIKE_H = 180, SECOND_SPIKE_MAX_SPEED = 24, SECOND_SPIKE_RADIUS = 5;
     public static double THIRD_SPIKE_X = -26, THIRD_SPIKE_Y = 88, THIRD_SPIKE_H = 180, THIRD_SPIKE_MAX_SPEED = 24, THIRD_SPIKE_RADIUS = 5;
     public static double OPP_FIRST_SPIKE_X = 18, OPP_FIRST_SPIKE_Y = 76, OPP_FIRST_SPIKE_H = 180, OPP_FIRST_SPIKE_MAX_SPEED = 24, OPP_FIRST_SPIKE_RADIUS = 5;
-    public static double OPP_SECOND_SPIKE_X = 18, OPP_SECOND_SPIKE_Y = 85, OPP_SECOND_SPIKE_H = 180, OPP_SECOND_SPIKE_MAX_SPEED = 24, OPP_SECOND_SPIKE_RADIUS = 5;
+    public static double OPP_SECOND_SPIKE_X = 18, OPP_SECOND_SPIKE_Y = 70, OPP_SECOND_SPIKE_H = 180, OPP_SECOND_SPIKE_MAX_SPEED = 24, OPP_SECOND_SPIKE_RADIUS = 5;
     public static double OPP_THIRD_SPIKE_X = 18, OPP_THIRD_SPIKE_Y = 88, OPP_THIRD_SPIKE_H = 180, OPP_THIRD_SPIKE_MAX_SPEED = 24, OPP_THIRD_SPIKE_RADIUS = 5;
 
     public AutoSampleAllianceSide() {
@@ -47,7 +47,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                 new LogAction("score", "wallMode"),
                 hw.makeWallModeAction(), // clean this up...
                 new SequentialAction(
-                        new WaitUntil(() -> hw.armAt(Arm.POS_ARM_WALL, 5)),
+                        new WaitUntil("score/arm at wall", () -> hw.armAt(Arm.POS_ARM_WALL, 5)),
                         new SequentialAction(
                                 new LogAction("score", "drive to basket"),
                                 new LazyAction(() -> hw.sequencePath(score(), 3)),
@@ -55,7 +55,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 hw.makeHighBasketRearAction(),
                                 new LogAction("score", "open claw"),
                                 new InstantAction(() -> hw.wristUp()),
-                                new WaitForTime(300),
+                                new WaitForTime(200),
                                 new InstantAction(() -> hw.openClaw()),
                                 new LogAction("score", "next action"),
                                 new InstantAction(() -> hw.addPrimaryAction(nextAction.get()))
@@ -78,7 +78,7 @@ public class AutoSampleAllianceSide extends AutoBase {
     }
 
     public Action makeStealSpikeMarkAction() {
-        Path path = new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(FIRST_SPIKE_X, FIRST_SPIKE_Y), new Vector2d(OPP_FIRST_SPIKE_X - 10, (OPP_SECOND_SPIKE_Y + OPP_SECOND_SPIKE_Y) / 2.0)})
+        Path path = new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(FIRST_SPIKE_X + 2, FIRST_SPIKE_Y - 5), new Vector2d(OPP_FIRST_SPIKE_X - 10, (OPP_FIRST_SPIKE_Y + OPP_SECOND_SPIKE_Y) / 2.0)})
                 .withMaxSpeed(OPP_FIRST_SPIKE_MAX_SPEED)
                 .withRadius(FIRST_SPIKE_RADIUS)
                 .withHeading(FIRST_SPIKE_H);
@@ -93,7 +93,8 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 new LogAction("stealSample", "groundHold"),
                                 hw.makeGroundModeAction(),
                                 new SequentialAction(
-                                        hw.waitForGroundMode(),
+                                        hw.waitForGroundMode("steal sample"),
+                                        new LogAction("stealSample", "align"),
                                         new SampleAlignAction(hw),
                                         new LogAction("stealSample", "drive"),
                                         new LazyAction(() -> {
@@ -147,7 +148,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 new LogAction("firstSpikeMark", "ground hold"),
                                 hw.makeGroundModeAction(),
                                 new SequentialAction(
-                                        hw.waitForGroundMode(),
+                                        hw.waitForGroundMode("firstSpikeMark"),
                                         new LogAction("firstSpikeMark", "ground intake"),
                                         new SequentialAction(
                                                 hw.makeGroundIntakeModeAction(),
@@ -177,7 +178,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 new LogAction("secondSpikeMark", "ground hold"),
                                 hw.makeGroundModeAction(),
                                 new SequentialAction(
-                                        hw.waitForGroundMode(),
+                                        hw.waitForGroundMode("secondSpikeMark"),
                                         new LogAction("secondSpikeMark", "ground intake"),
                                         hw.makeGroundIntakeModeAction(),
                                         new WaitForTime(100),
@@ -205,7 +206,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 new LogAction("thirdSpikeMark", "ground hold"),
                                 hw.makeGroundModeAction(),
                                 new SequentialAction(
-                                        hw.waitForGroundMode(),
+                                        hw.waitForGroundMode("thirdSpikeMark"),
                                         new LogAction("thirdSpikeMark", "ground intake"),
                                         hw.makeGroundIntakeModeAction(),
                                         new WaitForTime(100),

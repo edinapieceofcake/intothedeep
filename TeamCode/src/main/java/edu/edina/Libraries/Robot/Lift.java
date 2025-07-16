@@ -80,6 +80,10 @@ public class Lift {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
     }
 
+    public String getName() {
+        return mechanism.getName();
+    }
+
     public static class Mechanism implements IMotionControlLinearMechanism {
         private final DcMotorEx motorLeft, motorRight;
         private ICancelableAction currentAction;

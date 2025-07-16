@@ -61,6 +61,8 @@ public class MotionControlAction implements ICancelableAction {
             DualNum<Time> posAndVel = mechanism.getPositionAndVelocity(false);
             power = drivePower(dt, posAndVel.get(0), posAndVel.get(1));
             mechanism.setPower(power);
+
+            telemetryPacket.put(String.format("%s-mc", mechanism.getName()), posAndVel.get(0));
         }
 
         return !done;

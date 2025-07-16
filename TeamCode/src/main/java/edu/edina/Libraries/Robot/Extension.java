@@ -72,9 +72,9 @@ public class Extension {
         return Math.abs(rS.getExtensionPos() - pos) < tol;
     }
 
-    public Action moveExtensionWithPid(double target) {
-        return new ControllingAction(new PidAction(target, getPidSettings(), mechanism, vc, null), conActMgr);
-    }
+//    public Action moveExtensionWithPid(double target) {
+//        return new ControllingAction(new PidAction(target, getPidSettings(), mechanism, vc, null), conActMgr);
+//    }
 
     public Action manuallyAdjust(double power) {
         conActMgr.cancelControllingAction();
@@ -108,6 +108,10 @@ public class Extension {
 
     private PidSettings getPidSettings() {
         return new PidSettings(HOLD_P, HOLD_I, HOLD_D);
+    }
+
+    public String getName() {
+        return mechanism.getName();
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {

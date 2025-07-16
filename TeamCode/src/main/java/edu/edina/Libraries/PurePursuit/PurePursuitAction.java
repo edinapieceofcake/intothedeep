@@ -31,7 +31,7 @@ public class PurePursuitAction implements ICancelableAction {
     public static double FAST_VEL_LIMIT = 35;
     public static double MAX_POWER = 1;
     public static double SLOW_POS_TOL = 2.6;
-    public static double FAST_POS_TOL = 5;
+    public static double FAST_POS_TOL = 7;
     public static double ANG_TOL = 10;
     public static double SLOW_VEL_TOL = 3;
     public static double FAST_VEL_TOL = 25;
