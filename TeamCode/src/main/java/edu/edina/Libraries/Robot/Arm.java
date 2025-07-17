@@ -46,11 +46,11 @@ public class Arm {
     public static double KA = 3e-4;
 
     // for linear motion
-    public static double MOT_VEL_LIMIT = 200;
-    public static double MOT_MAX_POWER = 0.45;
+    public static double MOT_VEL_LIMIT = 300;
+    public static double MOT_MAX_POWER = 0.6;
     public static double MOT_POS_TOLERANCE = 15;
     public static double MOT_VEL_TOLERANCE = 20;
-    public static double MOT_VEL_COEF = 0.7;
+    public static double MOT_VEL_COEF = 0.4;
 
     // for pid action
     public static double HOLD_P = 0.00001;

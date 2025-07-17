@@ -64,7 +64,7 @@ public class RobotState {
         rightSpeed = new Speedometer(3);
 
         t = new ElapsedTime();
-        voltAvg = new MovingAverageCalc(3);
+        voltAvg = new MovingAverageCalc(15);
 
         bgData = new BackgroundSensorReader<>(() -> readBackgroundData(), 1);
     }
