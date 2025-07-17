@@ -376,7 +376,7 @@ public class RobotHardwareChicago {
                                 new WaitUntil("intake/arm at ground", () -> robotState.getArmPos() >= Arm.POS_GROUND - 5),
                                 new LogAction("intake", "done waiting for arm"),
                                 grabber.closeClaw(),
-                                new WaitForTime(200),
+                                new WaitForTime(120),
                                 new ParallelAction(
                                         arm.moveAndHold(Arm.POS_SUBMERSIBLE),
                                         new SequentialAction(
