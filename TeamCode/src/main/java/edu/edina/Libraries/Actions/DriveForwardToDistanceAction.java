@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 import edu.edina.Libraries.Robot.RobotState;
+import kotlin.Lazy;
 
 @Config
 public class DriveForwardToDistanceAction implements Action {
@@ -20,8 +21,7 @@ public class DriveForwardToDistanceAction implements Action {
     private RobotState robotState;
     private RobotHardwareChicago hw;
     private double distance, tolerance;
-
-    private Vector2d tgtPoint;
+    private Action driveAction;
 
     public static double POWER = 0.4;
 
@@ -36,18 +36,18 @@ public class DriveForwardToDistanceAction implements Action {
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         Pose2d pose2d = robotState.getCurrentPose();
         double d = robotState.getFrontDist();
-        if (tgtPoint == null) {
-            tgtPoint = new Vector2d(
+        if (driveAction == null) {
+            Vector2d tgtPoint = new Vector2d(
                     pose2d.position.x + d * Math.cos(pose2d.heading.toDouble()),
                     pose2d.position.y + d * Math.sin(pose2d.heading.toDouble()));
 
             RobotLog.ii(TAG, "distance %.2f", d);
-            hw.addPath(new Path(new Vector2d[]{pose2d.position, tgtPoint})
+            driveAction = hw.addPath(new Path(new Vector2d[]{pose2d.position, tgtPoint})
                     .withHeading(Math.toDegrees(pose2d.heading.toDouble()))
+                    .withMaxSpeed(6)
                     .withName("drive-fwd.csv"));
-            return false;
-        } else {
-            return true;
         }
+
+        return driveAction.run(telemetryPacket);
     }
 }

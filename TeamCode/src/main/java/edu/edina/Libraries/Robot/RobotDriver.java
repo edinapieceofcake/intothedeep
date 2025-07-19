@@ -2,6 +2,7 @@ package edu.edina.Libraries.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.Action;
 
 import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.PurePursuit.PurePursuitAction;
@@ -21,7 +22,7 @@ public class RobotDriver {
         this.actionList = actionList;
     }
 
-    public void addDrivePath(Path path) {
+    public Action addDrivePath(Path path) {
         if (currentAction != null) {
             currentAction.cancel();
             currentAction = null;
@@ -30,5 +31,7 @@ public class RobotDriver {
         currentAction = new PurePursuitAction(path, dt, state);
 
         actionList.add(currentAction);
+
+        return currentAction;
     }
 }

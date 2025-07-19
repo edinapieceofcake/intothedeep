@@ -16,7 +16,7 @@ public class SampleAlignAction implements Action {
 
     private RobotHardwareChicago hw;
 
-    public static double POWER = 0.35;
+    public static double POWER = 0.32;
     public static double LATERAL_TOL = 5;
 
     public SampleAlignAction(RobotHardwareChicago hw) {
@@ -32,7 +32,7 @@ public class SampleAlignAction implements Action {
             //if cant find use timeout?
 
             if (Math.abs(loc) > LATERAL_TOL) {
-                double p = -POWER * Math.signum(loc);
+                double p = POWER * Math.signum(loc);
                 RobotLog.ii(TAG, "drive power %.2f", p);
                 hw.getDrivetrain().update(0, p, 0);
             } else {

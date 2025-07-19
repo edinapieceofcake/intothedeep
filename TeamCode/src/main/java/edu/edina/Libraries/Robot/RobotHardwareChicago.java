@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -407,8 +408,8 @@ public class RobotHardwareChicago {
         );
     }
 
-    public void addPath(Path path) {
-        robotDriver.addDrivePath(path);
+    public Action addPath(Path path) {
+        return robotDriver.addDrivePath(path);
     }
 
     public void perpendicularSwivel() {
@@ -472,9 +473,25 @@ public class RobotHardwareChicago {
         if (blobs.isEmpty())
             return null;
 
-        ColorBlobLocatorProcessorTwo.Blob b = blobs.get(0);
 
-        return new SampleLocation(80 - b.getBoxFit().center.x);
+        ColorBlobLocatorProcessorTwo.Blob bestBlob = null;
+        for (ColorBlobLocatorProcessorTwo.Blob b : blobs) {
+            RobotLog.ii("sampleLocation", "blob %.1f", b.getBoxFit().center.x);
+
+            if (bestBlob == null)
+                bestBlob = b;
+            else if (dist(b) < dist(bestBlob))
+                bestBlob = b;
+        }
+
+        double loc = bestBlob.getBoxFit().center.x - 80;
+        RobotLog.ii("sampleLocation", "blob %.1f, sample loc %.1f", bestBlob.getBoxFit().center.x, loc);
+
+        return new SampleLocation(loc);
+    }
+
+    private double dist(ColorBlobLocatorProcessorTwo.Blob b) {
+        return Math.abs(80 - b.getBoxFit().center.x);
     }
 
     public void coast() {
@@ -541,5 +558,9 @@ public class RobotHardwareChicago {
                 extension.release(),
                 lift.release()
         );
+    }
+
+    public Action makeBrakeAction(double minSpeed) {
+        return new BrakeAction(robotState, drivetrain, minSpeed);
     }
 }
