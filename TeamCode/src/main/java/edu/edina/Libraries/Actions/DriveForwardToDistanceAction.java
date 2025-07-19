@@ -25,9 +25,9 @@ public class DriveForwardToDistanceAction implements Action {
 
     public static double POWER = 0.4;
 
-    public DriveForwardToDistanceAction(RobotState robotState, RobotHardwareChicago hw, double distance, double tolerance) {
+    public DriveForwardToDistanceAction(RobotHardwareChicago hw, double distance, double tolerance) {
         this.hw = hw;
-        this.robotState = robotState;
+        this.robotState = hw.getRobotState();
         this.distance = distance;
         this.tolerance = tolerance;
     }
