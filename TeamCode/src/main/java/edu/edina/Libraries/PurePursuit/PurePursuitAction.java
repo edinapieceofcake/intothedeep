@@ -40,7 +40,7 @@ public class PurePursuitAction implements ICancelableAction {
     public static double P_COEFF_LIN = 0.7;
     public static double SLOW_P_COEFF_ANG = 0.05;
     public static double FAST_P_COEFF_ANG = 0.001;
-    public static double MIN_ROTATE_ONLY_POWER = 0.1;
+    public static double MIN_ROTATE_ONLY_POWER = 0.2;
 
     public static double LAT_GAIN = 1.1;
 
