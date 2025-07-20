@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import edu.edina.Libraries.Actions.ConstantPowerAction;
 import edu.edina.Libraries.Actions.ControllingAction;
 import edu.edina.Libraries.Actions.ControllingActionManager;
 import edu.edina.Libraries.Actions.MotionControlAction;
@@ -112,6 +113,12 @@ public class Extension {
 
     public String getName() {
         return mechanism.getName();
+    }
+
+    public Action constantPower(double nominalPower) {
+        return new ControllingAction(
+                new ConstantPowerAction(nominalPower, mechanism, vc, null),
+                conActMgr);
     }
 
     public static class Mechanism implements IMotionControlLinearMechanism {
