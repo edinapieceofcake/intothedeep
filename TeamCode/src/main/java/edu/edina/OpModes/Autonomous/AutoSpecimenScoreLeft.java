@@ -14,7 +14,7 @@ public class AutoSpecimenScoreLeft extends AutoSpecimen {
     public void setup() {
         AutoSpecimen.START_X = START_X;
         AutoSpecimen.START_H = START_H;
-        AutoSpecimen.BAR_H = BAR_H;
+        AutoSpecimen.BAR_X = BAR_X;
         AutoSpecimen.BAR_H = BAR_H;
         AutoSpecimen.SCORE_X = SCORE_X;
         AutoSpecimen.SCORE_H = SCORE_H;

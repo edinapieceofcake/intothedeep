@@ -11,8 +11,10 @@ import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import edu.edina.Libraries.Angle;
+import edu.edina.Libraries.LinearMotion.VoltageCompensation;
 import edu.edina.Libraries.MotionControl.ICancelableAction;
 import edu.edina.Libraries.Robot.Drivetrain;
 import edu.edina.Libraries.Robot.FieldToRobot;
@@ -24,20 +26,21 @@ import edu.edina.Tests.PurePursuit.MotorCommand;
 
 @Config
 public class PurePursuitAction implements ICancelableAction {
-    public static double ACCEL_COEF = 0.12;
+    public static double SLOW_ACCEL_COEF = 0.12;
     public static double FAST_ACCEL_COEF = 0.8;
 
     public static double SLOW_VEL_LIMIT = 25;
     public static double FAST_VEL_LIMIT = 35;
-    public static double MAX_POWER = 1;
+    public static double MAX_POWER = 0.6;
     public static double SLOW_POS_TOL = 2.6;
     public static double FAST_POS_TOL = 7;
     public static double ANG_TOL = 2;
     public static double SLOW_VEL_TOL = 3;
     public static double FAST_VEL_TOL = 25;
     public static double P_COEFF_LIN = 0.7;
-    public static double SLOW_P_COEFF_ANG = 0.0007;
+    public static double SLOW_P_COEFF_ANG = 0.05;
     public static double FAST_P_COEFF_ANG = 0.001;
+    public static double MIN_ROTATE_ONLY_POWER = 0.1;
 
     public static double LAT_GAIN = 1.1;
 
@@ -54,6 +57,7 @@ public class PurePursuitAction implements ICancelableAction {
     private double radius;
     private RobotState state;
     private Drivetrain dt;
+    private VoltageCompensation vc;
 
     private Path path;
 
@@ -78,6 +82,8 @@ public class PurePursuitAction implements ICancelableAction {
         done = false;
         etime = new ElapsedTime();
 
+        vc = new VoltageCompensation(state);
+
         double posTol;
 
         if (fastDrive) {
@@ -100,16 +106,16 @@ public class PurePursuitAction implements ICancelableAction {
             velTol = SLOW_VEL_TOL;
             angTol = ANG_TOL;
             velLimit = SLOW_VEL_LIMIT;
-            accelCoef = ACCEL_COEF;
+            accelCoef = SLOW_ACCEL_COEF;
             pCoeffAng = SLOW_P_COEFF_ANG;
 
             axMcs = new MotionControlSettings(KS_AXIAL, KV_AXIAL, KA_AXIAL, SLOW_VEL_LIMIT, MAX_POWER,
                     SLOW_POS_TOL, SLOW_VEL_TOL,
-                    P_COEFF_LIN, ACCEL_COEF);
+                    P_COEFF_LIN, SLOW_ACCEL_COEF);
 
             latMcs = new MotionControlSettings(KS_LAT, KV_LAT, KA_LAT, SLOW_VEL_LIMIT, MAX_POWER,
                     SLOW_POS_TOL, SLOW_VEL_TOL,
-                    P_COEFF_LIN, ACCEL_COEF);
+                    P_COEFF_LIN, SLOW_ACCEL_COEF);
         }
 
         if (posTol >= radius)
@@ -152,7 +158,7 @@ public class PurePursuitAction implements ICancelableAction {
                         t, pose.position.x, pose.position.y, Math.toDegrees(pose.heading.toDouble()), pp.x, pp.y,
                         cmd.axial, cmd.lateral, cmd.yaw));
             }
-            this.dt.update(cmd.axial, cmd.lateral, cmd.yaw, true);
+            this.dt.update(vc.adjustPower( cmd.axial), vc.adjustPower( cmd.lateral), vc.adjustPower( cmd.yaw), true);
         } else {
             done = true;
         }
@@ -200,6 +206,16 @@ public class PurePursuitAction implements ICancelableAction {
         double lateralPower = drivePower(dt, ppRel.y, vRel.y, v1.y, latMcs) * LAT_GAIN;
 
         double yaw = angErr * pCoeffAng;
+
+        if (dist < posTol && radialSpeed < velTol) {
+            axialPower = 0;
+            lateralPower = 0;
+
+            if (Math.abs(yaw) < MIN_ROTATE_ONLY_POWER)
+                yaw = Math.signum(yaw) * MIN_ROTATE_ONLY_POWER;
+        }
+
+        RobotLog.ii("DEBUG", "ax=%.3f lat=%.3f yaw=%.3f", axialPower, lateralPower, yaw);
 
         return new MotionCommand(axialPower, lateralPower, yaw);
     }

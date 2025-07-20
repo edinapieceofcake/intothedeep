@@ -85,9 +85,11 @@ public class RobotHardwareChicago {
     public Arm getArm() {
         return arm;
     }
+
     public Extension getExtension() {
         return extension;
     }
+
     public Lift getLift() {
         return lift;
     }
@@ -572,5 +574,9 @@ public class RobotHardwareChicago {
 
     public Action makeBrakeAction(double minSpeed) {
         return new BrakeAction(robotState, drivetrain, minSpeed);
+    }
+
+    public Grabber getGrabber() {
+        return grabber;
     }
 }
