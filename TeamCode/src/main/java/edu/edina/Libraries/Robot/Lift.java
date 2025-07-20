@@ -28,7 +28,7 @@ public class Lift {
 
     public static double POS_HIGH_BASKET = 15;
     public static double POS_LOW_BASKET = 12;
-    public static double POS_BOTTOM = 0;
+    public static double POS_BOTTOM = -0.5;
 
     public static double KS = 6.1402e-2;
     public static double KV = 3.3710e-2;

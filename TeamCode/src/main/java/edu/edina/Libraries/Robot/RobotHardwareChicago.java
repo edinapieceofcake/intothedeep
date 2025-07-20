@@ -82,6 +82,16 @@ public class RobotHardwareChicago {
         this(hw, RobotState.getLastPose2d());
     }
 
+    public Arm getArm() {
+        return arm;
+    }
+    public Extension getExtension() {
+        return extension;
+    }
+    public Lift getLift() {
+        return lift;
+    }
+
     public RobotHardwareChicago(HardwareMap hw, Pose2d initPose) {
         p2mult = 0.3;
 
@@ -189,11 +199,11 @@ public class RobotHardwareChicago {
                                                 extension.moveAndHold(Extension.POS_HIGH_BASKET),
                                                 new SequentialAction(
                                                         new WaitUntil("high basket/ext", () -> robotState.getExtensionPos() > Extension.POS_HIGH_BASKET - 2),
-                                                        grabber.sampleRear(),
-                                                        new LogAction("highBasketRear", "dropped"),
-                                                        lift.release(),
-                                                        arm.release(),
-                                                        extension.release()
+                                                        new ParallelAction(
+                                                                grabber.sampleRear(),
+                                                                new LogAction("highBasketRear", "dropped"),
+                                                                release()
+                                                        )
                                                 )
                                         )
                                 )
@@ -392,7 +402,7 @@ public class RobotHardwareChicago {
     }
 
     public Action waitForGroundMode(String prefix) {
-        return new WaitUntil(String.format("%sground mode"),
+        return new WaitUntil(String.format("%sground mode", prefix),
                 () -> arm.at(Arm.POS_GROUND_FRONT, 10)
                         && extension.at(Extension.EXTENSION_RETRACTED_INCHES, 2)
                         && lift.at(Lift.POS_BOTTOM, 1)

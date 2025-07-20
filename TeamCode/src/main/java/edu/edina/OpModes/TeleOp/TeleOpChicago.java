@@ -4,13 +4,17 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import edu.edina.Libraries.Robot.RobotHardwareChicago;
 import edu.edina.Libraries.Robot.Speedometer;
+import edu.edina.Tests.LevelThreeTest;
 
 @TeleOp(name = "TeleOp Main \uD83C\uDF82", group = "Main")
 public class TeleOpChicago extends LinearOpMode {
+    private boolean hang = false;
     private Gamepad currentGamepad1, previousGamepad1, currentGamepad2, previousGamepad2;
     private int cycleNum;
 
@@ -40,6 +44,14 @@ public class TeleOpChicago extends LinearOpMode {
 
             hw.update(telemetry);
             hw.drive(gamepad1, gamepad2);
+
+            if (previousGamepad1.back && !currentGamepad1.back) {
+                hang = !hang;
+            }
+
+            if (hang) {
+                ascentMode();
+            }
 
             if (currentGamepad2.back) {
                 hw.brake();
@@ -105,9 +117,60 @@ public class TeleOpChicago extends LinearOpMode {
 
     private void ascentMode() {
 
+        DcMotorEx leftMotor;
+        DcMotorEx rightMotor;
+        DcMotorEx armMotor;
+        DcMotorEx extension;
 
-//        telemetry.addData("cycleSpeed", "%.1f", 1000.0 / s.getSpeed());
+        leftMotor = hardwareMap.get(DcMotorEx.class, "left_lift_motor");
+        leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        extension = hardwareMap.get(DcMotorEx.class, "extension_motor");
+        rightMotor = hardwareMap.get(DcMotorEx.class, "right_lift_motor");
+        rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        armMotor = hardwareMap.get(DcMotorEx.class, "arm_motor");
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        telemetry.update();
+
+        DcMotorEx[] motors = new DcMotorEx[]{leftMotor, rightMotor};
+        for (DcMotorEx m : motors) {
+            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        int[] i = new int[2];
+
+        while (opModeIsActive()) {
+            double rightStick = Math.signum(-gamepad1.right_stick_y) * Math.pow(-gamepad1.right_stick_y, 2);
+            double leftStick = Math.signum(-gamepad1.left_stick_y) * Math.pow(-gamepad1.left_stick_y, 2);
+            telemetry.addData("right stick", rightStick);
+            telemetry.addData("left stick", leftStick);
+            telemetry.addLine("--------");
+
+            int j = 0;
+            for (DcMotorEx m : motors) {
+                m.setPower(leftStick);
+                i[j] = m.getCurrentPosition();
+                j++;
+            }
+
+            if (gamepad1.right_trigger > 0.7) {
+                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            } else {
+                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+
+            if (gamepad1.dpad_down) {
+                extension.setPower(-1);
+            } else if (gamepad1.dpad_up) {
+                extension.setPower(1);
+            }
+
+            armMotor.setPower(rightStick);
+
+            telemetry.addData("left lift pos", i[0]);
+            telemetry.addData("right lift pos", i[1]);
+            telemetry.addData("arm pos", armMotor.getCurrentPosition());
+
+            telemetry.update();
+        }
     }
 }

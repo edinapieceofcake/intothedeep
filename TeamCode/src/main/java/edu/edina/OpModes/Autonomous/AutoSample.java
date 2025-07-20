@@ -1,37 +1,28 @@
 package edu.edina.OpModes.Autonomous;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
 import java.util.function.Supplier;
 
 import edu.edina.Libraries.Actions.LazyAction;
 import edu.edina.Libraries.Actions.LogAction;
-import edu.edina.Libraries.Actions.SampleAlignAction;
 import edu.edina.Libraries.Actions.WaitUntil;
 import edu.edina.Libraries.PurePursuit.Path;
 import edu.edina.Libraries.Robot.Arm;
 import edu.edina.Libraries.Robot.WaitForTime;
 
-@Disabled
-@Config
-@Autonomous(name = "Sample: Alliance Side", group = "Main")
-public class AutoSampleAllianceSide extends AutoBase {
+public abstract class AutoSample extends AutoBase {
+    public static boolean FLIP_X;
     public static double START_X = -40, START_Y = 61, START_H = 0;
-    public static double BASKET_X = -33, BASKET_Y = 80, BASKET_H = 135, BASKET_MAX_SPEED = 30, BASKET_RADIUS = 5;
-    public static double FIRST_SPIKE_X = -23, FIRST_SPIKE_Y = 67, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 30, FIRST_SPIKE_RADIUS = 4;
-    public static double SECOND_SPIKE_X = -26, SECOND_SPIKE_Y = 85, SECOND_SPIKE_H = 180, SECOND_SPIKE_MAX_SPEED = 24, SECOND_SPIKE_RADIUS = 5;
-    public static double THIRD_SPIKE_X = -26, THIRD_SPIKE_Y = 88, THIRD_SPIKE_H = 180, THIRD_SPIKE_MAX_SPEED = 24, THIRD_SPIKE_RADIUS = 5;
-    public static double OPP_FIRST_SPIKE_X = 18, OPP_FIRST_SPIKE_Y = 76, OPP_FIRST_SPIKE_H = 180, OPP_FIRST_SPIKE_MAX_SPEED = 24, OPP_FIRST_SPIKE_RADIUS = 5;
-    public static double OPP_SECOND_SPIKE_X = 18, OPP_SECOND_SPIKE_Y = 70, OPP_SECOND_SPIKE_H = 180, OPP_SECOND_SPIKE_MAX_SPEED = 24, OPP_SECOND_SPIKE_RADIUS = 5;
-    public static double OPP_THIRD_SPIKE_X = 18, OPP_THIRD_SPIKE_Y = 88, OPP_THIRD_SPIKE_H = 180, OPP_THIRD_SPIKE_MAX_SPEED = 24, OPP_THIRD_SPIKE_RADIUS = 5;
+    public static double BASKET_X = -35, BASKET_Y = 75, BASKET_H = 135, BASKET_MAX_SPEED = 20, BASKET_RADIUS = 5;
+    public static double FIRST_SPIKE_X = -22, FIRST_SPIKE_Y = 70, FIRST_SPIKE_H = 180, FIRST_SPIKE_MAX_SPEED = 20, FIRST_SPIKE_RADIUS = 4;
+    public static double SECOND_SPIKE_X = -22, SECOND_SPIKE_Y = 74, SECOND_SPIKE_H = 180, SECOND_SPIKE_MAX_SPEED = 20, SECOND_SPIKE_RADIUS = 4;
+    public static double THIRD_SPIKE_X = -22, THIRD_SPIKE_Y = 78, THIRD_SPIKE_H = 180, THIRD_SPIKE_MAX_SPEED = 20, THIRD_SPIKE_RADIUS = 4;
 
     @Override
     public void setup() {
@@ -40,8 +31,6 @@ public class AutoSampleAllianceSide extends AutoBase {
 
     @Override
     public void initAuto() {
-        hw.enableYellow();
-
         hw.addPrimaryAction(makeScoreAction(this::makeFirstSpikeMarkAction));
     }
 
@@ -57,81 +46,27 @@ public class AutoSampleAllianceSide extends AutoBase {
                                 new LogAction("score", "high basket"),
                                 hw.makeHighBasketRearAction(),
                                 new LogAction("score", "open claw"),
-                                new InstantAction(() -> hw.wristUp()),
-                                new WaitForTime(200),
+//                                new InstantAction(() -> hw.wristUp()),
+                                new WaitForTime(100),
                                 new InstantAction(() -> hw.openClaw()),
+                                new WaitForTime(220),
                                 new LogAction("score", "next action"),
+                                new InstantAction(() -> hw.release()),
                                 new InstantAction(() -> hw.addPrimaryAction(nextAction.get()))
                         )
                 )
         );
     }
 
-    public Action makeScoreAction() {
-        return new SequentialAction(
-                new LogAction("score", "wallMode"),
-                hw.makeWallModeAction(), // clean this up...
-                new LogAction("score", "drive to basket"),
-                hw.sequencePath(score(), 3),
-                new LogAction("score", "high basket"),
-                hw.makeHighBasketRearAction(),
-                new LogAction("score", "open claw"),
-                new InstantAction(() -> hw.openClaw())
-        );
-    }
-
-    public Action makeStealSpikeMarkAction() {
-        Path path = new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(FIRST_SPIKE_X + 2, FIRST_SPIKE_Y - 5), new Vector2d(OPP_FIRST_SPIKE_X - 10, (OPP_FIRST_SPIKE_Y + OPP_SECOND_SPIKE_Y) / 2.0)})
-                .withMaxSpeed(OPP_FIRST_SPIKE_MAX_SPEED)
-                .withRadius(FIRST_SPIKE_RADIUS)
-                .withHeading(FIRST_SPIKE_H);
-
+    public Action reset() {
         return new ParallelAction(
-                new LogAction("stealSample", "wallMode"),
-                hw.makeWallModeAction(),
+                hw.getArm().constantPower(-0.5),
+                hw.getLift().moveAndHold(-1),
+                hw.getExtension().moveAndHold(-1),
                 new SequentialAction(
-                        new LogAction("stealSample", "drive"),
-                        hw.sequencePath(path, 4),
-                        new ParallelAction(
-                                new LogAction("stealSample", "groundHold"),
-                                hw.makeGroundModeAction(),
-                                new SequentialAction(
-                                        hw.waitForGroundMode("steal sample"),
-                                        new LogAction("stealSample", "align"),
-                                        new SampleAlignAction(hw),
-                                        new LogAction("stealSample", "drive"),
-                                        new LazyAction(() -> {
-                                            if (hw.getSampleLocation() != null) {
-                                                return stealScore();
-                                            } else {
-                                                return noSteal();
-                                            }
-                                        }),
-                                        new LazyAction(this::makeSecondSpikeMarkAction)
-                                )
-                        )
+                        hw.addPath(new Path(new Vector2d[] {state.getCurrentPose().position}).withHeading(START_H)),
+                        hw.makeBrakeAction(0)
                 )
-        );
-    }
-
-    public Action noSteal() {
-        return new SequentialAction(
-                hw.sequencePath(new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(FIRST_SPIKE_X, FIRST_SPIKE_Y)}).withTargetSpeed(4).withHeading(FIRST_SPIKE_H).withMaxSpeed(FIRST_SPIKE_MAX_SPEED).withRadius(FIRST_SPIKE_RADIUS), 3),
-                hw.sequencePath(new Path(new Vector2d[]{new Vector2d(FIRST_SPIKE_X, FIRST_SPIKE_Y), new Vector2d(FIRST_SPIKE_X - 10, FIRST_SPIKE_Y)}).withMaxSpeed(FIRST_SPIKE_MAX_SPEED).withHeading(FIRST_SPIKE_H), 3)
-        );
-    }
-
-    public Action stealScore() {
-        return new SequentialAction(
-                hw.sequencePath(new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(OPP_FIRST_SPIKE_X, state.getCurrentPose().position.y)}).withMaxSpeed(OPP_FIRST_SPIKE_MAX_SPEED).withRadius(OPP_FIRST_SPIKE_RADIUS).withHeading(OPP_FIRST_SPIKE_H), 3),
-                new LogAction("stealSample", "intake"),
-                hw.makeGroundIntakeModeAction(),
-                new WaitForTime(100),
-                new LogAction("stealSample", "done"),
-                new LazyAction(() -> new SequentialAction(
-                        hw.sequencePath(new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(FIRST_SPIKE_X, FIRST_SPIKE_Y)}).withMaxSpeed(FIRST_SPIKE_MAX_SPEED).withRadius(FIRST_SPIKE_RADIUS).withHeading(FIRST_SPIKE_H).withTargetSpeed(6), 3),
-                        new LazyAction(this::makeScoreAction)
-                ))
         );
     }
 
@@ -157,7 +92,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                                 hw.makeGroundIntakeModeAction(),
                                                 new LogAction("firstSpikeMark", "done"),
                                                 hw.release(),
-                                                new LazyAction(() -> makeScoreAction(this::makeStealSpikeMarkAction))
+                                                new LazyAction(() -> makeScoreAction(this::makeSecondSpikeMarkAction))
                                         )
                                 )
                         )
@@ -186,7 +121,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                         hw.makeGroundIntakeModeAction(),
                                         new WaitForTime(100),
                                         new LogAction("secondSpikeMark", "done"),
-                                        new LazyAction(() -> makeScoreAction(this::makeThirdSpikeMarkAction))
+                                        new LazyAction(() -> makeScoreAction(this::reset))
                                 )
                         )
                 )
@@ -194,7 +129,7 @@ public class AutoSampleAllianceSide extends AutoBase {
     }
 
     public Action makeThirdSpikeMarkAction() {
-        Path path = new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(SECOND_SPIKE_X, SECOND_SPIKE_Y)})
+        Path path = new Path(new Vector2d[]{state.getCurrentPose().position, new Vector2d(THIRD_SPIKE_X, THIRD_SPIKE_Y)})
                 .withMaxSpeed(THIRD_SPIKE_MAX_SPEED)
                 .withRadius(THIRD_SPIKE_RADIUS)
                 .withHeading(THIRD_SPIKE_H);
@@ -214,7 +149,7 @@ public class AutoSampleAllianceSide extends AutoBase {
                                         hw.makeGroundIntakeModeAction(),
                                         new WaitForTime(100),
                                         new LogAction("secondSpikeMark", "done"),
-                                        new LazyAction(this::makeScoreAction)
+                                        new LazyAction(() -> makeScoreAction(this::reset))
                                 )
                         )
                 )

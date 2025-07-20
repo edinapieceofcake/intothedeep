@@ -15,25 +15,32 @@ public abstract class AutoBase extends LinearOpMode {
     protected Drivetrain dt;
     protected RobotState state;
 
-    public AutoBase(double x, double y, double deg) {
+    protected void setInitPose(double x, double y, double deg) {
         initPose = new Pose2d(x, y, Math.toRadians(deg));
     }
+
+    public abstract void setup();
 
     public abstract void initAuto();
 
     @Override
     public void runOpMode() {
+        setup();
+
         this.hw = new RobotHardwareChicago(hardwareMap, initPose);
+        hw.closeClaw();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         this.dt = hw.getDrivetrain();
         this.state = hw.getRobotState();
 
-        while(opModeInInit()){
+        while (opModeInInit()) {
             hw.initUpdate(telemetry);
             telemetry.update();
         }
 
         initAuto();
+
+        waitForStart();
 
         while (opModeIsActive()) {
             hw.update(telemetry);

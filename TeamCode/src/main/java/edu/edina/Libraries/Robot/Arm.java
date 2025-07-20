@@ -31,14 +31,14 @@ public class Arm {
     public static double POS_SPECIMEN = 200;
     public static double POS_LOW_SPECIMEN = 215;
     public static double POS_SUBMERSIBLE = 193;
-    public static double POS_HIGH_BASKET = 105;
+    public static double POS_HIGH_BASKET = 100;
     public static double POS_LOW_BASKET = 85;
-    public static double POS_ARM_VERTICAL = 120;
+    public static double POS_ARM_VERTICAL = 125;
     public static double POS_ARM_SCORE_BASKET_MIN = 85;
     //    public static double POS_ARM_SCORE_BASKET_MAX = 115;
     public static double POS_ARM_WALL = 33;
     public static double POS_GROUND = 205;
-    public static double POS_GROUND_FRONT = 20;
+    public static double POS_GROUND_FRONT = 10;
 
     public static double POS_AT_180_DEG_ARM = 4060;
     public static double KS = 1.18e-1;
@@ -47,10 +47,10 @@ public class Arm {
 
     // for linear motion
     public static double MOT_VEL_LIMIT = 300;
-    public static double MOT_MAX_POWER = 0.6;
+    public static double MOT_MAX_POWER = 0.65;
     public static double MOT_POS_TOLERANCE = 15;
     public static double MOT_VEL_TOLERANCE = 20;
-    public static double MOT_VEL_COEF = 0.4;
+    public static double MOT_VEL_COEF = 0.45;
 
     // for pid action
     public static double HOLD_P = 0.00001;

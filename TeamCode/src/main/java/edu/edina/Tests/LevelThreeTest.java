@@ -27,9 +27,13 @@ public class LevelThreeTest extends LinearOpMode {
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        int[] i = new int[2];
-
         waitForStart();
+
+        actuallyRun(motors);
+    }
+
+    public  void actuallyRun(DcMotorEx[] motors) {
+        int[] i = new int[2];
 
         while (opModeIsActive()) {
             double rightStick = Math.signum(-gamepad1.right_stick_y) * Math.pow(-gamepad1.right_stick_y, 2);

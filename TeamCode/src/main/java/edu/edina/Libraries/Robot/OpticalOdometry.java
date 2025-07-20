@@ -37,6 +37,8 @@ public class OpticalOdometry {
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularScalar(angularScalar);
         otos.setLinearScalar(1);
+        SparkFunOTOS.Pose2D o = otos.getOffset(); // zero it out!
+        otos.setOffset(new SparkFunOTOS.Pose2D(-o.x, -o.y, -o.h));
         otos.setOffset(ConvertPose(new Pose2d(offsetX, offsetY, Math.toRadians(HEADING_OFFSET_DEG))));
         otos.setPosition(ConvertPose(initPose));
     }

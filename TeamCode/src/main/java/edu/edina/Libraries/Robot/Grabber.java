@@ -18,6 +18,7 @@ public class Grabber {
     //wrist
     public static double INTAKE_POSITION = 0.4;
     public static double SPECIMEN_POSITION = 1;
+    public static double BACK_POS = 0.6;
     public static double GROUND_POS = 0.9;
     public static double WALL_POSITION = (INTAKE_POSITION + SPECIMEN_POSITION) / 2;
     public static double BASKET_POSITION = (WALL_POSITION + SPECIMEN_POSITION) / 2;
@@ -59,7 +60,7 @@ public class Grabber {
 
     public Action sampleRear() {
         return  new InstantAction(() -> {
-            wrist.setPosition(INTAKE_POSITION);
+            wrist.setPosition(BACK_POS);
             claw.setPosition(CLOSED_POS);
             swivel.setPosition(END_POS);
         });
